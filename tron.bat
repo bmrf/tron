@@ -3,7 +3,7 @@
 ::                  Program:      "That's Tron. He fights for the Users."
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
+:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus dot gate, gmail ) // PGP key ID: 0x82A211A2
 :: Version:       1.2  + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped
 ::                                          Thanks to reddit.com/user/you_drown_now for help with this function.
 ::                     * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
