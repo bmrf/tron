@@ -4,7 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.5  + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto"
+:: Version:       1.7  + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+::                1.6  + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
+::                                          these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
+::                     + stage_0_prep:      Added code to detect and repair broken WMI configurations
+::                1.5  + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto"
 ::                                          as the first argument and Tron will run silently while still using all settings configured
 ::                                          in the VARIABLES section
 ::                     * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
@@ -17,7 +21,7 @@
 ::                     * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file.
 ::                                          This way you can see which file they're on, and prevents people from thinking
 ::                                          the scanner is stalled.
-::                1.3  * tron.bat: patch:   Updated links for Adobe Flash and Notepad++ to reflect new versions
+::                1.3  * stage_4_patch:     Updated links for Adobe Flash and Notepad++ to reflect new versions
 ::                1.2  + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped
 ::                                          Thanks to reddit.com/user/you_drown_now for help with this function.
 ::                     * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
@@ -47,9 +51,10 @@
 :: Prep and Checks :: -- Don't change anything in this section
 ::::::::::::::::::::: -- Set the variables in the "variables" section below
 @echo off && cls
+echo. && echo  Loading... && echo.
 SETLOCAL
-set VERSION=1.5
-set UPDATED=2014-07-15
+set VERSION=1.7
+set UPDATED=2014-07-xx
 title TRON v%VERSION% (%UPDATED%)
 :: Get the date into a format we can use
 if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
@@ -58,7 +63,7 @@ if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (s
 :: Get in the correct drive. This is useful if we start from a network share; convert CWD to a drive letter
 pushd %~dp0 2>NUL
 
-:: Detect if we're on XP/2k3-series kernel
+:: Detect if we're on an XP/2k3-series kernel
 :: This is used to determine which powercfg.exe commands to run in the Prep section
 set WIN_VER=undetected
 ver | find /i "Version 5." >NUL
@@ -108,6 +113,7 @@ set SKIP_DEFRAG=no
 
 :: -------------------------- Don't edit anything below this line -------------------------- ::
 
+
 :: Check for autorun
 if "%1"=="-auto" goto execute_jobs
 
@@ -121,13 +127,14 @@ if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
 :welcome_screen
+cls
 echo  *****************  TRON v%VERSION% (%UPDATED%)  ******************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill                                      *
+echo  *  0 Prep:       rkill, WMI repair                          *
 echo  *  1 TempClean:  BleachBit, CCleaner                        *
 echo  *  2 Disinfect:  Vipre, Sophos, MBAM                        *
 echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
@@ -198,6 +205,28 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		pause
 		cls
 		)
+		
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+set ADMINDIR=%WINDIR%\System32\Test_%RANDOM%
+mkdir "%ADMINDIR%" 2>NUL
+if not "%ERRORLEVEL%"=="" (
+		color 0c
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron is not running as an Administrator. Tron MUST
+		echo  be run with full Administrator rights to function.
+        echo  Run from an elevated command-prompt, or right-click
+		echo  and "Run as Administrator."
+		echo.
+		pause
+		exit /b 1
+	) else (
+		rmdir /s /q "%ADMINDIR%"
+	)
 
 
 ::::::::::::::::::
@@ -225,17 +254,6 @@ pushd resources\stage_0_prep
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
 
-
-:: JOB: Disable sleep mode
-echo %CUR_DATE% %TIME%   Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Disabling Sleep mode...
-pushd disable_sleep
-:: Check for Windows XP and run the appropriate powercfg command
-if "%WIN_VER%"=="xp2k3" (powercfg /SETACTIVE "Always On") else (powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c)
-popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
-
 :: JOB: rkill (kills running malware processes)
 echo %CUR_DATE% %TIME%   Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching job 'rkill'...
@@ -250,6 +268,49 @@ TASKKILL /F /IM notepad.exe /T 2>NUL
 :: Dump the rkill log into the tron log
 type %USERPROFILE%\Desktop\rkill.txt>> %LOGPATH%\tron.log
 del %USERPROFILE%\Desktop\rkill.txt
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
+
+:: JOB: Disable sleep mode
+echo %CUR_DATE% %TIME%   Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Disabling Sleep mode...
+pushd disable_sleep
+:: Check for Windows XP and run the appropriate powercfg command
+if "%WIN_VER%"=="xp2k3" (powercfg /SETACTIVE "Always On") else (powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c)
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
+
+:: JOB: Check and Repair WMI if it's broken
+echo %CUR_DATE% %TIME%   Checking WMI...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Checking WMI...
+pushd wmi_repair
+
+:: Do a quick check to make sure WMI is working, and if not, repair it
+wmic timezone >NUL
+if not %ERRORLEVEL%==0 (
+    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
+    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
+    net stop winmgmt
+    pushd %WINDIR%\system32\wbem
+    for %%i in (*.dll) do RegSvr32 -s %%i
+    :: Kill this random window that pops up
+    tskill wbemtest /a 2>NUL
+    scrcons.exe /RegServer
+    unsecapp.exe /RegServer
+    start "" wbemtest.exe /RegServer
+    tskill wbemtest /a 2>NUL
+    tskill wbemtest /a 2>NUL
+    :: winmgmt.exe /resetrepository       -- optional; forces full rebuild instead of a repair like the line below this
+	winmgmt.exe /salvagerepository /resyncperf
+    wmiadap.exe /RegServer
+    wmiapsrv.exe /RegServer
+    wmiprvse.exe /RegServer
+    net start winmgmt
+    popd
+	)
+
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -336,10 +397,23 @@ if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE
 pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
 start "" "mbam.exe"
 popd
-popd
 
+
+popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
+
+:: JOB: System File Checker scan
+echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...
+pushd sfc
+:: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
+if not "%WIN_VER%"=="xp2k3" sfc /scannow
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
+
+
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
