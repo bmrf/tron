@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       1.7  + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+::                     + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
 ::                1.6  + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
 ::                                          these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
 ::                     + stage_0_prep:      Added code to detect and repair broken WMI configurations
@@ -47,6 +48,10 @@
 
 
 
+:: TODO:   log a2cmd run?     /l=[], /log=[filepath]      Save a logfile in UNICODE format
+
+
+
 :::::::::::::::::::::
 :: Prep and Checks :: -- Don't change anything in this section
 ::::::::::::::::::::: -- Set the variables in the "variables" section below
@@ -67,21 +72,31 @@ pushd %~dp0 2>NUL
 :: This is used to determine which powercfg.exe commands to run in the Prep section
 set WIN_VER=undetected
 ver | find /i "Version 5." >NUL
-if "%ERRORLEVEL%"=="0" set WIN_VER=xp2k3
+if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
-::smartctl.exe --scan
+REM pushd resources\stage_5_optimize\defrag
+REM set SSD_DETECTED=no
+REM smartctl -a /dev/sda | find /i "Solid State" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM smartctl -a /dev/sdb | find /i "Solid State" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM smartctl -a /dev/sda | find /i "SSD" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM smartctl -a /dev/sdb | find /i "SSD" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM popd
+
+:: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
-smartctl -a /dev/sda | find /i "Solid State" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdb | find /i "Solid State" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sda | find /i "SSD" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdb | find /i "SSD" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
+if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
+if %ERRORLEVEL%==0 set SSD_DETECTED=yes
 popd
+
 
 :: Detect Safe Mode
 set SAFE_MODE=no
@@ -157,19 +172,40 @@ if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%,
 if not "%SAFE_MODE%"=="yes" echo     Safe mode?               %SAFE_MODE% (not ideal)
 if not "%SKIP_DEFRAG%"=="no" (
 	echo   ! SKIP_DEFRAG set; skipping stage_5_optimize ^(defrag^)
-	echo     Runtime estimate:        2-4 hours
+	echo     Runtime estimate:        3-5 hours
 	goto welcome_screen_trailer
 	)
-if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        2-4 hours
-if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        4-6 hours
+if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        3-5 hours
+if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        5-7 hours
 echo.
 :welcome_screen_trailer
 pause
 
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+set ADMINDIR=%WINDIR%\System32\Test_%RANDOM%
+mkdir "%ADMINDIR%" 2>NUL
+if not "%ERRORLEVEL%"=="" (
+		color 0c
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron is not running as an Administrator. Tron MUST
+		echo  be run with full Administrator rights to function.
+        echo  Run from an elevated command-prompt, or right-click
+		echo  and "Run as Administrator."
+		echo.
+		pause
+		exit /b 1
+	) else (
+		rmdir /s /q "%ADMINDIR%"
+	)
+
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
 :::::::::::::::::::::
-:safe_mode_check
 :: Test if we're in safe mode
 if not "%SAFE_MODE%"=="yes" (
 		color 0c
@@ -206,29 +242,6 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		cls
 		)
 		
-::::::::::::::::::::::::
-:: ADMIN RIGHTS CHECK ::
-::::::::::::::::::::::::
-set ADMINDIR=%WINDIR%\System32\Test_%RANDOM%
-mkdir "%ADMINDIR%" 2>NUL
-if not "%ERRORLEVEL%"=="" (
-		color 0c
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  Tron is not running as an Administrator. Tron MUST
-		echo  be run with full Administrator rights to function.
-        echo  Run from an elevated command-prompt, or right-click
-		echo  and "Run as Administrator."
-		echo.
-		pause
-		exit /b 1
-	) else (
-		rmdir /s /q "%ADMINDIR%"
-	)
-
-
 ::::::::::::::::::
 :: EXECUTE JOBS ::
 ::::::::::::::::::
@@ -308,7 +321,6 @@ if not %ERRORLEVEL%==0 (
     wmiapsrv.exe /RegServer
     wmiprvse.exe /RegServer
     net start winmgmt
-    popd
 	)
 
 popd
@@ -360,6 +372,18 @@ title TRON v%VERSION% [stage_2_disinfect]
 pushd resources\stage_2_disinfect
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
+
+:: JOB: Emsisoft Commandline Scanner (a2cmd)
+echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...
+echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
+pushd a2cmd
+a2cmd.exe /update
+a2cmd.exe /smart /dda /ntfs /delete
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
 
 :: JOB: VIPRE Rescue
 echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a long time)...>> "%LOGPATH%\%LOGFILE%"
