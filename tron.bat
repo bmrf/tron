@@ -6,6 +6,7 @@
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       1.7  + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
 ::                     + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
+::                     / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section
 ::                1.6  + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
 ::                                          these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
 ::                     + stage_0_prep:      Added code to detect and repair broken WMI configurations
@@ -46,63 +47,8 @@
 
 :: Usage:         Run this script as an Administrator and let it reboot when finished.
 
-
-
-:: TODO:   log a2cmd run?     /l=[], /log=[filepath]      Save a logfile in UNICODE format
-
-
-
-:::::::::::::::::::::
-:: Prep and Checks :: -- Don't change anything in this section
-::::::::::::::::::::: -- Set the variables in the "variables" section below
-@echo off && cls
-echo. && echo  Loading... && echo.
+:: Don't remove this
 SETLOCAL
-set VERSION=1.7
-set UPDATED=2014-07-xx
-title TRON v%VERSION% (%UPDATED%)
-:: Get the date into a format we can use
-if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
-:: Get in the correct drive. This is sometimes needed when running from a thumb drive
-%~d0 2>NUL
-:: Get in the correct drive. This is useful if we start from a network share; convert CWD to a drive letter
-pushd %~dp0 2>NUL
-
-:: Detect if we're on an XP/2k3-series kernel
-:: This is used to determine which powercfg.exe commands to run in the Prep section
-set WIN_VER=undetected
-ver | find /i "Version 5." >NUL
-if %ERRORLEVEL%==0 set WIN_VER=xp2k3
-
-:: Detect Solid State hard drives (determines if post-run defrag executes or not)
-REM pushd resources\stage_5_optimize\defrag
-REM set SSD_DETECTED=no
-REM smartctl -a /dev/sda | find /i "Solid State" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-REM smartctl -a /dev/sdb | find /i "Solid State" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-REM smartctl -a /dev/sda | find /i "SSD" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-REM smartctl -a /dev/sdb | find /i "SSD" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-REM popd
-
-:: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
-pushd resources\stage_5_optimize\defrag
-set SSD_DETECTED=no
-for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
-if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
-if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-popd
-
-
-:: Detect Safe Mode
-set SAFE_MODE=no
-if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
-if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
-
 
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
@@ -128,6 +74,63 @@ set SKIP_DEFRAG=no
 
 :: -------------------------- Don't edit anything below this line -------------------------- ::
 
+
+:::::::::::::::::::::
+:: Prep and Checks :: -- Don't change anything in this section
+:::::::::::::::::::::
+@echo off && cls && echo. && echo  Loading... && echo.
+set VERSION=1.7
+set UPDATED=2014-07-21
+title TRON v%VERSION% (%UPDATED%)
+:: Get the date into a format we can use
+if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
+:: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
+%~d0 2>NUL
+:: Get in the correct path (~dp0). This is useful if we start from a network share; convert CWD to a drive letter
+pushd %~dp0 2>NUL
+
+:: Detect if we're on an XP/2k3-series kernel
+:: This is used to determine which powercfg.exe commands to run in the Prep section
+set WIN_VER=undetected
+ver | find /i "Version 5." >NUL
+if %ERRORLEVEL%==0 set WIN_VER=xp2k3
+
+:: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
+pushd resources\stage_5_optimize\defrag
+set SSD_DETECTED=no
+for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
+if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
+if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+popd
+
+:: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Alternate method by /u/Suddenly_Engineer. 
+:: Untested.
+REM pushd resources\stage_5_optimize\defrag
+REM setlocal enabledelayedexpansion
+REM for /f "tokens=1" %%i in ('smartctl --scan') do (
+	REM smartctl %%i -a | find /i "Solid State" >NUL
+	REM if "!ERRORLEVEL!"=="1" set SSD_DETECTED=no
+	REM )
+
+REM for /f "tokens=1" %%i in ('smartctl --scan') do (
+	REM smartctl %%i -a | find /i "SSD" >NUL
+	REM if "!ERRORLEVEL!"=="1" set SSD_DETECTED=no
+	REM )
+
+REM for /f "tokens=1" %%i in ('smartctl --scan') do (
+	REM smartctl %%i -a | find /i "RAID" >NUL
+	REM if "!ERRORLEVEL!"=="0" set SSD_DETECTED=yes
+REM )
+REM set local disabledelayedexpansion
+REM popd
+
+:: Detect Safe Mode
+set SAFE_MODE=no
+if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
+if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
 :: Check for autorun
 if "%1"=="-auto" goto execute_jobs
@@ -321,6 +324,7 @@ if not %ERRORLEVEL%==0 (
     wmiapsrv.exe /RegServer
     wmiprvse.exe /RegServer
     net start winmgmt
+	popd
 	)
 
 popd
@@ -345,7 +349,7 @@ echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
 echo %CUR_DATE% %TIME%   Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching job 'CCleaner'...
 pushd ccleaner
-ccleaner.exe /auto
+ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -386,23 +390,23 @@ echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
 
 :: JOB: VIPRE Rescue
-echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a long time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a long time)...
+echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a LONG time)...
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
 pushd vipre_rescue
-VipreRescueScanner.exe
+VipreRescueScanner.exe>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
 
 :: JOB: Sophos Virus Remover
-echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a long time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a long time)...
+echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
-svrtcli.exe -yes
+svrtcli.exe -yes>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
