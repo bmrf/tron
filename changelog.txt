@@ -9,29 +9,36 @@
 
 
 
- 
+########################
+# v1.7.3 // 2014-07-22 #
+########################
+tron.bat                         v1.7.3
+ * prep and checks: Think we finally fixed SSD detection. Please test and report if it fails on your drive
+ * prep and checks: Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
+
+
 ########################
 # v1.7.2 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.2
- * tron.bat: Script now accepts "--auto" and "-a" as flags for automatic unattended execution
- + tron.bat: Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
- * tron.bat: Reverted SSD check to something more reliable
- / tron.bat: Moved all but most recent changelog entries to the changelog file, to avoid cluttering up script header
+ * tron.bat:        Script now accepts "--auto" and "-a" as flags for automatic unattended execution
+ / tron.bat:        Moved all but most recent changelog entries to the changelog file, to avoid cluttering up script header
+ + prep and checks: Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
+ * prep and checks: Reverted SSD check to something more reliable
 
  
 ########################
 # v1.7.1 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.1
- - tron.bat: Removed check for Administrator rights since it was failing too often.
+ + prep and checks: Removed check for Administrator rights since it was failing too often.
 
 
 ########################
 # v1.7.0 // 2014-07-21 #
 ########################
 tron.bat                         v1.7
- + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+ + prep and checks:   Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
  + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
  / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section	 
 
