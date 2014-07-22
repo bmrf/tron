@@ -24,9 +24,7 @@ tron.bat                         v1.7.2
 # v1.7.1 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.1
-
- + Notable changes:
-     - tron.bat:          Removed check for Administrator rights since it was failing too often.
+ - tron.bat: Removed check for Administrator rights since it was failing too often.
 
 
 ########################
