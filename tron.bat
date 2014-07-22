@@ -4,46 +4,47 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.7  + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
-::                     + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
-::                     / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section
-::                1.6  + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
-::                                          these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
-::                     + stage_0_prep:      Added code to detect and repair broken WMI configurations
-::                1.5  + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto"
-::                                          as the first argument and Tron will run silently while still using all settings configured
-::                                          in the VARIABLES section
-::                     * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
-::                     * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
-::                     * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
-::                1.4  + tron.bat:          Added SKIP_DEFRAG variable to force defrag to always skip
-::                     * tron.bat:          Improved SSD detection. Thanks to reddit.com/user/bdm800
-::                     * tron.bat:          Cleaned up welcome screen and various comments
-::                     * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds
-::                     * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file.
-::                                          This way you can see which file they're on, and prevents people from thinking
-::                                          the scanner is stalled.
-::                1.3  * stage_4_patch:     Updated links for Adobe Flash and Notepad++ to reflect new versions
-::                1.2  + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped
-::                                          Thanks to reddit.com/user/you_drown_now for help with this function.
-::                     * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
-::                     * tron.bat:          Improved overall logging, appearance and commenting. Added clarification screens for
-::                                          various Safe Mode states
-::                     / Intro screen:      Adjusted runtime estimates based on user feedback
-::                     / tron.bat:          Disabled post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
-::                     - tron.bat:          Removed section asking user if we want to do a post-run defrag (replaced by auto-detect)
-::                     - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
-::                     - stage_4_patch:     Removed /r flag on wuauclt command
-::                1.1  * tron.bat:          Various comment, log and syntax cleanup
-::                     + tron.bat:          Added section to ask if we want to do a post-run defrag, and skip the defrag
-::                                          if the user says no
-::                     * tron.bat:          Removed hard requirement to run in safe mode and added code to detect various Safe Mode states
-::                     * stage_3_de-bloat:  Converted section to read from a text list located in
-::                                          resource\stage_3_de-bloat\programs_to_target.txt
-::                     + stage_3_de-bloat:  Added additional programs to find and remove
-::                     + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
-::                     - stage_4_patch:     Removed installation of Adobe Shockwave
-::                1.0    Initial write
+:: Version:       1.7.1 - tron.bat:          Removed check for Administrator rights since it was failing too often. Most people running this script are smart enough to know recovery tools must be run as Administrator anyway.
+::                1.7   + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+::                      + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
+::                      / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section
+::                1.6   + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
+::                                           these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
+::                      + stage_0_prep:      Added code to detect and repair broken WMI configurations
+::                1.5   + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto"
+::                                           as the first argument and Tron will run silently while still using all settings configured
+::                                           in the VARIABLES section
+::                      * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
+::                      * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
+::                      * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
+::                1.4   + tron.bat:          Added SKIP_DEFRAG variable to force defrag to always skip
+::                      * tron.bat:          Improved SSD detection. Thanks to reddit.com/user/bdm800
+::                      * tron.bat:          Cleaned up welcome screen and various comments
+::                      * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds
+::                      * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file.
+::                                           This way you can see which file they're on, and prevents people from thinking
+::                                           the scanner is stalled.
+::                1.3   * stage_4_patch:     Updated links for Adobe Flash and Notepad++ to reflect new versions
+::                1.2   + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped
+::                                           Thanks to reddit.com/user/you_drown_now for help with this function.
+::                      * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
+::                      * tron.bat:          Improved overall logging, appearance and commenting. Added clarification screens for
+::                                           various Safe Mode states
+::                      / Intro screen:      Adjusted runtime estimates based on user feedback
+::                      / tron.bat:          Disabled post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
+::                      - tron.bat:          Removed section asking user if we want to do a post-run defrag (replaced by auto-detect)
+::                      - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
+::                      - stage_4_patch:     Removed /r flag on wuauclt command
+::                1.1   * tron.bat:          Various comment, log and syntax cleanup
+::                      + tron.bat:          Added section to ask if we want to do a post-run defrag, and skip the defrag
+::                                           if the user says no
+::                      * tron.bat:          Removed hard requirement to run in safe mode and added code to detect various Safe Mode states
+::                      * stage_3_de-bloat:  Converted section to read from a text list located in
+::                                           resource\stage_3_de-bloat\programs_to_target.txt
+::                      + stage_3_de-bloat:  Added additional programs to find and remove
+::                      + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
+::                      - stage_4_patch:     Removed installation of Adobe Shockwave
+::                1.0     Initial write
 
 :: Usage:         Run this script as an Administrator and let it reboot when finished.
 
@@ -79,8 +80,8 @@ set SKIP_DEFRAG=no
 :: Prep and Checks :: -- Don't change anything in this section
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.7
-set UPDATED=2014-07-21
+set VERSION=1.7.1
+set UPDATED=2014-07-22
 title TRON v%VERSION% (%UPDATED%)
 :: Get the date into a format we can use
 if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
@@ -184,27 +185,6 @@ echo.
 :welcome_screen_trailer
 pause
 
-::::::::::::::::::::::::
-:: ADMIN RIGHTS CHECK ::
-::::::::::::::::::::::::
-set ADMINDIR=%WINDIR%\System32\Test_%RANDOM%
-mkdir "%ADMINDIR%" 2>NUL
-if not "%ERRORLEVEL%"=="" (
-		color 0c
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  Tron is not running as an Administrator. Tron MUST
-		echo  be run with full Administrator rights to function.
-        echo  Run from an elevated command-prompt, or right-click
-		echo  and "Run as Administrator."
-		echo.
-		pause
-		exit /b 1
-	) else (
-		rmdir /s /q "%ADMINDIR%"
-	)
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
@@ -395,7 +375,7 @@ echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a LONG time
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
 pushd vipre_rescue
-VipreRescueScanner.exe>> "%LOGPATH%\%LOGFILE%" 2>NUL
+VipreRescueScanner.exe
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -406,7 +386,7 @@ echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a LONG
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
-svrtcli.exe -yes>> "%LOGPATH%\%LOGFILE%" 2>NUL
+svrtcli.exe -yes
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
