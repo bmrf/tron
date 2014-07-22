@@ -4,15 +4,18 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
+:: Version:       1.7.3 * prep and checks:   Think we finally fixed SSD detection. Please test and report if it fails on your drive
+::                      * prep and checks:   Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY
+::                1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
 ::                      + tron.bat:          Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
 ::                      * tron.bat:          Reverted SSD check to something more reliable
 ::                      / tron.bat:          Moved all but most recent changelog entries to the standalone changelog file, to avoid cluttering up script header
 :: Usage:         Run this script as an Administrator and let it reboot when finished.
 SETLOCAL
 
+
 :::::::::::::::
-:: VARIABLES :: -- Set these to your desired values
+:: VARIABLES :: --------------- Set these to your desired values --------------------------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -26,7 +29,7 @@ set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
 
 :: Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot.
-set REBOOT_DELAY=0
+set AUTO_REBOOT_DELAY=0
 
 :: Set to anything but "no" in order to skip defrag regardless whether the system drive is an SSD or not.
 :: Leave as "no" to let the script auto-detect SSDs
@@ -40,7 +43,7 @@ set SKIP_DEFRAG=no
 :: Prep and Checks :: -- Don't change anything in this section
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.7.1
+set VERSION=1.7.3
 set UPDATED=2014-07-22
 title TRON v%VERSION% (%UPDATED%)
 :: Get the date into a format we can use
@@ -58,57 +61,48 @@ if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: This isn't pretty but has been the most reliable method so far
-pushd resources\stage_5_optimize\defrag
-set SSD_DETECTED=no
-smartctl -a /dev/sda | find /i "Solid State" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdb | find /i "Solid State" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdc | find /i "Solid State" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sda | find /i "SSD" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdb | find /i "SSD" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-smartctl -a /dev/sdc | find /i "SSD" >NUL
-if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-popd
-
-
-:: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
-:: Doesn't work reliably.
 REM pushd resources\stage_5_optimize\defrag
 REM set SSD_DETECTED=no
-REM for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-REM for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
-REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM smartctl -a /dev/sda | find /i "Solid State" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+REM smartctl -a /dev/sdb | find /i "Solid State" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+REM smartctl -a /dev/sdc | find /i "Solid State" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+REM smartctl -a /dev/sda | find /i "SSD" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+REM smartctl -a /dev/sdb | find /i "SSD" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+REM smartctl -a /dev/sdc | find /i "SSD" >NUL
+REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
 REM popd
+
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: Alternate method by /u/Suddenly_Engineer. 
-:: Untested.
-REM pushd resources\stage_5_optimize\defrag
-REM setlocal enabledelayedexpansion
-REM for /f "tokens=1" %%i in ('smartctl --scan') do (
-	REM smartctl %%i -a | find /i "Solid State" >NUL
-	REM if "!ERRORLEVEL!"=="1" set SSD_DETECTED=no
-	REM )
+:: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block, by stacking it on the same line so it gets executed along with ENDLOCAL
+:: Alternate method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping out with this.
+pushd resources\stage_5_optimize\defrag
+set SSD_DETECTED=no
+setlocal enabledelayedexpansion
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "Solid State" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
 
-REM for /f "tokens=1" %%i in ('smartctl --scan') do (
-	REM smartctl %%i -a | find /i "SSD" >NUL
-	REM if "!ERRORLEVEL!"=="1" set SSD_DETECTED=no
-	REM )
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "SSD" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
 
-REM for /f "tokens=1" %%i in ('smartctl --scan') do (
-	REM smartctl %%i -a | find /i "RAID" >NUL
-	REM if "!ERRORLEVEL!"=="0" set SSD_DETECTED=yes
-REM )
-REM set local disabledelayedexpansion
-REM popd
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "RAID" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
+endlocal disabledelayedexpansion
+popd
 
 :: Detect Safe Mode
+:detect_safe_mode
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
@@ -148,8 +142,8 @@ echo.
 :: This is so ugly it makes me cry
 echo  Current settings (edit script to change):
 echo     Log location:            %LOGPATH%\%LOGFILE%
-if not "%REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %REBOOT_DELAY% seconds
-if "%REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: disabled
+if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
+if "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: disabled
 if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (stage_5 skipped)
 if "%SSD_DETECTED%"=="no" echo     SSD detected?            %SSD_DETECTED%
 if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%, without Networking
@@ -525,7 +519,7 @@ echo %CUR_DATE% %TIME%   Checking and removing outdated JRE installations...
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
-:: we can skip JRE 8 because the JRE 8 updater automatically removes older versions, so no need to check twice
+:: we can skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
 
 :: JRE 7
 echo %CUR_DATE% %TIME%   JRE 7...>> "%LOGPATH%\%LOGFILE%"
@@ -666,12 +660,12 @@ echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools i
 echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%
 
-if "%REBOOT_DELAY%"=="0" (
+if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.
 ) else (
-	echo %CUR_DATE% %TIME% ! Rebooting in %REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% ! Rebooting in %REBOOT_DELAY% seconds.
+	echo %CUR_DATE% %TIME% ! Rebooting in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Rebooting in %AUTO_REBOOT_DELAY% seconds.
 	)
 
 :: Create the log trailer for this job
@@ -684,5 +678,5 @@ echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNA
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-if not "%REBOOT_DELAY%"=="0" shutdown /r /f /t %REBOOT_DELAY% /c "Rebooting in %REBOOT_DELAY% seconds to finish cleanup."
+if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
 pause
