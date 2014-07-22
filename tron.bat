@@ -4,51 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.7.1 - tron.bat:          Removed check for Administrator rights since it was failing too often. Most people running this script are smart enough to know recovery tools must be run as Administrator anyway.
-::                1.7   + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
-::                      + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
-::                      / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section
-::                1.6   + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since
-::                                           these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
-::                      + stage_0_prep:      Added code to detect and repair broken WMI configurations
-::                1.5   + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto"
-::                                           as the first argument and Tron will run silently while still using all settings configured
-::                                           in the VARIABLES section
-::                      * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
-::                      * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
-::                      * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
-::                1.4   + tron.bat:          Added SKIP_DEFRAG variable to force defrag to always skip
-::                      * tron.bat:          Improved SSD detection. Thanks to reddit.com/user/bdm800
-::                      * tron.bat:          Cleaned up welcome screen and various comments
-::                      * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds
-::                      * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file.
-::                                           This way you can see which file they're on, and prevents people from thinking
-::                                           the scanner is stalled.
-::                1.3   * stage_4_patch:     Updated links for Adobe Flash and Notepad++ to reflect new versions
-::                1.2   + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped
-::                                           Thanks to reddit.com/user/you_drown_now for help with this function.
-::                      * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
-::                      * tron.bat:          Improved overall logging, appearance and commenting. Added clarification screens for
-::                                           various Safe Mode states
-::                      / Intro screen:      Adjusted runtime estimates based on user feedback
-::                      / tron.bat:          Disabled post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
-::                      - tron.bat:          Removed section asking user if we want to do a post-run defrag (replaced by auto-detect)
-::                      - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
-::                      - stage_4_patch:     Removed /r flag on wuauclt command
-::                1.1   * tron.bat:          Various comment, log and syntax cleanup
-::                      + tron.bat:          Added section to ask if we want to do a post-run defrag, and skip the defrag
-::                                           if the user says no
-::                      * tron.bat:          Removed hard requirement to run in safe mode and added code to detect various Safe Mode states
-::                      * stage_3_de-bloat:  Converted section to read from a text list located in
-::                                           resource\stage_3_de-bloat\programs_to_target.txt
-::                      + stage_3_de-bloat:  Added additional programs to find and remove
-::                      + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
-::                      - stage_4_patch:     Removed installation of Adobe Shockwave
-::                1.0     Initial write
-
+:: Version:       1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
+::                      + tron.bat:          Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
+::                      * tron.bat:          Reverted SSD check to something more reliable
+::                      / tron.bat:          Moved all but most recent changelog entries to the standalone changelog file, to avoid cluttering up script header
 :: Usage:         Run this script as an Administrator and let it reboot when finished.
-
-:: Don't remove this
 SETLOCAL
 
 :::::::::::::::
@@ -97,14 +57,34 @@ ver | find /i "Version 5." >NUL
 if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
+:: This isn't pretty but has been the most reliable method so far
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
-for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
-if %ERRORLEVEL%==0 set SSD_DETECTED=yes
-for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
-if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+smartctl -a /dev/sda | find /i "Solid State" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+smartctl -a /dev/sdb | find /i "Solid State" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+smartctl -a /dev/sdc | find /i "Solid State" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+smartctl -a /dev/sda | find /i "SSD" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+smartctl -a /dev/sdb | find /i "SSD" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
+smartctl -a /dev/sdc | find /i "SSD" >NUL
+if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
 popd
+
+
+:: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Thanks to /u/Suddenly_Engineer and /u/Aberu for this solution
+:: Doesn't work reliably.
+REM pushd resources\stage_5_optimize\defrag
+REM set SSD_DETECTED=no
+REM for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "Solid State" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM for /f "tokens=1" %%i in ('smartctl --scan') do smartctl %%i -a | find /i "SSD" >NUL
+REM if %ERRORLEVEL%==0 set SSD_DETECTED=yes
+REM popd
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Alternate method by /u/Suddenly_Engineer. 
@@ -134,7 +114,8 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
 :: Check for autorun
-if "%1"=="-auto" goto execute_jobs
+if "%1"=="--auto" goto execute_jobs
+if "%1"=="-a" goto execute_jobs
 
 :::::::::::::::::::::::
 :: LOG FILE HANDLING ::
@@ -147,7 +128,7 @@ if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 ::::::::::::::::::::
 :welcome_screen
 cls
-echo  *****************  TRON v%VERSION% (%UPDATED%)  ******************
+echo  *****************  TRON v%VERSION% (%UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
@@ -185,6 +166,25 @@ echo.
 :welcome_screen_trailer
 pause
 
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+:check_Permissions
+sfc 2>&1 | find /i "/SCANNOW"
+if not "%ERRORLEVEL%"=="0" (
+		color 0c
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron is not running as an Administrator. Tron MUST
+		echo  be run with full Administrator rights to function.
+        echo  Run from an elevated command-prompt, or right-click
+		echo  and "Run as Administrator."
+		echo.
+		pause
+		exit /b 1
+	)
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
