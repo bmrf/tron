@@ -1,0 +1,625 @@
+#############
+# CHANGELOG #
+#############
+ + Addition
+ - Removal
+ / Change/fix
+ * Update
+ . No change
+
+
+
+ 
+########################
+# v1.7.2 // 2014-07-22 #
+########################
+tron.bat                         v1.7.2
+ * tron.bat: Script now accepts "--auto" and "-a" as flags for automatic unattended execution
+ + tron.bat: Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
+ * tron.bat: Reverted SSD check to something more reliable
+ / tron.bat: Moved all but most recent changelog entries to the changelog file, to avoid cluttering up script header
+
+ 
+########################
+# v1.7.1 // 2014-07-22 #
+########################
+tron.bat                         v1.7.1
+
+ + Notable changes:
+     - tron.bat:          Removed check for Administrator rights since it was failing too often.
+
+
+########################
+# v1.7.0 // 2014-07-21 #
+########################
+tron.bat                         v1.7
+ + tron.bat:          Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+ + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
+ / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section	 
+
+Stage 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+Stage 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ + Emsisoft Commandline Scanner  v9.0.0.4183
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+Stage 3: De-bloat
+Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . 3vix%%
+ . Acer%%
+ . Adobe Shockwave%%
+ . Advanced%%FX Engine
+ . Akamai%%
+ . Amazon Browser%%
+ . Bing%%
+ . Bonjour%%
+ . BlueStack%%
+ . Catalina Savings%%
+ . Cyberlink%%
+ . Dell Getting Started Guide%%
+ . Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ . HP Deskjet%%Help
+ . Launch Manager%%
+ . Lenovo%%
+ . Live! Cam Avatar%%
+ . Move Media%%
+ . My HP%%
+ . PowerDVD%%
+ . RenWeb%%
+ . Roxio%%
+ . Sonic CinePlayer%%
+ . %%Toolbar%%
+ . Toshiba%%
+ . %%Trial%%
+ . UserGuide%%
+ . WildTangent%%
+ . Yahoo! Browser%%
+
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v3.2.1.6
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.7.21.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ + TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+ 
+######################
+# v1.6 // 2014-07-16 #
+######################
+tron.bat                         v1.6
+ + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
+ + stage_0_prep:      Added code to detect and repair broken WMI configurations
+	
+Stage 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+Stage 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ * Sophos Virus Removal Tool     v2.5, updated defs 2014-07-16
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs 2014-07-16
+ 
+Stage 3: De-bloat
+Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ + 3vix%%
+ . Acer%%
+ . Adobe Shockwave%%
+ . Advanced%%FX Engine
+ . Akamai%%
+ . Amazon Browser%%
+ . Bing%%
+ . Bonjour%%
+ + BlueStack%%
+ . Catalina Savings%%
+ . Cyberlink%%
+ . Dell Getting Started Guide%%
+ . Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ . HP Deskjet%%Help
+ . Launch Manager%%
+ . Lenovo%%
+ . Live! Cam Avatar%%
+ . Move Media%%
+ . My HP%%
+ . PowerDVD%%
+ . RenWeb%%
+ . Roxio%%
+ . Sonic CinePlayer%%
+ . %%Toolbar%%
+ + Toshiba%%
+ + %%Trial%%
+ . UserGuide%%
+ . WildTangent%%
+ . Yahoo! Browser%%
+
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.2.1.5
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.7.16.2
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+ 
+######################
+# v1.5 // 2014-07-15 #
+######################
+tron.bat                         v1.5
+ + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
+ * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
+ * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
+ * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
+	 
+Stage 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+Stage 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-15
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . Acer%%
+ . Adobe Shockwave%%
+ . Advanced%%FX Engine
+ . Akamai%%
+ . Amazon Browser%%
+ . Bing%%
+ . Bonjour%%
+ . Catalina Savings%%
+ . Cyberlink%%
+ . Dell Getting Started Guide%%
+ . Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ . HP Deskjet%%Help
+ . Launch Manager%%
+ . Lenovo%%
+ . Live! Cam Avatar%%
+ . Move Media%%
+ . My HP%%
+ . PowerDVD%%
+ . RenWeb%%
+ . Roxio%%
+ . Sonic CinePlayer%%
+ . %%Toolbar%%
+ . UserGuide%%
+ + WildTangent%%
+ . Yahoo! Browser%%
+
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v3.2.1.5
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.7.15.4
+ . gmer                          v2.1.19357
+ + Junkware Removal Tool         v6.1.4
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+ 
+######################
+# v1.4 // 2014-07-14 #
+######################
+tron.bat                         v1.4
+ + tron.bat:          Added SKIP_DEFRAG variable to force defrag to always skip
+ * tron.bat:          Improved SSD detection. Thanks to reddit.com/user/bdm800 
+ * tron.bat:          Cleaned up welcome screen and various comments 
+ * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds 
+ * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
+ 
+Stage 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+Stage 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ * Bleachbit                     v1.2
+    * Updated to target more locations, including Firefox, Thunderbird, and Chrome temp files
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-malware     v2.0.2.1012.exe
+ . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-14
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . Acer%%
+ . Adobe Shockwave%%
+ . Advanced%%FX Engine
+ . Akamai%%
+ . Amazon Browser%%
+ . Bing%%
+ . Bonjour%%
+ . Catalina Savings%%
+ . Cyberlink%%
+ . Dell Getting Started Guide%%
+ . Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ . HP Deskjet%%Help
+ . Launch Manager%%
+ . Lenovo%%
+ . Live! Cam Avatar%%
+ . Move Media%%
+ . My HP%%
+ . PowerDVD%%
+ . RenWeb%%
+ . Roxio%%
+ . Sonic CinePlayer%%
+ . %%Toolbar%%
+ . UserGuide%%
+ . Yahoo! Browser%%
+
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.2.1.4
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ . ComboFix                      v14.7.3.1
+ . gmer                          v2.1.19357
+ + Junkware Removal Tool         v6.1.4
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+
+######################
+# v1.3 // 2014-07-10 #
+######################
+tron.bat                         v1.3
+ + tron.bat:      Added additional checks for SSD drives on /dev/sdb and /dev/sdc
+ * stage_4_patch: Updated links for Adobe Flash and Notepad++ to reflect new versions
+	 
+Stage 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+Stage 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ - Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-malware     v2.0.2.1012
+ . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-10
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . Acer%%
+ + Adobe Shockwave%%
+ + Advanced%%FX Engine
+ + Akamai%%
+ + Amazon Browser%%
+ . Bing%%
+ + Bonjour%%
+ + Catalina Savings%%
+ . Cyberlink%%
+ + Dell Getting Started Guide%%
+ + Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ + HP Deskjet%%Help
+ . Launch Manager%%
+ + Lenovo%%
+ + Live! Cam Avatar%%
+ + Move Media%%
+ + My HP%%
+ + PowerDVD%%
+ + RenWeb%%
+ + Roxio%%
+ + Sonic CinePlayer%%
+ + %%Toolbar%%
+ + UserGuide%%
+ + Yahoo! Browser%%
+ 
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ + smartctl                      v6.2 2013-07-26 r3841
+ * Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ + AdwCleaner                    v3.2.1.4
+ + aswMBR                        v1.0.1.2041
+ * autoruns                      v12.0
+ . ComboFix                      v14.7.3.1
+ . gmer                          v2.1.19357
+ - HiJackThis                    v2.0.4 -- REMOVED, functionality replaced by autoruns
+ - Panda Cloud Security Scanner  -- REMOVED
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+ 
+######################
+# v1.2 // 2014-07-07 #
+######################
+tron.bat                         v1.2
+ + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to reddit.com/user/you_drown_now for help with this function.
+ * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
+ * tron.bat:          Improved overall logging, appearance and commenting. Added clarification screens for various Safe Mode states
+ / Intro screen:      Adjusted runtime estimates based on user feedback
+ / tron.bat:          Disabled post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
+ - tron.bat:          Removed section asking user if we want to do a post-run defrag (replaced by auto-detect)
+ - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
+ - stage_4_patch:     Removed /r flag on wuauclt command
+
+Stage 0: Prep
+ . Rkill                         v2.6.7
+ 
+Stage 1: Tempclean
+ - TempFileCleanup               REMOVED
+ . CCLeaner                      v4.15.4725
+ * Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-malware     v2.0.2.1012
+ . Sophos Virus Removal Tool     v2.5 (2014-07-06)
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . Acer%%
+ + Adobe Shockwave%%
+ + Advanced%%FX Engine
+ + Akamai%%
+ + Amazon Browser%%
+ . Bing%%
+ + Bonjour%%
+ + Catalina Savings%%
+ . Cyberlink%%
+ + Dell Getting Started Guide%%
+ + Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ + HP Deskjet%%Help
+ . Launch Manager%%
+ + Lenovo%%
+ + Live! Cam Avatar%%
+ + Move Media%%
+ + My HP%%
+ + PowerDVD%%
+ + RenWeb%%
+ + Roxio%%
+ + Sonic CinePlayer%%
+ + %%Toolbar%%
+ + UserGuide%%
+ + Yahoo! Browser%%
+ 
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.125
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.4
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ + smartctl                      v6.2 2013-07-26 r3841
+ * Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ + AdwCleaner                    v3.2.1.4
+ . autoruns                      v11.70
+ * ComboFix                      v14.7.3.1
+ . gmer                          v2.1.19357
+ . HiJackThis                    v2.0.4
+ . Panda Cloud Security Scanner  updated 2014-07-03
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+######################
+# v1.1 // 2014-07-06 #
+######################
+tron.bat                         v1.1
+ * tron.bat:          Various comment, log and syntax cleanup
+ + tron.bat:          Added section to ask if we want to do a post-run defrag, and skip the defrag if the user says no
+ * tron.bat:          Removed hard requirement to run in safe mode and added code to detect various Safe Mode states
+ * stage_3_de-bloat:  Converted section to read from a text list located in resource\stage_3_de-bloat\programs_to_target.txt
+ + stage_3_de-bloat:  Added additional programs to find and remove
+ + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
+ - stage_4_patch:     Removed installation of Adobe Shockwave
+
+Stage 0: Prep
+ . Rkill                         v2.6.7
+ 
+Stage 1: Tempclean
+ . TempFileCleanup               v3.1
+ . CCLeaner                      v4.15.4725
+ * Bleachbit                     v1.2
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-malware     v2.0.2.1012
+ . Sophos Virus Removal Tool     v2.5 (2014-07-06)
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . Acer%%
+ + Adobe Shockwave%%
+ + Advanced%%FX Engine
+ + Akamai%%
+ + Amazon Browser%%
+ . Bing%%
+ + Bonjour%%
+ + Catalina Savings%%
+ . Cyberlink%%
+ + Dell Getting Started Guide%%
+ + Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ + HP Deskjet%%Help
+ . Launch Manager%%
+ + Lenovo%%
+ + Live! Cam Avatar%%
+ + Move Media%%
+ + My HP%%
+ + PowerDVD%%
+ + RenWeb%%
+ + Roxio%%
+ + Sonic CinePlayer%%
+ + %%Toolbar%%
+ + UserGuide%%
+ + Yahoo! Browser%%
+ 
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.125
+ . Adobe Reader                  v11.0.07
+ - Adobe Shockwave               v12.1.2.152 -- REMOVED
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.4
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ * Defraggler                    v2.18.945
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ + AdwCleaner                    v3.2.1.4
+ . autoruns                      v11.70
+ * ComboFix                      v14.7.3.1
+ . gmer                          v2.1.19357
+ . HiJackThis                    v2.0.4
+ . Panda Cloud Security Scanner  updated 2014-07-03
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+######################
+# v1.0 // 2014-07-04 #
+######################
+tron.bat                         v1.0
+
+Stage 0: Prep
+ . Rkill                         v2.6.7
+ 
+Stage 1: Tempclean
+ . TempFileCleanup               v3.1
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.0
+
+Stage 2: Disinfect
+ . Malwarebytes Anti-malware     v2.0.2.1012
+ . Sophos Virus Remval Tool      v2.5 (2014-07-02)
+ . Vipre Rescue Scanner          v7.0.7.8
+ 
+Stage 3: De-bloat target keywords
+ . Acer*
+ . My HP*
+ . Free Download Mananger*
+ . Cyberlink*
+ . eMachines*
+ . Bing*
+ . eBay*
+ . Launch Manager*
+ 
+Stage 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.125
+ . Adobe Reader                  v11.0.07
+ . Adobe Shockwave               v12.1.2.152
+ . Java Runtime Environment      8u5
+ . Notepad++                     v6.6.4
+ . Windows updates               <pulled down live>
+ 
+Stage 5: Optimize
+ . defraggler                    v2.16.0.809
+ 
+Stage 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . autoruns                      v11.70
+ . ComboFix                      v14.6.30.1
+ . gmer                          v2.1.19357
+ . HiJackThis                    v2.0.4
+ . Panda Cloud Security Scanner  updated 2014-07-03
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
