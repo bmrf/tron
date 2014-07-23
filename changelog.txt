@@ -10,6 +10,13 @@
 
 
 ########################
+# v1.7.4 // 2014-07-23 #
+########################
+tron.bat                         v1.7.4
+ * prep and checks: Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
+ 
+
+########################
 # v1.7.3 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.3
