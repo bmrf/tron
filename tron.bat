@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.7.3 * prep and checks:   Think we finally fixed SSD detection. Please test and report if it fails on your drive
+:: Version:       1.7.4 * prep and checks:   Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
+::                1.7.3 * prep and checks:   Think we finally fixed SSD detection. Please test and report if it fails on your drive
 ::                      * prep and checks:   Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY
 ::                1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
 ::                      + tron.bat:          Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
@@ -43,8 +44,8 @@ set SKIP_DEFRAG=no
 :: Prep and Checks :: -- Don't change anything in this section
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.7.3
-set UPDATED=2014-07-22
+set VERSION=1.7.4
+set UPDATED=2014-07-23
 title TRON v%VERSION% (%UPDATED%)
 :: Get the date into a format we can use
 if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
@@ -55,32 +56,15 @@ pushd %~dp0 2>NUL
 
 :: Detect if we're on an XP/2k3-series kernel
 :: This is used to determine which powercfg.exe commands to run in the Prep section
+:detect_xp
 set WIN_VER=undetected
-ver | find /i "Version 5." >NUL
+ver | find /i "Version 5." 2>NUL
 if %ERRORLEVEL%==0 set WIN_VER=xp2k3
-
-:: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: This isn't pretty but has been the most reliable method so far
-REM pushd resources\stage_5_optimize\defrag
-REM set SSD_DETECTED=no
-REM smartctl -a /dev/sda | find /i "Solid State" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM smartctl -a /dev/sdb | find /i "Solid State" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM smartctl -a /dev/sdc | find /i "Solid State" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM smartctl -a /dev/sda | find /i "SSD" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM smartctl -a /dev/sdb | find /i "SSD" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM smartctl -a /dev/sdc | find /i "SSD" >NUL
-REM if "%ERRORLEVEL%"=="0" set SSD_DETECTED=yes
-REM popd
-
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block, by stacking it on the same line so it gets executed along with ENDLOCAL
 :: Alternate method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping out with this.
+:detect_ssd
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
 setlocal enabledelayedexpansion
@@ -99,10 +83,10 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 endlocal disabledelayedexpansion
-popd
 
 :: Detect Safe Mode
 :detect_safe_mode
+popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
@@ -121,7 +105,7 @@ if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
 :welcome_screen
-cls
+::cls
 echo  *****************  TRON v%VERSION% (%UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
@@ -228,8 +212,8 @@ title TRON v%VERSION% [stage_0_prep]
 :: Create the log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %WIN_VER% %PROCESSOR_ARCHITECTURE% detected>> %LOGPATH%\%LOGFILE%
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %WIN_VER% %PROCESSOR_ARCHITECTURE% detected
+echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -251,7 +235,7 @@ echo %CUR_DATE% %TIME%   Pinging localhost while waiting for rkill to finish...
 pushd rkill
 if '%PROCESSOR_ARCHITECTURE%'=='AMD64' start /MIN "" "rkill64.exe"
 if '%PROCESSOR_ARCHITECTURE%'=='x86' start /MIN "" "rkill.exe"
-ping localhost -n 90 >NUL
+ping localhost -n 120 >NUL
 TASKKILL /F /IM rkill64.exe /T 2>NUL
 TASKKILL /F /IM rkill.exe /T 2>NUL
 TASKKILL /F /IM notepad.exe /T 2>NUL
