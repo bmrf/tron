@@ -20,13 +20,16 @@ Depending on how badly the computer is messed up, the script could take anywhere
 
 ADVANCED USAGE:
  - If you want to run Tron automatically (e.g. with zero prompts), run it from a command-prompt like this:
+     
        tron.bat --auto
        tron.bat -a
 
  - If you want to force Tron to ALWAYS skip defrag, regardless whether C:\ is an SSD or not, edit this line in the script to say "yes" instead of "no":
+ - 
        set SKIP_DEFRAG=no
  
   - To change log location, edit the script and edit these lines:
+   
        set LOGPATH=%SystemDrive%\Logs
        set LOGFILE=tron.log
 
