@@ -492,7 +492,7 @@ setlocal
 call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v14.0.0.125\internet explorer"
+pushd "adobe\flash_player\v14.0.0.145\internet explorer"
 setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
