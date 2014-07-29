@@ -4,14 +4,23 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.7.4 * prep and checks:   Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
+:: Version:       1.8.1 * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
+::                1.8.0 * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format.
+::                                           Thanks to reddit.com/user/daafe
+::                       * prep and checks:   Possibly fixed Windows 8/8.1 Administrator rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
+::                      * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
+::                      + stage_1_tempclean: Added job to clear Windows event logs
+::                1.7.4 * prep and checks:   Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
 ::                1.7.3 * prep and checks:   Think we finally fixed SSD detection. Please test and report if it fails on your drive
 ::                      * prep and checks:   Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY
 ::                1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
-::                      + tron.bat:          Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
+::                      + tron.bat:          Re-added check for Administrator rights using more reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
 ::                      * tron.bat:          Reverted SSD check to something more reliable
 ::                      / tron.bat:          Moved all but most recent changelog entries to the standalone changelog file, to avoid cluttering up script header
-:: Usage:         Run this script as an Administrator and let it reboot when finished.
+:: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished
+::                Run with "-a" or "--auto" to execute silently (no welcome screen)
+::                Edit the four variables below (LOGPATH, LOGFILE, AUTO_REBOOT_DELAY, and SKIP_DEFRAG) if you don't like the defaults
+::                Godspeed
 SETLOCAL
 
 
@@ -44,11 +53,13 @@ set SKIP_DEFRAG=no
 :: Prep and Checks :: -- Don't change anything in this section
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.7.4
-set UPDATED=2014-07-23
+set VERSION=1.8.1
+set UPDATED=2014-07-29
 title TRON v%VERSION% (%UPDATED%)
-:: Get the date into a format we can use
-if "%DATE:~-5,1%"=="/" (set CUR_DATE=%DATE:~-4%-%DATE:~4,2%-%DATE:~7,2%) else (set CUR_DATE=%DATE%)
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so it's useful 
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
 :: Get in the correct path (~dp0). This is useful if we start from a network share; convert CWD to a drive letter
@@ -105,7 +116,7 @@ if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
 :welcome_screen
-::cls
+cls
 echo  *****************  TRON v%VERSION% (%UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
@@ -147,26 +158,29 @@ pause
 ::::::::::::::::::::::::
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
-:check_Permissions
-sfc 2>&1 | find /i "/SCANNOW"
+:check_permissions
+sfc 2>NUL | find /i "/SCANNOW" > NUL
 if not "%ERRORLEVEL%"=="0" (
 		color 0c
 		cls
 		echo.
 		echo  ERROR
 		echo.
-		echo  Tron is not running as an Administrator. Tron MUST
-		echo  be run with full Administrator rights to function.
-        echo  Run from an elevated command-prompt, or right-click
-		echo  and "Run as Administrator."
+		echo  Tron doesn't think it is running as an Administrator.
+		echo  Tron MUST be run with full Administrator rights to 
+		echo  function correctly.
+        echo.
+		echo  It's possible Tron is mistaken ^(this usually happens on
+        echo  Windows 8^/8.1^), so if you're SURE you're running as an 
+		echo  Administrator, go ahead.
 		echo.
 		pause
-		exit /b 1
 	)
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
 :::::::::::::::::::::
+:check_safe_mode
 :: Test if we're in safe mode
 if not "%SAFE_MODE%"=="yes" (
 		color 0c
@@ -228,20 +242,14 @@ pushd resources\stage_0_prep
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
 
-:: JOB: rkill (kills running malware processes)
+:: JOB: rkill
 echo %CUR_DATE% %TIME%   Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching job 'rkill'...
-echo %CUR_DATE% %TIME%   Pinging localhost while waiting for rkill to finish...
 pushd rkill
-if '%PROCESSOR_ARCHITECTURE%'=='AMD64' start /MIN "" "rkill64.exe"
-if '%PROCESSOR_ARCHITECTURE%'=='x86' start /MIN "" "rkill.exe"
-ping localhost -n 120 >NUL
-TASKKILL /F /IM rkill64.exe /T 2>NUL
-TASKKILL /F /IM rkill.exe /T 2>NUL
-TASKKILL /F /IM notepad.exe /T 2>NUL
-:: Dump the rkill log into the tron log
-type %USERPROFILE%\Desktop\rkill.txt>> %LOGPATH%\tron.log
-del %USERPROFILE%\Desktop\rkill.txt
+if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
+if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
+type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
+del "%LOGPATH%\tron_rkill.log"
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -259,7 +267,7 @@ echo %CUR_DATE% %TIME%   Done.
 :: JOB: Check and Repair WMI if it's broken
 echo %CUR_DATE% %TIME%   Checking WMI...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Checking WMI...
-pushd wmi_repair
+pushd repair_wmi
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 wmic timezone >NUL
@@ -317,6 +325,15 @@ echo %CUR_DATE% %TIME%   Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching job 'BleachBit'...
 pushd bleachbit
 bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
+
+:: JOB: Clear Windows event logs
+echo %CUR_DATE% %TIME%   Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching job 'Clear Windows event logs'...
+pushd clear_windows_event_logs
+for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -539,17 +556,17 @@ echo %CUR_DATE% %TIME%   Launching job 'Update Java Runtime Environment'...
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%   x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   x86 architecture detected, installing x86 version...
-	pushd java\jre\8\u5\x86
+	pushd java\jre\8\u11\x86
 	setlocal
-	call "jre-8u5-windows-x86.bat"
+	call "jre-8u11-windows-x86.bat"
 	endlocal
 	popd
 ) else (
 	echo %CUR_DATE% %TIME%   x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   x64 architecture detected, installing x64 version...
-	pushd java\jre\8\u5\x64
+	pushd java\jre\8\u11\x64
 	setlocal
-	call "jre-8u5-windows-x64.bat"
+	call "jre-8u11-windows-x64.bat"
 	endlocal
 	popd
 	)
