@@ -3,10 +3,98 @@
 #############
  + Addition
  - Removal
- / Change/fix
- * Update
+ / Change/alteration
+ * Update/fix/improvement
  . No change
 
+
+########################
+# v1.8.1 // 2014-07-29 #
+########################
+tron.bat                         v1.8.1
+ * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
+ 
+
+########################
+# v1.8.0 // 2014-07-25 #
+########################
+tron.bat                         v1.8.0
+ * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
+ * prep and checks:   Possibly fixed Windows 8/8.1 Administrator rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
+ * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
+ + stage_1_tempclean: Added job to clear Windows event logs
+
+STAGE 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Emsisoft Commandline Scanner  v9.0.0.4183
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat
+Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . 3vix%%
+ . Acer%%
+ . Adobe Shockwave%%
+ . Advanced%%FX Engine
+ . Akamai%%
+ . Amazon Browser%%
+ . Bing%%
+ . Bonjour%%
+ . BlueStack%%
+ . Catalina Savings%%
+ . Cyberlink%%
+ . Dell Getting Started Guide%%
+ . Dell Video%%
+ . eBay%%
+ . eMachines%%
+ . Free Download Manager%%
+ . HP Deskjet%%Help
+ . Launch Manager%%
+ . Lenovo%%
+ . Live! Cam Avatar%%
+ . Move Media%%
+ . My HP%%
+ . PowerDVD%%
+ . RenWeb%%
+ . Roxio%%
+ . Sonic CinePlayer%%
+ . %%Toolbar%%
+ . Toshiba%%
+ . %%Trial%%
+ . UserGuide%%
+ . WildTangent%%
+ . Yahoo! Browser%%
+
+STAGE 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ * Java Runtime Environment      8u11
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.2.1.6
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.7.25.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
 
 
 ########################
@@ -49,20 +137,20 @@ tron.bat                         v1.7
  + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
  / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section	 
 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7.0
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
  * Vipre Rescue Scanner          v7.0.7.8, updated defs
  + Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
-Stage 3: De-bloat
+STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . 3vix%%
  . Acer%%
@@ -97,7 +185,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . WildTangent%%
  . Yahoo! Browser%%
 
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
@@ -105,11 +193,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.2.1.6
  . aswMBR                        v1.0.1.2041
@@ -129,19 +217,19 @@ tron.bat                         v1.6
  + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
  + stage_0_prep:      Added code to detect and repair broken WMI configurations
 	
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7.0
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  * Sophos Virus Removal Tool     v2.5, updated defs 2014-07-16
  * Vipre Rescue Scanner          v7.0.7.8, updated defs 2014-07-16
  
-Stage 3: De-bloat
+STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + 3vix%%
  . Acer%%
@@ -176,7 +264,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . WildTangent%%
  . Yahoo! Browser%%
 
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
@@ -184,11 +272,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.2.1.5
  . aswMBR                        v1.0.1.2041
@@ -209,19 +297,19 @@ tron.bat                         v1.5
  * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
  * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
 	 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7.0
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-15
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
  . Adobe Shockwave%%
@@ -252,7 +340,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + WildTangent%%
  . Yahoo! Browser%%
 
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
@@ -260,11 +348,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.2.1.5
  . aswMBR                        v1.0.1.2041
@@ -286,20 +374,20 @@ tron.bat                         v1.4
  * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds 
  * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
  
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7.0
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  * Bleachbit                     v1.2
     * Updated to target more locations, including Firefox, Thunderbird, and Chrome temp files
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012.exe
  . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-14
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
  . Adobe Shockwave%%
@@ -329,7 +417,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . UserGuide%%
  . Yahoo! Browser%%
 
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
@@ -337,11 +425,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.2.1.4
  . aswMBR                        v1.0.1.2041
@@ -360,19 +448,19 @@ tron.bat                         v1.3
  + tron.bat:      Added additional checks for SSD drives on /dev/sdb and /dev/sdc
  * stage_4_patch: Updated links for Adobe Flash and Notepad++ to reflect new versions
 	 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7.0
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  - Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-10
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
  + Adobe Shockwave%%
@@ -402,7 +490,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + UserGuide%%
  + Yahoo! Browser%%
  
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
@@ -410,11 +498,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  + smartctl                      v6.2 2013-07-26 r3841
  * Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
  + aswMBR                        v1.0.1.2041
@@ -440,20 +528,20 @@ tron.bat                         v1.2
  - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
  - stage_4_patch:     Removed /r flag on wuauclt command
 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  - TempFileCleanup               REMOVED
  . CCLeaner                      v4.15.4725
  * Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5 (2014-07-06)
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
  + Adobe Shockwave%%
@@ -483,7 +571,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + UserGuide%%
  + Yahoo! Browser%%
  
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
@@ -491,11 +579,11 @@ Stage 4: Patch
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  + smartctl                      v6.2 2013-07-26 r3841
  * Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
  . autoruns                      v11.70
@@ -519,20 +607,20 @@ tron.bat                         v1.1
  + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
  - stage_4_patch:     Removed installation of Adobe Shockwave
 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
  * Bleachbit                     v1.2
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5 (2014-07-06)
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords (%% = any number of characters wildcard)
+STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
  + Adobe Shockwave%%
@@ -562,7 +650,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + UserGuide%%
  + Yahoo! Browser%%
  
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
@@ -571,10 +659,10 @@ Stage 4: Patch
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  * Defraggler                    v2.18.945
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
  . autoruns                      v11.70
@@ -591,20 +679,20 @@ Stage 6: Manual tools
 ######################
 tron.bat                         v1.0
 
-Stage 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.7
  
-Stage 1: Tempclean
+STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
  . Bleachbit                     v1.0
 
-Stage 2: Disinfect
+STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Remval Tool      v2.5 (2014-07-02)
  . Vipre Rescue Scanner          v7.0.7.8
  
-Stage 3: De-bloat target keywords
+STAGE 3: De-bloat target keywords
  . Acer*
  . My HP*
  . Free Download Mananger*
@@ -614,7 +702,7 @@ Stage 3: De-bloat target keywords
  . eBay*
  . Launch Manager*
  
-Stage 4: Patch
+STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
@@ -623,10 +711,10 @@ Stage 4: Patch
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
  
-Stage 5: Optimize
+STAGE 5: Optimize
  . defraggler                    v2.16.0.809
  
-Stage 6: Manual tools
+STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . autoruns                      v11.70
  . ComboFix                      v14.6.30.1
