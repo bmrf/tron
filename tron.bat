@@ -4,7 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.8.1 * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
+:: Version:       1.8.2 * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
+::                      + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
+::                      + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+::                1.8.1 * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
 ::                1.8.0 * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format.
 ::                                           Thanks to reddit.com/user/daafe
 ::                       * prep and checks:   Possibly fixed Windows 8/8.1 Administrator rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
@@ -53,8 +56,8 @@ set SKIP_DEFRAG=no
 :: Prep and Checks :: -- Don't change anything in this section
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.8.1
-set UPDATED=2014-07-29
+set VERSION=1.8.2
+set UPDATED=2014-07-xx
 title TRON v%VERSION% (%UPDATED%)
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so it's useful 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -102,15 +105,14 @@ set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
+:: Log file handling
+if not exist %LOGPATH% mkdir %LOGPATH%
+if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
+
 :: Check for autorun
 if "%1"=="--auto" goto execute_jobs
 if "%1"=="-a" goto execute_jobs
 
-:::::::::::::::::::::::
-:: LOG FILE HANDLING ::
-:::::::::::::::::::::::
-if not exist %LOGPATH% mkdir %LOGPATH%
-if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
@@ -169,9 +171,9 @@ if not "%ERRORLEVEL%"=="0" (
 		echo  Tron doesn't think it is running as an Administrator.
 		echo  Tron MUST be run with full Administrator rights to 
 		echo  function correctly.
-        echo.
+		echo.
 		echo  It's possible Tron is mistaken ^(this usually happens on
-        echo  Windows 8^/8.1^), so if you're SURE you're running as an 
+		echo  Windows 8^/8.1^), so if you're SURE you're running as an 
 		echo  Administrator, go ahead.
 		echo.
 		pause
@@ -190,7 +192,7 @@ if not "%SAFE_MODE%"=="yes" (
 		echo.
 		echo  The system is not in safe mode. Tron functions best
 		echo  in "Safe Mode with Networking" in order to download
-        echo  Windows and anti-virus updates.
+		echo  Windows and anti-virus updates.
 		echo.
 		echo  Tron will still function, but rebooting to "Safe Mode
 		echo  with Networking" is STRONGLY recommended.
@@ -208,7 +210,7 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		echo.
 		echo  The system is in Safe Mode without Network support.
 		echo  Tron functions best in "Safe Mode with Networking" in
-        echo  order to download Windows and anti-virus updates.
+		echo  order to download Windows and anti-virus updates.
 		echo.
 		echo  Tron will still function, but rebooting to "Safe Mode
 		echo  with Networking" is recommended.
@@ -297,6 +299,17 @@ popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
 
+:: JOB: Reduce SysRestore space
+echo %CUR_DATE% %TIME%   Reducing System Restore space...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Reducing System Restore space...
+pushd reduce_system_restore
+reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
+reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
+popd
+echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Done.
+
+
 popd
 echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
@@ -353,13 +366,14 @@ echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFI
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
 
 :: JOB: Emsisoft Commandline Scanner (a2cmd)
+
 echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
 pushd a2cmd
 a2cmd.exe /update
-a2cmd.exe /smart /dda /ntfs /delete
+a2cmd.exe /smart /dda /ntfs /pup /delete
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
@@ -411,11 +425,11 @@ echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...>> "%LOGPATH%\%LO
 echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...
 pushd sfc
 :: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
+:: The reason we don't run for XP/2k3 is that it requires a reboot
 if not "%WIN_VER%"=="xp2k3" sfc /scannow
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Done.
-
 
 
 popd
@@ -541,6 +555,7 @@ echo %CUR_DATE% %TIME%   JRE 5...
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 4
+
 echo %CUR_DATE% %TIME%   JRE 4...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   JRE 4...
 %WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
