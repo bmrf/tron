@@ -9,10 +9,60 @@
 
 
 ########################
+# v1.8.2 // 2014-07-xx #
+########################
+tron.bat                         v1.8.2
+ * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
+ + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
+ + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+
+STAGE 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.15.4725
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Emsisoft Commandline Scanner  v9.0.0.4183
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat
+Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ * Greatly expanded list of programs to target (too long to list here). Thanks to reddit.com/user/3xist and reddit.com/user/Gaxor
+
+STAGE 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ * Java Runtime Environment      8u11
+ . Notepad++                     v6.6.7
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v3.3.0.1
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.7.25.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+########################
 # v1.8.1 // 2014-07-29 #
 ########################
 tron.bat                         v1.8.1
- * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
+ * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
  
 
 ########################
