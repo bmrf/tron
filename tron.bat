@@ -7,6 +7,7 @@
 :: Version:       1.8.2 * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
 ::                      + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
 ::                      + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+::                      * stage_2_disinfect: Fixed failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
 ::                1.8.1 * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
 ::                1.8.0 * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format.
 ::                                           Thanks to reddit.com/user/daafe
@@ -287,13 +288,13 @@ if not %ERRORLEVEL%==0 (
     tskill wbemtest /a 2>NUL
     tskill wbemtest /a 2>NUL
     :: winmgmt.exe /resetrepository       -- optional; forces full rebuild instead of a repair like the line below this
-	winmgmt.exe /salvagerepository /resyncperf
+    winmgmt.exe /salvagerepository /resyncperf
     wmiadap.exe /RegServer
     wmiapsrv.exe /RegServer
     wmiprvse.exe /RegServer
     net start winmgmt
-	popd
-	)
+    popd
+    )
 
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
@@ -410,11 +411,14 @@ pushd mbam
 if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 
-:: Scan
-pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
+:: Scan (launch appropriate architecture version)
+if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
+    pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
+  ) else (
+    pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
+  )
 start "" "mbam.exe"
 popd
-
 
 popd
 echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
