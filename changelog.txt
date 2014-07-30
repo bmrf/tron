@@ -15,6 +15,7 @@ tron.bat                         v1.8.2
  * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
  + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
  + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+ * stage_2_disinfect: Fixed failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
