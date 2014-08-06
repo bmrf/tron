@@ -9,7 +9,110 @@
 
 
 ########################
-# v1.8.2 // 2014-07-xx #
+# v2.0.0 // 2014-08-xx #
+########################
+tron.bat                         v2.0.0
+ * stage_0_prep:     Power management overhaul. We now export current settings to file, set to "High Performance" or "Always On" (depending on OS), run tron, and then re-import settings at the end of the script. This should preserve any custom power settings on the machine. Thanks to reddit.com/user/GetOnMyAmazingHorse
+ + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
+ * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
+
+STAGE 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.16.4763
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
+
+STAGE 4: Patch
+ ! Fixed all called scripts to properly return to starting directory when exiting
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u11
+ . Notepad++                     v6.6.8
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.0.2
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ . ComboFix                      v14.8.2.2
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+########################
+# v1.9.0 // 2014-08-04 #
+########################
+tron.bat                         v1.9.0
+ + tron.bat: Added support for the following optional command-line flags (can be combined):
+    -c  Config dump (display current variables)
+    -d  Dry run. Run through Tron without executing any jobs (mostly for my testing)
+    -s  Skip defrag. Force Tron to skip defrag regardless whether an SSD is detected
+    -h  Spit out help on using Tron via command-line
+    -r  Reboot (auto-reboot 30 seconds after Tron completes)
+ * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord for suggestion
+ - tron.bat: Removed support for --auto flag (use -a instead) 
+ * prep and checks: Fixed Administrator rights check for Windows 8/8.1 (again); Reverted to hard-exit if non-Admin detected
+ 
+STAGE 0: Prep
+ . Rkill                         v2.6.7.0
+ 
+STAGE 1: Tempclean
+ * CCLeaner                      v4.16.4763
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
+
+STAGE 4: Patch
+ . 7-zip                         v7.20
+ . Adobe Flash Player            v14.0.0.145
+ . Adobe Reader                  v11.0.07
+ . Java Runtime Environment      8u11
+ * Notepad++                     v6.6.8
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v3.3.0.2
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.0
+ * ComboFix                      v14.8.2.2
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+ 
+########################
+# v1.8.2 // 2014-07-31 #
 ########################
 tron.bat                         v1.8.2
  * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
@@ -27,18 +130,19 @@ STAGE 1: Tempclean
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
  * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Emsisoft Commandline Scanner  v9.0.0.4183
+ * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- * Greatly expanded list of programs to target (too long to list here). Thanks to reddit.com/user/3xist and reddit.com/user/Gaxor
+ * Greatly expanded list of programs to target (too long to list here). 
+   Thanks to reddit.com/user/3xist and reddit.com/user/Gaxor
 
 STAGE 4: Patch
  . 7-zip                         v7.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
- * Java Runtime Environment      8u11
+ . Java Runtime Environment      8u11
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
@@ -51,7 +155,7 @@ STAGE 6: Manual tools
  * AdwCleaner                    v3.3.0.1
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.0
- * ComboFix                      v14.7.25.1
+ * ComboFix                      v14.7.29.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.1.4
  . TDSSKiller                    v3.0.0.40
@@ -241,6 +345,7 @@ STAGE 4: Patch
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
+
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
  
