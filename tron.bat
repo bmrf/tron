@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.0.0 * stage_0_prep:     Power management overhaul. We now export current settings to file, set to "High Performance" or "Always On" (depending on OS), run tron, and then re-import settings at the end of the script. This should preserve any custom power settings on the machine. Thanks to reddit.com/user/GetOnMyAmazingHorse
+:: Version:       2.0.0 * prep and checks:  Renamed VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
+::                      * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
 ::                      + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
 ::                      * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
 ::                1.9.0 + tron.bat:         Added full command-line support
@@ -14,19 +15,18 @@
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
-::                Command-line is supported. Any command-line flags will override their respective values set in the VARIABLES section
-::
-::                Optional flags (can be combined): 
+::                Optional command-line flags (can be combined): 
 ::                      -a  Automatic/silent mode (no welcome screen)
-::                      -d  Dry run (run through script without executing any jobs)
-::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
-::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -c  Config dump (display current config. Can be used with other
 ::                          flags to see what WOULD happen, but script will never execute
 ::                          if this flag is used)
+::                      -d  Dry run (run through script without executing any jobs)
 ::                      -h  Display help text
+::                      -p  Preserve power settings (don't reset power settings to default)
+::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
+::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::
-::                Edit the variables below (LOGPATH, LOGFILE, AUTO_REBOOT_DELAY, SKIP_DEFRAG, DRY_RUN, AUTORUN) if you don't like the defaults and don't want to use the command-line
+::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
 
 ::                Godspeed
 SETLOCAL
@@ -57,8 +57,10 @@ set SKIP_DEFRAG=no
 
 :: AUTORUN = automatic/silent execution (no welcome screen)
 :: DRY_RUN = run through script but skip all actual actions (test mode)
+:: PRESERVE_POWER_SETTINGS = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
 set AUTORUN=no
 set DRY_RUN=no
+set PRESERVE_POWER_SETTINGS=no
 
 
 :: -------------------------- Don't edit anything below this line -------------------------- ::
@@ -68,9 +70,9 @@ set DRY_RUN=no
 :: Prep and Checks ::
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=2.0.0
-set UPDATED=2014-08-xx
-title TRON v%VERSION% (%UPDATED%)
+set SCRIPT_VERSION=2.0.0
+set SCRIPT_UPDATED=2014-08-xx
+title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -131,19 +133,20 @@ for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
+	if /i %%i==-h set HELP=yes
+	if /i %%i==-p set PRESERVE_POWER_SETTINGS=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
-	if /i %%i==-h set HELP=yes
 	)
 
 :: Execute help if requested
 if %HELP%==yes (
 	cls
 	echo. 
-	echo  Tron v%VERSION% ^(%UPDATED%^)
+	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_UPDATED%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -r -s^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -p -r -s^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic/silent mode ^(no welcome screen^)
@@ -151,6 +154,7 @@ if %HELP%==yes (
 	echo        flags to see what WOULD happen, but the script will never
 	echo        execute if this flag is used^)
 	echo    -d  Dry run ^(run through script but don't execute any jobs^)
+	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot ^(auto-reboot 30 seconds after Tron completes^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
  	echo.
@@ -163,32 +167,33 @@ if %HELP%==yes (
 :: Execute config dump if requested
 if %CONFIG_DUMP%==yes (
 	echo. 
-	echo   Tron v%VERSION% ^(%UPDATED%^) config dump
+	echo   Tron v%SCRIPT_VERSION% ^(%SCRIPT_UPDATED%^) config dump
 	echo.
 	echo   Command-line arguments:
 	echo    %*
 	echo.
 	echo   Current variable values ^(user-set^):
-	echo    AUTORUN:           %AUTORUN%
-	echo    AUTO_REBOOT_DELAY: %AUTO_REBOOT_DELAY%
-	echo    DRY_RUN:           %DRY_RUN%
-	echo    LOGPATH:           %LOGPATH%
-	echo    LOGFILE:           %LOGFILE%
-	echo    SKIP_DEFRAG:       %SKIP_DEFRAG%
+	echo    AUTORUN:                 %AUTORUN%
+	echo    AUTO_REBOOT_DELAY:       %AUTO_REBOOT_DELAY%
+	echo    CONFIG_DUMP:             %CONFIG_DUMP%
+	echo    DRY_RUN:                 %DRY_RUN%
+	echo    LOGPATH:                 %LOGPATH%
+	echo    LOGFILE:                 %LOGFILE%
+	echo    PRESERVE_POWER_SETTINGS: %PRESERVE_POWER_SETTINGS%
+	echo    SKIP_DEFRAG:             %SKIP_DEFRAG%
 	echo.
 	echo   Current variable values ^(script-internal^):
-	echo    CUR_DATE:          %CUR_DATE%
-	echo    CONFIG_DUMP:       %CONFIG_DUMP%
-	echo    DTS:               %DTS%
-	echo    HELP:              %HELP%
-	echo    SAFE_MODE:         %SAFE_MODE%
-	echo    SAFEBOOT_OPTION:   %SAFEBOOT_OPTION%
-	echo    SSD_DETECTED:      %SSD_DETECTED% 
-	echo    TEMP:              %TEMP%
-	echo    TIME:              %TIME%
-	echo    UPDATED:           %UPDATED%
-	echo    VERSION:           %VERSION%
-	echo    WIN_VER:           %WIN_VER%
+	echo    CUR_DATE:                %CUR_DATE%
+	echo    DTS:                     %DTS%
+	echo    HELP:                    %HELP%
+	echo    SAFE_MODE:               %SAFE_MODE%
+	echo    SAFEBOOT_OPTION:         %SAFEBOOT_OPTION%
+	echo    SSD_DETECTED:            %SSD_DETECTED% 
+	echo    TEMP:                    %TEMP%
+	echo    TIME:                    %TIME%
+	echo    SCRIPT_UPDATED:          %SCRIPT_UPDATED%
+	echo    SCRIPT_VERSION:          %SCRIPT_VERSION%
+	echo    WIN_VER:                 %WIN_VER%
 	echo.
 	exit /b 0
 	)
@@ -202,7 +207,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
 cls
-echo  *****************  TRON v%VERSION% (%UPDATED%)  ****************
+echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
@@ -244,7 +249,8 @@ pause
 ::::::::::::::::::::::::
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
-:: The following two lines detect if we have Admin rights. Works on Windows 2000 through 8.1
+if %WIN_VER%==xp2k3 goto check_safe_mode
+:: The following two lines detect if we have Admin rights. Works on Windows Vista through 8.1
 sfc > %TEMP%\oh_windows_why_are_you_dumb.txt
 find /i "/SCANNOW" < %TEMP%\oh_windows_why_are_you_dumb.txt
 if not "%ERRORLEVEL%"=="0" (
@@ -257,11 +263,13 @@ if not "%ERRORLEVEL%"=="0" (
 		echo  Tron MUST be run with full Administrator rights to 
 		echo  function correctly.
 		echo.
-		del %TEMP%\oh_windows_why_are_you_dumb.txt
+		echo  It's possible Tron is wrong ^(can happen on XP^). 
+		echo  If you're sure you're running as Administrator you can
+		echo  ignore this.
+		del %TEMP%\oh_windows_why_are_you_dumb.txt 2>NUL
 		pause
-		exit /B 1
 	)
-del %TEMP%\oh_windows_why_are_you_dumb.txt
+del %TEMP%\oh_windows_why_are_you_dumb.txt 2>NUL
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
@@ -309,12 +317,12 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 :execute_jobs
 cls
 color 0f
-title TRON v%VERSION% [stage_0_prep]
+title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :: Create the log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -440,7 +448,7 @@ echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
 :: STAGE 1: TEMPCLEAN ::
 ::::::::::::::::::::::::
 :stage_1_tempclean
-title TRON v%VERSION% [stage_1_tempclean]
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 pushd resources\stage_1_tempclean
 echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
@@ -481,7 +489,7 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :: STAGE 2: Disinfect ::
 ::::::::::::::::::::::::
 :stage_2_disinfect
-title TRON v%VERSION% [stage_2_disinfect]
+title TRON v%SCRIPT_VERSION% [stage_2_disinfect]
 pushd resources\stage_2_disinfect
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
@@ -569,7 +577,7 @@ echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.
 :: STAGE 3: De-Bloat ::
 :::::::::::::::::::::::
 :stage_3_de-bloat
-title TRON v%VERSION% [stage_3_de-bloat]
+title TRON v%SCRIPT_VERSION% [stage_3_de-bloat]
 pushd resources\stage_3_de-bloat
 echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...
@@ -594,7 +602,7 @@ echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.
 :: STAGE 4: Patches ::
 ::::::::::::::::::::::
 :stage_4_patch
-title TRON v%VERSION% [stage_4_patch]
+title TRON v%SCRIPT_VERSION% [stage_4_patch]
 pushd resources\stage_4_patch
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
@@ -755,7 +763,7 @@ echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
 :: STAGE 5: Optimize ::
 :::::::::::::::::::::::
 :stage_5_optimize
-title TRON v%VERSION% [stage_5_optimize]
+title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 pushd resources\stage_5_optimize
 echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...
@@ -822,27 +830,34 @@ echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
 echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Wrapping up...
 
-echo %CUR_DATE% %TIME%    Changing power settings back to original values...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Changing power settings back to original values...
-
-:: Import the original power settings and re-activate them
-if not "%DRY_RUN%"=="no" goto skip_power_reset
-if "%WIN_VER%"=="xp2k3" (
-	powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
-	powercfg /setactive "%POWER_SCHEME%"
+:: If selected, import the original power settings, re-activate them, and delete the backup
+:: Otherwise, just reset the power settings back to their defaults
+if "%PRESERVE_POWER_SETTINGS%"=="yes" (
+	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...
+	if "%WIN_VER%"=="xp2k3" (
+		if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
+		if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
+	) else (
+		if "%DRY_RUN%"=="no" powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
+		if "%DRY_RUN%"=="no" powercfg /setactive %POWER_SCHEME% 
+		)
+		del %LOGPATH%\tron_power_config_backup.pow 2>NUL
 ) else (
-	powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
-	powercfg /setactive %POWER_SCHEME%
+	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...
+	if "%WIN_VER%"=="xp2k3" (
+		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
+	) else (
+		if "%DRY_RUN%"=="no" powercfg -restoredefaultschemes
 	)
-del %LOGPATH%\tron_power_config_backup.pow
-:skip_power_reset
+)
+
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+	
+title TRON v%SCRIPT_VERSION% [DONE]
 
-title TRON v%VERSION% [DONE]
-
-echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 
@@ -857,10 +872,12 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 :: Create the log trailer for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%) complete>> %LOGPATH%\%LOGFILE%
-echo  %CUR_DATE% %TIME%  TRON v%VERSION% (%UPDATED%) complete
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) complete>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) complete
 echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
+echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
