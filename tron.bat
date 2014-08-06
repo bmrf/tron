@@ -4,26 +4,30 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       1.8.2 * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
-::                      + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
-::                      + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
-::                      * stage_2_disinfect: Fixed failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
-::                1.8.1 * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi)
-::                1.8.0 * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format.
-::                                           Thanks to reddit.com/user/daafe
-::                       * prep and checks:   Possibly fixed Windows 8/8.1 Administrator rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
-::                      * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
-::                      + stage_1_tempclean: Added job to clear Windows event logs
-::                1.7.4 * prep and checks:   Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
-::                1.7.3 * prep and checks:   Think we finally fixed SSD detection. Please test and report if it fails on your drive
-::                      * prep and checks:   Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY
-::                1.7.2 * tron.bat:          Script now accepts "--auto" and "-a" as flags for automatic unattended execution
-::                      + tron.bat:          Re-added check for Administrator rights using more reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix.
-::                      * tron.bat:          Reverted SSD check to something more reliable
-::                      / tron.bat:          Moved all but most recent changelog entries to the standalone changelog file, to avoid cluttering up script header
-:: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished
-::                Run with "-a" or "--auto" to execute silently (no welcome screen)
-::                Edit the four variables below (LOGPATH, LOGFILE, AUTO_REBOOT_DELAY, and SKIP_DEFRAG) if you don't like the defaults
+:: Version:       2.0.0 * stage_0_prep:     Power management overhaul. We now export current settings to file, set to "High Performance" or "Always On" (depending on OS), run tron, and then re-import settings at the end of the script. This should preserve any custom power settings on the machine. Thanks to reddit.com/user/GetOnMyAmazingHorse
+::                      + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
+::                      * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
+::                1.9.0 + tron.bat:         Added full command-line support
+::                      * tron.bat:         Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord
+::                      - tron.bat:         Removed support for --auto flag (use -a instead) 
+::                      * prep and checks:  Fixed Administrator rights check for Windows 8/8.1 (again); Reverted to hard-exit if non-Admin detected
+::
+:: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
+::
+::                Command-line is supported. Any command-line flags will override their respective values set in the VARIABLES section
+::
+::                Optional flags (can be combined): 
+::                      -a  Automatic/silent mode (no welcome screen)
+::                      -d  Dry run (run through script without executing any jobs)
+::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
+::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -c  Config dump (display current config. Can be used with other
+::                          flags to see what WOULD happen, but script will never execute
+::                          if this flag is used)
+::                      -h  Display help text
+::
+::                Edit the variables below (LOGPATH, LOGFILE, AUTO_REBOOT_DELAY, SKIP_DEFRAG, DRY_RUN, AUTORUN) if you don't like the defaults and don't want to use the command-line
+
 ::                Godspeed
 SETLOCAL
 
@@ -38,6 +42,8 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 
+:: ! All variables specified here will be overridden if their respective command-line flag is used
+
 :: Log settings
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
@@ -49,24 +55,30 @@ set AUTO_REBOOT_DELAY=0
 :: Leave as "no" to let the script auto-detect SSDs
 set SKIP_DEFRAG=no
 
+:: AUTORUN = automatic/silent execution (no welcome screen)
+:: DRY_RUN = run through script but skip all actual actions (test mode)
+set AUTORUN=no
+set DRY_RUN=no
+
 
 :: -------------------------- Don't edit anything below this line -------------------------- ::
 
 
 :::::::::::::::::::::
-:: Prep and Checks :: -- Don't change anything in this section
+:: Prep and Checks ::
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set VERSION=1.8.2
-set UPDATED=2014-07-xx
+set VERSION=2.0.0
+set UPDATED=2014-08-xx
 title TRON v%VERSION% (%UPDATED%)
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so it's useful 
+
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
-:: Get in the correct path (~dp0). This is useful if we start from a network share; convert CWD to a drive letter
+:: Get in the correct path (~dp0). This is useful if we start from a network share. This converts CWD to a drive letter
 pushd %~dp0 2>NUL
 
 :: Detect if we're on an XP/2k3-series kernel
@@ -110,15 +122,85 @@ if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 if not exist %LOGPATH% mkdir %LOGPATH%
 if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 
-:: Check for autorun
-if "%1"=="--auto" goto execute_jobs
-if "%1"=="-a" goto execute_jobs
+:: Preload variables for comparison below
+set HELP=no
+set CONFIG_DUMP=no
+
+:: Check and parse command-line arguments
+for %%i in (%*) do (
+	if /i %%i==-a set AUTORUN=yes
+	if /i %%i==-c set CONFIG_DUMP=yes
+	if /i %%i==-d set DRY_RUN=yes
+	if /i %%i==-r set AUTO_REBOOT_DELAY=30
+	if /i %%i==-s set SKIP_DEFRAG=yes
+	if /i %%i==-h set HELP=yes
+	)
+
+:: Execute help if requested
+if %HELP%==yes (
+	cls
+	echo. 
+	echo  Tron v%VERSION% ^(%UPDATED%^)
+	echo  Author: vocatus on reddit.com/r/sysadmin
+	echo.
+	echo   Usage: %0%.bat ^[-a -c -d -r -s^] ^| ^[-h^]
+	echo.
+	echo   Optional flags ^(can be combined^):
+	echo    -a  Automatic/silent mode ^(no welcome screen^)
+ 	echo    -c  Config dump ^(display current config. Can be used with other
+	echo        flags to see what WOULD happen, but the script will never
+	echo        execute if this flag is used^)
+	echo    -d  Dry run ^(run through script but don't execute any jobs^)
+	echo    -r  Reboot ^(auto-reboot 30 seconds after Tron completes^)
+	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+ 	echo.
+	echo   Misc flags ^(must be used alone^)
+	echo    -h  Display this help text
+	echo.
+	exit /b 0
+	)
+
+:: Execute config dump if requested
+if %CONFIG_DUMP%==yes (
+	echo. 
+	echo   Tron v%VERSION% ^(%UPDATED%^) config dump
+	echo.
+	echo   Command-line arguments:
+	echo    %*
+	echo.
+	echo   Current variable values ^(user-set^):
+	echo    AUTORUN:           %AUTORUN%
+	echo    AUTO_REBOOT_DELAY: %AUTO_REBOOT_DELAY%
+	echo    DRY_RUN:           %DRY_RUN%
+	echo    LOGPATH:           %LOGPATH%
+	echo    LOGFILE:           %LOGFILE%
+	echo    SKIP_DEFRAG:       %SKIP_DEFRAG%
+	echo.
+	echo   Current variable values ^(script-internal^):
+	echo    CUR_DATE:          %CUR_DATE%
+	echo    CONFIG_DUMP:       %CONFIG_DUMP%
+	echo    DTS:               %DTS%
+	echo    HELP:              %HELP%
+	echo    SAFE_MODE:         %SAFE_MODE%
+	echo    SAFEBOOT_OPTION:   %SAFEBOOT_OPTION%
+	echo    SSD_DETECTED:      %SSD_DETECTED% 
+	echo    TEMP:              %TEMP%
+	echo    TIME:              %TIME%
+	echo    UPDATED:           %UPDATED%
+	echo    VERSION:           %VERSION%
+	echo    WIN_VER:           %WIN_VER%
+	echo.
+	exit /b 0
+	)
+	
+
+:: Act on autorun flag it got set. Basically just skips the menu
+if /i %AUTORUN%==yes goto execute_jobs
 
 
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
-:welcome_screen
 cls
 echo  *****************  TRON v%VERSION% (%UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
@@ -128,13 +210,13 @@ echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
 echo  *  0 Prep:       rkill, WMI repair                          *
 echo  *  1 TempClean:  BleachBit, CCleaner                        *
-echo  *  2 Disinfect:  Vipre, Sophos, MBAM                        *
+echo  *  2 Disinfect:  Emsisoft a2cmd, Vipre, Sophos, MBAM        *
 echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
 echo  *  5 Optimize:   Defrag %SystemDrive% (non-SSD only)                   *
 echo  *                                                           *
-echo  * The \resources folder contains additional tools which may *
-echo  * be run manually if necessary.                             *
+echo  * \resources\stage_6_manual_tools contains additional tools *
+echo  * which may be run manually if necessary.                   *
 echo  *************************************************************
 echo.
 :: This is so ugly it makes me cry
@@ -154,6 +236,7 @@ if not "%SKIP_DEFRAG%"=="no" (
 	)
 if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        3-5 hours
 if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        5-7 hours
+if not "%DRY_RUN%"=="no" echo   ! DRY_RUN set; will not execute any jobs
 echo.
 :welcome_screen_trailer
 pause
@@ -161,8 +244,9 @@ pause
 ::::::::::::::::::::::::
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
-:check_permissions
-sfc 2>NUL | find /i "/SCANNOW" > NUL
+:: The following two lines detect if we have Admin rights. Works on Windows 2000 through 8.1
+sfc > %TEMP%\oh_windows_why_are_you_dumb.txt
+find /i "/SCANNOW" < %TEMP%\oh_windows_why_are_you_dumb.txt
 if not "%ERRORLEVEL%"=="0" (
 		color 0c
 		cls
@@ -173,18 +257,17 @@ if not "%ERRORLEVEL%"=="0" (
 		echo  Tron MUST be run with full Administrator rights to 
 		echo  function correctly.
 		echo.
-		echo  It's possible Tron is mistaken ^(this usually happens on
-		echo  Windows 8^/8.1^), so if you're SURE you're running as an 
-		echo  Administrator, go ahead.
-		echo.
+		del %TEMP%\oh_windows_why_are_you_dumb.txt
 		pause
+		exit /B 1
 	)
+del %TEMP%\oh_windows_why_are_you_dumb.txt
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
 :::::::::::::::::::::
 :check_safe_mode
-:: Test if we're in safe mode
+:: Check if we're in safe mode
 if not "%SAFE_MODE%"=="yes" (
 		color 0c
 		cls
@@ -202,7 +285,7 @@ if not "%SAFE_MODE%"=="yes" (
 		cls
 		)
 
-:: Test if we have network support
+:: Check if we have network support
 if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		color 0e
 		cls
@@ -224,6 +307,7 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 :: EXECUTE JOBS ::
 ::::::::::::::::::
 :execute_jobs
+cls
 color 0f
 title TRON v%VERSION% [stage_0_prep]
 :: Create the log header for this job
@@ -246,37 +330,72 @@ echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
 
 :: JOB: rkill
-echo %CUR_DATE% %TIME%   Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'rkill'...
+echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'rkill'...
 pushd rkill
-if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
-if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
-type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
-del "%LOGPATH%\tron_rkill.log"
+	if not "%DRY_RUN%"=="no" goto skip_rkill
+	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
+	type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
+	del "%LOGPATH%\tron_rkill.log"
+:skip_rkill
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Disable sleep mode
-echo %CUR_DATE% %TIME%   Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Disabling Sleep mode...
+echo %CUR_DATE% %TIME%    Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Disabling Sleep mode...
 pushd disable_sleep
-:: Check for Windows XP and run the appropriate powercfg command
-if "%WIN_VER%"=="xp2k3" (powercfg /SETACTIVE "Always On") else (powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c)
+if not "%DRY_RUN%"=="no" goto skip_disable_sleep
+
+echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...
+
+:: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
+setlocal enabledelayedexpansion
+if "%WIN_VER%"=="xp2k3" (
+	:: Extract the line containing the current power GUID
+	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
+	:: Parse out just the name and stash it in a variable
+	set POWER_SCHEME=!t:~27!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT "!POWER_SCHEME!" /FILE %LOGPATH%\tron_power_config_backup.pow
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE "Always On"
+) else (
+	:: Extract the line containing the current power GUID
+	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
+	:: Parse out just the GUID and stash it in a variable
+	set POWER_SCHEME=!t:~19,36!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT %LOGPATH%\tron_power_config_backup.pow !POWER_SCHEME!
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	)
+:: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
+:: We need the POWER_SCHEME GUID for later when we re-import everything
+endlocal disabledelayedexpansion && set POWER_SCHEME=%POWER_SCHEME%
+
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:skip_disable_sleep
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Check and Repair WMI if it's broken
-echo %CUR_DATE% %TIME%   Checking WMI...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Checking WMI...
+echo %CUR_DATE% %TIME%    Checking WMI...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking WMI...
 pushd repair_wmi
+if not "%DRY_RUN%"=="no" goto skip_repair_wmi
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 wmic timezone >NUL
 if not %ERRORLEVEL%==0 (
-    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
-    echo %CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
+    echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
+    echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
     net stop winmgmt
     pushd %WINDIR%\system32\wbem
     for %%i in (*.dll) do RegSvr32 -s %%i
@@ -296,19 +415,20 @@ if not %ERRORLEVEL%==0 (
     popd
     )
 
+:skip_repair_wmi
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Reduce SysRestore space
-echo %CUR_DATE% %TIME%   Reducing System Restore space...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Reducing System Restore space...
+echo %CUR_DATE% %TIME%    Reducing System Restore space...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Reducing System Restore space...
 pushd reduce_system_restore
-reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
-reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
+if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
+if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 
 popd
@@ -326,31 +446,31 @@ echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFI
 echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
 
 :: JOB: CCLeaner
-echo %CUR_DATE% %TIME%   Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'CCleaner'...
+echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...
 pushd ccleaner
-ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: BleachBit
-echo %CUR_DATE% %TIME%   Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'BleachBit'...
+echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...
 pushd bleachbit
-bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Clear Windows event logs
-echo %CUR_DATE% %TIME%   Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Clear Windows event logs'...
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...
 pushd clear_windows_event_logs
-for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
+if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.>> "%LOGPATH%\%LOGFILE%"
@@ -368,72 +488,76 @@ echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
 
 :: JOB: Emsisoft Commandline Scanner (a2cmd)
 
-echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Emsisoft Commandline Scanner'...
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
+echo %CUR_DATE% %TIME%    Launching job 'Emsisoft Commandline Scanner'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Emsisoft Commandline Scanner'...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd a2cmd
-a2cmd.exe /update
-a2cmd.exe /smart /dda /ntfs /pup /delete
+if "%DRY_RUN%"=="no" a2cmd.exe /update
+if "%DRY_RUN%"=="no" a2cmd.exe /smart /dda /ntfs /pup /delete
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: VIPRE Rescue
-echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Vipre rescue scanner' (takes a LONG time)...
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd vipre_rescue
-VipreRescueScanner.exe
+if "%DRY_RUN%"=="no" VipreRescueScanner.exe
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Sophos Virus Remover
-echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Logging to console instead of logfile for this job...
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
-svrtcli.exe -yes
+if "%DRY_RUN%"=="no" svrtcli.exe -yes
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
-echo %CUR_DATE% %TIME%   Launching job 'Malwarebytes Anti-Malware', continuing other jobs..."%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Malwarebytes Anti-Malware', continuing other jobs...
+echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs..."%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...
 pushd mbam
 
 :: Install & remove the desktop icon
+if not "%DRY_RUN%"=="no" goto skip_mbam
 "Malwarebytes Anti-Malware v2.0.2.1012.exe" /verysilent
 if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 
-:: Scan (launch appropriate architecture version)
+:: Scan for and launch appropriate architecture version
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
     pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
-  ) else (
+) else (
     pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
   )
 start "" "mbam.exe"
 popd
 
+:skip_mbam
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: System File Checker scan
-echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'System File Checker'...
+echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
 pushd sfc
+if not "%DRY_RUN%"=="no" goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
 :: The reason we don't run for XP/2k3 is that it requires a reboot
 if not "%WIN_VER%"=="xp2k3" sfc /scannow
+:skip_sfc
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 
 popd
@@ -451,15 +575,15 @@ echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFIL
 echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...
 
 :: JOB: Remove crapware programs
-echo %CUR_DATE% %TIME%   Searching for and removing common crapware programs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Searching for and removing common crapware programs...
-echo %CUR_DATE% %TIME%   Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt
+echo %CUR_DATE% %TIME%    Searching for and removing common crapware programs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Searching for and removing common crapware programs...
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt
 :: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
-FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo  %%i && echo  %%i...>> "%LOGPATH%\%LOGFILE%" && wmic product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && wmic product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
@@ -476,15 +600,16 @@ echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
 
 :: Prep task: enable MSI installer in Safe Mode
-start "" "enable_msi_installer\SafeMSI.exe"
+if "%DRY_RUN%"=="no" start "" "enable_msi_installer\SafeMSI.exe"
 ping localhost -n 2 >NUL
-taskkill /im SafeMSI.exe /f /t
+taskkill /im SafeMSI.exe /f /t 2>NUL
 
 :: JOB: 7-Zip
-echo %CUR_DATE% %TIME%   Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job '7-Zip'...
+echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job '7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
+if not "%DRY_RUN%"=="no" goto skip_7-zip
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	pushd 7-zip\v9.20\x86
 	setlocal
@@ -498,13 +623,14 @@ if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	endlocal
 	popd
 	)
-
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+:skip_7-zip
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Adobe Flash Player
-echo %CUR_DATE% %TIME%   Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Update Adobe Flash Player'...
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
+if not "%DRY_RUN%"=="no" goto skip_adobe_flash
 pushd "adobe\flash_player\v14.0.0.145\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
@@ -515,23 +641,27 @@ setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+:skip_adobe_flash
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Adobe Reader
-echo %CUR_DATE% %TIME%   Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Update Adobe Reader'...
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
 pushd adobe\reader\v11.0.07\x86
+if not "%DRY_RUN%"=="no" goto skip_adobe_reader
 setlocal
 call "Adobe Reader.bat"
 endlocal
+:skip_adobe_reader
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Remove outdated JRE runtimes (security risk)
-echo %CUR_DATE% %TIME%   Checking and removing outdated JRE installations...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Checking and removing outdated JRE installations...
+echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...
+if not "%DRY_RUN%"=="no" goto skip_jre_update
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
@@ -541,48 +671,48 @@ echo %CUR_DATE% %TIME%   Checking and removing outdated JRE installations...
 :: we can skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
 
 :: JRE 7
-echo %CUR_DATE% %TIME%   JRE 7...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 7...
+echo %CUR_DATE% %TIME%    JRE 7...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 7...
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 6
-echo %CUR_DATE% %TIME%   JRE 6...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 6...
+echo %CUR_DATE% %TIME%    JRE 6...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 6...
 :: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
 :: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 5
-echo %CUR_DATE% %TIME%   JRE 5...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 5...
+echo %CUR_DATE% %TIME%    JRE 5...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 5...
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 4
 
-echo %CUR_DATE% %TIME%   JRE 4...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   JRE 4...
+echo %CUR_DATE% %TIME%    JRE 4...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 4...
 %WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Java Runtime 8
-echo %CUR_DATE% %TIME%   Launching job 'Update Java Runtime Environment'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Update Java Runtime Environment'...
+echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...
 
-:: Check if we're on 32-bit Windows and run the appropriate architecture installer
+:: Check if we're on 32-bit Windows and run the appropriate installer
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	echo %CUR_DATE% %TIME%   x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   x86 architecture detected, installing x86 version...
+	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
 	pushd java\jre\8\u11\x86
 	setlocal
 	call "jre-8u11-windows-x86.bat"
 	endlocal
 	popd
 ) else (
-	echo %CUR_DATE% %TIME%   x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   x64 architecture detected, installing x64 version...
+	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...
 	pushd java\jre\8\u11\x64
 	setlocal
 	call "jre-8u11-windows-x64.bat"
@@ -590,28 +720,31 @@ if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	popd
 	)
 
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+:skip_jre_update
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Notepad++
-echo %CUR_DATE% %TIME%   Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Update Notepad++'...
-pushd notepad++\v6.6.7
+echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...
+pushd notepad++\v6.6.8
+if not "%DRY_RUN%"=="no" goto skip_notepad
 setlocal
 call "npp.Installer.bat"
 endlocal
+:skip_notepad
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Windows updates
-echo %CUR_DATE% %TIME%   Launching job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching job 'Install Windows updates'...
+echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...
 pushd windows_updates
-wuauclt /detectnow /updatenow
+if "%DRY_RUN%"=="no" wuauclt /detectnow /updatenow
 popd
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.>> "%LOGPATH%\%LOGFILE%"
@@ -627,31 +760,54 @@ pushd resources\stage_5_optimize
 echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...
 
+:: JOB: chkdsk the system drive
+echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...
+pushd chkdsk
+echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
+
+:: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
+if "%DRY_RUN%"=="no" %WinDir%\System32\chkdsk.exe %SystemDrive%
+if not %ERRORLEVEL%==0 ( 
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.
+	if "%DRY_RUN%"=="no" echo y | %WinDir%\System32\chkdsk.exe /x /v %SystemDrive%
+) else (
+	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.
+	)
+	
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
-	echo %CUR_DATE% %TIME%   SKIP_DEFRAG set to "yes". Skipping job.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   SKIP_DEFRAG set to "yes". Skipping job.
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.
 	popd
 	goto :wrap-up
 	)
 
 :: Check if we are supposed to run a defrag before doing this section
 if "%SSD_DETECTED%"=="yes" (
-	echo %CUR_DATE% %TIME%   Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
+	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
 	popd
 	goto :wrap-up
 	)
 
 :: JOB: Defrag the system drive
 if "%SSD_DETECTED%"=="no" (
-	echo %CUR_DATE% %TIME%   Launching job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Launching job 'Defrag %SystemDrive%'...
+	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...
 	pushd defrag
-	df.exe %SystemDrive%
+	if "%DRY_RUN%"=="no" df.exe %SystemDrive%
 	popd
-	echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Done.
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.
 	)
 
 popd
@@ -666,26 +822,36 @@ echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
 echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Wrapping up...
 
-echo %CUR_DATE% %TIME%   Resetting power settings to their defaults...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Resetting power settings to their defaults...
-:: Check for XP and run the appropriate version of the command
-if "%WIN_VER%"=="xp2k3" (powercfg /RestoreDefaultPolicies) else (powercfg -restoredefaultschemes)
-echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Done.
+echo %CUR_DATE% %TIME%    Changing power settings back to original values...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Changing power settings back to original values...
+
+:: Import the original power settings and re-activate them
+if not "%DRY_RUN%"=="no" goto skip_power_reset
+if "%WIN_VER%"=="xp2k3" (
+	powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
+	powercfg /setactive "%POWER_SCHEME%"
+) else (
+	powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
+	powercfg /setactive %POWER_SCHEME%
+	)
+del %LOGPATH%\tron_power_config_backup.pow
+:skip_power_reset
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 title TRON v%VERSION% [DONE]
 
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Logfile is located at %LOGPATH%\%LOGFILE%
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 
 if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.
 ) else (
-	echo %CUR_DATE% %TIME% ! Rebooting in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% ! Rebooting in %AUTO_REBOOT_DELAY% seconds.
+	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.
 	)
 
 :: Create the log trailer for this job
@@ -698,5 +864,8 @@ echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNA
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
+if not "%DRY_RUN%"=="no" goto end_and_skip_shutdown
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
+
+:end_and_skip_shutdown
 pause
