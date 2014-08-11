@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.0.0 * prep and checks:  Renamed VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
+:: Version:       2.0.0 * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
+::                      * prep and checks:  Fixed missing set WMIC=<path> command (was causing all JRE removal commands to fail)
 ::                      * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
 ::                      + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
 ::                      * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
@@ -30,6 +31,8 @@
 
 ::                Godspeed
 SETLOCAL
+
+:: TODO:           fix broken pushd/popd loop in JRE installer (WinXP; 8?)
 
 
 :::::::::::::::
@@ -57,10 +60,10 @@ set SKIP_DEFRAG=no
 
 :: AUTORUN = automatic/silent execution (no welcome screen)
 :: DRY_RUN = run through script but skip all actual actions (test mode)
-:: PRESERVE_POWER_SETTINGS = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
+:: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
 set AUTORUN=no
 set DRY_RUN=no
-set PRESERVE_POWER_SETTINGS=no
+set PRESERVE_POWER_SCHEME=no
 
 
 :: -------------------------- Don't edit anything below this line -------------------------- ::
@@ -71,7 +74,7 @@ set PRESERVE_POWER_SETTINGS=no
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
 set SCRIPT_VERSION=2.0.0
-set SCRIPT_UPDATED=2014-08-xx
+set SCRIPT_UPDATED=2014-08-11
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -82,6 +85,9 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 %~d0 2>NUL
 :: Get in the correct path (~dp0). This is useful if we start from a network share. This converts CWD to a drive letter
 pushd %~dp0 2>NUL
+
+:: Force WMIC location in case the system PATH is messed up
+set WMIC=%WINDIR%\system32\wbem\wmic.exe
 
 :: Detect if we're on an XP/2k3-series kernel
 :: This is used to determine which powercfg.exe commands to run in the Prep section
@@ -134,7 +140,7 @@ for %%i in (%*) do (
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-h set HELP=yes
-	if /i %%i==-p set PRESERVE_POWER_SETTINGS=yes
+	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	)
@@ -173,27 +179,28 @@ if %CONFIG_DUMP%==yes (
 	echo    %*
 	echo.
 	echo   Current variable values ^(user-set^):
-	echo    AUTORUN:                 %AUTORUN%
-	echo    AUTO_REBOOT_DELAY:       %AUTO_REBOOT_DELAY%
-	echo    CONFIG_DUMP:             %CONFIG_DUMP%
-	echo    DRY_RUN:                 %DRY_RUN%
-	echo    LOGPATH:                 %LOGPATH%
-	echo    LOGFILE:                 %LOGFILE%
-	echo    PRESERVE_POWER_SETTINGS: %PRESERVE_POWER_SETTINGS%
-	echo    SKIP_DEFRAG:             %SKIP_DEFRAG%
+	echo    AUTORUN:               %AUTORUN%
+	echo    AUTO_REBOOT_DELAY:     %AUTO_REBOOT_DELAY%
+	echo    CONFIG_DUMP:           %CONFIG_DUMP%
+	echo    DRY_RUN:               %DRY_RUN%
+	echo    LOGPATH:               %LOGPATH%
+	echo    LOGFILE:               %LOGFILE%
+	echo    PRESERVE_POWER_SCHEME: %PRESERVE_POWER_SCHEME%
+	echo    SKIP_DEFRAG:           %SKIP_DEFRAG%
 	echo.
 	echo   Current variable values ^(script-internal^):
-	echo    CUR_DATE:                %CUR_DATE%
-	echo    DTS:                     %DTS%
-	echo    HELP:                    %HELP%
-	echo    SAFE_MODE:               %SAFE_MODE%
-	echo    SAFEBOOT_OPTION:         %SAFEBOOT_OPTION%
-	echo    SSD_DETECTED:            %SSD_DETECTED% 
-	echo    TEMP:                    %TEMP%
-	echo    TIME:                    %TIME%
-	echo    SCRIPT_UPDATED:          %SCRIPT_UPDATED%
-	echo    SCRIPT_VERSION:          %SCRIPT_VERSION%
-	echo    WIN_VER:                 %WIN_VER%
+	echo    CUR_DATE:              %CUR_DATE%
+	echo    DTS:                   %DTS%
+	echo    HELP:                  %HELP%
+	echo    SAFE_MODE:             %SAFE_MODE%
+	echo    SAFEBOOT_OPTION:       %SAFEBOOT_OPTION%
+	echo    SSD_DETECTED:          %SSD_DETECTED% 
+	echo    TEMP:                  %TEMP%
+	echo    TIME:                  %TIME%
+	echo    SCRIPT_UPDATED:        %SCRIPT_UPDATED%
+	echo    SCRIPT_VERSION:        %SCRIPT_VERSION%
+	echo    WIN_VER:               %WIN_VER%
+	echo    WMIC:                  %WMIC%
 	echo.
 	exit /b 0
 	)
@@ -218,7 +225,7 @@ echo  *  1 TempClean:  BleachBit, CCleaner                        *
 echo  *  2 Disinfect:  Emsisoft a2cmd, Vipre, Sophos, MBAM        *
 echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
-echo  *  5 Optimize:   Defrag %SystemDrive% (non-SSD only)                   *
+echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
 echo  *                                                           *
 echo  * \resources\stage_6_manual_tools contains additional tools *
 echo  * which may be run manually if necessary.                   *
@@ -241,7 +248,7 @@ if not "%SKIP_DEFRAG%"=="no" (
 	)
 if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        3-5 hours
 if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        5-7 hours
-if not "%DRY_RUN%"=="no" echo   ! DRY_RUN set; will not execute any jobs
+if %DRY_RUN%==yes echo   ! DRY_RUN set; will not execute any jobs
 echo.
 :welcome_screen_trailer
 pause
@@ -341,11 +348,12 @@ echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
 echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'rkill'...
 pushd rkill
-	if not "%DRY_RUN%"=="no" goto skip_rkill
+	if %DRY_RUN%==yes goto skip_rkill
 	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
 	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
 	type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%LOGPATH%\tron_rkill.log"
+	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 :skip_rkill
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -355,7 +363,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Disabling Sleep mode...
 pushd disable_sleep
-if not "%DRY_RUN%"=="no" goto skip_disable_sleep
+if %DRY_RUN%==yes goto skip_disable_sleep
 
 echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...
@@ -397,7 +405,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Checking WMI...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Checking WMI...
 pushd repair_wmi
-if not "%DRY_RUN%"=="no" goto skip_repair_wmi
+if %DRY_RUN%==yes goto skip_repair_wmi
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 wmic timezone >NUL
@@ -535,7 +543,7 @@ echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing 
 pushd mbam
 
 :: Install & remove the desktop icon
-if not "%DRY_RUN%"=="no" goto skip_mbam
+if %DRY_RUN%==yes goto skip_mbam
 "Malwarebytes Anti-Malware v2.0.2.1012.exe" /verysilent
 if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
@@ -558,7 +566,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
 pushd sfc
-if not "%DRY_RUN%"=="no" goto skip_sfc
+if %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
 :: The reason we don't run for XP/2k3 is that it requires a reboot
 if not "%WIN_VER%"=="xp2k3" sfc /scannow
@@ -617,7 +625,7 @@ echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job '7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
-if not "%DRY_RUN%"=="no" goto skip_7-zip
+if %DRY_RUN%==yes goto skip_7-zip
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	pushd 7-zip\v9.20\x86
 	setlocal
@@ -638,7 +646,7 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Adobe Flash Player
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
-if not "%DRY_RUN%"=="no" goto skip_adobe_flash
+if %DRY_RUN%==yes goto skip_adobe_flash
 pushd "adobe\flash_player\v14.0.0.145\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
@@ -656,20 +664,20 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Adobe Reader
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
+if %DRY_RUN%==yes goto skip_adobe_reader
 pushd adobe\reader\v11.0.07\x86
-if not "%DRY_RUN%"=="no" goto skip_adobe_reader
 setlocal
 call "Adobe Reader.bat"
 endlocal
-:skip_adobe_reader
 popd
+:skip_adobe_reader
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Remove outdated JRE runtimes (security risk)
 echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...
-if not "%DRY_RUN%"=="no" goto skip_jre_update
+if %DRY_RUN%==yes goto skip_jre_update
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
@@ -697,7 +705,6 @@ echo %CUR_DATE% %TIME%    JRE 5...
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 4
-
 echo %CUR_DATE% %TIME%    JRE 4...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 4...
 %WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
@@ -736,7 +743,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...
 pushd notepad++\v6.6.8
-if not "%DRY_RUN%"=="no" goto skip_notepad
+if %DRY_RUN%==yes goto skip_notepad
 setlocal
 call "npp.Installer.bat"
 endlocal
@@ -832,7 +839,7 @@ echo %CUR_DATE% %TIME%   Wrapping up...
 
 :: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset the power settings back to their defaults
-if "%PRESERVE_POWER_SETTINGS%"=="yes" (
+if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...
 	if "%WIN_VER%"=="xp2k3" (
@@ -856,7 +863,7 @@ if "%PRESERVE_POWER_SETTINGS%"=="yes" (
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 	
-title TRON v%SCRIPT_VERSION% [DONE]
+title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) [DONE]
 
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
@@ -881,7 +888,7 @@ echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-if not "%DRY_RUN%"=="no" goto end_and_skip_shutdown
+if %DRY_RUN%==yes goto end_and_skip_shutdown
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
 
 :end_and_skip_shutdown
