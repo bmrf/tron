@@ -4,15 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.0.0 * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
+:: Version:       2.0.1 * some updates blah blah
+::                2.0.0 * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
 ::                      * prep and checks:  Fixed missing set WMIC=<path> command (was causing all JRE removal commands to fail)
 ::                      * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
 ::                      + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
 ::                      * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
-::                1.9.0 + tron.bat:         Added full command-line support
-::                      * tron.bat:         Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord
-::                      - tron.bat:         Removed support for --auto flag (use -a instead) 
-::                      * prep and checks:  Fixed Administrator rights check for Windows 8/8.1 (again); Reverted to hard-exit if non-Admin detected
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -66,15 +63,17 @@ set DRY_RUN=no
 set PRESERVE_POWER_SCHEME=no
 
 
+
 :: -------------------------- Don't edit anything below this line -------------------------- ::
+
 
 
 :::::::::::::::::::::
 :: Prep and Checks ::
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set SCRIPT_VERSION=2.0.0
-set SCRIPT_UPDATED=2014-08-11
+set SCRIPT_VERSION=2.0.1
+set SCRIPT_UPDATED=2014-08-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -172,7 +171,8 @@ if %HELP%==yes (
 
 :: Execute config dump if requested
 if %CONFIG_DUMP%==yes (
-	echo. 
+	cls
+	echo.
 	echo   Tron v%SCRIPT_VERSION% ^(%SCRIPT_UPDATED%^) config dump
 	echo.
 	echo   Command-line arguments:
@@ -206,7 +206,7 @@ if %CONFIG_DUMP%==yes (
 	)
 	
 
-:: Act on autorun flag it got set. Basically just skips the menu
+:: Act on autorun flag if it got set. Basically just skips the menu
 if /i %AUTORUN%==yes goto execute_jobs
 
 
@@ -231,7 +231,7 @@ echo  * \resources\stage_6_manual_tools contains additional tools *
 echo  * which may be run manually if necessary.                   *
 echo  *************************************************************
 echo.
-:: This is so ugly it makes me cry
+:: So ugly it makes me cry
 echo  Current settings (edit script to change):
 echo     Log location:            %LOGPATH%\%LOGFILE%
 if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
@@ -258,8 +258,10 @@ pause
 ::::::::::::::::::::::::
 if %WIN_VER%==xp2k3 goto check_safe_mode
 :: The following two lines detect if we have Admin rights. Works on Windows Vista through 8.1
-sfc > %TEMP%\oh_windows_why_are_you_dumb.txt
-find /i "/SCANNOW" < %TEMP%\oh_windows_why_are_you_dumb.txt
+::sfc > %TEMP%\oh_windows_why_are_you_dumb.txt
+::find /i "/SCANNOW" < %TEMP%\oh_windows_why_are_you_dumb.txt
+:: Testing alternate version by /u/agent-squirrel
+net session >nul 2>&1
 if not "%ERRORLEVEL%"=="0" (
 		color 0c
 		cls
@@ -273,10 +275,10 @@ if not "%ERRORLEVEL%"=="0" (
 		echo  It's possible Tron is wrong ^(can happen on XP^). 
 		echo  If you're sure you're running as Administrator you can
 		echo  ignore this.
-		del %TEMP%\oh_windows_why_are_you_dumb.txt 2>NUL
+		::if exist %TEMP%\oh_windows_why_are_you_dumb.txt del %TEMP%\oh_windows_why_are_you_dumb.txt
 		pause
 	)
-del %TEMP%\oh_windows_why_are_you_dumb.txt 2>NUL
+::if exist %TEMP%\oh_windows_why_are_you_dumb.txt del %TEMP%\oh_windows_why_are_you_dumb.txt
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
@@ -647,12 +649,12 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
 if %DRY_RUN%==yes goto skip_adobe_flash
-pushd "adobe\flash_player\v14.0.0.145\firefox"
+pushd "adobe\flash_player\v14.0.0.176\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v14.0.0.145\internet explorer"
+pushd "adobe\flash_player\v14.0.0.176\internet explorer"
 setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
@@ -665,7 +667,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
 if %DRY_RUN%==yes goto skip_adobe_reader
-pushd adobe\reader\v11.0.07\x86
+pushd adobe\reader\v11.0.08\x86
 setlocal
 call "Adobe Reader.bat"
 endlocal
