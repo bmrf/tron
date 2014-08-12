@@ -24,13 +24,19 @@ COMMAND-LINE USE:
  tron.bat [-a -c -d -p -r -s] | [-h]
 
   -a  Automatic/silent mode (no welcome screen)
+  
   -c  Config dump (display current config. Can be used with other
       flags to see what WOULD happen, but script will never execute
       if this flag is used)
+      
   -d  Dry run (run through script without executing any jobs)
+  
   -h  Display help text
+  
   -p  Preserve power settings (don't reset power settings to default)
+  
   -r  Reboot (auto-reboot 30 seconds after Tron completes)
+  
   -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
 
