@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.0.1 * some updates blah blah
+:: Version:       2.1.0 * some updates blah blah
 ::                2.0.0 * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
 ::                      * prep and checks:  Fixed missing set WMIC=<path> command (was causing all JRE removal commands to fail)
 ::                      * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
@@ -72,7 +72,7 @@ set PRESERVE_POWER_SCHEME=no
 :: Prep and Checks ::
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set SCRIPT_VERSION=2.0.1
+set SCRIPT_VERSION=2.1.0
 set SCRIPT_UPDATED=2014-08-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
