@@ -4,12 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.1.0 * some updates blah blah
-::                2.0.0 * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
-::                      * prep and checks:  Fixed missing set WMIC=<path> command (was causing all JRE removal commands to fail)
-::                      * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
-::                      + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
-::                      * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
+:: Version:       2.2.1 * prep and checks:   Admin rights check finally fixed; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
+::                      * stage_3_disinfect: Integrated SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
+::                      * stage_3_disinfect: Removed Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -29,11 +26,9 @@
 ::                Godspeed
 SETLOCAL
 
-:: TODO:           fix broken pushd/popd loop in JRE installer (WinXP; 8?)
-
 
 :::::::::::::::
-:: VARIABLES :: --------------- Set these to your desired values --------------------------- ::
+:: VARIABLES :: --------------- These are the defaults. Change them if you so desire. ------ ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -42,7 +37,7 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 
-:: ! All variables specified here will be overridden if their respective command-line flag is used
+:: ! All variables specified here are overridden if their respective command-line flag is used
 
 :: Log settings
 set LOGPATH=%SystemDrive%\Logs
@@ -64,7 +59,9 @@ set PRESERVE_POWER_SCHEME=no
 
 
 
-:: -------------------------- Don't edit anything below this line -------------------------- ::
+
+:: --------------------------- Don't edit anything below this line --------------------------- ::
+
 
 
 
@@ -72,8 +69,9 @@ set PRESERVE_POWER_SCHEME=no
 :: Prep and Checks ::
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading... && echo.
-set SCRIPT_VERSION=2.1.0
-set SCRIPT_UPDATED=2014-08-xx
+color 0f
+set SCRIPT_VERSION=2.2.1
+set SCRIPT_UPDATED=2014-08-21
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -89,7 +87,7 @@ pushd %~dp0 2>NUL
 set WMIC=%WINDIR%\system32\wbem\wmic.exe
 
 :: Detect if we're on an XP/2k3-series kernel
-:: This is used to determine which powercfg.exe commands to run in the Prep section
+:: This is used to determine which powercfg.exe commands to run in the Prep section, as well as whether or not to run SFC (skipped on XP because it requires a reboot)
 :detect_xp
 set WIN_VER=undetected
 ver | find /i "Version 5." 2>NUL
@@ -97,7 +95,7 @@ if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 
 :: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block, by stacking it on the same line so it gets executed along with ENDLOCAL
-:: Alternate method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping out with this.
+:: Method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping with this.
 :detect_ssd
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
@@ -118,14 +116,14 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	)
 endlocal disabledelayedexpansion
 
-:: Detect Safe Mode
+:: Detect if the system is in Safe Mode
 :detect_safe_mode
 popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
-:: Log file handling
+:: Make the log directory and file if they don't already exist
 if not exist %LOGPATH% mkdir %LOGPATH%
 if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 
@@ -220,7 +218,7 @@ echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill, WMI repair                          *
+echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
 echo  *  1 TempClean:  BleachBit, CCleaner                        *
 echo  *  2 Disinfect:  Emsisoft a2cmd, Vipre, Sophos, MBAM        *
 echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
@@ -253,37 +251,9 @@ echo.
 :welcome_screen_trailer
 pause
 
-::::::::::::::::::::::::
-:: ADMIN RIGHTS CHECK ::
-::::::::::::::::::::::::
-if %WIN_VER%==xp2k3 goto check_safe_mode
-:: The following two lines detect if we have Admin rights. Works on Windows Vista through 8.1
-::sfc > %TEMP%\oh_windows_why_are_you_dumb.txt
-::find /i "/SCANNOW" < %TEMP%\oh_windows_why_are_you_dumb.txt
-:: Testing alternate version by /u/agent-squirrel
-net session >nul 2>&1
-if not "%ERRORLEVEL%"=="0" (
-		color 0c
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  Tron doesn't think it is running as an Administrator.
-		echo  Tron MUST be run with full Administrator rights to 
-		echo  function correctly.
-		echo.
-		echo  It's possible Tron is wrong ^(can happen on XP^). 
-		echo  If you're sure you're running as Administrator you can
-		echo  ignore this.
-		::if exist %TEMP%\oh_windows_why_are_you_dumb.txt del %TEMP%\oh_windows_why_are_you_dumb.txt
-		pause
-	)
-::if exist %TEMP%\oh_windows_why_are_you_dumb.txt del %TEMP%\oh_windows_why_are_you_dumb.txt
-
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
 :::::::::::::::::::::
-:check_safe_mode
 :: Check if we're in safe mode
 if not "%SAFE_MODE%"=="yes" (
 		color 0c
@@ -320,6 +290,30 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		cls
 		)
 		
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+:: thanks to /u/agent-squirrel
+:: Because command prompts always start with Admin rights when the system is in Safe Mode, we skip this check if we're in Safe Mode
+if not "%SAFE_MODE%"=="yes" (
+	net session >nul 2>&1
+	if not "%ERRORLEVEL%"=="0" (
+		color cf
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron doesn't think it is running as an Administrator.
+		echo  Tron MUST be run with full Administrator rights to 
+		echo  function correctly.
+		echo.
+		echo  It's possible Tron is wrong ^(can happen on XP^). 
+		echo  If you're sure you're running as Administrator you can
+		echo  ignore this.
+		pause
+	)
+)
+
 ::::::::::::::::::
 :: EXECUTE JOBS ::
 ::::::::::::::::::
@@ -424,7 +418,7 @@ if not %ERRORLEVEL%==0 (
     start "" wbemtest.exe /RegServer
     tskill wbemtest /a 2>NUL
     tskill wbemtest /a 2>NUL
-    :: winmgmt.exe /resetrepository       -- optional; forces full rebuild instead of a repair like the line below this
+    :: winmgmt.exe /resetrepository       -- optional; forces full rebuild instead of a repair like the line below this. Enable if you're feeling REAAAALLY crazy
     winmgmt.exe /salvagerepository /resyncperf
     wmiadap.exe /RegServer
     wmiapsrv.exe /RegServer
@@ -504,19 +498,6 @@ pushd resources\stage_2_disinfect
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
 
-:: JOB: Emsisoft Commandline Scanner (a2cmd)
-
-echo %CUR_DATE% %TIME%    Launching job 'Emsisoft Commandline Scanner'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Emsisoft Commandline Scanner'...
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
-pushd a2cmd
-if "%DRY_RUN%"=="no" a2cmd.exe /update
-if "%DRY_RUN%"=="no" a2cmd.exe /smart /dda /ntfs /pup /delete
-popd
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Done.
-
 :: JOB: VIPRE Rescue
 echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...
@@ -572,6 +553,8 @@ if %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
 :: The reason we don't run for XP/2k3 is that it requires a reboot
 if not "%WIN_VER%"=="xp2k3" sfc /scannow
+:: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
+findstr /c:"[SR]" %WinDir%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
 :skip_sfc
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -686,7 +669,7 @@ if %DRY_RUN%==yes goto skip_jre_update
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
-:: we can skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
+:: we skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
 
 :: JRE 7
 echo %CUR_DATE% %TIME%    JRE 7...>> "%LOGPATH%\%LOGFILE%"
@@ -808,7 +791,7 @@ if "%SKIP_DEFRAG%"=="yes" (
 	goto :wrap-up
 	)
 
-:: Check if we are supposed to run a defrag before doing this section
+:: Check if a Solid State hard drive was detected before doing this section
 if "%SSD_DETECTED%"=="yes" (
 	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
@@ -870,6 +853,7 @@ title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) [DONE]
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 
+:: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.
@@ -878,7 +862,7 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.
 	)
 
-:: Create the log trailer for this job
+:: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) complete>> %LOGPATH%\%LOGFILE%
@@ -889,6 +873,7 @@ echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
+
 
 if %DRY_RUN%==yes goto end_and_skip_shutdown
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
