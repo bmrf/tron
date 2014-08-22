@@ -4,17 +4,19 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.2.1 * prep and checks:   Admin rights check finally fixed; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
-::                      * stage_3_disinfect: Integrated SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
-::                      * stage_3_disinfect: Removed Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
+:: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is available on the official repo server
+::                      - tron.bat:          Removed outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
+::                      * wrap-up:           Add fancy ASCII checkmark symbol to final "DONE" message
+::                      + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+::                      * stage_3_disinfect: Switched order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
-::                Optional command-line flags (can be combined): 
+::                Optional command-line flags (can be combined):
 ::                      -a  Automatic/silent mode (no welcome screen)
-::                      -c  Config dump (display current config. Can be used with other
-::                          flags to see what WOULD happen, but script will never execute
-::                          if this flag is used)
+::                      -c  Config dump (display current config. Can be used with other flags
+::                          to see what WOULD happen, but script will never execute if this 
+::                          flag is used)
 ::                      -d  Dry run (run through script without executing any jobs)
 ::                      -h  Display help text
 ::                      -p  Preserve power settings (don't reset power settings to default)
@@ -27,8 +29,12 @@
 SETLOCAL
 
 
+:: TODO:      !   Fix failure condition where Tron repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
+
+
+
 :::::::::::::::
-:: VARIABLES :: --------------- These are the defaults. Change them if you so desire. ------ ::
+:: VARIABLES :: --------------- These are the defaults. Change them if you so desire. -------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -66,17 +72,23 @@ set PRESERVE_POWER_SCHEME=no
 
 
 :::::::::::::::::::::
-:: Prep and Checks ::
+:: PREP AND CHECKS ::
 :::::::::::::::::::::
-@echo off && cls && echo. && echo  Loading... && echo.
+@echo off && cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=2.2.1
-set SCRIPT_UPDATED=2014-08-21
+set SCRIPT_VERSION=2.3.0
+set SCRIPT_UPDATED=2014-08-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: Preload variables for use and comparison later
+set REPO_SCRIPT_VERSION=0
+set HELP=no
+set CONFIG_DUMP=no
+set UPDATE_REPO=http://bmrf.org/repos/tron/
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
@@ -86,17 +98,20 @@ pushd %~dp0 2>NUL
 :: Force WMIC location in case the system PATH is messed up
 set WMIC=%WINDIR%\system32\wbem\wmic.exe
 
-:: Detect if we're on an XP/2k3-series kernel
+
+:: PREP JOB: Detect if we're on an XP/2k3-series kernel
 :: This is used to determine which powercfg.exe commands to run in the Prep section, as well as whether or not to run SFC (skipped on XP because it requires a reboot)
 :detect_xp
 set WIN_VER=undetected
 ver | find /i "Version 5." 2>NUL
 if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 
-:: Detect Solid State hard drives (determines if post-run defrag executes or not)
-:: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block, by stacking it on the same line so it gets executed along with ENDLOCAL
+
+:: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 :: Method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping with this.
 :detect_ssd
+echo  Scanning for presence of an SDD...
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
 setlocal enabledelayedexpansion
@@ -116,22 +131,21 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	)
 endlocal disabledelayedexpansion
 
-:: Detect if the system is in Safe Mode
+
+:: PREP JOB: Detect if the system is in Safe Mode
 :detect_safe_mode
 popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
-:: Make the log directory and file if they don't already exist
+
+:: PREP JOB: Make the log directory and file if they don't already exist
 if not exist %LOGPATH% mkdir %LOGPATH%
 if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
 
-:: Preload variables for comparison below
-set HELP=no
-set CONFIG_DUMP=no
 
-:: Check and parse command-line arguments
+:: PREP JOB: Check and parse command-line arguments
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
@@ -142,7 +156,8 @@ for %%i in (%*) do (
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	)
 
-:: Execute help if requested
+
+:: PREP JOB: Execute help if requested
 if %HELP%==yes (
 	cls
 	echo. 
@@ -167,7 +182,49 @@ if %HELP%==yes (
 	exit /b 0
 	)
 
-:: Execute config dump if requested
+
+:: PREP JOB: Update check (check if we're running the latest version)
+echo  Checking for updated version...
+pushd resources\stage_0_prep\check_update
+
+:: Skip this job if we're doing a dry run
+if "%DRY_RUN%"=="yes" goto skip_update_check
+
+:: pull down md5sums.txt from the repo and parse the latest version number out of it
+wget %UPDATE_REPO%/md5sums.txt 2>NUL
+if not %ERRORLEVEL%==0 (
+	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
+	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
+	)
+if exist md5sum* del md5sum*
+:: reset the window title since wget clobbers it
+title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
+	
+:: Notify if an update was found
+if %REPO_SCRIPT_VERSION% gtr %SCRIPT_VERSION% (
+	color 8a
+	echo.
+	echo  ! A newer version of Tron is available on the official repo.
+	echo    Current version is %SCRIPT_VERSION%, repo version is %REPO_SCRIPT_VERSION%
+	echo.
+	echo    Strongly recommend grabbing latest version before continuing.
+	echo.
+	echo    Option 1: You can sync directly from the BT Sync repo using this 
+	echo    read-only key: 
+	echo     BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
+	echo.
+	echo    Option 2: Alternately you can download the latest .7z pack here:
+	echo     %UPDATE_REPO%
+	echo.
+	pause
+	color 0f
+	)
+	
+:skip_update_check
+popd
+
+
+:: PREP JOB: Execute config dump if requested
 if %CONFIG_DUMP%==yes (
 	cls
 	echo.
@@ -195,22 +252,24 @@ if %CONFIG_DUMP%==yes (
 	echo    SSD_DETECTED:          %SSD_DETECTED% 
 	echo    TEMP:                  %TEMP%
 	echo    TIME:                  %TIME%
-	echo    SCRIPT_UPDATED:        %SCRIPT_UPDATED%
+	echo    REPO_SCRIPT_VERSION:   %REPO_SCRIPT_VERSION%
 	echo    SCRIPT_VERSION:        %SCRIPT_VERSION%
+	echo    SCRIPT_UPDATED:        %SCRIPT_UPDATED%
 	echo    WIN_VER:               %WIN_VER%
 	echo    WMIC:                  %WMIC%
 	echo.
 	exit /b 0
 	)
-	
 
-:: Act on autorun flag if it got set. Basically just skips the menu
+
+:: PREP JOB: Act on autorun flag if it got set. Basically just skip the menu
 if /i %AUTORUN%==yes goto execute_jobs
 
 
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
+color 0f
 cls
 echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
@@ -220,7 +279,7 @@ echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
 echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
 echo  *  1 TempClean:  BleachBit, CCleaner                        *
-echo  *  2 Disinfect:  Emsisoft a2cmd, Vipre, Sophos, MBAM        *
+echo  *  2 Disinfect:  Sophos, Vipre, MBAM                        *
 echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
 echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
@@ -307,9 +366,6 @@ if not "%SAFE_MODE%"=="yes" (
 		echo  Tron MUST be run with full Administrator rights to 
 		echo  function correctly.
 		echo.
-		echo  It's possible Tron is wrong ^(can happen on XP^). 
-		echo  If you're sure you're running as Administrator you can
-		echo  ignore this.
 		pause
 	)
 )
@@ -498,17 +554,6 @@ pushd resources\stage_2_disinfect
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
 
-:: JOB: VIPRE Rescue
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
-pushd vipre_rescue
-if "%DRY_RUN%"=="no" VipreRescueScanner.exe
-popd
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Done.
-
 :: JOB: Sophos Virus Remover
 echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...
@@ -516,6 +561,17 @@ echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
 if "%DRY_RUN%"=="no" svrtcli.exe -yes
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: VIPRE Rescue
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
+pushd vipre_rescue
+if "%DRY_RUN%"=="no" VipreRescueScanner.exe
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -707,7 +763,7 @@ if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
 	pushd java\jre\8\u11\x86
 	setlocal
-	call "jre-8u11-windows-x86.bat"
+	call "jre-8u11-windows-i586.bat"
 	endlocal
 	popd
 ) else (
@@ -847,11 +903,19 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
+:: Collect misc logs and deposit them in the log folder. Thanks to reddit.com/user/swtester
+echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"
+if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" %SystemDrive%\Logs\
+if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" %SystemDrive%\Logs\
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 	
 title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) [DONE]
 
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
+echo %CUR_DATE% %TIME% √ DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME% √ DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
