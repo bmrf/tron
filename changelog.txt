@@ -15,12 +15,62 @@ major feature add/remove
 
 
 ########################
+# v2.3.0 // 2014-08-xx #
+########################
+tron.bat                         v2.3.0
+ + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is available on the official repo server
+ - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
+ * wrap-up:           Add fancy ASCII checkmark symbol to final "DONE" message
+ + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+ * stage_3_disinfect: Switched order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.16.4763
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+
+STAGE 4: Patch
+ . 7-zip                         v7.20         (multi-language)
+ . Adobe Flash Player            v14.0.0.176   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Java Runtime Environment      8u11          (language ignored)
+ . Notepad++                     v6.6.8        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.0.8
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ . ComboFix                      v14.8.19.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+ 
+########################
 # v2.2.1 // 2014-08-21 #
 ########################
 tron.bat                         v2.2.1
  * prep and checks:   Admin rights check finally fixed; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
- * stage_3_disinfect: Integrated SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
- * stage_3_disinfect: Removed Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
+ * stage_3_disinfect: Integrate SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
+ - stage_3_disinfect: Remove Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
+ / stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to reddit.com/user/swtester
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -39,11 +89,11 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  + Added a couple new entries
 
 STAGE 4: Patch
- . 7-zip                         v7.20
- . Adobe Flash Player            v14.0.0.176
- . Adobe Reader                  v11.0.08
- . Java Runtime Environment      8u11
- . Notepad++                     v6.6.8
+ . 7-zip                         v7.20         (multi-language)
+ . Adobe Flash Player            v14.0.0.176   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Java Runtime Environment      8u11          (language ignored)
+ . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
  
 STAGE 5: Optimize
@@ -61,6 +111,7 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
+ 
 
 ########################
 # v2.1.0 // 2014-08-13 #
