@@ -8,9 +8,9 @@
 ::                      + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
 ::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
 ::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
-::                      * prep and checks:   Beefed up OS detection routine to support various improvements
-::                      * stage_2_disinfect: Switch order of Vipre and Sophos to avoid Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
-::                      + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only)
+::                      * prep and checks:   Beef up OS detection routine to support various improvements
+::                      * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
+::                      + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -666,24 +666,22 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: Remove default Metro apps (Windows 8/8.1 only)
+:: JOB: Remove default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
 pushd win8_metro_apps
 
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) and check for Windows 8
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
-	:: Call powershell
+	:: Enable scripts in PowerShell
 	if %DRY_RUN%==no powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
-	:: Run the commands
+	:: Call PowerShell to run the commands
 	if %DRY_RUN%==no powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 	if %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Done.	
 	)
-
-popd
-
+	popd
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
