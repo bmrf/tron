@@ -4,13 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
+:: Version:       3.0.0 + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+::                      + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
 ::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
 ::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
-::                      * prep and checks:   Beefed up OS detection routine to support new Windows 8/8.1 de-bloat section
-::                      + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
-::                      * stage_2_disinfect: Switch order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
-::                      + stage_3_de-bloat:  Add removal of Windows 8/8.1 default Metro apps
+::                      * prep and checks:   Beefed up OS detection routine to support various improvements
+::                      * stage_2_disinfect: Switch order of Vipre and Sophos to avoid Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
+::                      + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only)
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -74,7 +74,7 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=2.3.0
+set SCRIPT_VERSION=3.0.0
 set SCRIPT_DATE=2014-08-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
