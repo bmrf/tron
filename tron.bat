@@ -27,7 +27,7 @@
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
 
-::                Godspeed
+::                Kecepatan dan Kekuatan
 SETLOCAL
 
 
@@ -207,16 +207,16 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo.
 	echo  ! A newer version of Tron is available on the official repo.
 	echo.
-	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
+	echo   Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo   Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
 	echo.
-	echo    Strongly recommend grabbing latest version before continuing.
+	echo   Strongly recommend grabbing latest version before continuing.
 	echo.
-	echo    Option 1: Sync directly from the BT Sync repo using this 
-	echo    read-only key:
+	echo   Option 1: Sync directly from the BT Sync repo using this 
+	echo   read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
-	echo    Option 2: Download the latest .7z static pack here:
+	echo   Option 2: Download the latest .7z static pack here:
 	echo     %REPO_URL%
 	echo.
 	pause
@@ -285,9 +285,9 @@ echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
 echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
-echo  *  1 TempClean:  BleachBit, CCleaner                        *
+echo  *  1 TempClean:  BleachBit, CCleaner, clear evt logs        *
 echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
-echo  *  3 De-bloat:   Remove OEM bloatware apps (inc. Metro)     *
+echo  *  3 De-bloat:   Remove OEM bloatware apps (inc Metro apps) *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
 echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
 echo  *                                                           *
