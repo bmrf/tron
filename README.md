@@ -24,17 +24,24 @@ COMMAND-LINE USE:
  tron.bat [-a -c -d -p -r -s] | [-h]
 
   -a  Automatic/silent mode (no welcome screen)
+  
   -c  Config dump (display current config. Can be used with other
       flags to see what WOULD happen, but script will never execute
       if this flag is used)
+      
   -d  Dry run (run through script without executing any jobs)
+  
   -h  Display help text
+  
   -p  Preserve power settings (don't reset power settings to default)
+  
   -r  Reboot (auto-reboot 30 seconds after Tron completes)
+  
   -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
 
 CHANGE DEFAULTS (advanced):
+
 Defaults are always overridden by the command-line flags, but if you don't want to use the command-line and don't like Tron's defaults, you can edit the script and change the following default variables:
 
   - To ALWAYS skip defrag, regardless whether C:\ is an SSD or not, change this line to read yes:
