@@ -6,6 +6,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 
 USE:
+
 1. Boot into safe mode (with Network support is preferable).
 2. Copy tron.bat and the \resources folder to the target machine and run tron.bat as an ADMINISTRATOR. Tron will refuse to run if you don't do this.
 3. Wait anywhere from 3-10 hours (yes, it really does take that long).
@@ -17,6 +18,7 @@ Depending on how badly the computer is messed up, it could take anywhere from 3 
 
 
 COMMAND-LINE USE:
+
 (all flags are optional and can be combined)
 
  tron.bat [-a -c -d -p -r -s] | [-h]
