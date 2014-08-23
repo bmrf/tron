@@ -15,14 +15,16 @@ major feature add/remove
 
 
 ########################
-# v2.3.0 // 2014-08-xx #
+# v3.0.0 // 2014-08-23 #
 ########################
-tron.bat                         v2.3.0
- + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is available on the official repo server
+tron.bat                         v3.0.0
+ + wrap-up:           Collect Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+ + tron.bat:          Add rudimentary update check. Will notify you if a newer version is available on the official repo server
  - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
- * wrap-up:           Add fancy ASCII checkmark symbol to final "DONE" message
- + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
- * stage_3_disinfect: Switched order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
+ / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
+ * prep and checks:   Beef up OS detection routine to support various improvements
+ * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
+ + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -55,7 +57,7 @@ STAGE 6: Manual tools
  . AdwCleaner                    v3.3.0.8
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
- . ComboFix                      v14.8.19.1
+ * ComboFix                      v14.8.21.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.1.4
  . TDSSKiller                    v3.0.0.40
