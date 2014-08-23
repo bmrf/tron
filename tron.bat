@@ -7,8 +7,10 @@
 :: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
 ::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
 ::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
+::                      * prep and checks:   Beefed up OS detection routine to support new Windows 8/8.1 de-bloat section
 ::                      + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
-::                      * stage_3_disinfect: Switched order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
+::                      * stage_2_disinfect: Switch order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
+::                      + stage_3_de-bloat:  Add removal of Windows 8/8.1 default Metro apps
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -27,11 +29,6 @@
 
 ::                Godspeed
 SETLOCAL
-
-
-:: TODO:      x   Fix failure condition where repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
-::            !   Add de-bloat job to remove default Metro apps
-
 
 
 :::::::::::::::
@@ -78,7 +75,7 @@ set PRESERVE_POWER_SCHEME=no
 @echo off && cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=2.3.0
-set SCRIPT_DATE=2014-08-xx
+set SCRIPT_DATE=2014-08-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -101,20 +98,15 @@ pushd %~dp0 2>NUL
 :: Force WMIC location in case the system PATH is messed up
 set WMIC=%WINDIR%\system32\wbem\wmic.exe
 
-
-:: PREP JOB: Detect if we're on an XP/2k3-series kernel
-:: This is used to determine which powercfg.exe commands to run in the Prep section, as well as whether or not to run SFC (skipped on XP because it requires a reboot)
-:detect_xp
+:: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
+:detect_os
 set WIN_VER=undetected
-ver | find /i "Version 5." 2>NUL
-if %ERRORLEVEL%==0 set WIN_VER=xp2k3
-
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 :: Method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping with this.
 :detect_ssd
-echo  Scanning for presence of SDD...
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
 setlocal enabledelayedexpansion
@@ -172,8 +164,8 @@ if %HELP%==yes (
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic/silent mode ^(no welcome screen^)
  	echo    -c  Config dump ^(display current config. Can be used with other
-	echo        flags to see what WOULD happen, but the script will never
-	echo        execute if this flag is used^)
+	echo        flags to see what WOULD happen, but script will never execute
+	echo        if this flag is used^)
 	echo    -d  Dry run ^(run through script but don't execute any jobs^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot ^(auto-reboot 30 seconds after Tron completes^)
@@ -187,7 +179,6 @@ if %HELP%==yes (
 
 
 :: PREP JOB: Update check (check if we're running the latest version)
-echo  Checking for updated version...
 pushd resources\stage_0_prep\check_update
 :: Skip this job if we're doing a dry run
 if "%DRY_RUN%"=="yes" goto skip_update_check
@@ -195,8 +186,7 @@ if "%DRY_RUN%"=="yes" goto skip_update_check
 :: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
 :: Get the file from the repo
 wget %REPO_URL%/md5sums.txt 2>NUL
-
-:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and extract release date into REPO_SCRIPT_DATE
+:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if %ERRORLEVEL%==0 (
 	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
 	for /f "tokens=1,2,3,4 delims= " %%a in (md5sums.txt) do set WORKING2=%%d
@@ -223,7 +213,7 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
 	echo    Option 1: Sync directly from the BT Sync repo using this 
-	echo    read-only key: 
+	echo    read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
 	echo    Option 2: Download the latest .7z static pack here:
@@ -247,32 +237,33 @@ if %CONFIG_DUMP%==yes (
 	echo    %*
 	echo.
 	echo   Variable values ^(user-set^):
-	echo    AUTORUN:               %AUTORUN%
-	echo    AUTO_REBOOT_DELAY:     %AUTO_REBOOT_DELAY%
-	echo    CONFIG_DUMP:           %CONFIG_DUMP%
-	echo    DRY_RUN:               %DRY_RUN%
-	echo    LOGPATH:               %LOGPATH%
-	echo    LOGFILE:               %LOGFILE%
-	echo    PRESERVE_POWER_SCHEME: %PRESERVE_POWER_SCHEME%
-	echo    SKIP_DEFRAG:           %SKIP_DEFRAG%
+	echo    AUTORUN:                %AUTORUN%
+	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
+	echo    CONFIG_DUMP:            %CONFIG_DUMP%
+	echo    DRY_RUN:                %DRY_RUN%
+	echo    LOGPATH:                %LOGPATH%
+	echo    LOGFILE:                %LOGFILE%
+	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
+	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo.
 	echo   Variable values ^(script-internal^):
-	echo    CUR_DATE:              %CUR_DATE%
-	echo    DTS:                   %DTS%
-	echo    HELP:                  %HELP%
-	echo    SAFE_MODE:             %SAFE_MODE%
-	echo    SAFEBOOT_OPTION:       %SAFEBOOT_OPTION%
-	echo    SSD_DETECTED:          %SSD_DETECTED% 
-	echo    TEMP:                  %TEMP%
-	echo    TIME:                  %TIME%
-	echo    REPO_SCRIPT_DATE:      %REPO_SCRIPT_DATE%
-	echo    REPO_SCRIPT_VERSION:   %REPO_SCRIPT_VERSION%
-	echo    REPO_SYNC_KEY:         %REPO_SYNC_KEY%
-	echo    REPO_URL:              %REPO_URL%
-	echo    SCRIPT_VERSION:        %SCRIPT_VERSION%
-	echo    SCRIPT_DATE:           %SCRIPT_DATE%
-	echo    WIN_VER:               %WIN_VER%
-	echo    WMIC:                  %WMIC%
+	echo    CUR_DATE:               %CUR_DATE%
+	echo    DTS:                    %DTS%
+	echo    HELP:                   %HELP%
+	echo    SAFE_MODE:              %SAFE_MODE%
+	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
+	echo    SSD_DETECTED:           %SSD_DETECTED% 
+	echo    TEMP:                   %TEMP%
+	echo    TIME:                   %TIME%
+	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
+	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
+	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
+	echo    REPO_SYNC_KEY:          %REPO_SYNC_KEY%
+	echo    REPO_URL:               %REPO_URL%
+	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
+	echo    SCRIPT_DATE:            %SCRIPT_DATE%
+	echo    WIN_VER:                %WIN_VER%
+	echo    WMIC:                   %WMIC%
 	echo.
 	exit /b 0
 	)
@@ -316,11 +307,11 @@ if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%,
 if not "%SAFE_MODE%"=="yes" echo     Safe mode?               %SAFE_MODE% (not ideal)
 if not "%SKIP_DEFRAG%"=="no" (
 	echo   ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
-	echo     Runtime estimate:        3-5 hours
+	echo     Runtime estimate:        4-6 hours
 	goto welcome_screen_trailer
 	)
-if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        3-5 hours
-if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        5-7 hours
+if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        4-6 hours
+if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        6-8 hours
 if %DRY_RUN%==yes echo   ! DRY_RUN set; will not execute any jobs
 echo.
 :welcome_screen_trailer
@@ -438,7 +429,20 @@ echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always
 
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
 setlocal enabledelayedexpansion
-if "%WIN_VER%"=="xp2k3" (
+:: Windows XP version
+if "%WIN_VER%"=="Microsoft Windows XP" (
+	:: Extract the line containing the current power GUID
+	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
+	:: Parse out just the name and stash it in a variable
+	set POWER_SCHEME=!t:~27!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT "!POWER_SCHEME!" /FILE %LOGPATH%\tron_power_config_backup.pow
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE "Always On"
+	) 
+
+:: Windows Server 2003 version
+if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 	:: Extract the line containing the current power GUID
 	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
 	:: Parse out just the name and stash it in a variable
@@ -448,6 +452,7 @@ if "%WIN_VER%"=="xp2k3" (
 	:: Set the "High Performance" scheme active
 	powercfg /SETACTIVE "Always On"
 ) else (
+	:: This version of the command executes if we're not on XP or Server 2003
 	:: Extract the line containing the current power GUID
 	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
 	:: Parse out just the GUID and stash it in a variable
@@ -457,6 +462,7 @@ if "%WIN_VER%"=="xp2k3" (
 	:: Set the "High Performance" scheme active
 	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 	)
+
 :: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
 :: We need the POWER_SCHEME GUID for later when we re-import everything
 endlocal disabledelayedexpansion && set POWER_SCHEME=%POWER_SCHEME%
@@ -623,8 +629,9 @@ echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
 pushd sfc
 if %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker
-:: The reason we don't run for XP/2k3 is that it requires a reboot
-if not "%WIN_VER%"=="xp2k3" sfc /scannow
+if "%WIN_VER%"=="Microsoft Windows XP" goto skip_sfc
+if "%WIN_VER%"=="Microsoft Windows Server 2003" goto skip_sfc
+sfc /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
 findstr /c:"[SR]" %WinDir%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
 :skip_sfc
@@ -657,6 +664,26 @@ if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo  
 
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Remove default Metro apps (Windows 8/8.1 only)
+pushd win8_metro_apps
+
+:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) and check for Windows 8
+if "%WIN_VER:~0,9%"=="Windows 8" (
+	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
+	:: Call powershell
+	if %DRY_RUN%==no powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
+	:: Run the commands
+	if %DRY_RUN%==no powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+	if %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.	
+	)
+
+popd
+
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
@@ -899,20 +926,34 @@ echo %CUR_DATE% %TIME%   Wrapping up...
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...
-	if "%WIN_VER%"=="xp2k3" (
+	:: Check for Windows XP
+	if "%WIN_VER%"=="Microsoft Windows XP" (
 		if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
 		if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
+	) 
+	:: Check for Windows Server 2003
+	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
+			if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
+			if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
 	) else (
+		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if "%DRY_RUN%"=="no" powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
 		if "%DRY_RUN%"=="no" powercfg /setactive %POWER_SCHEME% 
-		)
-		del %LOGPATH%\tron_power_config_backup.pow 2>NUL
+	)
+	:: cleanup
+	del %LOGPATH%\tron_power_config_backup.pow 2>NUL
 ) else (
 	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...
-	if "%WIN_VER%"=="xp2k3" (
+	:: Check for Windows XP
+	if "%WIN_VER%"=="Microsoft Windows XP" (
+		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
+	) 
+	:: check for Windows Server 2003
+	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
 	) else (
+		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if "%DRY_RUN%"=="no" powercfg -restoredefaultschemes
 	)
 )
