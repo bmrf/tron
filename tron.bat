@@ -5,8 +5,8 @@
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is available on the official repo server
-::                      - tron.bat:          Removed outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
-::                      * wrap-up:           Add fancy ASCII checkmark symbol to final "DONE" message
+::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
+::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
 ::                      + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
 ::                      * stage_3_disinfect: Switched order of Vipre and Sophos because Sophos detects and deletes all files in Vipre's "quarantine" folder, preventing recovery. Thanks to reddit.com/user/swtester
 ::
@@ -29,7 +29,7 @@
 SETLOCAL
 
 
-:: TODO:      !   Fix failure condition where Tron repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
+:: TODO:      !   Fix failure condition where repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
 
 
 
@@ -77,8 +77,8 @@ set PRESERVE_POWER_SCHEME=no
 @echo off && cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=2.3.0
-set SCRIPT_UPDATED=2014-08-xx
-title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
+set SCRIPT_DATE=2014-08-xx
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
@@ -86,9 +86,11 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Preload variables for use and comparison later
 set REPO_SCRIPT_VERSION=0
+set REPO_SCRIPT_DATE=0
 set HELP=no
 set CONFIG_DUMP=no
-set UPDATE_REPO=http://bmrf.org/repos/tron/
+set REPO_URL=http://bmrf.org/repos/tron/
+set REPO_SYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
@@ -111,7 +113,7 @@ if %ERRORLEVEL%==0 set WIN_VER=xp2k3
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 :: Method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping with this.
 :detect_ssd
-echo  Scanning for presence of an SDD...
+echo  Scanning for presence of SDD...
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
 setlocal enabledelayedexpansion
@@ -161,7 +163,7 @@ for %%i in (%*) do (
 if %HELP%==yes (
 	cls
 	echo. 
-	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_UPDATED%^)
+	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
 	echo   Usage: %0%.bat ^[-a -c -d -p -r -s^] ^| ^[-h^]
@@ -186,35 +188,45 @@ if %HELP%==yes (
 :: PREP JOB: Update check (check if we're running the latest version)
 echo  Checking for updated version...
 pushd resources\stage_0_prep\check_update
-
 :: Skip this job if we're doing a dry run
 if "%DRY_RUN%"=="yes" goto skip_update_check
 
-:: pull down md5sums.txt from the repo and parse the latest version number out of it
-wget %UPDATE_REPO%/md5sums.txt 2>NUL
-if not %ERRORLEVEL%==0 (
+:: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
+:: Get the file from the repo
+wget %REPO_URL%/md5sums.txt 2>NUL
+
+:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and extract release date into REPO_SCRIPT_DATE
+if %ERRORLEVEL%==0 (
 	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
-	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
+	for /f "tokens=1,2,3,4 delims= " %%a in (md5sums.txt) do set WORKING2=%%d
 	)
+set REPO_SCRIPT_VERSION=%WORKING:~1,6%
+set REPO_SCRIPT_DATE=%WORKING2:~1,10%
+
+:: clean up
 if exist md5sum* del md5sum*
+
 :: reset the window title since wget clobbers it
-title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)
-	
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+
 :: Notify if an update was found
-if %REPO_SCRIPT_VERSION% gtr %SCRIPT_VERSION% (
+if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	color 8a
+	cls
 	echo.
 	echo  ! A newer version of Tron is available on the official repo.
-	echo    Current version is %SCRIPT_VERSION%, repo version is %REPO_SCRIPT_VERSION%
+	echo.
+	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
 	echo.
 	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
-	echo    Option 1: You can sync directly from the BT Sync repo using this 
+	echo    Option 1: Sync directly from the BT Sync repo using this 
 	echo    read-only key: 
-	echo     BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
+	echo     %REPO_SYNC_KEY%
 	echo.
-	echo    Option 2: Alternately you can download the latest .7z pack here:
-	echo     %UPDATE_REPO%
+	echo    Option 2: Download the latest .7z static pack here:
+	echo     %REPO_URL%
 	echo.
 	pause
 	color 0f
@@ -228,12 +240,12 @@ popd
 if %CONFIG_DUMP%==yes (
 	cls
 	echo.
-	echo   Tron v%SCRIPT_VERSION% ^(%SCRIPT_UPDATED%^) config dump
+	echo   Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^) config dump
 	echo.
 	echo   Command-line arguments:
 	echo    %*
 	echo.
-	echo   Current variable values ^(user-set^):
+	echo   Variable values ^(user-set^):
 	echo    AUTORUN:               %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:     %AUTO_REBOOT_DELAY%
 	echo    CONFIG_DUMP:           %CONFIG_DUMP%
@@ -243,7 +255,7 @@ if %CONFIG_DUMP%==yes (
 	echo    PRESERVE_POWER_SCHEME: %PRESERVE_POWER_SCHEME%
 	echo    SKIP_DEFRAG:           %SKIP_DEFRAG%
 	echo.
-	echo   Current variable values ^(script-internal^):
+	echo   Variable values ^(script-internal^):
 	echo    CUR_DATE:              %CUR_DATE%
 	echo    DTS:                   %DTS%
 	echo    HELP:                  %HELP%
@@ -252,9 +264,12 @@ if %CONFIG_DUMP%==yes (
 	echo    SSD_DETECTED:          %SSD_DETECTED% 
 	echo    TEMP:                  %TEMP%
 	echo    TIME:                  %TIME%
+	echo    REPO_SCRIPT_DATE:      %REPO_SCRIPT_DATE%
 	echo    REPO_SCRIPT_VERSION:   %REPO_SCRIPT_VERSION%
+	echo    REPO_SYNC_KEY:         %REPO_SYNC_KEY%
+	echo    REPO_URL:              %REPO_URL%
 	echo    SCRIPT_VERSION:        %SCRIPT_VERSION%
-	echo    SCRIPT_UPDATED:        %SCRIPT_UPDATED%
+	echo    SCRIPT_DATE:           %SCRIPT_DATE%
 	echo    WIN_VER:               %WIN_VER%
 	echo    WMIC:                  %WMIC%
 	echo.
@@ -271,7 +286,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 ::::::::::::::::::::
 color 0f
 cls
-echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%)  ****************
+echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
@@ -299,7 +314,7 @@ if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%,
 if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%, with Networking (ideal)
 if not "%SAFE_MODE%"=="yes" echo     Safe mode?               %SAFE_MODE% (not ideal)
 if not "%SKIP_DEFRAG%"=="no" (
-	echo   ! SKIP_DEFRAG set; skipping stage_5_optimize ^(defrag^)
+	echo   ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
 	echo     Runtime estimate:        3-5 hours
 	goto welcome_screen_trailer
 	)
@@ -380,8 +395,8 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :: Create the log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
-echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%), %PROCESSOR_ARCHITECTURE% architecture detected
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture detected
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -907,15 +922,15 @@ echo %CUR_DATE% %TIME%    Done.
 :: Collect misc logs and deposit them in the log folder. Thanks to reddit.com/user/swtester
 echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"
-if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" %SystemDrive%\Logs\
-if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" %SystemDrive%\Logs\
+if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" %SystemDrive%\Logs\ >NUL
+if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" %SystemDrive%\Logs\ >NUL
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 	
-title TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) [DONE]
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
-echo %CUR_DATE% %TIME% √ DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME% √ DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
@@ -929,8 +944,8 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) complete>> %LOGPATH%\%LOGFILE%
-echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_UPDATED%) complete
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
 echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
