@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is available on the official repo server
+:: Version:       2.3.0 + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
 ::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
 ::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
 ::                      + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
@@ -29,7 +29,8 @@
 SETLOCAL
 
 
-:: TODO:      !   Fix failure condition where repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
+:: TODO:      x   Fix failure condition where repo can't be contacted and REPO_SCRIPT_VERSION variable doesn't get changed
+::            !   Add de-bloat job to remove default Metro apps
 
 
 
@@ -294,8 +295,8 @@ echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
 echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
 echo  *  1 TempClean:  BleachBit, CCleaner                        *
-echo  *  2 Disinfect:  Sophos, Vipre, MBAM                        *
-echo  *  3 De-bloat:   Remove OEM bloatware apps                  *
+echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
+echo  *  3 De-bloat:   Remove OEM bloatware apps (inc. Metro)     *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
 echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
 echo  *                                                           *
@@ -621,7 +622,7 @@ echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%L
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
 pushd sfc
 if %DRY_RUN%==yes goto skip_sfc
-:: Basically this says "If OS is NOT XP or 2003, then go ahead and run system file checker
+:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker
 :: The reason we don't run for XP/2k3 is that it requires a reboot
 if not "%WIN_VER%"=="xp2k3" sfc /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
