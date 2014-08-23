@@ -1,5 +1,7 @@
 NAME:        Tron, an automatic cleaner/scanner/disinfector.
+
 AUTHOR:      vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
+
 BACKGROUND:  Why the name Tron? Tron "Fights for the Users."
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
