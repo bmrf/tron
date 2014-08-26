@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.0.0 + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+:: Version:       3.0.1 * prep:              Replace incorrect wget binary with standalone version. Thanks to reddit.com/user/Olonzac
+::                3.0.0 + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
 ::                      + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
 ::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
 ::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
@@ -74,7 +75,7 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.0.0
+set SCRIPT_VERSION=3.0.1
 set SCRIPT_DATE=2014-08-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -207,16 +208,16 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo.
 	echo  ! A newer version of Tron is available on the official repo.
 	echo.
-	echo   Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo   Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
+	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
 	echo.
-	echo   Strongly recommend grabbing latest version before continuing.
+	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
-	echo   Option 1: Sync directly from the BT Sync repo using this 
-	echo   read-only key:
+	echo    Option 1: Sync directly from the BT Sync repo using this 
+	echo    read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
-	echo   Option 2: Download the latest .7z static pack here:
+	echo    Option 2: Download the latest .7z static pack here:
 	echo     %REPO_URL%
 	echo.
 	pause
@@ -511,8 +512,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Reduce SysRestore space
-echo %CUR_DATE% %TIME%    Reducing System Restore space...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Reducing System Restore space...
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...
 pushd reduce_system_restore
 if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
 if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
@@ -577,8 +578,8 @@ echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFI
 echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
 
 :: JOB: Sophos Virus Remover
-echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (takes a LONG time)...
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
@@ -588,8 +589,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: VIPRE Rescue
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (takes a LONG time)...
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd vipre_rescue
