@@ -65,7 +65,15 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
+
+
+########################
+# v3.0.1 // 2014-08-23 #
+########################
+
+STAGE 0: Prep
+ * check_update: Replaced wget binary with standalone version. Thanks to reddit.com/user/Olonzac
+
 
 ########################
 # v3.0.0 // 2014-08-23 #
