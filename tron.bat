@@ -4,14 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.0.1 * prep:              Replace incorrect wget binary with standalone version. Thanks to reddit.com/user/Olonzac
-::                3.0.0 + wrap-up:           Add collection of Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
-::                      + tron.bat:          Add rudimentary automatic update check. Will notify you if a newer version is on the official repo server
-::                      - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
-::                      / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
-::                      * prep and checks:   Beef up OS detection routine to support various improvements
-::                      * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
-::                      + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
+:: Version:       3.1.0 * stage_0_prep:    Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
+::                                         Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
+::                                         Open to code block improvements on log backup section, current method feels clumsy  
+::                3.0.1 * prep and checks: Replace incorrect wget binary with standalone version. Thanks to reddit.com/user/Olonzac
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -65,7 +61,9 @@ set PRESERVE_POWER_SCHEME=no
 
 
 
+
 :: --------------------------- Don't edit anything below this line --------------------------- ::
+
 
 
 
@@ -75,8 +73,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.0.1
-set SCRIPT_DATE=2014-08-23
+set SCRIPT_VERSION=3.1.0
+set SCRIPT_DATE=2014-0x-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -106,7 +104,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-:: Method by /u/Suddenly_Engineer and /u/Aberu. Big time thanks for helping with this.
+:: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this.
 :detect_ssd
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
@@ -195,10 +193,8 @@ if %ERRORLEVEL%==0 (
 set REPO_SCRIPT_VERSION=%WORKING:~1,6%
 set REPO_SCRIPT_DATE=%WORKING2:~1,10%
 
-:: clean up
+:: clean up and reset the window title since wget clobbers it
 if exist md5sum* del md5sum*
-
-:: reset the window title since wget clobbers it
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Notify if an update was found
@@ -213,7 +209,7 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo.
 	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
-	echo    Option 1: Sync directly from the BT Sync repo using this 
+	echo    Option 1: Sync directly from the repo using the BT Sync
 	echo    read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
@@ -263,7 +259,10 @@ if %CONFIG_DUMP%==yes (
 	echo    REPO_URL:               %REPO_URL%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
-	echo    WIN_VER:                %WIN_VER%
+	:: We need this setlocal and endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
+	setlocal enabledelayedexpansion
+	echo    WIN_VER:                !WIN_VER!
+	endlocal disabledelayedexpansion
 	echo    WMIC:                   %WMIC%
 	echo.
 	exit /b 0
@@ -557,10 +556,28 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Clear Windows event logs
 echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...
-pushd clear_windows_event_logs
-if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
+pushd backup_and_clear_windows_event_logs
+
+:: Make a subdirectory in the logpath for the Windows event log backups
+if not exist "%LOGPATH%\event_log_backups" mkdir "%LOGPATH%\event_log_backups"
+
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...
+
+:: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
+setlocal enabledelayedexpansion
+if "%DRY_RUN%"=="no" for /f %%i in ('wmic nteventlog where "filename like '%%'" list instance') do wmic nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+endlocal disabledelayedexpansion
+echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Backups done, now clearing...
+
+:: Now we clear the logs
+if "%DRY_RUN%"=="no" wmic nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
+:: Alternate Vista-and-up only method
+:: if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
+
 popd
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"b
 echo %CUR_DATE% %TIME%    Done.
 
 popd
