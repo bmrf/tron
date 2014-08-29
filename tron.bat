@@ -4,10 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.1.0 * stage_0_prep:    Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
-::                                         Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
-::                                         Open to code block improvements on log backup section, current method feels clumsy  
-::                3.0.1 * prep and checks: Replace incorrect wget binary with standalone version. Thanks to reddit.com/user/Olonzac
+:: Version:       3.1.0 * stage_0_prep:  Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
+::                                       Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
+::                                       Open to code block improvements on this section, current method feels clumsy
+::                      / stage_4_patch: Updated Jave installer links to reflect new paths
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -74,7 +74,7 @@ set PRESERVE_POWER_SCHEME=no
 @echo off && cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.1.0
-set SCRIPT_DATE=2014-0x-xx
+set SCRIPT_DATE=2014-08-28
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -577,7 +577,7 @@ if "%DRY_RUN%"=="no" wmic nteventlog where "filename like '%%'" cleareventlog >>
 :: if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 
 popd
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"b
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 popd
@@ -617,7 +617,7 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
-echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs..."%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...
 pushd mbam
 
@@ -820,17 +820,17 @@ echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
-	pushd java\jre\8\u11\x86
+	pushd java\jre\8\u20\x86
 	setlocal
-	call "jre-8u11-windows-i586.bat"
+	call "jre-8u20-windows-i586.bat"
 	endlocal
 	popd
 ) else (
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...
-	pushd java\jre\8\u11\x64
+	pushd java\jre\8\u20\x64
 	setlocal
-	call "jre-8u11-windows-x64.bat"
+	call "jre-8u20-windows-x64.bat"
 	endlocal
 	popd
 	)
