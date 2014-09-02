@@ -72,8 +72,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 @echo off && cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.1.0
-set SCRIPT_DATE=2014-08-28
+set SCRIPT_VERSION=3.2.0
+set SCRIPT_DATE=2014-09-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
