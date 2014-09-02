@@ -4,14 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.1.0 * stage_0_prep:  Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
-::                                       Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
-::                                       Open to code block improvements on this section, current method feels clumsy
-::                      / stage_4_patch: Updated Jave installer links to reflect new paths
+:: Version:       3.2.0 * tron.bat: Converted many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
+::                      * tron.bat: Replaced all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
+::                      / tron.bat: Fixed references to WMIC - we were mistakenly still relying on PATH and not using the absolute path set in the WMIC variable
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
-::                Optional command-line flags (can be combined):
+::                OPTIONAL command-line flags (can be combined, none are required):
 ::                      -a  Automatic/silent mode (no welcome screen)
 ::                      -c  Config dump (display current config. Can be used with other flags
 ::                          to see what WOULD happen, but script will never execute if this 
@@ -91,11 +90,11 @@ set REPO_SYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
-:: Get in the correct path (~dp0). This is useful if we start from a network share. This converts CWD to a drive letter
+:: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
 
 :: Force WMIC location in case the system PATH is messed up
-set WMIC=%WINDIR%\system32\wbem\wmic.exe
+set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 :detect_os
@@ -259,7 +258,7 @@ if %CONFIG_DUMP%==yes (
 	echo    REPO_URL:               %REPO_URL%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
-	:: We need this setlocal and endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
+	:: We need this setlocal/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
 	setlocal enabledelayedexpansion
 	echo    WIN_VER:                !WIN_VER!
 	endlocal disabledelayedexpansion
@@ -482,12 +481,12 @@ pushd repair_wmi
 if %DRY_RUN%==yes goto skip_repair_wmi
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
-wmic timezone >NUL
+%WMIC% timezone >NUL
 if not %ERRORLEVEL%==0 (
     echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
     echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
     net stop winmgmt
-    pushd %WINDIR%\system32\wbem
+    pushd %SystemRoot%\system32\wbem
     for %%i in (*.dll) do RegSvr32 -s %%i
     :: Kill this random window that pops up
     tskill wbemtest /a 2>NUL
@@ -496,7 +495,7 @@ if not %ERRORLEVEL%==0 (
     start "" wbemtest.exe /RegServer
     tskill wbemtest /a 2>NUL
     tskill wbemtest /a 2>NUL
-    :: winmgmt.exe /resetrepository       -- optional; forces full rebuild instead of a repair like the line below this. Enable if you're feeling REAAAALLY crazy
+    :: winmgmt.exe /resetrepository       -- optional; force full rebuild instead of repair like the line below this. Enable if you're feeling REAAAALLY crazy
     winmgmt.exe /salvagerepository /resyncperf
     wmiadap.exe /RegServer
     wmiapsrv.exe /RegServer
@@ -514,8 +513,8 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...
 pushd reduce_system_restore
-if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
-if "%DRY_RUN%"=="no" reg add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -566,13 +565,13 @@ echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...
 
 :: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 setlocal enabledelayedexpansion
-if "%DRY_RUN%"=="no" for /f %%i in ('wmic nteventlog where "filename like '%%'" list instance') do wmic nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 endlocal disabledelayedexpansion
 echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backups done, now clearing...
 
 :: Now we clear the logs
-if "%DRY_RUN%"=="no" wmic nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
+if "%DRY_RUN%"=="no" %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
 :: Alternate Vista-and-up only method
 :: if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 
@@ -649,9 +648,9 @@ if %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker
 if "%WIN_VER%"=="Microsoft Windows XP" goto skip_sfc
 if "%WIN_VER%"=="Microsoft Windows Server 2003" goto skip_sfc
-sfc /scannow
+%SystemRoot%\System32\sfc.exe /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
-findstr /c:"[SR]" %WinDir%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
+%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
 :skip_sfc
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -678,7 +677,7 @@ echo %CUR_DATE% %TIME%    Searching for and removing common crapware programs...
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt
 :: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
-if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && wmic product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -687,7 +686,8 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Remove default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
 pushd win8_metro_apps
 
-:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) and check for Windows 8
+:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8.
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
@@ -883,11 +883,11 @@ echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...>> "%LOGPATH%\%LOG
 echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
 
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
-if "%DRY_RUN%"=="no" %WinDir%\System32\chkdsk.exe %SystemDrive%
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if not %ERRORLEVEL%==0 ( 
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.
-	if "%DRY_RUN%"=="no" echo y | %WinDir%\System32\chkdsk.exe /x /v %SystemDrive%
+	if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
 ) else (
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.
