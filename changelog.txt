@@ -15,6 +15,54 @@ major feature add/remove
 
 
 ########################
+# v3.2.0 // 2014-09-xx #
+########################
+tron.bat                         v3.2.0
+ * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
+ * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
+ / tron.bat: Fix references to WMIC - we were mistakenly still relying on PATH and not using the absolute path set in the WMIC variable
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.16.4763
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . no changes
+
+STAGE 4: Patch
+ . 7-zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v14.0.0.176   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ * Java Runtime Environment      8u20          (language ignored)
+ . Notepad++                     v6.6.8        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.0.8
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.8.31.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+
+########################
 # v3.1.0 // 2014-08-28 #
 ########################
 tron.bat                         v3.1.0
