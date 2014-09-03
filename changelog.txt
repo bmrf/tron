@@ -15,18 +15,19 @@ major feature add/remove
 
 
 ########################
-# v3.2.0 // 2014-09-xx #
+# v3.2.0 // 2014-09-03 #
 ########################
 tron.bat                         v3.2.0
  * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
  * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
- / tron.bat: Fix references to WMIC - we were mistakenly still relying on PATH and not using the absolute path set in the WMIC variable
+ * tron.bat: Update links to reflect new Adobe Flash installers
+ / tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
  
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ * CCLeaner                      v4.17.4808
  . Bleachbit                     v1.2
 
 STAGE 2: Disinfect
@@ -35,13 +36,13 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . no changes
+ - some redundant entries removed
 
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.176   (language ignored)
+ * Adobe Flash Player            v14.0.0.179   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- * Java Runtime Environment      8u20          (language ignored)
+ . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
  
@@ -51,7 +52,7 @@ STAGE 5: Optimize
  
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.8
+ * AdwCleaner                    v3.3.0.9
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
  * ComboFix                      v14.8.31.1
