@@ -4,9 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.2.0 * tron.bat: Converted many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
-::                      * tron.bat: Replaced all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
-::                      / tron.bat: Fixed references to WMIC - we were mistakenly still relying on PATH and not using the absolute path set in the WMIC variable
+:: Version:       3.2.0 * tron.bat: Convert many internal Windows utility references to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
+::                      * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
+::                      * tron.bat: Update links to reflect new Adobe Flash installers
+::                      / tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -25,6 +26,7 @@
 
 ::                Kecepatan dan Kekuatan
 SETLOCAL
+@echo off
 
 
 :::::::::::::::
@@ -70,10 +72,10 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-@echo off && cls && echo. && echo  Loading...
+cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.2.0
-set SCRIPT_DATE=2014-09-xx
+set SCRIPT_DATE=2014-09-03
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -166,7 +168,7 @@ if %HELP%==yes (
 	echo        if this flag is used^)
 	echo    -d  Dry run ^(run through script but don't execute any jobs^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
-	echo    -r  Reboot ^(auto-reboot 30 seconds after Tron completes^)
+	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
  	echo.
 	echo   Misc flags ^(must be used alone^)
@@ -747,12 +749,12 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
 if %DRY_RUN%==yes goto skip_adobe_flash
-pushd "adobe\flash_player\v14.0.0.176\firefox"
+pushd "adobe\flash_player\v14.0.0.179\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v14.0.0.176\internet explorer"
+pushd "adobe\flash_player\v14.0.0.179\internet explorer"
 setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
