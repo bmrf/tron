@@ -4,10 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.2.0 * tron.bat: Convert many internal Windows utility references to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
-::                      * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
-::                      * tron.bat: Update links to reflect new Adobe Flash installers
-::                      / tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
+:: Version:       3.3.0 * stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -74,8 +71,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.2.0
-set SCRIPT_DATE=2014-09-03
+set SCRIPT_VERSION=3.3.0
+set SCRIPT_DATE=2014-09-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -191,8 +188,10 @@ if %ERRORLEVEL%==0 (
 	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
 	for /f "tokens=1,2,3,4 delims= " %%a in (md5sums.txt) do set WORKING2=%%d
 	)
-set REPO_SCRIPT_VERSION=%WORKING:~1,6%
-set REPO_SCRIPT_DATE=%WORKING2:~1,10%
+if %ERRORLEVEL%==0 (
+	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
+	set REPO_SCRIPT_DATE=%WORKING2:~1,10%
+	)
 
 :: clean up and reset the window title since wget clobbers it
 if exist md5sum* del md5sum*
@@ -214,7 +213,7 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo    read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
-	echo    Option 2: Download the latest .7z static pack here:
+	echo    Option 2: Download the latest .7z static pack:
 	echo     %REPO_URL%
 	echo.
 	pause
