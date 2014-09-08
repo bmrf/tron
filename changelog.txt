@@ -16,51 +16,13 @@ major feature add/remove
 
 
 ########################
-# v3.3.0 // 2014-09-xx #
+# v3.2.1 // 2014-09-05 #
 ########################
- * Use SHA-256 for integrity verification instead of MD5. Thanks to reddit.com/user/abcot
+ * checksums.txt now uses SHA-256 for integrity verification instead of MD5. Thanks to reddit.com/user/abcot
 
-tron.bat                         v3.3.0
+tron.bat                         v3.2.1
  * stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- - some redundant entries removed
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.179   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- . Java Runtime Environment      8u20          (language ignored)
- . Notepad++                     v6.6.8        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.9
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- . ComboFix                      v14.8.31.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
+ / stage_3_de-bloat:          Moved programs_to_target.txt and "note - read this.txt" to their own job subfolder ("oem") and updated tron.bat and instructions file to reflect changes
 
 
 ########################
