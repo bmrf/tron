@@ -4,8 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.3.0 * stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
-::
+:: Version:       3.2.1 * stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
+::                      / stage_3_de-bloat:          Moved programs_to_target.txt and "note - read this.txt" to their own job subfolder ("oem") and updated tron.bat and instructions file to reflect changes
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -26,8 +26,10 @@ SETLOCAL
 @echo off
 
 
+
+
 :::::::::::::::
-:: VARIABLES :: --------------- These are the defaults. Change them if you so desire. -------- ::
+:: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -36,7 +38,7 @@ SETLOCAL
 ::  * Network paths are okay           (okay:  \\server\share name      )
 ::                                     (       \\172.16.1.5\share name  )
 
-:: ! All variables specified here are overridden if their respective command-line flag is used
+:: ! All variables here are overridden if their respective command-line flag is used
 
 :: Log settings
 set LOGPATH=%SystemDrive%\Logs
@@ -71,8 +73,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.3.0
-set SCRIPT_DATE=2014-09-xx
+set SCRIPT_VERSION=3.2.1
+set SCRIPT_DATE=2014-09-05
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -300,7 +302,7 @@ echo  Current settings (edit script to change):
 echo     Log location:            %LOGPATH%\%LOGFILE%
 if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
 if "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: disabled
-if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (stage_5 skipped)
+if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (defrag skipped)
 if "%SSD_DETECTED%"=="no" echo     SSD detected?            %SSD_DETECTED%
 if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%, without Networking
 if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%, with Networking (ideal)
@@ -624,6 +626,7 @@ pushd mbam
 :: Install & remove the desktop icon
 if %DRY_RUN%==yes goto skip_mbam
 "Malwarebytes Anti-Malware v2.0.2.1012.exe" /verysilent
+::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 
@@ -673,13 +676,15 @@ echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFIL
 echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...
 
 :: JOB: Remove crapware programs
-echo %CUR_DATE% %TIME%    Searching for and removing common crapware programs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Searching for and removing common crapware programs...
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\programs_to_target.txt
+pushd oem
+echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt
 :: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
 if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 
+popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
