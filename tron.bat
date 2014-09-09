@@ -1,1200 +1,1037 @@
-#############
-# CHANGELOG #
-#############
-# Legend:
- + Addition    - Removal   
- ! Bug fix     * Update/fix/improvement
- . No change   / Change (non bug-fix)
-
-# Version number increment legend:
-x.x.x
-| | |
-| | program/definition updates or minor bug fix/change
-| minor feature add/remove OR critical bug fix
-major feature add/remove
-
-
-########################
-# v3.3.0 // 2014-09-xx #
-########################
-tron.bat                         v3.3.0
-
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- - some redundant entries removed
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.179   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- . Java Runtime Environment      8u20          (language ignored)
- * Notepad++                     v6.6.9        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.9
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- . ComboFix                      v14.8.31.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v3.2.1 // 2014-09-05 #
-########################
- * checksums.txt now uses SHA-256 for integrity verification instead of MD5. Thanks to reddit.com/user/abcot
-
-tron.bat                         v3.2.1
- ! stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
- / stage_3_de-bloat:          Moved programs_to_target.txt and "note - read this.txt" to their own job subfolder ("oem") and updated tron.bat and instructions file to reflect changes
-
-
-########################
-# v3.2.0 // 2014-09-03 #
-########################
-tron.bat                         v3.2.0
- * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
- * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
- * tron.bat: Update links to reflect new Adobe Flash installers
- ! tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- * CCLeaner                      v4.17.4808
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- - some redundant entries removed
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- * Adobe Flash Player            v14.0.0.179   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- . Java Runtime Environment      8u20          (language ignored)
- . Notepad++                     v6.6.8        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.3.0.9
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- * ComboFix                      v14.8.31.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
-
-########################
-# v3.1.0 // 2014-08-28 #
-########################
-tron.bat                         v3.1.0
- * stage_0_prep:  Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
-                  Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
-                  I'm open to code block improvements on this section, the current method feels clumsy somehow.
- / stage_4_patch: Update Java installer links to reflect new paths				 
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . no changes
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- * Java Runtime Environment      8u20          (language ignored)
- . Notepad++                     v6.6.8        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.8
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- * ComboFix                      v14.8.28.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v3.0.1 // 2014-08-23 #
-########################
-
-STAGE 0: Prep
- * check_update: Replaced wget binary with standalone version. Thanks to reddit.com/user/Olonzac
-
-
-########################
-# v3.0.0 // 2014-08-23 #
-########################
-tron.bat                         v3.0.0
- + wrap-up:           Collect Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
- + tron.bat:          Add rudimentary update check. Will notify you if a newer version is available on the official repo server
- - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
- / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
- * prep and checks:   Beef up OS detection routine to support various improvements
- * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
- + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- . Java Runtime Environment      8u11          (language ignored)
- . Notepad++                     v6.6.8        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.8
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- * ComboFix                      v14.8.21.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
- 
-########################
-# v2.2.1 // 2014-08-21 #
-########################
-tron.bat                         v2.2.1
- ! prep and checks:   Fix admin rights check; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
- * stage_3_disinfect: Integrate SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
- - stage_3_disinfect: Remove Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
- ! stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to reddit.com/user/swtester
-
-STAGE 0: Prep
- . Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- - Emsisoft Commandline Scanner  v9.0.0.4183 -- REMOVED
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- + Added a couple new entries
-
-STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
- . Java Runtime Environment      8u11          (language ignored)
- . Notepad++                     v6.6.8        (multi-language)
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.3.0.8
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.01
- * ComboFix                      v14.8.19.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
-
-########################
-# v2.1.0 // 2014-08-13 #
-########################
-tron.bat                         v2.1.0
- ! prep and checks:  Fix admin check. Thanks to reddit.com/user/agent-squirrel
- / prep and checks:  Admin check color change. Will now be more alarming and hopefully reduce number of people who try to run as non-Admin
- * stage_4_patch:    Updated links to reflect new Flash and Reader installers
- * tron.bat:         Misc snarky comments about MS products removed
- 
-STAGE 0: Prep
- * Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- * Adobe Flash Player            v14.0.0.176
- * Adobe Reader                  v11.0.08
- . Java Runtime Environment      8u11
- . Notepad++                     v6.6.8
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.0.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.3.0.4
- . aswMBR                        v1.0.1.2041
- * autoruns                      v12.01
- . ComboFix                      v14.8.6.2
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v2.0.0 // 2014-08-11 #
-########################
-tron.bat                         v2.0.0
- * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
- ! prep and checks:  Fix missing 'set WMIC=<path>' command (was causing all JRE removal commands to fail)
- * stage_0_prep:     Add flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
- ! stage_4_patch:    Fix bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
- + stage_5_optimize: Add job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
-
-STAGE 0: Prep
- * Rkill                         v2.6.8.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u11
- . Notepad++                     v6.6.8
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.3.0.4
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.8.6.2
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v1.9.0 // 2014-08-04 #
-########################
-tron.bat                         v1.9.0
- + tron.bat: Added support for the following optional command-line flags (can be combined):
-    -c  Config dump (display current variables)
-    -d  Dry run. Run through Tron without executing any jobs (mostly for my testing)
-    -s  Skip defrag. Force Tron to skip defrag regardless whether an SSD is detected
-    -h  Spit out help on using Tron via command-line
-    -r  Reboot (auto-reboot 30 seconds after Tron completes)
- * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord for suggestion
- - tron.bat: Removed support for --auto flag (use -a instead) 
- ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
- 
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- * CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u11
- * Notepad++                     v6.6.8
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.3.0.2
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.8.2.2
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
- 
-########################
-# v1.8.2 // 2014-07-31 #
-########################
-tron.bat                         v1.8.2
- * prep and checks:   Move Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
- + stage_0_prep:      Add code to reduce space allowed for System Restore checkpoints to 5%
- + stage_2_disinfect: Add /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
- ! stage_2_disinfect: Fix failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
-
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat
-Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- * Greatly expanded list of programs to target (too long to list here). 
-   Thanks to reddit.com/user/3xist and reddit.com/user/Gaxor
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u11
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.3.0.1
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.7.29.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v1.8.1 // 2014-07-29 #
-########################
-tron.bat                         v1.8.1
- ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
- 
-
-########################
-# v1.8.0 // 2014-07-25 #
-########################
-tron.bat                         v1.8.0
- * prep and checks:   Overhaul Date/Time conversion so we can handle all versions of Windows using any local date-time format
- ! prep and checks:   Possible fix for Windows 8/8.1 Admin rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
- * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
- + stage_1_tempclean: Add job to clear Windows event logs
-
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- . Emsisoft Commandline Scanner  v9.0.0.4183
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat
-Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . 3vix%%
- . Acer%%
- . Adobe Shockwave%%
- . Advanced%%FX Engine
- . Akamai%%
- . Amazon Browser%%
- . Bing%%
- . Bonjour%%
- . BlueStack%%
- . Catalina Savings%%
- . Cyberlink%%
- . Dell Getting Started Guide%%
- . Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- . HP Deskjet%%Help
- . Launch Manager%%
- . Lenovo%%
- . Live! Cam Avatar%%
- . Move Media%%
- . My HP%%
- . PowerDVD%%
- . RenWeb%%
- . Roxio%%
- . Sonic CinePlayer%%
- . %%Toolbar%%
- . Toshiba%%
- . %%Trial%%
- . UserGuide%%
- . WildTangent%%
- . Yahoo! Browser%%
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- * Java Runtime Environment      8u11
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.2.1.6
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.7.25.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
-
-########################
-# v1.7.4 // 2014-07-23 #
-########################
-tron.bat                         v1.7.4
- ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
- 
-
-########################
-# v1.7.3 // 2014-07-22 #
-########################
-tron.bat                         v1.7.3
- ! prep and checks: Fix SSD detection (possibly). Please test and report if it fails on your drive
- * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
-
-
-########################
-# v1.7.2 // 2014-07-22 #
-########################
-tron.bat                         v1.7.2
- * tron.bat:        Add "--auto" and "-a" flags for automatic unattended execution
- / tron.bat:        Move all but most recent changelog entries to the changelog file, to avoid cluttering up script header
- + prep and checks: Re-add check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
- * prep and checks: Revert SSD check to something more reliable
-
- 
-########################
-# v1.7.1 // 2014-07-22 #
-########################
-tron.bat                         v1.7.1
- - prep and checks: Remove check for Administrator rights since it was failing too often.
-
-
-########################
-# v1.7.0 // 2014-07-21 #
-########################
-tron.bat                         v1.7
- + prep and checks:   Add check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
- + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
- / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section	 
-
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- + Emsisoft Commandline Scanner  v9.0.0.4183
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
-STAGE 3: De-bloat
-Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . 3vix%%
- . Acer%%
- . Adobe Shockwave%%
- . Advanced%%FX Engine
- . Akamai%%
- . Amazon Browser%%
- . Bing%%
- . Bonjour%%
- . BlueStack%%
- . Catalina Savings%%
- . Cyberlink%%
- . Dell Getting Started Guide%%
- . Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- . HP Deskjet%%Help
- . Launch Manager%%
- . Lenovo%%
- . Live! Cam Avatar%%
- . Move Media%%
- . My HP%%
- . PowerDVD%%
- . RenWeb%%
- . Roxio%%
- . Sonic CinePlayer%%
- . %%Toolbar%%
- . Toshiba%%
- . %%Trial%%
- . UserGuide%%
- . WildTangent%%
- . Yahoo! Browser%%
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
-
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.2.1.6
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.7.21.1
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- + TDSSKiller                    v3.0.0.40
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
-
- 
-######################
-# v1.6 // 2014-07-16 #
-######################
-tron.bat                         v1.6
- + stage_2_disinfect: Add System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
- + stage_0_prep:      Add code to detect and repair broken WMI configurations
+:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a PC
+::                  Kevin Flynn:  "Who's that guy?"
+::                  Program:      "That's Tron. He fights for the Users."
+:: Requirements:  1. Administrator access
+::                2. Safe mode is strongly recommended
+:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
+:: Version:       3.3.0 + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
+::                      ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
+::                      * stage_2_disinfect:         Add deletion of Malwarebytes desktop shortcut on Windows XP/Server 2003
+::                
+:: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
+::
+::                OPTIONAL command-line flags (can be combined, none are required):
+::                      -a  Automatic/silent mode (no welcome screen)
+::                      -c  Config dump (display current config. Can be used with other flags
+::                          to see what WOULD happen, but script will never execute if this 
+::                          flag is used)
+::                      -d  Dry run (run through script without executing any jobs)
+::                      -h  Display help text
+::                      -p  Preserve power settings (don't reset power settings to default)
+::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
+::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::
+::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
+
+::                Kecepatan dan Kekuatan
+SETLOCAL
+@echo off
+
+
+
+
+:::::::::::::::
+:: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
+:::::::::::::::
+:: Rules for variables:
+::  * NO quotes!                       (bad:  "c:\directory\path"       )
+::  * NO trailing slashes on the path! (bad:   c:\directory\            )
+::  * Spaces are okay                  (okay:  c:\my folder\with spaces )
+::  * Network paths are okay           (okay:  \\server\share name      )
+::                                     (       \\172.16.1.5\share name  )
+
+:: ! All variables here are overridden if their respective command-line flag is used
+
+:: Log settings
+set LOGPATH=%SystemDrive%\Logs
+set LOGFILE=tron.log
+
+:: Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot.
+set AUTO_REBOOT_DELAY=0
+
+:: Set to anything but "no" in order to skip defrag regardless whether the system drive is an SSD or not.
+:: Leave as "no" to let the script auto-detect SSDs
+set SKIP_DEFRAG=no
+
+:: AUTORUN = automatic/silent execution (no welcome screen)
+:: DRY_RUN = run through script but skip all actual actions (test mode)
+:: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
+set AUTORUN=no
+set DRY_RUN=no
+set PRESERVE_POWER_SCHEME=no
+
+
+
+
+
+:: --------------------------- Don't edit anything below this line --------------------------- ::
+
+
+
+
+
+:::::::::::::::::::::
+:: PREP AND CHECKS ::
+:::::::::::::::::::::
+cls && echo. && echo  Loading...
+color 0f
+set SCRIPT_VERSION=3.3.0
+set SCRIPT_DATE=2014-09-xx
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: Preload variables for use and comparison later
+set REPO_SCRIPT_VERSION=0
+set REPO_SCRIPT_DATE=0
+set HELP=no
+set CONFIG_DUMP=no
+set REPO_URL=http://bmrf.org/repos/tron
+set REPO_SYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
+
+:: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
+%~d0 2>NUL
+:: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
+pushd %~dp0 2>NUL
+
+:: Force WMIC location in case the system PATH is messed up
+set WMIC=%SystemRoot%\system32\wbem\wmic.exe
+
+:: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
+:detect_os
+set WIN_VER=undetected
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+
+:: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
+:: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this.
+:detect_ssd
+pushd resources\stage_5_optimize\defrag
+set SSD_DETECTED=no
+setlocal enabledelayedexpansion
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "Solid State" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
+
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "SSD" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
+
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "RAID" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
+endlocal disabledelayedexpansion
+
+
+:: PREP JOB: Detect if the system is in Safe Mode
+:detect_safe_mode
+popd
+set SAFE_MODE=no
+if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
+if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+
+
+:: PREP JOB: Make the log directory and file if they don't already exist
+if not exist %LOGPATH% mkdir %LOGPATH%
+if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
+
+
+:: PREP JOB: Check and parse command-line arguments
+for %%i in (%*) do (
+	if /i %%i==-a set AUTORUN=yes
+	if /i %%i==-c set CONFIG_DUMP=yes
+	if /i %%i==-d set DRY_RUN=yes
+	if /i %%i==-h set HELP=yes
+	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
+	if /i %%i==-r set AUTO_REBOOT_DELAY=30
+	if /i %%i==-s set SKIP_DEFRAG=yes
+	)
+
+
+:: PREP JOB: Execute help if requested
+if %HELP%==yes (
+	cls
+	echo. 
+	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo  Author: vocatus on reddit.com/r/sysadmin
+	echo.
+	echo   Usage: %0%.bat ^[-a -c -d -p -r -s^] ^| ^[-h^]
+	echo.
+	echo   Optional flags ^(can be combined^):
+	echo    -a  Automatic/silent mode ^(no welcome screen^)
+ 	echo    -c  Config dump ^(display current config. Can be used with other
+	echo        flags to see what WOULD happen, but script will never execute
+	echo        if this flag is used^)
+	echo    -d  Dry run ^(run through script but don't execute any jobs^)
+	echo    -p  Preserve power settings ^(don't reset power settings to default^)
+	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
+	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+ 	echo.
+	echo   Misc flags ^(must be used alone^)
+	echo    -h  Display this help text
+	echo.
+	exit /b 0
+	)
+
+
+:: PREP JOB: Update check (check if we're running the latest version)
+pushd resources\stage_0_prep\check_update
+:: Skip this job if we're doing a dry run
+if "%DRY_RUN%"=="yes" goto skip_update_check
+
+:: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
+:: Get the file from the repo
+wget %REPO_URL%/md5sums.txt 2>NUL
+:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
+if %ERRORLEVEL%==0 (
+	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
+	for /f "tokens=1,2,3,4 delims= " %%a in (md5sums.txt) do set WORKING2=%%d
+	)
+if %ERRORLEVEL%==0 (
+	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
+	set REPO_SCRIPT_DATE=%WORKING2:~1,10%
+	)
+
+:: clean up and reset the window title since wget clobbers it
+if exist md5sum* del md5sum*
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+
+:: Notify if an update was found
+if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
+	color 8a
+	cls
+	echo.
+	echo  ! A newer version of Tron is available on the official repo.
+	echo.
+	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
+	echo.
+	echo    Strongly recommend grabbing latest version before continuing.
+	echo.
+	echo    Option 1: Sync directly from the repo using the BT Sync
+	echo    read-only key:
+	echo     %REPO_SYNC_KEY%
+	echo.
+	echo    Option 2: Download the latest .7z static pack:
+	echo     %REPO_URL%
+	echo.
+	pause
+	color 0f
+	)
 	
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- * Sophos Virus Removal Tool     v2.5, updated defs 2014-07-16
- * Vipre Rescue Scanner          v7.0.7.8, updated defs 2014-07-16
- 
-STAGE 3: De-bloat
-Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- + 3vix%%
- . Acer%%
- . Adobe Shockwave%%
- . Advanced%%FX Engine
- . Akamai%%
- . Amazon Browser%%
- . Bing%%
- . Bonjour%%
- + BlueStack%%
- . Catalina Savings%%
- . Cyberlink%%
- . Dell Getting Started Guide%%
- . Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- . HP Deskjet%%Help
- . Launch Manager%%
- . Lenovo%%
- . Live! Cam Avatar%%
- . Move Media%%
- . My HP%%
- . PowerDVD%%
- . RenWeb%%
- . Roxio%%
- . Sonic CinePlayer%%
- . %%Toolbar%%
- + Toshiba%%
- + %%Trial%%
- . UserGuide%%
- . WildTangent%%
- . Yahoo! Browser%%
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.2.1.5
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.7.16.2
- . gmer                          v2.1.19357
- . Junkware Removal Tool         v6.1.4
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
- 
-######################
-# v1.5 // 2014-07-15 #
-######################
-tron.bat                         v1.5
- + tron.bat:      Add "-auto" flag to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
- * tron.bat:      Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
- * tron.bat:      General cleanup of many conditional tests; should slightly speed script up
- * stage_4_patch: Remove all existing JRE versions prior to installing latest JRE
-	 
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-15
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
-Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . Acer%%
- . Adobe Shockwave%%
- . Advanced%%FX Engine
- . Akamai%%
- . Amazon Browser%%
- . Bing%%
- . Bonjour%%
- . Catalina Savings%%
- . Cyberlink%%
- . Dell Getting Started Guide%%
- . Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- . HP Deskjet%%Help
- . Launch Manager%%
- . Lenovo%%
- . Live! Cam Avatar%%
- . Move Media%%
- . My HP%%
- . PowerDVD%%
- . RenWeb%%
- . Roxio%%
- . Sonic CinePlayer%%
- . %%Toolbar%%
- . UserGuide%%
- + WildTangent%%
- . Yahoo! Browser%%
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v3.2.1.5
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- * ComboFix                      v14.7.15.4
- . gmer                          v2.1.19357
- + Junkware Removal Tool         v6.1.4
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
- 
-######################
-# v1.4 // 2014-07-14 #
-######################
-tron.bat                         v1.4
- + tron.bat:          Add SKIP_DEFRAG variable to force defrag to always skip
- * tron.bat:          Improve SSD detection. Thanks to reddit.com/user/bdm800 
- * tron.bat:          Clean up welcome screen and various comments 
- * tron.bat:          Reduce time spent waiting for rkill from 110 seconds to 90 seconds 
- * stage_2_disinfect: Switch Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
- 
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
-    * Updated to target more locations, including Firefox, Thunderbird, and Chrome temp files
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-14
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
-These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . Acer%%
- . Adobe Shockwave%%
- . Advanced%%FX Engine
- . Akamai%%
- . Amazon Browser%%
- . Bing%%
- . Bonjour%%
- . Catalina Savings%%
- . Cyberlink%%
- . Dell Getting Started Guide%%
- . Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- . HP Deskjet%%Help
- . Launch Manager%%
- . Lenovo%%
- . Live! Cam Avatar%%
- . Move Media%%
- . My HP%%
- . PowerDVD%%
- . RenWeb%%
- . Roxio%%
- . Sonic CinePlayer%%
- . %%Toolbar%%
- . UserGuide%%
- . Yahoo! Browser%%
-
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . smartctl                      v6.2 2013-07-26 r3841
- . Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v3.2.1.4
- . aswMBR                        v1.0.1.2041
- . autoruns                      v12.0
- . ComboFix                      v14.7.3.1
- . gmer                          v2.1.19357
- + Junkware Removal Tool         v6.1.4
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
-
-######################
-# v1.3 // 2014-07-10 #
-######################
-tron.bat                         v1.3
- + tron.bat:      Add additional checks for SSD drives on /dev/sdb and /dev/sdc
- * stage_4_patch: Update links for Adobe Flash and Notepad++ to reflect new versions
-	 
-STAGE 0: Prep
- . Rkill                         v2.6.7.0
- 
-STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
- - Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-10
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
-These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . Acer%%
- + Adobe Shockwave%%
- + Advanced%%FX Engine
- + Akamai%%
- + Amazon Browser%%
- . Bing%%
- + Bonjour%%
- + Catalina Savings%%
- . Cyberlink%%
- + Dell Getting Started Guide%%
- + Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- + HP Deskjet%%Help
- . Launch Manager%%
- + Lenovo%%
- + Live! Cam Avatar%%
- + Move Media%%
- + My HP%%
- + PowerDVD%%
- + RenWeb%%
- + Roxio%%
- + Sonic CinePlayer%%
- + %%Toolbar%%
- + UserGuide%%
- + Yahoo! Browser%%
- 
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.145
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.7
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- + smartctl                      v6.2 2013-07-26 r3841
- * Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- + AdwCleaner                    v3.2.1.4
- + aswMBR                        v1.0.1.2041
- * autoruns                      v12.0
- . ComboFix                      v14.7.3.1
- . gmer                          v2.1.19357
- - HiJackThis                    v2.0.4 -- REMOVED, functionality replaced by autoruns
- - Panda Cloud Security Scanner  -- REMOVED
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
- 
- 
-######################
-# v1.2 // 2014-07-07 #
-######################
-tron.bat                         v1.2
- + stage_5_optimize:  Add detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to reddit.com/user/you_drown_now for help with this function.
- * stage_3_de-bloat:  Improve logic, logging, and robustness for WMIC removal section
- * tron.bat:          Improve overall logging, appearance and commenting. Added clarification screens for various Safe Mode states
- / Intro screen:      Adjust runtime estimates based on user feedback
- / tron.bat:          Disable post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
- - tron.bat:          Remove section asking user if we want to do a post-run defrag (replaced by auto-detect)
- - stage_1_tempclean: Remove TempFileCleanup job (ccleaner and bleachbit cover this requirement)
- - stage_4_patch:     Remove /r flag on wuauclt command
-
-STAGE 0: Prep
- . Rkill                         v2.6.7
- 
-STAGE 1: Tempclean
- - TempFileCleanup               REMOVED
- . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Removal Tool     v2.5 (2014-07-06)
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
-These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . Acer%%
- + Adobe Shockwave%%
- + Advanced%%FX Engine
- + Akamai%%
- + Amazon Browser%%
- . Bing%%
- + Bonjour%%
- + Catalina Savings%%
- . Cyberlink%%
- + Dell Getting Started Guide%%
- + Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- + HP Deskjet%%Help
- . Launch Manager%%
- + Lenovo%%
- + Live! Cam Avatar%%
- + Move Media%%
- + My HP%%
- + PowerDVD%%
- + RenWeb%%
- + Roxio%%
- + Sonic CinePlayer%%
- + %%Toolbar%%
- + UserGuide%%
- + Yahoo! Browser%%
- 
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.125
- . Adobe Reader                  v11.0.07
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.4
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- + smartctl                      v6.2 2013-07-26 r3841
- * Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- + AdwCleaner                    v3.2.1.4
- . autoruns                      v11.70
- * ComboFix                      v14.7.3.1
- . gmer                          v2.1.19357
- . HiJackThis                    v2.0.4
- . Panda Cloud Security Scanner  updated 2014-07-03
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
+:skip_update_check
+popd
 
 
-######################
-# v1.1 // 2014-07-06 #
-######################
-tron.bat                         v1.1
- * tron.bat:          Comment, log and syntax cleanup
- + tron.bat:          Add section to ask if we want to do a post-run defrag, and skip the defrag if the user says no
- * tron.bat:          Remove hard requirement to run in safe mode and added code to detect various Safe Mode states
- * stage_3_de-bloat:  Convert section to read from a text list located in resource\stage_3_de-bloat\programs_to_target.txt
- + stage_3_de-bloat:  Add additional programs to find and remove
- + stage_3_de-bloat:  Add line to remove Adobe Shockwave (not in wide use anymore)
- - stage_4_patch:     Remove installation of Adobe Shockwave
-
-STAGE 0: Prep
- . Rkill                         v2.6.7
- 
-STAGE 1: Tempclean
- . TempFileCleanup               v3.1
- . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
-
-STAGE 2: Disinfect
- . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Removal Tool     v2.5 (2014-07-06)
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
-These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . Acer%%
- + Adobe Shockwave%%
- + Advanced%%FX Engine
- + Akamai%%
- + Amazon Browser%%
- . Bing%%
- + Bonjour%%
- + Catalina Savings%%
- . Cyberlink%%
- + Dell Getting Started Guide%%
- + Dell Video%%
- . eBay%%
- . eMachines%%
- . Free Download Manager%%
- + HP Deskjet%%Help
- . Launch Manager%%
- + Lenovo%%
- + Live! Cam Avatar%%
- + Move Media%%
- + My HP%%
- + PowerDVD%%
- + RenWeb%%
- + Roxio%%
- + Sonic CinePlayer%%
- + %%Toolbar%%
- + UserGuide%%
- + Yahoo! Browser%%
- 
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.125
- . Adobe Reader                  v11.0.07
- - Adobe Shockwave               v12.1.2.152 -- REMOVED
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.4
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- * Defraggler                    v2.18.945
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- + AdwCleaner                    v3.2.1.4
- . autoruns                      v11.70
- * ComboFix                      v14.7.3.1
- . gmer                          v2.1.19357
- . HiJackThis                    v2.0.4
- . Panda Cloud Security Scanner  updated 2014-07-03
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
+:: PREP JOB: Execute config dump if requested
+if %CONFIG_DUMP%==yes (
+	cls
+	echo.
+	echo   Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^) config dump
+	echo.
+	echo   Command-line arguments:
+	echo    %*
+	echo.
+	echo   Variable values ^(user-set^):
+	echo    AUTORUN:                %AUTORUN%
+	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
+	echo    CONFIG_DUMP:            %CONFIG_DUMP%
+	echo    DRY_RUN:                %DRY_RUN%
+	echo    LOGPATH:                %LOGPATH%
+	echo    LOGFILE:                %LOGFILE%
+	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
+	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
+	echo.
+	echo   Variable values ^(script-internal^):
+	echo    CUR_DATE:               %CUR_DATE%
+	echo    DTS:                    %DTS%
+	echo    HELP:                   %HELP%
+	echo    SAFE_MODE:              %SAFE_MODE%
+	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
+	echo    SSD_DETECTED:           %SSD_DETECTED% 
+	echo    TEMP:                   %TEMP%
+	echo    TIME:                   %TIME%
+	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
+	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
+	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
+	echo    REPO_SYNC_KEY:          %REPO_SYNC_KEY%
+	echo    REPO_URL:               %REPO_URL%
+	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
+	echo    SCRIPT_DATE:            %SCRIPT_DATE%
+	:: We need this setlocal/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
+	setlocal enabledelayedexpansion
+	echo    WIN_VER:                !WIN_VER!
+	endlocal disabledelayedexpansion
+	echo    WMIC:                   %WMIC%
+	echo.
+	exit /b 0
+	)
 
 
-######################
-# v1.0 // 2014-07-04 #
-######################
-tron.bat                         v1.0
+:: PREP JOB: Act on autorun flag if it got set. Basically just skip the menu
+if /i %AUTORUN%==yes goto execute_jobs
 
-STAGE 0: Prep
- . Rkill                         v2.6.7
- 
-STAGE 1: Tempclean
- . TempFileCleanup               v3.1
- . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.0
 
-STAGE 2: Disinfect
- . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Remval Tool      v2.5 (2014-07-02)
- . Vipre Rescue Scanner          v7.0.7.8
- 
-STAGE 3: De-bloat target keywords
- . Acer*
- . My HP*
- . Free Download Mananger*
- . Cyberlink*
- . eMachines*
- . Bing*
- . eBay*
- . Launch Manager*
- 
-STAGE 4: Patch
- . 7-zip                         v9.20
- . Adobe Flash Player            v14.0.0.125
- . Adobe Reader                  v11.0.07
- . Adobe Shockwave               v12.1.2.152
- . Java Runtime Environment      8u5
- . Notepad++                     v6.6.4
- . Windows updates               <pulled down live>
- 
-STAGE 5: Optimize
- . defraggler                    v2.16.0.809
- 
-STAGE 6: Manual tools
- . ADSSpy                        v1.11.0.0
- . autoruns                      v11.70
- . ComboFix                      v14.6.30.1
- . gmer                          v2.1.19357
- . HiJackThis                    v2.0.4
- . Panda Cloud Security Scanner  updated 2014-07-03
- . TempFileCleaner               v3.1.9.0
- . VirusTotal uploader tool      v2.2
+::::::::::::::::::::
+:: WELCOME SCREEN ::
+::::::::::::::::::::
+color 0f
+cls
+echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  ****************
+echo  * Script to automate a series of cleanup/disinfect tools.   *
+echo  * Author: vocatus on reddit.com/r/sysadmin                  *
+echo  *                                                           *
+echo  * Stage:         Tools:                                     *
+echo  * --------------------------------------------------------- *
+echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
+echo  *  1 TempClean:  BleachBit, CCleaner, clear evt logs        *
+echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
+echo  *  3 De-bloat:   Remove OEM bloatware apps (inc Metro apps) *
+echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
+echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
+echo  *                                                           *
+echo  * \resources\stage_6_manual_tools contains additional tools *
+echo  * which may be run manually if necessary.                   *
+echo  *************************************************************
+echo.
+:: So ugly it makes me cry
+echo  Current settings (edit script to change):
+echo     Log location:            %LOGPATH%\%LOGFILE%
+if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
+if "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: disabled
+if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (defrag skipped)
+if "%SSD_DETECTED%"=="no" echo     SSD detected?            %SSD_DETECTED%
+if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%, without Networking
+if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%, with Networking (ideal)
+if not "%SAFE_MODE%"=="yes" echo     Safe mode?               %SAFE_MODE% (not ideal)
+if not "%SKIP_DEFRAG%"=="no" (
+	echo   ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
+	echo     Runtime estimate:        4-6 hours
+	goto welcome_screen_trailer
+	)
+if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        4-6 hours
+if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        6-8 hours
+if %DRY_RUN%==yes echo   ! DRY_RUN set; will not execute any jobs
+echo.
+:welcome_screen_trailer
+pause
+
+:::::::::::::::::::::
+:: SAFE MODE CHECK ::
+:::::::::::::::::::::
+:: Check if we're in safe mode
+if not "%SAFE_MODE%"=="yes" (
+		color 0c
+		cls
+		echo.
+		echo  WARNING
+		echo.
+		echo  The system is not in safe mode. Tron functions best
+		echo  in "Safe Mode with Networking" in order to download
+		echo  Windows and anti-virus updates.
+		echo.
+		echo  Tron will still function, but rebooting to "Safe Mode
+		echo  with Networking" is STRONGLY recommended.
+		echo.
+		pause
+		cls
+		)
+
+:: Check if we have network support
+if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
+		color 0e
+		cls
+		echo.
+		echo  NOTE
+		echo.
+		echo  The system is in Safe Mode without Network support.
+		echo  Tron functions best in "Safe Mode with Networking" in
+		echo  order to download Windows and anti-virus updates.
+		echo.
+		echo  Tron will still function, but rebooting to "Safe Mode
+		echo  with Networking" is recommended.
+		echo.
+		pause
+		cls
+		)
+		
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+:: thanks to /u/agent-squirrel
+:: Because command prompts always start with Admin rights when the system is in Safe Mode, we skip this check if we're in Safe Mode
+if not "%SAFE_MODE%"=="yes" (
+	net session >nul 2>&1
+	if not "%ERRORLEVEL%"=="0" (
+		color cf
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron doesn't think it is running as an Administrator.
+		echo  Tron MUST be run with full Administrator rights to 
+		echo  function correctly.
+		echo.
+		pause
+	)
+)
+
+::::::::::::::::::
+:: EXECUTE JOBS ::
+::::::::::::::::::
+:execute_jobs
+cls
+color 0f
+title TRON v%SCRIPT_VERSION% [stage_0_prep]
+:: Create the log header for this job
+echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
+echo -------------------------------------------------------------------------------
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture detected>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture detected
+echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
+echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
+echo -------------------------------------------------------------------------------
+
+
+:::::::::::::::::::
+:: STAGE 0: PREP ::
+:::::::::::::::::::
+:stage_0_prep
+pushd resources\stage_0_prep
+echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
+
+:: JOB: rkill
+echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'rkill'...
+pushd rkill
+	if %DRY_RUN%==yes goto skip_rkill
+	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
+	type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
+	del "%LOGPATH%\tron_rkill.log"
+	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
+:skip_rkill
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Disable sleep mode
+echo %CUR_DATE% %TIME%    Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Disabling Sleep mode...
+pushd disable_sleep
+if %DRY_RUN%==yes goto skip_disable_sleep
+
+echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...
+
+:: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
+setlocal enabledelayedexpansion
+:: Windows XP version
+if "%WIN_VER%"=="Microsoft Windows XP" (
+	:: Extract the line containing the current power GUID
+	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
+	:: Parse out just the name and stash it in a variable
+	set POWER_SCHEME=!t:~27!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT "!POWER_SCHEME!" /FILE %LOGPATH%\tron_power_config_backup.pow
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE "Always On"
+	) 
+
+:: Windows Server 2003 version
+if "%WIN_VER%"=="Microsoft Windows Server 2003" (
+	:: Extract the line containing the current power GUID
+	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
+	:: Parse out just the name and stash it in a variable
+	set POWER_SCHEME=!t:~27!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT "!POWER_SCHEME!" /FILE %LOGPATH%\tron_power_config_backup.pow
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE "Always On"
+) else (
+	:: This version of the command executes if we're not on XP or Server 2003
+	:: Extract the line containing the current power GUID
+	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
+	:: Parse out just the GUID and stash it in a variable
+	set POWER_SCHEME=!t:~19,36!
+	:: Export the power scheme based on this GUID
+	powercfg /EXPORT %LOGPATH%\tron_power_config_backup.pow !POWER_SCHEME!
+	:: Set the "High Performance" scheme active
+	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	)
+
+:: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
+:: We need the POWER_SCHEME GUID for later when we re-import everything
+endlocal disabledelayedexpansion && set POWER_SCHEME=%POWER_SCHEME%
+
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:skip_disable_sleep
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Check and Repair WMI if it's broken
+echo %CUR_DATE% %TIME%    Checking WMI...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking WMI...
+pushd repair_wmi
+if %DRY_RUN%==yes goto skip_repair_wmi
+
+:: Do a quick check to make sure WMI is working, and if not, repair it
+%WMIC% timezone >NUL
+if not %ERRORLEVEL%==0 (
+    echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
+    echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
+    net stop winmgmt
+    pushd %SystemRoot%\system32\wbem
+    for %%i in (*.dll) do RegSvr32 -s %%i
+    :: Kill this random window that pops up
+    tskill wbemtest /a 2>NUL
+    scrcons.exe /RegServer
+    unsecapp.exe /RegServer
+    start "" wbemtest.exe /RegServer
+    tskill wbemtest /a 2>NUL
+    tskill wbemtest /a 2>NUL
+    :: winmgmt.exe /resetrepository       -- optional; force full rebuild instead of repair like the line below this. Enable if you're feeling REAAAALLY crazy
+    winmgmt.exe /salvagerepository /resyncperf
+    wmiadap.exe /RegServer
+    wmiapsrv.exe /RegServer
+    wmiprvse.exe /RegServer
+    net start winmgmt
+    popd
+    )
+
+:skip_repair_wmi
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Reduce SysRestore space
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...
+pushd reduce_system_restore
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
+
+
+::::::::::::::::::::::::
+:: STAGE 1: TEMPCLEAN ::
+::::::::::::::::::::::::
+:stage_1_tempclean
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
+pushd resources\stage_1_tempclean
+echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
+
+:: JOB: TempFileCleanup.bat
+echo %CUR_DATE% %TIME%    Launching job 'TempFileCleanup'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'TempFileCleanup'...
+pushd tempfilecleanup
+if "%DRY_RUN%"=="no" call TempFileCleanup.bat>> "%LOGPATH%\%LOGFILE%" 2>NUL
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: CCLeaner
+echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...
+pushd ccleaner
+if "%DRY_RUN%"=="no" ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: BleachBit
+echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...
+pushd bleachbit
+if "%DRY_RUN%"=="no" bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Clear Windows event logs
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...
+pushd backup_and_clear_windows_event_logs
+
+:: Make a subdirectory in the logpath for the Windows event log backups
+if not exist "%LOGPATH%\event_log_backups" mkdir "%LOGPATH%\event_log_backups"
+
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...
+
+:: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
+setlocal enabledelayedexpansion
+if "%DRY_RUN%"=="no" for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+endlocal disabledelayedexpansion
+echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Backups done, now clearing...
+
+:: Now we clear the logs
+if "%DRY_RUN%"=="no" %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
+:: Alternate Vista-and-up only method
+:: if "%DRY_RUN%"=="no" for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
+
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
+
+
+::::::::::::::::::::::::
+:: STAGE 2: Disinfect ::
+::::::::::::::::::::::::
+:stage_2_disinfect
+title TRON v%SCRIPT_VERSION% [stage_2_disinfect]
+pushd resources\stage_2_disinfect
+echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
+
+:: JOB: Sophos Virus Remover
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
+pushd sophos_virus_remover
+if "%DRY_RUN%"=="no" svrtcli.exe -yes
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: VIPRE Rescue
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
+pushd vipre_rescue
+if "%DRY_RUN%"=="no" VipreRescueScanner.exe
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: MBAM (MalwareBytes Anti-Malware)
+echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...
+pushd mbam
+
+:: Install & remove the desktop icon
+if %DRY_RUN%==yes goto skip_mbam
+"Malwarebytes Anti-Malware v2.0.2.1012.exe" /verysilent
+::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
+if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+
+:: Scan for and launch appropriate architecture version
+if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
+    pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
+) else (
+    pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
+  )
+start "" "mbam.exe"
+popd
+
+:skip_mbam
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: System File Checker scan
+echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
+pushd sfc
+if %DRY_RUN%==yes goto skip_sfc
+:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker
+if "%WIN_VER%"=="Microsoft Windows XP" goto skip_sfc
+if "%WIN_VER%"=="Microsoft Windows Server 2003" goto skip_sfc
+%SystemRoot%\System32\sfc.exe /scannow
+:: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
+%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
+:skip_sfc
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.
+
+
+:::::::::::::::::::::::
+:: STAGE 3: De-Bloat ::
+:::::::::::::::::::::::
+:stage_3_de-bloat
+title TRON v%SCRIPT_VERSION% [stage_3_de-bloat]
+pushd resources\stage_3_de-bloat
+echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...
+
+:: JOB: Remove crapware programs
+pushd oem
+echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt
+:: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
+if "%DRY_RUN%"=="no" FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Remove default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
+pushd win8_metro_apps
+
+:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8.
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on
+if "%WIN_VER:~0,9%"=="Windows 8" (
+	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
+	:: Enable scripts in PowerShell
+	if %DRY_RUN%==no powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
+	:: Call PowerShell to run the commands
+	if %DRY_RUN%==no powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+	if %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.	
+	)
+	popd
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.
+
+
+::::::::::::::::::::::
+:: STAGE 4: Patches ::
+::::::::::::::::::::::
+:stage_4_patch
+title TRON v%SCRIPT_VERSION% [stage_4_patch]
+pushd resources\stage_4_patch
+echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
+
+:: Prep task: enable MSI installer in Safe Mode
+if "%DRY_RUN%"=="no" start "" "enable_msi_installer\SafeMSI.exe"
+ping localhost -n 2 >NUL
+taskkill /im SafeMSI.exe /f /t 2>NUL
+
+:: JOB: 7-Zip
+echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job '7-Zip'...
+
+:: Check if we're on 32-bit Windows and run the appropriate architecture installer
+if %DRY_RUN%==yes goto skip_7-zip
+if '%PROCESSOR_ARCHITECTURE%'=='x86' (
+	pushd 7-zip\v9.20\x86
+	setlocal
+	call "7-Zip v9.20 x86.bat"
+	endlocal
+	popd
+) else (
+	pushd 7-zip\v9.20\x64
+	setlocal
+	call "7-Zip v9.20 x64.bat"
+	endlocal
+	popd
+	)
+:skip_7-zip
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Adobe Flash Player
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
+if %DRY_RUN%==yes goto skip_adobe_flash
+pushd "adobe\flash_player\v14.0.0.179\firefox"
+setlocal
+call "Adobe Flash Player (Firefox).bat"
+endlocal
+popd
+pushd "adobe\flash_player\v14.0.0.179\internet explorer"
+setlocal
+call "Adobe Flash Player (IE).bat"
+endlocal
+popd
+:skip_adobe_flash
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Adobe Reader
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
+if %DRY_RUN%==yes goto skip_adobe_reader
+pushd adobe\reader\v11.0.08\x86
+setlocal
+call "Adobe Reader.bat"
+endlocal
+popd
+:skip_adobe_reader
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Remove outdated JRE runtimes (security risk)
+echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking and removing outdated JRE installations...
+if %DRY_RUN%==yes goto skip_jre_update
+:: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
+:: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
+:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
+:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+
+:: JRE 8
+:: we skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
+
+:: JRE 7
+echo %CUR_DATE% %TIME%    JRE 7...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 7...
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+
+:: JRE 6
+echo %CUR_DATE% %TIME%    JRE 6...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 6...
+:: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
+:: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+
+:: JRE 5
+echo %CUR_DATE% %TIME%    JRE 5...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 5...
+%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+
+:: JRE 4
+echo %CUR_DATE% %TIME%    JRE 4...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    JRE 4...
+%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Java Runtime 8
+echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...
+
+:: Check if we're on 32-bit Windows and run the appropriate installer
+if '%PROCESSOR_ARCHITECTURE%'=='x86' (
+	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
+	pushd java\jre\8\u20\x86
+	setlocal
+	call "jre-8u20-windows-i586.bat"
+	endlocal
+	popd
+) else (
+	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...
+	pushd java\jre\8\u20\x64
+	setlocal
+	call "jre-8u20-windows-x64.bat"
+	endlocal
+	popd
+	)
+
+:skip_jre_update
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Notepad++
+echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...
+pushd notepad++\v6.6.9
+if %DRY_RUN%==yes goto skip_notepad
+setlocal
+call "npp.Installer.bat"
+endlocal
+:skip_notepad
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Windows updates
+echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...
+pushd windows_updates
+if "%DRY_RUN%"=="no" wuauclt /detectnow /updatenow
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
+
+
+:::::::::::::::::::::::
+:: STAGE 5: Optimize ::
+:::::::::::::::::::::::
+:stage_5_optimize
+title TRON v%SCRIPT_VERSION% [stage_5_optimize]
+pushd resources\stage_5_optimize
+echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...
+
+:: JOB: chkdsk the system drive
+echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...
+pushd chkdsk
+echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
+
+:: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
+if "%DRY_RUN%"=="no" %SystemRoot%\System32\chkdsk.exe %SystemDrive%
+if not %ERRORLEVEL%==0 ( 
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.
+	if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
+) else (
+	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.
+	)
+	
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: Check if we are supposed to run a defrag before doing this section
+if "%SKIP_DEFRAG%"=="yes" (
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.
+	popd
+	goto :wrap-up
+	)
+
+:: Check if a Solid State hard drive was detected before doing this section
+if "%SSD_DETECTED%"=="yes" (
+	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
+	popd
+	goto :wrap-up
+	)
+
+:: JOB: Defrag the system drive
+if "%SSD_DETECTED%"=="no" (
+	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...
+	pushd defrag
+	if "%DRY_RUN%"=="no" df.exe %SystemDrive%
+	popd
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.
+	)
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
+
+
+:::::::::::::
+:: Wrap-up ::
+:::::::::::::
+:wrap-up
+echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Wrapping up...
+
+:: If selected, import the original power settings, re-activate them, and delete the backup
+:: Otherwise, just reset the power settings back to their defaults
+if "%PRESERVE_POWER_SCHEME%"=="yes" (
+	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...
+	:: Check for Windows XP
+	if "%WIN_VER%"=="Microsoft Windows XP" (
+		if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
+		if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
+	) 
+	:: Check for Windows Server 2003
+	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
+			if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
+			if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
+	) else (
+		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
+		if "%DRY_RUN%"=="no" powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
+		if "%DRY_RUN%"=="no" powercfg /setactive %POWER_SCHEME% 
+	)
+	:: cleanup
+	del %LOGPATH%\tron_power_config_backup.pow 2>NUL
+) else (
+	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...
+	:: Check for Windows XP
+	if "%WIN_VER%"=="Microsoft Windows XP" (
+		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
+	) 
+	:: check for Windows Server 2003
+	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
+		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
+	) else (
+		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
+		if "%DRY_RUN%"=="no" powercfg -restoredefaultschemes
+	)
+)
+
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: Collect misc logs and deposit them in the log folder. Thanks to reddit.com/user/swtester
+echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"
+if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" %SystemDrive%\Logs\ >NUL
+if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" %SystemDrive%\Logs\ >NUL
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+	
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
+
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
+
+:: Check if auto-reboot was requested
+if "%AUTO_REBOOT_DELAY%"=="0" (
+	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible.
+) else (
+	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.
+	)
+
+:: Log trailer
+echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
+echo -------------------------------------------------------------------------------
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete>> %LOGPATH%\%LOGFILE%
+echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
+echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
+echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
+echo                          Logfile: %LOGPATH%\%LOGFILE%
+echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
+echo -------------------------------------------------------------------------------
+
+
+if %DRY_RUN%==yes goto end_and_skip_shutdown
+if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
+
+:end_and_skip_shutdown
+pause
