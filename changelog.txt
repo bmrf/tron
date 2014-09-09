@@ -2,9 +2,9 @@
 # CHANGELOG #
 #############
 # Legend:
- + Addition            - Removal   
- / Change/alteration   * Update/fix/improvement
- . No change
+ + Addition    - Removal   
+ ! Bug fix     * Update/fix/improvement
+ . No change   / Change (non bug-fix)
 
 # Version number increment legend:
 x.x.x
@@ -14,6 +14,52 @@ x.x.x
 major feature add/remove
 
 
+########################
+# v3.3.0 // 2014-09-xx #
+########################
+tron.bat                         v3.3.0
+ + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
+ ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.17.4808
+ . Bleachbit                     v1.2
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ - some redundant entries removed
+
+STAGE 4: Patch
+ . 7-zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v14.0.0.179   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Java Runtime Environment      8u20          (language ignored)
+ * Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.0.9
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ . ComboFix                      v14.8.31.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
 
 ########################
 # v3.2.1 // 2014-09-05 #
@@ -21,7 +67,7 @@ major feature add/remove
  * checksums.txt now uses SHA-256 for integrity verification instead of MD5. Thanks to reddit.com/user/abcot
 
 tron.bat                         v3.2.1
- * stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
+ ! stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
  / stage_3_de-bloat:          Moved programs_to_target.txt and "note - read this.txt" to their own job subfolder ("oem") and updated tron.bat and instructions file to reflect changes
 
 
@@ -32,7 +78,7 @@ tron.bat                         v3.2.0
  * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
  * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
  * tron.bat: Update links to reflect new Adobe Flash installers
- / tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
+ ! tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -186,10 +232,10 @@ STAGE 6: Manual tools
 # v2.2.1 // 2014-08-21 #
 ########################
 tron.bat                         v2.2.1
- * prep and checks:   Admin rights check finally fixed; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
+ ! prep and checks:   Fix admin rights check; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
  * stage_3_disinfect: Integrate SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
  - stage_3_disinfect: Remove Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
- / stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to reddit.com/user/swtester
+ ! stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to reddit.com/user/swtester
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -236,7 +282,7 @@ STAGE 6: Manual tools
 # v2.1.0 // 2014-08-13 #
 ########################
 tron.bat                         v2.1.0
- * prep and checks:  Admin check fix. Thanks to reddit.com/user/agent-squirrel
+ ! prep and checks:  Fix admin check. Thanks to reddit.com/user/agent-squirrel
  / prep and checks:  Admin check color change. Will now be more alarming and hopefully reduce number of people who try to run as non-Admin
  * stage_4_patch:    Updated links to reflect new Flash and Reader installers
  * tron.bat:         Misc snarky comments about MS products removed
@@ -286,10 +332,10 @@ STAGE 6: Manual tools
 ########################
 tron.bat                         v2.0.0
  * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
- * prep and checks:  Fixed missing 'set WMIC=<path>' command (was causing all JRE removal commands to fail)
- * stage_0_prep:     Added flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
- * stage_4_patch:    Fixed bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
- + stage_5_optimize: Added job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
+ ! prep and checks:  Fix missing 'set WMIC=<path>' command (was causing all JRE removal commands to fail)
+ * stage_0_prep:     Add flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
+ ! stage_4_patch:    Fix bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
+ + stage_5_optimize: Add job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
 
 STAGE 0: Prep
  * Rkill                         v2.6.8.0
@@ -343,7 +389,7 @@ tron.bat                         v1.9.0
     -r  Reboot (auto-reboot 30 seconds after Tron completes)
  * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord for suggestion
  - tron.bat: Removed support for --auto flag (use -a instead) 
- * prep and checks: Fixed Administrator rights check for Windows 8/8.1 (again); Reverted to hard-exit if non-Admin detected
+ ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
  
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -389,10 +435,10 @@ STAGE 6: Manual tools
 # v1.8.2 // 2014-07-31 #
 ########################
 tron.bat                         v1.8.2
- * prep and checks:   Moved Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
- + stage_0_prep:      Added code to reduce space allowed for System Restore checkpoints to 5%
- + stage_2_disinfect: Added /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
- * stage_2_disinfect: Fixed failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
+ * prep and checks:   Move Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
+ + stage_0_prep:      Add code to reduce space allowed for System Restore checkpoints to 5%
+ + stage_2_disinfect: Add /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+ ! stage_2_disinfect: Fix failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -441,17 +487,17 @@ STAGE 6: Manual tools
 # v1.8.1 // 2014-07-29 #
 ########################
 tron.bat                         v1.8.1
- * tron.bat: bugfix:  Fixed incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
+ ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
  
 
 ########################
 # v1.8.0 // 2014-07-25 #
 ########################
 tron.bat                         v1.8.0
- * prep and checks:   Overhauled Date/Time conversion so we can handle all versions of Windows using any local date-time format
- * prep and checks:   Possibly fixed Windows 8/8.1 Administrator rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
+ * prep and checks:   Overhaul Date/Time conversion so we can handle all versions of Windows using any local date-time format
+ ! prep and checks:   Possible fix for Windows 8/8.1 Admin rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
  * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
- + stage_1_tempclean: Added job to clear Windows event logs
+ + stage_1_tempclean: Add job to clear Windows event logs
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -530,41 +576,41 @@ STAGE 6: Manual tools
 # v1.7.4 // 2014-07-23 #
 ########################
 tron.bat                         v1.7.4
- * prep and checks: Fixed incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
+ ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
  
 
 ########################
 # v1.7.3 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.3
- * prep and checks: Think we finally fixed SSD detection. Please test and report if it fails on your drive
- * prep and checks: Renamed all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
+ ! prep and checks: Fix SSD detection (possibly). Please test and report if it fails on your drive
+ * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
 
 
 ########################
 # v1.7.2 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.2
- * tron.bat:        Script now accepts "--auto" and "-a" as flags for automatic unattended execution
- / tron.bat:        Moved all but most recent changelog entries to the changelog file, to avoid cluttering up script header
- + prep and checks: Re-added check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
- * prep and checks: Reverted SSD check to something more reliable
+ * tron.bat:        Add "--auto" and "-a" flags for automatic unattended execution
+ / tron.bat:        Move all but most recent changelog entries to the changelog file, to avoid cluttering up script header
+ + prep and checks: Re-add check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
+ * prep and checks: Revert SSD check to something more reliable
 
  
 ########################
 # v1.7.1 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.1
- + prep and checks: Removed check for Administrator rights since it was failing too often.
+ - prep and checks: Remove check for Administrator rights since it was failing too often.
 
 
 ########################
 # v1.7.0 // 2014-07-21 #
 ########################
 tron.bat                         v1.7
- + prep and checks:   Added check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
- + stage_2_disinfect: Added Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
- / tron.bat:          Moved user-configurable variables to the top of the script, above Check and Preps section	 
+ + prep and checks:   Add check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+ + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
+ / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section	 
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -644,8 +690,8 @@ STAGE 6: Manual tools
 # v1.6 // 2014-07-16 #
 ######################
 tron.bat                         v1.6
- + stage_2_disinfect: Added System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
- + stage_0_prep:      Added code to detect and repair broken WMI configurations
+ + stage_2_disinfect: Add System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
+ + stage_0_prep:      Add code to detect and repair broken WMI configurations
 	
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -722,10 +768,10 @@ STAGE 6: Manual tools
 # v1.5 // 2014-07-15 #
 ######################
 tron.bat                         v1.5
- + tron.bat:          Added "-auto" flag to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
- * tron.bat:          Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
- * tron.bat:          General cleanup of many conditional tests; should slightly speed script up
- * stage_4_patch:     Remove all existing JRE versions prior to installing latest JRE
+ + tron.bat:      Add "-auto" flag to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
+ * tron.bat:      Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
+ * tron.bat:      General cleanup of many conditional tests; should slightly speed script up
+ * stage_4_patch: Remove all existing JRE versions prior to installing latest JRE
 	 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -798,11 +844,11 @@ STAGE 6: Manual tools
 # v1.4 // 2014-07-14 #
 ######################
 tron.bat                         v1.4
- + tron.bat:          Added SKIP_DEFRAG variable to force defrag to always skip
- * tron.bat:          Improved SSD detection. Thanks to reddit.com/user/bdm800 
- * tron.bat:          Cleaned up welcome screen and various comments 
- * tron.bat:          Reduced time spent waiting for rkill from 110 seconds to 90 seconds 
- * stage_2_disinfect: Switched Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
+ + tron.bat:          Add SKIP_DEFRAG variable to force defrag to always skip
+ * tron.bat:          Improve SSD detection. Thanks to reddit.com/user/bdm800 
+ * tron.bat:          Clean up welcome screen and various comments 
+ * tron.bat:          Reduce time spent waiting for rkill from 110 seconds to 90 seconds 
+ * stage_2_disinfect: Switch Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
  
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -875,8 +921,8 @@ STAGE 6: Manual tools
 # v1.3 // 2014-07-10 #
 ######################
 tron.bat                         v1.3
- + tron.bat:      Added additional checks for SSD drives on /dev/sdb and /dev/sdc
- * stage_4_patch: Updated links for Adobe Flash and Notepad++ to reflect new versions
+ + tron.bat:      Add additional checks for SSD drives on /dev/sdb and /dev/sdc
+ * stage_4_patch: Update links for Adobe Flash and Notepad++ to reflect new versions
 	 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
@@ -949,14 +995,14 @@ STAGE 6: Manual tools
 # v1.2 // 2014-07-07 #
 ######################
 tron.bat                         v1.2
- + stage_5_optimize:  Added detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to reddit.com/user/you_drown_now for help with this function.
- * stage_3_de-bloat:  Improved logic, logging, and robustness for WMIC removal section
- * tron.bat:          Improved overall logging, appearance and commenting. Added clarification screens for various Safe Mode states
- / Intro screen:      Adjusted runtime estimates based on user feedback
- / tron.bat:          Disabled post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
- - tron.bat:          Removed section asking user if we want to do a post-run defrag (replaced by auto-detect)
- - stage_1_tempclean: Removed TempFileCleanup job (ccleaner and bleachbit cover this requirement)
- - stage_4_patch:     Removed /r flag on wuauclt command
+ + stage_5_optimize:  Add detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to reddit.com/user/you_drown_now for help with this function.
+ * stage_3_de-bloat:  Improve logic, logging, and robustness for WMIC removal section
+ * tron.bat:          Improve overall logging, appearance and commenting. Added clarification screens for various Safe Mode states
+ / Intro screen:      Adjust runtime estimates based on user feedback
+ / tron.bat:          Disable post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
+ - tron.bat:          Remove section asking user if we want to do a post-run defrag (replaced by auto-detect)
+ - stage_1_tempclean: Remove TempFileCleanup job (ccleaner and bleachbit cover this requirement)
+ - stage_4_patch:     Remove /r flag on wuauclt command
 
 STAGE 0: Prep
  . Rkill                         v2.6.7
@@ -1029,13 +1075,13 @@ STAGE 6: Manual tools
 # v1.1 // 2014-07-06 #
 ######################
 tron.bat                         v1.1
- * tron.bat:          Various comment, log and syntax cleanup
- + tron.bat:          Added section to ask if we want to do a post-run defrag, and skip the defrag if the user says no
- * tron.bat:          Removed hard requirement to run in safe mode and added code to detect various Safe Mode states
- * stage_3_de-bloat:  Converted section to read from a text list located in resource\stage_3_de-bloat\programs_to_target.txt
- + stage_3_de-bloat:  Added additional programs to find and remove
- + stage_3_de-bloat:  Added line to remove Adobe Shockwave (not in wide use anymore)
- - stage_4_patch:     Removed installation of Adobe Shockwave
+ * tron.bat:          Comment, log and syntax cleanup
+ + tron.bat:          Add section to ask if we want to do a post-run defrag, and skip the defrag if the user says no
+ * tron.bat:          Remove hard requirement to run in safe mode and added code to detect various Safe Mode states
+ * stage_3_de-bloat:  Convert section to read from a text list located in resource\stage_3_de-bloat\programs_to_target.txt
+ + stage_3_de-bloat:  Add additional programs to find and remove
+ + stage_3_de-bloat:  Add line to remove Adobe Shockwave (not in wide use anymore)
+ - stage_4_patch:     Remove installation of Adobe Shockwave
 
 STAGE 0: Prep
  . Rkill                         v2.6.7
