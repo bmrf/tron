@@ -7,6 +7,8 @@
 :: Version:       3.3.0 + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
 ::                      ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
 ::                      * stage_2_disinfect:         Add deletion of Malwarebytes desktop shortcut on Windows XP/Server 2003
+::                      / stage_2_disinfect:         Add -debug flag to Sophos Virus Removal Tool for more verbose output
+::                      * stage_4_patch:             Update links to reflect new Adobe Flash installers
 ::                
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -23,7 +25,7 @@
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
 
-::                Kecepatan dan Kekuatan
+::                U.S. Army Warrant Officer Corps - Quiet Professionals
 SETLOCAL
 @echo off
 
@@ -31,7 +33,7 @@ SETLOCAL
 
 
 :::::::::::::::
-:: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
+:: VARIABLES :: --------- These are the defaults. Change them if you so desire. -------------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -76,7 +78,7 @@ set PRESERVE_POWER_SCHEME=no
 cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.3.0
-set SCRIPT_DATE=2014-09-xx
+set SCRIPT_DATE=2014-09-11
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -289,7 +291,7 @@ echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
 echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
-echo  *  1 TempClean:  BleachBit, CCleaner, clear evt logs        *
+echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner       *
 echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
 echo  *  3 De-bloat:   Remove OEM bloatware apps (inc Metro apps) *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
@@ -335,8 +337,9 @@ if not "%SAFE_MODE%"=="yes" (
 		echo  in "Safe Mode with Networking" in order to download
 		echo  Windows and anti-virus updates.
 		echo.
-		echo  Tron will still function, but rebooting to "Safe Mode
-		echo  with Networking" is STRONGLY recommended.
+		echo  Tron will still function find, but if you still have
+		echo  problems after running, recommend rebooting to "Safe Mode
+		echo  with Networking" and running again.
 		echo.
 		pause
 		cls
@@ -613,7 +616,7 @@ echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow).
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
 pushd sophos_virus_remover
-if "%DRY_RUN%"=="no" svrtcli.exe -yes
+if "%DRY_RUN%"=="no" svrtcli.exe -yes -debug
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -765,12 +768,12 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
 if %DRY_RUN%==yes goto skip_adobe_flash
-pushd "adobe\flash_player\v14.0.0.179\firefox"
+pushd "adobe\flash_player\v15.0.0.152\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v14.0.0.179\internet explorer"
+pushd "adobe\flash_player\v15.0.0.152\internet explorer"
 setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
@@ -861,11 +864,9 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...
 pushd notepad++\v6.6.9
-if %DRY_RUN%==yes goto skip_notepad
 setlocal
-call "npp.Installer.bat"
+if "%DRY_RUN%"=="no" call "npp.Installer.bat"
 endlocal
-:skip_notepad
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
