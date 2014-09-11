@@ -1,45 +1,50 @@
 #############
 # CHANGELOG #
 #############
-# Legend:
+Legend:
  + Addition    - Removal   
- ! Bug fix     * Update/fix/improvement
+ ! Bug fix     * Update/improvement
  . No change   / Change (non bug-fix)
 
-# Version number increment legend:
-x.x.x
-| | |
-| | program/definition updates or minor bug fix/change
-| minor feature add/remove OR critical bug fix
-major feature add/remove
+Version number increment legend:
+  x.x.x
+  | | |
+  | | program/definition updates or minor change
+  | minor feature add/remove OR critical bug fix
+  major feature add/remove
 
 
 ########################
-# v3.3.0 // 2014-09-xx #
+# v3.3.0 // 2014-09-11 #
 ########################
 tron.bat                         v3.3.0
  + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
  ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
+ * stage_2_disinfect:         Add deletion of Malwarebytes desktop shortcut on Windows XP/Server 2003
+ / stage_2_disinfect:         Enable -debug flag on Sophos Virus Removal Tool for more verbose output
+ * stage_4_patch:             Update links to reflect new Adobe Flash installers
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
- . Bleachbit                     v1.2
+ * Bleachbit                     v1.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
+    / Disable using the Windows service method to scan in config.xml. Was causing it to stall
+	/ Enable scanning of archives in config.xml
  * Vipre Rescue Scanner          v7.0.7.8, updated defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- - some redundant entries removed
+ . No changes
 
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
- . Adobe Flash Player            v14.0.0.179   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ * Adobe Flash Player            v15.0.0.152   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
  * Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
@@ -53,7 +58,7 @@ STAGE 6: Manual tools
  . AdwCleaner                    v3.3.0.9
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
- . ComboFix                      v14.8.31.1
+ * ComboFix                      v14.9.11.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.1.4
  . TDSSKiller                    v3.0.0.40
@@ -98,7 +103,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
  * Adobe Flash Player            v14.0.0.179   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
@@ -147,7 +152,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
@@ -206,7 +211,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u11          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
@@ -256,7 +261,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
 STAGE 4: Patch
  . 7-zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
- . Adobe Reader                  v11.0.08      (English-only; replace with your langauge version if necessary)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u11          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
