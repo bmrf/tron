@@ -6,13 +6,62 @@ Legend:
  ! Bug fix     * Update/improvement
  . No change   / Change (non bug-fix)
 
-Version number increment legend:
+Version number legend:
   x.x.x
   | | |
-  | | program/definition updates or minor change
-  | minor feature add/remove OR critical bug fix
-  major feature add/remove
+  | | program/definition update or minor change
+  | minor feature change OR critical bug fix
+  major feature change
 
+  
+  
+########################
+# v3.3.1 // 2014-09-17 #
+########################
+tron.bat                         v3.3.1
+ / tron.bat:prep and checks:  When checking for updates, store md5sums.txt in %TEMP% instead of \check_update directory
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ 
+STAGE 1: Tempclean
+ . CCLeaner                      v4.17.4808
+ . BleachBit                     v1.4
+ * TempFileClean                 v3.4.4
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+
+STAGE 4: Patch
+ . 7-zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.152   (language ignored)
+ . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u20          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v3.3.1.0
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.9.16.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TDSSKiller                    v3.0.0.40
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+  
 
 ########################
 # v3.3.0 // 2014-09-11 #
@@ -29,7 +78,8 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
- * Bleachbit                     v1.4
+ * BleachBit                     v1.4
+ + TempFileClean                 v3.4.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
@@ -66,6 +116,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
+
 ########################
 # v3.2.1 // 2014-09-05 #
 ########################
@@ -90,7 +141,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  * CCLeaner                      v4.17.4808
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -125,6 +176,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
 
+
 ########################
 # v3.1.0 // 2014-08-28 #
 ########################
@@ -139,7 +191,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -174,6 +226,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
+ 
 ########################
 # v3.0.1 // 2014-08-23 #
 ########################
@@ -182,6 +235,7 @@ STAGE 0: Prep
  * check_update: Replaced wget binary with standalone version. Thanks to reddit.com/user/Olonzac
 
 
+ 
 ########################
 # v3.0.0 // 2014-08-23 #
 ########################
@@ -199,7 +253,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -233,6 +287,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
  
+ 
 ########################
 # v2.2.1 // 2014-08-21 #
 ########################
@@ -247,7 +302,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -282,6 +337,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
  
+ 
 
 ########################
 # v2.1.0 // 2014-08-13 #
@@ -297,7 +353,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -331,6 +387,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
+ 
 
 ########################
 # v2.0.0 // 2014-08-11 #
@@ -347,7 +404,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -381,6 +438,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
+ 
 
 ########################
 # v1.9.0 // 2014-08-04 #
@@ -401,7 +459,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  * CCLeaner                      v4.16.4763
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -436,6 +494,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
  
+ 
 ########################
 # v1.8.2 // 2014-07-31 #
 ########################
@@ -450,7 +509,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -488,6 +547,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
+ 
 ########################
 # v1.8.1 // 2014-07-29 #
 ########################
@@ -495,6 +555,7 @@ tron.bat                         v1.8.1
  ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
  
 
+ 
 ########################
 # v1.8.0 // 2014-07-25 #
 ########################
@@ -509,7 +570,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -577,6 +638,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
+ 
 ########################
 # v1.7.4 // 2014-07-23 #
 ########################
@@ -584,6 +646,7 @@ tron.bat                         v1.7.4
  ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
  
 
+ 
 ########################
 # v1.7.3 // 2014-07-22 #
 ########################
@@ -591,6 +654,7 @@ tron.bat                         v1.7.3
  ! prep and checks: Fix SSD detection (possibly). Please test and report if it fails on your drive
  * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
 
+ 
 
 ########################
 # v1.7.2 // 2014-07-22 #
@@ -602,12 +666,14 @@ tron.bat                         v1.7.2
  * prep and checks: Revert SSD check to something more reliable
 
  
+ 
 ########################
 # v1.7.1 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.1
  - prep and checks: Remove check for Administrator rights since it was failing too often.
 
+ 
 
 ########################
 # v1.7.0 // 2014-07-21 #
@@ -622,7 +688,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, updated defs
@@ -703,7 +769,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
@@ -769,6 +835,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
  
+ 
 ######################
 # v1.5 // 2014-07-15 #
 ######################
@@ -783,7 +850,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.2
+ . BleachBit                     v1.2
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
@@ -845,6 +912,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
  
+ 
 ######################
 # v1.4 // 2014-07-14 #
 ######################
@@ -860,7 +928,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
+ * BleachBit                     v1.2
     * Updated to target more locations, including Firefox, Thunderbird, and Chrome temp files
 
 STAGE 2: Disinfect
@@ -921,6 +989,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
  
+ 
 
 ######################
 # v1.3 // 2014-07-10 #
@@ -934,7 +1003,7 @@ STAGE 0: Prep
  
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
- - Bleachbit                     v1.2
+ - BleachBit                     v1.2
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
@@ -996,6 +1065,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
  
  
+ 
 ######################
 # v1.2 // 2014-07-07 #
 ######################
@@ -1006,7 +1076,7 @@ tron.bat                         v1.2
  / Intro screen:      Adjust runtime estimates based on user feedback
  / tron.bat:          Disable post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
  - tron.bat:          Remove section asking user if we want to do a post-run defrag (replaced by auto-detect)
- - stage_1_tempclean: Remove TempFileCleanup job (ccleaner and bleachbit cover this requirement)
+ - stage_1_tempclean: Remove TempFileCleanup job (ccleaner and BleachBit cover this requirement)
  - stage_4_patch:     Remove /r flag on wuauclt command
 
 STAGE 0: Prep
@@ -1015,7 +1085,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  - TempFileCleanup               REMOVED
  . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
+ * BleachBit                     v1.2
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
@@ -1075,6 +1145,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
+ 
 
 ######################
 # v1.1 // 2014-07-06 #
@@ -1094,7 +1165,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
- * Bleachbit                     v1.2
+ * BleachBit                     v1.2
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
@@ -1154,6 +1225,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
+ 
 
 ######################
 # v1.0 // 2014-07-04 #
@@ -1166,7 +1238,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
- . Bleachbit                     v1.0
+ . BleachBit                     v1.0
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
