@@ -4,12 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.3.0 + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
-::                      ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
-::                      * stage_2_disinfect:         Add deletion of Malwarebytes desktop shortcut on Windows XP/Server 2003
-::                      / stage_2_disinfect:         Add -debug flag to Sophos Virus Removal Tool for more verbose output
-::                      * stage_4_patch:             Update links to reflect new Adobe Flash installers
-::                
+:: Version:       3.3.1 / tron.bat:prep and checks:  When checking for updates, store md5sums.txt in %TEMP% instead of \check_update directory
+::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -28,7 +24,6 @@
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
 SETLOCAL
 @echo off
-
 
 
 
@@ -77,8 +72,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.3.0
-set SCRIPT_DATE=2014-09-11
+set SCRIPT_VERSION=3.3.1
+set SCRIPT_DATE=2014-09-17
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -188,11 +183,11 @@ if "%DRY_RUN%"=="yes" goto skip_update_check
 
 :: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
 :: Get the file from the repo
-wget %REPO_URL%/md5sums.txt 2>NUL
+wget %REPO_URL%/md5sums.txt -O %TEMP%\md5sums.txt 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if %ERRORLEVEL%==0 (
-	for /f "tokens=1,2,3 delims= " %%a in (md5sums.txt) do set WORKING=%%c
-	for /f "tokens=1,2,3,4 delims= " %%a in (md5sums.txt) do set WORKING2=%%d
+	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\md5sums.txt) do set WORKING=%%c
+	for /f "tokens=1,2,3,4 delims= " %%a in (%TEMP%\md5sums.txt) do set WORKING2=%%d
 	)
 if %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
@@ -200,7 +195,7 @@ if %ERRORLEVEL%==0 (
 	)
 
 :: clean up and reset the window title since wget clobbers it
-if exist md5sum* del md5sum*
+if exist %TEMP%\md5sum* del %TEMP%\md5sum*
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Notify if an update was found
@@ -215,8 +210,7 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo.
 	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
-	echo    Option 1: Sync directly from the repo using the BT Sync
-	echo    read-only key:
+	echo    Option 1: Sync directly from repo using BT Sync read-only key:
 	echo     %REPO_SYNC_KEY%
 	echo.
 	echo    Option 2: Download the latest .7z static pack:
@@ -259,10 +253,10 @@ if %CONFIG_DUMP%==yes (
 	echo    TEMP:                   %TEMP%
 	echo    TIME:                   %TIME%
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
-	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
-	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
 	echo    REPO_SYNC_KEY:          %REPO_SYNC_KEY%
 	echo    REPO_URL:               %REPO_URL%
+	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
+	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
 	:: We need this setlocal/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
@@ -301,7 +295,7 @@ echo  * \resources\stage_6_manual_tools contains additional tools *
 echo  * which may be run manually if necessary.                   *
 echo  *************************************************************
 echo.
-:: So ugly it makes me cry
+:: So ugly
 echo  Current settings (edit script to change):
 echo     Log location:            %LOGPATH%\%LOGFILE%
 if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
