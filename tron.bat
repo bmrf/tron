@@ -331,7 +331,7 @@ if not "%SAFE_MODE%"=="yes" (
 		echo  in "Safe Mode with Networking" in order to download
 		echo  Windows and anti-virus updates.
 		echo.
-		echo  Tron will still function find, but if you still have
+		echo  Tron will still function fine, but if you still have
 		echo  problems after running, recommend rebooting to "Safe Mode
 		echo  with Networking" and running again.
 		echo.
