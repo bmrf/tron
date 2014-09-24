@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.3.1 / tron.bat:prep and checks:  When checking for updates, store md5sums.txt in %TEMP% instead of \check_update directory
+:: Version:       3.3.2 / stage_4_patch: Update links to reflect new version of Adobe Reader
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -72,8 +72,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.3.1
-set SCRIPT_DATE=2014-09-17
+set SCRIPT_VERSION=3.3.2
+set SCRIPT_DATE=2014-09-24
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -780,7 +780,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
 if %DRY_RUN%==yes goto skip_adobe_reader
-pushd adobe\reader\v11.0.08\x86
+pushd adobe\reader\v11.0.09\x86
 setlocal
 call "Adobe Reader.bat"
 endlocal
