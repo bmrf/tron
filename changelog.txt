@@ -15,6 +15,60 @@ Version number legend:
 
 
 ########################
+# v3.4.0 // 2014-09-25 #
+########################
+tron.bat                         v3.4.0
+ + tron.bat:variables:      Add QUARANTINE_PATH variable to support new Stage 0 TDSSKiller job. Use to specify where quarantine files get saved.
+ / tron.bat:variables:      Rename REPO_SYNC_KEY to REPO_BTSYNC_KEY
+ + stage_0_prep:tdsskiller: Add TDSSKiller to Stage 0: Prep steps. Thanks to reddit.com/user/cuddlychops06
+ / stage_0_prep:rkill:      Change rkill.log temporary storage location to %TEMP% instead of %LOGPATH%
+ - stage_6_manual_tools:    Remove TDSSKiller (move to Stage 0)
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ + TDSS Killer                   v3.0.0.40
+	` Add to Tron; remove from manual tools. Thanks to reddit.com/user/cuddlychops06
+	` Quarantines %LOGPATH%\tron_quarantined_files by default
+  
+STAGE 1: Tempclean
+ . CCLeaner                      v4.17.4808
+ . BleachBit                     v1.4
+ . TempFileClean                 v3.4.4
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+
+STAGE 4: Patch
+ . 7-zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.152   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u20          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.1.0
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.9.24.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+
+########################
 # v3.3.2 // 2014-09-24 #
 ########################
 tron.bat                         v3.3.2
