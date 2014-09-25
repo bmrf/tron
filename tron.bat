@@ -4,7 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.3.2 / stage_4_patch: Update links to reflect new version of Adobe Reader
+:: Version:       3.4.0 + tron.bat:variables:      Add QUARANTINE_PATH variable to support new Stage 0 TDSSKiller job. Use to specify where quarantine files get saved.
+::                      / tron.bat:variables:      Rename REPO_SYNC_KEY to REPO_BTSYNC_KEY
+::                      + stage_0_prep:tdsskiller: Add TDSSKiller to Stage 0: Prep steps. Thanks to reddit.com/user/cuddlychops06
+::                      / stage_0_prep:rkill:      Change rkill.log temporary storage location to %TEMP% instead of %LOGPATH%
+::                      - stage_6_manual_tools:    Remove TDSSKiller (move to Stage 0)
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -43,10 +47,13 @@ SETLOCAL
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
 
+:: Quarantined files path
+set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
+
 :: Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot.
 set AUTO_REBOOT_DELAY=0
 
-:: Set to anything but "no" in order to skip defrag regardless whether the system drive is an SSD or not.
+:: Set to anything but "no" to skip defrag regardless whether the system drive is an SSD or not.
 :: Leave as "no" to let the script auto-detect SSDs
 set SKIP_DEFRAG=no
 
@@ -72,8 +79,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.3.2
-set SCRIPT_DATE=2014-09-24
+set SCRIPT_VERSION=3.4.0
+set SCRIPT_DATE=2014-09-25
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -86,7 +93,7 @@ set REPO_SCRIPT_DATE=0
 set HELP=no
 set CONFIG_DUMP=no
 set REPO_URL=http://bmrf.org/repos/tron
-set REPO_SYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
+set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
@@ -133,9 +140,10 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 
 
-:: PREP JOB: Make the log directory and file if they don't already exist
-if not exist %LOGPATH% mkdir %LOGPATH%
-if not exist %LOGPATH%\%LOGFILE% echo. > %LOGPATH%\%LOGFILE%
+:: PREP JOB: Make the log and quarantine directories and file if they don't already exist
+if not exist "%LOGPATH%" mkdir "%LOGPATH%"
+if not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
+if not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
 
 
 :: PREP JOB: Check and parse command-line arguments
@@ -211,7 +219,7 @@ if %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo    Strongly recommend grabbing latest version before continuing.
 	echo.
 	echo    Option 1: Sync directly from repo using BT Sync read-only key:
-	echo     %REPO_SYNC_KEY%
+	echo     %REPO_BTSYNC_KEY%
 	echo.
 	echo    Option 2: Download the latest .7z static pack:
 	echo     %REPO_URL%
@@ -241,6 +249,7 @@ if %CONFIG_DUMP%==yes (
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
+	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo.
 	echo   Variable values ^(script-internal^):
@@ -253,7 +262,7 @@ if %CONFIG_DUMP%==yes (
 	echo    TEMP:                   %TEMP%
 	echo    TIME:                   %TIME%
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
-	echo    REPO_SYNC_KEY:          %REPO_SYNC_KEY%
+	echo    REPO_BTSYNC_KEY:        %REPO_BTSYNC_KEY%
 	echo    REPO_URL:               %REPO_URL%
 	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
 	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
@@ -284,7 +293,7 @@ echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill, WMI repair, sysrestore clean        *
+echo  *  0 Prep:       rkill, TDSSKiller, sysrestore clean        *
 echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner       *
 echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
 echo  *  3 De-bloat:   Remove OEM bloatware apps (inc Metro apps) *
@@ -409,15 +418,31 @@ echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'rkill'...
 pushd rkill
 	if %DRY_RUN%==yes goto skip_rkill
-	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%LOGPATH%\tron_rkill.log"
-	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%LOGPATH%\tron_rkill.log"
-	type "%LOGPATH%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
-	del "%LOGPATH%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%TEMP%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%TEMP%\tron_rkill.log"
+	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
+	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 :skip_rkill
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: TDSS Killer
+echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...
+pushd tdss_killer
+if %DRY_RUN%==no (
+	"TDSSKiller v3.0.0.40.exe" -l %TEMP%\tdsskiller.log -qpath %QUARANTINE_PATH% -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	:: Copy TDSSKillers log into the main log
+	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
+	del "%TEMP%\tdsskiller.log" 2>NUL
+	)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: Disable sleep mode
 echo %CUR_DATE% %TIME%    Disabling Sleep mode...>> "%LOGPATH%\%LOGFILE%"
@@ -476,6 +501,7 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: Check and Repair WMI if it's broken
 echo %CUR_DATE% %TIME%    Checking WMI...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Checking WMI...
@@ -510,6 +536,7 @@ if not %ERRORLEVEL%==0 (
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: Reduce SysRestore space
 echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
