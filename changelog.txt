@@ -28,7 +28,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
  + TDSS Killer                   v3.0.0.40
 	` Add to Tron; remove from manual tools. Thanks to reddit.com/user/cuddlychops06
-	` Quarantines %LOGPATH%\tron_quarantined_files by default
+	` Quarantines to %LOGPATH%\tron_quarantined_files by default
   
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
