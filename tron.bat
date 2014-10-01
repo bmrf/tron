@@ -628,14 +628,14 @@ echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...
 pushd backup_and_clear_windows_event_logs
 
 :: Make a subdirectory in the logpath for the Windows event log backups
-if not exist "%LOGPATH%\event_log_backups" mkdir "%LOGPATH%\event_log_backups"
+if not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
 
-echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\event_log_backups" first...
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...
 
 :: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 setlocal enabledelayedexpansion
-if "%DRY_RUN%"=="no" for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\tron_event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 endlocal disabledelayedexpansion
 echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backups done, now clearing...
