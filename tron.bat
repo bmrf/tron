@@ -1,15 +1,19 @@
 :: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a PC
 ::                  Kevin Flynn:  "Who's that guy?"
-::                  Program:      "That's Tron. He fights for the Users."
+::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.4.0 + tron.bat:variables:      Add QUARANTINE_PATH variable to support new Stage 0 TDSSKiller job. Use to specify where quarantine files get saved.
-::                      / tron.bat:variables:      Rename REPO_SYNC_KEY to REPO_BTSYNC_KEY
-::                      + stage_0_prep:tdsskiller: Add TDSSKiller to Stage 0: Prep steps. Thanks to reddit.com/user/cuddlychops06
-::                      / stage_0_prep:rkill:      Change rkill.log temporary storage location to %TEMP% instead of %LOGPATH%
-::                      - stage_6_manual_tools:    Remove TDSSKiller (move to Stage 0)
-::
+:: Version:       3.5.0 * stage_0_prep:enableMSI:  Manually enable MSI Installer service via command-line instead of bundled utility. Thanks to reddit.com/user/cuddlychops06
+::                      / stage_0_prep:tdsskiller: Disable use of QUARANTINE_PATH in TDSSKiller job due to causing BSODs on Vista. Left QUARANTINE_PATH variable and logic in place for possible future use
+::                      / stage_0_prep:rkill:      Rename rkill.exe and rkill64.exe to rkill.com and rkill64.com to help avoid some anti-AV programs. Thanks to reddit.com/user/cuddlychops06
+::                      * stage_0_prep:WMIrepair:  Add repair of 64-bit executables to WMI repair section. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_0_prep:RegBackup:  Add job to backup registry using erunt (after rkill); backs up to %LOGPATH%. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_1_tempclean:       Add cleanup of Windows Update cache. Thanks to reddit.com/user/fumosus
+::                      * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to reddit.com/user/cuddlychops06
+::                      - stage_4_patch:enableMSI: Remove now-unused MSI Installer utility
+::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -32,7 +36,7 @@ SETLOCAL
 
 
 :::::::::::::::
-:: VARIABLES :: --------- These are the defaults. Change them if you so desire. -------------- ::
+:: VARIABLES :: ---------- These are the defaults. Change them if you so desire ---------------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                       (bad:  "c:\directory\path"       )
@@ -68,7 +72,7 @@ set PRESERVE_POWER_SCHEME=no
 
 
 
-:: --------------------------- Don't edit anything below this line --------------------------- ::
+:: ---------------------------- Don't edit anything below this line ---------------------------- ::
 
 
 
@@ -79,8 +83,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.4.0
-set SCRIPT_DATE=2014-09-25
+set SCRIPT_VERSION=3.5.0
+set SCRIPT_DATE=2014-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -413,17 +417,28 @@ pushd resources\stage_0_prep
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
 
+
 :: JOB: rkill
 echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'rkill'...
 pushd rkill
 	if %DRY_RUN%==yes goto skip_rkill
-	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.exe -s -l "%TEMP%\tron_rkill.log"
-	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.exe -s -l "%TEMP%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
+	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.com -s -l "%TEMP%\tron_rkill.log"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 :skip_rkill
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Backup registry
+echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...
+pushd backup_registry
+if %DRY_RUN%==no erunt "%LOGPATH%\tron_registry_backup" /noprogresswindow
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -434,8 +449,8 @@ echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...
 pushd tdss_killer
 if %DRY_RUN%==no (
-	"TDSSKiller v3.0.0.40.exe" -l %TEMP%\tdsskiller.log -qpath %QUARANTINE_PATH% -silent -tdlfs -dcexact -accepteula -accepteulaksn
-	:: Copy TDSSKillers log into the main log
+	"TDSSKiller v3.0.0.40.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
 	)
@@ -528,15 +543,23 @@ if not %ERRORLEVEL%==0 (
     wmiadap.exe /RegServer
     wmiapsrv.exe /RegServer
     wmiprvse.exe /RegServer
-    net start winmgmt
-    popd
+    :: Get the 64-bit versions if they exist
+	if exist %SystemRoot%\SysWOW64\wbem ( 
+		pushd %SystemRoot%\SysWOW64\wbem
+		for %%j in (*.dll) do RegSvr32 -s %%j
+		winmgmt.exe /salvagerepository /resyncperf
+		wmiadap.exe /RegServer
+		wmiprvse.exe /RegServer
+		popd
+		)
+	net start winmgmt
+	popd
     )
 
 :skip_repair_wmi
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
-
 
 :: JOB: Reduce SysRestore space
 echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
@@ -562,6 +585,15 @@ title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 pushd resources\stage_1_tempclean
 echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
+
+:: JOB: Clean Internet Explorer; Windows' built-in method
+echo %CUR_DATE% %TIME%    Launching job 'Clean Internet Explorer'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Clean Internet Explorer'...
+pushd clean_internet_explorer
+if "%DRY_RUN%"=="no" rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: TempFileCleanup.bat
 echo %CUR_DATE% %TIME%    Launching job 'TempFileCleanup'...>> "%LOGPATH%\%LOGFILE%"
@@ -617,6 +649,21 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
+:: JOB: Clear Windows Update cache
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows Update cache'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Clear Windows Update cache'...
+pushd clear_windows_update_cache
+if "%DRY_RUN%"=="no" (
+	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%"
+	if exist %windir%\softwaredistribution\downloads rmdir /s /q %windir%\softwaredistribution\downloads >> "%LOGPATH%\%LOGFILE%"
+	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%"
+	)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+	
+	
 popd
 echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
@@ -680,6 +727,31 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+:: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
+echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...
+pushd dism_image_check
+if %DRY_RUN%==yes goto skip_dism_image_check
+:: Read WIN_VER and run the scan if we're on some derivative of 8 or 2012
+if "%WIN_VER:~0,9%"=="Windows Server 2012" Dism /Online /Cleanup-Image /ScanHealth
+if "%WIN_VER:~0,9%"=="Windows 8" Dism /Online /Cleanup-Image /ScanHealth
+if not %ERRORLEVEL%==0 ( 
+	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
+	:: Add /LimitAccess flag to command below to prevent connecting to Windows Update for replacement files
+	Dism /Online /Cleanup-Image /RestoreHealth
+	:: Add the Dism log to the Tron log
+	type "%WinDir%\Logs\DISM\dism.log" >> "%LOGPATH%\%LOGFILE%"
+) else (
+	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.
+	)
+
+:skip_dism_image_check
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
 :: JOB: System File Checker scan
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
@@ -729,7 +801,7 @@ echo %CUR_DATE% %TIME%    Done.
 pushd win8_metro_apps
 
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8.
-:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on. Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
@@ -758,9 +830,11 @@ echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
 
 :: Prep task: enable MSI installer in Safe Mode
-if "%DRY_RUN%"=="no" start "" "enable_msi_installer\SafeMSI.exe"
-ping localhost -n 2 >NUL
-taskkill /im SafeMSI.exe /f /t 2>NUL
+if "%DRY_RUN%"=="no" (
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Network\MSIServer" /ve /t reg_sz /d Service /f
+	net start msiserver
+	)
+
 
 :: JOB: 7-Zip
 echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
@@ -925,9 +999,11 @@ echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
 if "%DRY_RUN%"=="no" %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if not %ERRORLEVEL%==0 ( 
-	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk for next reboot.
-	if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.
+	if "%DRY_RUN%"=="no" fsutil dirty set %SystemDrive%
+	:: Alternate, less reliable method
+	::if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
 ) else (
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.
