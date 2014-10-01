@@ -438,7 +438,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...
 pushd backup_registry
-if %DRY_RUN%==no erunt "%LOGPATH%\tron_registry_backup" /noprogresswindow
+if %DRY_RUN%==no erunt "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
