@@ -1001,9 +1001,9 @@ if "%DRY_RUN%"=="no" %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if not %ERRORLEVEL%==0 ( 
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.
-	if "%DRY_RUN%"=="no" fsutil dirty set %SystemDrive%
 	:: Alternate, less reliable method
 	::if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
+	if "%DRY_RUN%"=="no" fsutil dirty set %SystemDrive%
 ) else (
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.
