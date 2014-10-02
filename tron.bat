@@ -1066,7 +1066,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 			if "%DRY_RUN%"=="no" powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
 			if "%DRY_RUN%"=="no" powercfg /setactive "%POWER_SCHEME%"
 	) else (
-		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
+		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if "%DRY_RUN%"=="no" powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
 		if "%DRY_RUN%"=="no" powercfg /setactive %POWER_SCHEME% 
 	)
@@ -1083,7 +1083,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 		if "%DRY_RUN%"=="no" powercfg /RestoreDefaultPolicies
 	) else (
-		:: if we made it this far we're not on XP or 2k3 and we can run the standard commands
+		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if "%DRY_RUN%"=="no" powercfg -restoredefaultschemes
 	)
 )
