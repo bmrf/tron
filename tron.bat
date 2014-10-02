@@ -12,6 +12,7 @@
 ::                      + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to reddit.com/user/cuddlychops06
 ::                      + stage_1_tempclean:       Add cleanup of Windows Update cache. Thanks to reddit.com/user/fumosus
 ::                      * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to reddit.com/user/cuddlychops06
+::                      ! stage_4_patch:Java:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
 ::                      - stage_4_patch:enableMSI: Remove now-unused MSI Installer utility
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -84,7 +85,7 @@ set PRESERVE_POWER_SCHEME=no
 cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.5.0
-set SCRIPT_DATE=2014-10-xx
+set SCRIPT_DATE=2014-10-02
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -656,7 +657,7 @@ echo %CUR_DATE% %TIME%    Launching job 'Clear Windows Update cache'...
 pushd clear_windows_update_cache
 if "%DRY_RUN%"=="no" (
 	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%"
-	if exist %windir%\softwaredistribution\downloads rmdir /s /q %windir%\softwaredistribution\downloads >> "%LOGPATH%\%LOGFILE%"
+	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%"
 	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%"
 	)
 popd
@@ -733,15 +734,22 @@ echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'..
 pushd dism_image_check
 if %DRY_RUN%==yes goto skip_dism_image_check
 :: Read WIN_VER and run the scan if we're on some derivative of 8 or 2012
-if "%WIN_VER:~0,9%"=="Windows Server 2012" Dism /Online /Cleanup-Image /ScanHealth
-if "%WIN_VER:~0,9%"=="Windows 8" Dism /Online /Cleanup-Image /ScanHealth
+if "%WIN_VER:~0,9%"=="Windows Server 2012" (
+	Dism /Online /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
+	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+	)
+if "%WIN_VER:~0,9%"=="Windows 8" (
+	Dism /Online /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
+	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+	)
+	
+:: If we detect errors, try to repair them
 if not %ERRORLEVEL%==0 ( 
 	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
-	:: Add /LimitAccess flag to command below to prevent connecting to Windows Update for replacement files
-	Dism /Online /Cleanup-Image /RestoreHealth
-	type "%WinDir%\Logs\DISM\dism.log" >> "%LOGPATH%\%LOGFILE%"
-	copy "%WinDir%\Logs\DISM\dism.log" "%LOGPATH%"
+	:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
+	Dism /Online /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
+	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 ) else (
 	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.
@@ -905,7 +913,7 @@ if %DRY_RUN%==yes goto skip_jre_update
 :: JRE 7
 echo %CUR_DATE% %TIME%    JRE 7...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 7...
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
 
 :: JRE 6
 echo %CUR_DATE% %TIME%    JRE 6...>> "%LOGPATH%\%LOGFILE%"
@@ -1014,8 +1022,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping job.
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping defrag.
 	popd
 	goto :wrap-up
 	)
@@ -1094,15 +1102,15 @@ echo %CUR_DATE% %TIME%    Done.
 :: Collect misc logs and deposit them in the log folder. Thanks to reddit.com/user/swtester
 echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"
-if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" %SystemDrive%\Logs\ >NUL
-if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" %SystemDrive%\Logs\ >NUL
+if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y"%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%LOGPATH%" >NUL
+if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%LOGPATH%" >NUL
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 	
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   DONE. Use the tools in resources\stage_6_manual_tools if further cleaning is required.
+echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_6_manual_tools if further cleaning is required.
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
