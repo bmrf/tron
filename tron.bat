@@ -10,7 +10,7 @@
 ::                      * stage_0_prep:WMIrepair:  Add repair of 64-bit executables to WMI repair section. Thanks to reddit.com/user/cuddlychops06
 ::                      + stage_0_prep:RegBackup:  Add job to backup registry using erunt (after rkill); backs up to %LOGPATH%. Thanks to reddit.com/user/cuddlychops06
 ::                      + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_1_tempclean:       Add cleanup of Windows Update cache. Thanks to reddit.com/user/fumosus
+::                      + stage_1_tempclean:       Add Windows Update cache cleanup. Thanks to reddit.com/user/fumosus
 ::                      * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to reddit.com/user/cuddlychops06
 ::                      ! stage_4_patch:Java:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
 ::                      - stage_4_patch:enableMSI: Remove now-unused MSI Installer utility
