@@ -740,8 +740,8 @@ if not %ERRORLEVEL%==0 (
 	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
 	:: Add /LimitAccess flag to command below to prevent connecting to Windows Update for replacement files
 	Dism /Online /Cleanup-Image /RestoreHealth
-	:: Add the Dism log to the Tron log
 	type "%WinDir%\Logs\DISM\dism.log" >> "%LOGPATH%\%LOGFILE%"
+	copy "%WinDir%\Logs\DISM\dism.log" "%LOGPATH%"
 ) else (
 	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.
@@ -1001,8 +1001,6 @@ if "%DRY_RUN%"=="no" %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if not %ERRORLEVEL%==0 ( 
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.
-	:: Alternate, less reliable method
-	::if "%DRY_RUN%"=="no" echo y | %SystemRoot%\System32\chkdsk.exe /x /v %SystemDrive%
 	if "%DRY_RUN%"=="no" fsutil dirty set %SystemDrive%
 ) else (
 	echo %CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
