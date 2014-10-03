@@ -52,7 +52,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot.
 set AUTO_REBOOT_DELAY=0
 
-:: Set to anything but "no" to skip defrag regardless whether the system drive is an SSD or not.
+:: Set to yes to skip defrag regardless whether the system drive is an SSD or not.
 :: Leave as "no" to let the script auto-detect SSDs
 set SKIP_DEFRAG=no
 
