@@ -134,10 +134,12 @@ endlocal disabledelayedexpansion
 
 
 :: PREP JOB: Detect if the system drive is likely to be failing (via SMART health check). Thanks to reddit.com/user/cuddlychops06
+setlocal enabledelayedexpansion
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl -H %%i
 	if not "!ERRORLEVEL!"=="0" echo WARNING: SMART Health check failed; %%i is likely failing. Tron is disk-intensive and running it could cause the unstable disk to failure. Do you want to abort? && pause
 	)
+endlocal disabledelayedexpansion
 
 
 :: PREP JOB: Detect if the system is in Safe Mode
