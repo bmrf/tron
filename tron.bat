@@ -303,7 +303,7 @@ echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill, TDSSKiller, SysRstr and VSS clean   *
+echo  *  0 Prep:       rkill, TDSSK, reg bckup, SysRstr/VSS clean *
 echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner, IE   *
 echo  *  2 Disinfect:  Sophos, Vipre, MBAM, DISM repair, sfc scan *
 echo  *  3 De-bloat:   Remove OEM bloatware (inc Metro apps)      *
