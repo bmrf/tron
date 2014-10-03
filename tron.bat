@@ -4,17 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.5.0 * stage_0_prep:enableMSI:  Manually enable MSI Installer service via command-line instead of bundled utility. Thanks to reddit.com/user/cuddlychops06
-::                      / stage_0_prep:tdsskiller: Disable use of QUARANTINE_PATH in TDSSKiller job due to causing BSODs on Vista. Left QUARANTINE_PATH variable and logic in place for possible future use
-::                      / stage_0_prep:rkill:      Rename rkill.exe and rkill64.exe to rkill.com and rkill64.com to help avoid some anti-AV programs. Thanks to reddit.com/user/cuddlychops06
-::                      * stage_0_prep:WMIrepair:  Add repair of 64-bit executables to WMI repair section. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_0_prep:RegBackup:  Add job to backup registry using erunt (after rkill); backs up to %LOGPATH%. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_1_tempclean:       Add Windows Update cache cleanup. Thanks to reddit.com/user/fumosus
-::                      * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to reddit.com/user/cuddlychops06
-::                      ! stage_4_patch:Java:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
-::                      - stage_4_patch:enableMSI: Remove now-unused MSI Installer utility
-::                      
+:: Version:       3.6.0 + tron.bat:prep:           Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_0_prep:vss_clean:  Add cleanup of oldest Shadow Copy set. May convert this to FULL Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
+::                      ! stage_3_de-bloat:Metro:  Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
+::                      * stage_3_de-bloat:Metro:  Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to reddit.com/user/nomaddave
+::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -34,7 +28,7 @@
 SETLOCAL
 @echo off
 
-
+:: TODO:                  ! ----------------- Finish SMART health check section around line 130
 
 :::::::::::::::
 :: VARIABLES :: ---------- These are the defaults. Change them if you so desire ---------------- ::
@@ -84,18 +78,20 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.5.0
-set SCRIPT_DATE=2014-10-02
+set SCRIPT_VERSION=3.6.0
+set SCRIPT_DATE=2014-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
-:: Preload variables for use and comparison later
+:: Preload variables for use and comparison.
+:: Most of these get clobbered later, so don't change them here.
 set REPO_SCRIPT_VERSION=0
 set REPO_SCRIPT_DATE=0
 set HELP=no
+set TARGET_METRO=no
 set CONFIG_DUMP=no
 set REPO_URL=http://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
@@ -135,6 +131,13 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 endlocal disabledelayedexpansion
+
+
+:: PREP JOB: Detect if the system drive is likely to be failing (via SMART health check). Thanks to reddit.com/user/cuddlychops06
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl -H %%i
+	if not "!ERRORLEVEL!"=="0" echo WARNING: SMART Health check failed; %%i is likely failing. Tron is disk-intensive and running it could cause the unstable disk to failure. Do you want to abort? && pause
+	)
 
 
 :: PREP JOB: Detect if the system is in Safe Mode
@@ -298,10 +301,10 @@ echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
 echo  * Stage:         Tools:                                     *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill, TDSSKiller, sysrestore clean        *
-echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner       *
-echo  *  2 Disinfect:  Sophos, Vipre, MBAM, sfc /scannow          *
-echo  *  3 De-bloat:   Remove OEM bloatware apps (inc Metro apps) *
+echo  *  0 Prep:       rkill, TDSSKiller, SysRstr and VSS clean   *
+echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner, IE   *
+echo  *  2 Disinfect:  Sophos, Vipre, MBAM, DISM repair, sfc scan *
+echo  *  3 De-bloat:   Remove OEM bloatware (inc Metro apps)      *
 echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
 echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
 echo  *                                                           *
@@ -454,6 +457,23 @@ if %DRY_RUN%==no (
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
+	)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Purge oldest shadow copies
+echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Vista and up)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Vista and up)...
+pushd purge_shadow_copies
+:: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
+:: So if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
+if not "%WIN_VER:~0,9%"=="Microsoft" (
+	:: Force allow us to start VSS service in Safe Mode
+	if %DRY_RUN%==no reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f
+	net start VSS
+	if %DRY_RUN%==no vssadmin delete shadows /for=%SystemDrive% /oldest
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -805,23 +825,34 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: Remove default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
+:: JOB: Remove default Metro apps (Windows 8/8.1/2012/2012-R2 only). Thanks to https://keybase.io/exabrial
 pushd win8_metro_apps
 
-:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8.
-:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on. Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
-if "%WIN_VER:~0,9%"=="Windows 8" (
-	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    Windows 8/8.1 detected, removing default Metro apps...
+:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on. 
+:: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
+if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
+if "%WIN_VER:~0,16%"=="Windows Server 2" set TARGET_METRO=yes
+if %TARGET_METRO%==yes (
+	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...
+	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
+	net start AppXSVC
 	:: Enable scripts in PowerShell
 	if %DRY_RUN%==no powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
 	:: Call PowerShell to run the commands
 	if %DRY_RUN%==no powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 	if %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...
+	:: Thanks to reddit.com/user/nommaddave
+	if %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
 	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Done.	
 	)
 	popd
+
 
 popd
 echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
@@ -839,7 +870,7 @@ echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
 
 :: Prep task: enable MSI installer in Safe Mode
 if "%DRY_RUN%"=="no" (
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Network\MSIServer" /ve /t reg_sz /d Service /f
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f
 	net start msiserver
 	)
 
