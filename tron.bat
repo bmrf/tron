@@ -5,9 +5,11 @@
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
 :: Version:       3.6.0 + tron.bat:prep:           Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_0_prep:vss_clean:  Add cleanup of oldest Shadow Copy set. May convert this to FULL Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_0_prep:vss_clean:  Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
 ::                      ! stage_3_de-bloat:Metro:  Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
+::                      ! stage_3_de-bloat:Metro:  Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
 ::                      * stage_3_de-bloat:Metro:  Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to reddit.com/user/nomaddave
+::                      + stage_4_patch:DISMreset: Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks to reddit.com/user/nomaddave
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -28,7 +30,6 @@
 SETLOCAL
 @echo off
 
-:: TODO:                  ! ----------------- Finish SMART health check section around line 130
 
 :::::::::::::::
 :: VARIABLES :: ---------- These are the defaults. Change them if you so desire ---------------- ::
@@ -88,6 +89,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Preload variables for use and comparison.
 :: Most of these get clobbered later, so don't change them here.
+set DISK_HEALTH_CHECK_FAIL=no
 set REPO_SCRIPT_VERSION=0
 set REPO_SCRIPT_DATE=0
 set HELP=no
@@ -129,15 +131,6 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "RAID" >NUL
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
-	)
-endlocal disabledelayedexpansion
-
-
-:: PREP JOB: Detect if the system drive is likely to be failing (via SMART health check). Thanks to reddit.com/user/cuddlychops06
-setlocal enabledelayedexpansion
-for /f "tokens=1" %%i in ('smartctl --scan') do (
-	smartctl -H %%i
-	if not "!ERRORLEVEL!"=="0" echo WARNING: SMART Health check failed; %%i is likely failing. Tron is disk-intensive and running it could cause the unstable disk to failure. Do you want to abort? && pause
 	)
 endlocal disabledelayedexpansion
 
@@ -264,6 +257,7 @@ if %CONFIG_DUMP%==yes (
 	echo.
 	echo   Variable values ^(script-internal^):
 	echo    CUR_DATE:               %CUR_DATE%
+	echo    DISK_HEALTH_CHECK_FAIL: %DISK_HEALTH_CHECK_FAIL%
 	echo    DTS:                    %DTS%
 	echo    HELP:                   %HELP%
 	echo    SAFE_MODE:              %SAFE_MODE%
@@ -397,6 +391,37 @@ if not "%SAFE_MODE%"=="yes" (
 	)
 )
 
+:::::::::::::::::::::::
+:: DISK HEALTH CHECK ::
+:::::::::::::::::::::::
+:: Detect if the system drive is likely to be failing (via SMART check) and warn user if so.
+:: Thanks to reddit.com/user/cuddlychops06
+pushd resources\stage_5_optimize\defrag
+setlocal enabledelayedexpansion
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl -H %%i
+	cls
+	if not "!ERRORLEVEL!"=="0" (
+		color 0c
+		set CHOICE=n
+		echo.
+		echo  WARNING:
+		echo.
+		echo  SMART disk health check failed for %%i (likely failing).
+		echo  Tron is disk-intensive and running it could cause an 
+		echo  unstable disk to fail.
+		echo.
+		set /P CHOICE= Do you want to continue? [y/N]: 
+		if not !CHOICE!==y exit /B 1
+		if !CHOICE!==y set DISK_HEALTH_CHECK_FAILED=yes&& goto disk_health_check_end
+		echo.
+		)
+		
+	)
+:disk_health_check_end
+endlocal disabledelayedexpansion
+popd
+
 ::::::::::::::::::
 :: EXECUTE JOBS ::
 ::::::::::::::::::
@@ -473,7 +498,7 @@ pushd purge_shadow_copies
 :: So if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 if not "%WIN_VER:~0,9%"=="Microsoft" (
 	:: Force allow us to start VSS service in Safe Mode
-	if %DRY_RUN%==no reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f
+	if %DRY_RUN%==no reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
 	net start VSS
 	if %DRY_RUN%==no vssadmin delete shadows /for=%SystemDrive% /oldest
 	)
@@ -787,10 +812,8 @@ echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%L
 echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
 pushd sfc
 if %DRY_RUN%==yes goto skip_sfc
-:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker
-if "%WIN_VER%"=="Microsoft Windows XP" goto skip_sfc
-if "%WIN_VER%"=="Microsoft Windows Server 2003" goto skip_sfc
-%SystemRoot%\System32\sfc.exe /scannow
+:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
+if not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
 %SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
 :skip_sfc
@@ -834,7 +857,7 @@ pushd win8_metro_apps
 :: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on. 
 :: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
-if "%WIN_VER:~0,16%"=="Windows Server 2" set TARGET_METRO=yes
+if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 if %TARGET_METRO%==yes (
 	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...
@@ -869,6 +892,7 @@ title TRON v%SCRIPT_VERSION% [stage_4_patch]
 pushd resources\stage_4_patch
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
+
 
 :: Prep task: enable MSI installer in Safe Mode
 if "%DRY_RUN%"=="no" (
@@ -1012,6 +1036,20 @@ echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...>> "%LOGPATH
 echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...
 pushd windows_updates
 if "%DRY_RUN%"=="no" wuauclt /detectnow /updatenow
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+:: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
+echo %CUR_DATE% %TIME%    Launching job 'DISM base reset'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launching job 'DISM base reset'...
+pushd dism_base_reset
+if "%DRY_RUN%"=="yes" goto skip_dism_base_reset
+if not "%WIN_VER:~0,9%"=="Microsoft" (
+	Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
+	type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+	)
+:skip_dism_base_reset
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
