@@ -4,12 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.6.0 + tron.bat:prep:           Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_0_prep:vss_clean:  Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
-::                      ! stage_3_de-bloat:Metro:  Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
-::                      ! stage_3_de-bloat:Metro:  Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
-::                      * stage_3_de-bloat:Metro:  Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to reddit.com/user/nomaddave
-::                      + stage_4_patch:DISMreset: Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks to reddit.com/user/nomaddave
+:: Version:       3.6.0 + tron.bat:prep:              Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to reddit.com/user/cuddlychops06
+::                      + stage_0_prep:vss_clean:     Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
+::                      / stage_1_tempclean:          Add 10-second delay after CCleaner and Bleachbit to give them time to finish before moving to next task.
+::                      ! stage_3_de-bloat:Metro:     Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
+::                      ! stage_3_de-bloat:Metro:     Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
+::                      * stage_3_de-bloat:Metro:     Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to reddit.com/user/nomaddave
+::                      + stage_4_patch:DISMreset:    Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks to reddit.com/user/nomaddave
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -80,7 +81,7 @@ set PRESERVE_POWER_SCHEME=no
 cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.6.0
-set SCRIPT_DATE=2014-10-xx
+set SCRIPT_DATE=2014-10-11
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -344,9 +345,9 @@ if not "%SAFE_MODE%"=="yes" (
 		echo  in "Safe Mode with Networking" in order to download
 		echo  Windows and anti-virus updates.
 		echo.
-		echo  Tron will still function fine, but if you still have
-		echo  problems after running, recommend rebooting to "Safe Mode
-		echo  with Networking" and running again.
+		echo  Tron should still run OK, but if you have infections
+		echo  or problems after running, recommend booting
+		echo  to "Safe Mode with Networking" to re-run.
 		echo.
 		pause
 		cls
@@ -407,7 +408,7 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 		echo.
 		echo  WARNING:
 		echo.
-		echo  SMART disk health check failed for %%i (likely failing).
+		echo  SMART disk health check failed for %%i ^(likely failing^).
 		echo  Tron is disk-intensive and running it could cause an 
 		echo  unstable disk to fail.
 		echo.
@@ -499,7 +500,7 @@ pushd purge_shadow_copies
 if not "%WIN_VER:~0,9%"=="Microsoft" (
 	:: Force allow us to start VSS service in Safe Mode
 	if %DRY_RUN%==no reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
-	net start VSS
+	if %DRY_RUN%==no net start VSS
 	if %DRY_RUN%==no vssadmin delete shadows /for=%SystemDrive% /oldest
 	)
 popd
@@ -657,6 +658,7 @@ echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...
 pushd ccleaner
 if "%DRY_RUN%"=="no" ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" ping 127.0.0.1 -n 10 >NUL
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -666,6 +668,7 @@ echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...
 pushd bleachbit
 if "%DRY_RUN%"=="no" bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+if "%DRY_RUN%"=="no" ping 127.0.0.1 -n 10 >NUL
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -906,21 +909,21 @@ echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job '7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
-if %DRY_RUN%==yes goto skip_7-zip
+if %DRY_RUN%==yes goto skip_7-Zip
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	pushd 7-zip\v9.20\x86
+	pushd 7-Zip\v9.20\x86
 	setlocal
 	call "7-Zip v9.20 x86.bat"
 	endlocal
 	popd
 ) else (
-	pushd 7-zip\v9.20\x64
+	pushd 7-Zip\v9.20\x64
 	setlocal
 	call "7-Zip v9.20 x64.bat"
 	endlocal
 	popd
 	)
-:skip_7-zip
+:skip_7-Zip
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
