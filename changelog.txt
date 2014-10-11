@@ -16,18 +16,75 @@ Version number legend:
   
 
 ########################
+# v3.6.0 // 2014-10-11 #
+########################
+tron.bat                         v3.6.0
+ + tron.bat:prep:              Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to /u/cuddlychops06
+ + stage_0_prep:vss_clean:     Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to /u/cuddlychops06
+ + stage_0_prep:ProcessKiller: Add ProcessKiller.exe by /u/cuddlychops06. Nukes unecessary userland processes before starting rkill.
+ / stage_1_tempclean:          Add 10-second delay after CCleaner and Bleachbit to give them time to finish before moving to next task.
+ ! stage_3_de-bloat:Metro:     Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
+ ! stage_3_de-bloat:Metro:     Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
+ * stage_3_de-bloat:Metro:     Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to /u/nomaddave
+ + stage_4_patch:DISMreset:    Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks to /u/nomaddave
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . TDSS Killer                   v3.0.0.40
+ . erunt                         v1.1j
+  
+STAGE 1: Tempclean
+ * CCLeaner                      v4.18.4844
+ . BleachBit                     v1.4
+ . TempFileClean                 v3.4.4
+
+STAGE 2: Disinfect
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.2.1012.exe
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.152   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u20          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v3.3.1.1
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.10.4.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ + ServicesRepair.exe            v1.0.0.3      (ESET's ServicesRepair.exe for fixing broken Windows services)
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
+
+########################
 # v3.5.0 // 2014-10-02 #
 ########################
 tron.bat                         v3.5.0
- * stage_0_prep:enableMSI:  Manually enable MSI Installer service via command-line instead of bundled utility. Thanks to reddit.com/user/cuddlychops06
+ * stage_0_prep:enableMSI:  Manually enable MSI Installer service via command-line instead of bundled utility. Thanks to /u/cuddlychops06
  / stage_0_prep:tdsskiller: Disable use of QUARANTINE_PATH in TDSSKiller job due to causing BSODs on Vista. Left QUARANTINE_PATH variable and logic in place for possible future use
- / stage_0_prep:rkill:      Rename rkill.exe and rkill64.exe to rkill.com and rkill64.com to help avoid some anti-AV programs. Thanks to reddit.com/user/cuddlychops06
- * stage_0_prep:WMIrepair:  Add repair of 64-bit executables to WMI repair section. Thanks to reddit.com/user/cuddlychops06
- + stage_0_prep:RegBackup:  Add job to backup registry using erunt (after rkill); backs up to %LOGPATH%. Thanks to reddit.com/user/cuddlychops06
- + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to reddit.com/user/cuddlychops06
- + stage_1_tempclean:       Add cleanup of Windows Update cache. Thanks to reddit.com/user/fumosus
- * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to reddit.com/user/cuddlychops06
- ! stage_4_patch:Java:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to reddit.com/user/placebonocebo
+ / stage_0_prep:rkill:      Rename rkill.exe and rkill64.exe to rkill.com and rkill64.com to help avoid some anti-AV programs. Thanks to /u/cuddlychops06
+ * stage_0_prep:WMIrepair:  Add repair of 64-bit executables to WMI repair section. Thanks to /u/cuddlychops06
+ + stage_0_prep:RegBackup:  Add job to backup registry using erunt (after rkill); backs up to %LOGPATH%. Thanks to /u/cuddlychops06
+ + stage_1_tempclean:       Add job to clean Internet Explorer. Thanks to /u/cuddlychops06
+ + stage_1_tempclean:       Add cleanup of Windows Update cache. Thanks to /u/fumosus
+ * stage_2_disinfect:sfc:   Add DISM image corruption check and repair (Windows 8/2012-family only). Thanks to /u/cuddlychops06
+ ! stage_4_patch:Java:      Expand WMI uninstaller mask to catch MSI code for JRE7u67. Thanks to /u/placebonocebo
  - stage_4_patch:enableMSI: Remove now-unused MSI Installer utility
 
 STAGE 0: Prep
@@ -49,7 +106,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . No changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v15.0.0.152   (language ignored)
  . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -79,14 +136,14 @@ STAGE 6: Manual tools
 tron.bat                         v3.4.0
  + tron.bat:variables:      Add QUARANTINE_PATH variable to support new Stage 0 TDSSKiller job. Use to specify where quarantine files get saved.
  / tron.bat:variables:      Rename REPO_SYNC_KEY to REPO_BTSYNC_KEY
- + stage_0_prep:tdsskiller: Add TDSSKiller to Stage 0: Prep steps. Thanks to reddit.com/user/cuddlychops06
+ + stage_0_prep:tdsskiller: Add TDSSKiller to Stage 0: Prep steps. Thanks to /u/cuddlychops06
  / stage_0_prep:rkill:      Change rkill.log temporary storage location to %TEMP% instead of %LOGPATH%
  - stage_6_manual_tools:    Remove TDSSKiller (move to Stage 0)
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
  + TDSS Killer                   v3.0.0.40
-	` Add to Tron; remove from manual tools. Thanks to reddit.com/user/cuddlychops06
+	` Add to Tron; remove from manual tools. Thanks to /u/cuddlychops06
 	` Quarantines %LOGPATH%\tron_quarantined_files by default
   
 STAGE 1: Tempclean
@@ -103,7 +160,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . No changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v15.0.0.152   (language ignored)
  . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -150,7 +207,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . No changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v15.0.0.152   (language ignored)
  * Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -198,7 +255,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . No changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v15.0.0.152   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -252,7 +309,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . No changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  * Adobe Flash Player            v15.0.0.152   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -280,18 +337,19 @@ STAGE 6: Manual tools
 ########################
 # v3.2.1 // 2014-09-05 #
 ########################
- * checksums.txt now uses SHA-256 for integrity verification instead of MD5. Thanks to reddit.com/user/abcot
+ * checksums.txt now uses SHA-256 for integrity verification instead of MD5. Thanks to /u/abcot
 
 tron.bat                         v3.2.1
- ! stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to reddit.com/user/A999
+ ! stage_0_prep:check_update: Minor bug fix in update checker - don't set REPO_SCRIPT_VERSION and REPO_SCRIPT_DATE if we can't reach the update server. Thanks to /u/A999
  / stage_3_de-bloat:          Moved programs_to_target.txt and "note - read this.txt" to their own job subfolder ("oem") and updated tron.bat and instructions file to reflect changes
+
 
 
 ########################
 # v3.2.0 // 2014-09-03 #
 ########################
 tron.bat                         v3.2.0
- * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to reddit.com/user/tastyratz
+ * tron.bat: Convert many references to internal Windows utilities to absolute paths to avoid relying on SYSTEM path to be correct. Thanks to /u/tastyratz
  * tron.bat: Replace all references to %WinDir% with %SystemRoot% since it is a 'core' variable and defined earlier in the OS lifetime (at OS installation) whereas %WINDIR% is a regular variable set to the value of %SystemRoot%
  * tron.bat: Update links to reflect new Adobe Flash installers
  ! tron.bat: Fix references to WMIC - we were mistakenly still relying on SYSTEM path and not using the absolute path set in the WMIC variable
@@ -312,7 +370,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  - some redundant entries removed
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  * Adobe Flash Player            v14.0.0.179   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u20          (language ignored)
@@ -342,7 +400,7 @@ STAGE 6: Manual tools
 ########################
 tron.bat                         v3.1.0
  * stage_0_prep:  Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
-                  Thanks to reddit.com/user/meandertothehorizon, reddit.com/user/-pANIC- and reddit.com/user/tethercat
+                  Thanks to /u/meandertothehorizon, /u/-pANIC- and /u/tethercat
                   I'm open to code block improvements on this section, the current method feels clumsy somehow.
  / stage_4_patch: Update Java installer links to reflect new paths				 
 
@@ -362,7 +420,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  . no changes
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u20          (language ignored)
@@ -392,7 +450,7 @@ STAGE 6: Manual tools
 ########################
 
 STAGE 0: Prep
- * check_update: Replaced wget binary with standalone version. Thanks to reddit.com/user/Olonzac
+ * check_update: Replaced wget binary with standalone version. Thanks to /u/Olonzac
 
 
  
@@ -400,12 +458,12 @@ STAGE 0: Prep
 # v3.0.0 // 2014-08-23 #
 ########################
 tron.bat                         v3.0.0
- + wrap-up:           Collect Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to reddit.com/user/swtester
+ + wrap-up:           Collect Vipre and MBAM logs (deposit them in LOGPATH directory). Thanks to /u/swtester
  + tron.bat:          Add rudimentary update check. Will notify you if a newer version is available on the official repo server
- - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to reddit.com/user/swtester
+ - tron.bat:          Remove outdated reference to Emsisoft's a2cmd in welcome screen. Thanks to /u/swtester
  / tron.bat:          Rename SCRIPT_UPDATED to SCRIPT_DATE
  * prep and checks:   Beef up OS detection routine to support various improvements
- * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to reddit.com/user/swtester
+ * stage_2_disinfect: Switch order of Vipre and Sophos to prevent Sophos deleting Vipre's quarantine, preventing recovery. Thanks to /u/swtester
  + stage_3_de-bloat:  Add removal of default Metro apps (Windows 8/8.1 only). Thanks to https://keybase.io/exabrial
 
 STAGE 0: Prep
@@ -423,7 +481,7 @@ STAGE 2: Disinfect
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u11          (language ignored)
@@ -453,9 +511,9 @@ STAGE 6: Manual tools
 ########################
 tron.bat                         v2.2.1
  ! prep and checks:   Fix admin rights check; net session doesn't work in Safe Mode, but all command prompts launched in Safe Mode are admin-privileged by default, so we simply skip the Admin rights check if we're already in safe mode.
- * stage_3_disinfect: Integrate SFC's log into main tron.log. Thanks to reddit.com/user/adminhugh
+ * stage_3_disinfect: Integrate SFC's log into main tron.log. Thanks to /u/adminhugh
  - stage_3_disinfect: Remove Emsisoft's a2cmd scanner since it seems to crash and stall the script more often than it does anything else
- ! stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to reddit.com/user/swtester
+ ! stage_4_patch:     Fix incorrect call to "jre-8u11-x86.bat" (should be "jre-8u11-i586.bat"). Thanks to /u/swtester
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -474,7 +532,7 @@ STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_t
  + Added a couple new entries
 
 STAGE 4: Patch
- . 7-zip                         v9.20         (multi-language)
+ . 7-Zip                         v9.20         (multi-language)
  . Adobe Flash Player            v14.0.0.176   (language ignored)
  . Adobe Reader                  v11.0.08      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u11          (language ignored)
@@ -503,7 +561,7 @@ STAGE 6: Manual tools
 # v2.1.0 // 2014-08-13 #
 ########################
 tron.bat                         v2.1.0
- ! prep and checks:  Fix admin check. Thanks to reddit.com/user/agent-squirrel
+ ! prep and checks:  Fix admin check. Thanks to /u/agent-squirrel
  / prep and checks:  Admin check color change. Will now be more alarming and hopefully reduce number of people who try to run as non-Admin
  * stage_4_patch:    Updated links to reflect new Flash and Reader installers
  * tron.bat:         Misc snarky comments about MS products removed
@@ -524,7 +582,7 @@ STAGE 2: Disinfect
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  * Adobe Flash Player            v14.0.0.176
  * Adobe Reader                  v11.0.08
  . Java Runtime Environment      8u11
@@ -555,9 +613,9 @@ STAGE 6: Manual tools
 tron.bat                         v2.0.0
  * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
  ! prep and checks:  Fix missing 'set WMIC=<path>' command (was causing all JRE removal commands to fail)
- * stage_0_prep:     Add flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to reddit.com/user/GetOnMyAmazingHorse
+ * stage_0_prep:     Add flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks to /u/GetOnMyAmazingHorse
  ! stage_4_patch:    Fix bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
- + stage_5_optimize: Add job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to reddit.com/user/mikeyuf
+ + stage_5_optimize: Add job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks to /u/mikeyuf
 
 STAGE 0: Prep
  * Rkill                         v2.6.8.0
@@ -575,7 +633,7 @@ STAGE 2: Disinfect
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u11
@@ -610,7 +668,7 @@ tron.bat                         v1.9.0
     -s  Skip defrag. Force Tron to skip defrag regardless whether an SSD is detected
     -h  Spit out help on using Tron via command-line
     -r  Reboot (auto-reboot 30 seconds after Tron completes)
- * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to reddit.com/user/Undeadlord for suggestion
+ * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to /u/Undeadlord for suggestion
  - tron.bat: Removed support for --auto flag (use -a instead) 
  ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
  
@@ -630,7 +688,7 @@ STAGE 2: Disinfect
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u11
@@ -661,7 +719,7 @@ STAGE 6: Manual tools
 tron.bat                         v1.8.2
  * prep and checks:   Move Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
  + stage_0_prep:      Add code to reduce space allowed for System Restore checkpoints to 5%
- + stage_2_disinfect: Add /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to reddit.com/user/3xist
+ + stage_2_disinfect: Add /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; thanks to /u/3xist
  ! stage_2_disinfect: Fix failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
 
 STAGE 0: Prep
@@ -680,10 +738,10 @@ STAGE 2: Disinfect
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  * Greatly expanded list of programs to target (too long to list here). 
-   Thanks to reddit.com/user/3xist and reddit.com/user/Gaxor
+   Thanks to /u/3xist and /u/Gaxor
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u11
@@ -712,7 +770,7 @@ STAGE 6: Manual tools
 # v1.8.1 // 2014-07-29 #
 ########################
 tron.bat                         v1.8.1
- ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to reddit.com/user/3xist
+ ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to /u/3xist
  
 
  
@@ -721,7 +779,7 @@ tron.bat                         v1.8.1
 ########################
 tron.bat                         v1.8.0
  * prep and checks:   Overhaul Date/Time conversion so we can handle all versions of Windows using any local date-time format
- ! prep and checks:   Possible fix for Windows 8/8.1 Admin rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to reddit.com/user/domz128
+ ! prep and checks:   Possible fix for Windows 8/8.1 Admin rights check. Just in case, switched the Administrator rights check to warning-only (removed forced exit). Thanks to /u/domz128
  * stage_0_prep:      rkill improvements; now executes silently (no popup window) and logs to the standard log file along with everything else
  + stage_1_tempclean: Add job to clear Windows event logs
 
@@ -774,7 +832,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Yahoo! Browser%%
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  * Java Runtime Environment      8u11
@@ -803,7 +861,7 @@ STAGE 6: Manual tools
 # v1.7.4 // 2014-07-23 #
 ########################
 tron.bat                         v1.7.4
- ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to reddit.com/user/Eschmacher
+ ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to /u/Eschmacher
  
 
  
@@ -839,7 +897,7 @@ tron.bat                         v1.7.1
 # v1.7.0 // 2014-07-21 #
 ########################
 tron.bat                         v1.7
- + prep and checks:   Add check for Administrator rights. Thanks to reddit.com/user/apcomputerworks
+ + prep and checks:   Add check for Administrator rights. Thanks to /u/apcomputerworks
  + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
  / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section	 
 
@@ -892,7 +950,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Yahoo! Browser%%
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -921,7 +979,7 @@ STAGE 6: Manual tools
 # v1.6 // 2014-07-16 #
 ######################
 tron.bat                         v1.6
- + stage_2_disinfect: Add System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to reddit.com/user/cyr4n0
+ + stage_2_disinfect: Add System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to /u/cyr4n0
  + stage_0_prep:      Add code to detect and repair broken WMI configurations
 	
 STAGE 0: Prep
@@ -972,7 +1030,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Yahoo! Browser%%
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -1049,7 +1107,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Yahoo! Browser%%
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -1078,7 +1136,7 @@ STAGE 6: Manual tools
 ######################
 tron.bat                         v1.4
  + tron.bat:          Add SKIP_DEFRAG variable to force defrag to always skip
- * tron.bat:          Improve SSD detection. Thanks to reddit.com/user/bdm800 
+ * tron.bat:          Improve SSD detection. Thanks to /u/bdm800 
  * tron.bat:          Clean up welcome screen and various comments 
  * tron.bat:          Reduce time spent waiting for rkill from 110 seconds to 90 seconds 
  * stage_2_disinfect: Switch Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
@@ -1127,7 +1185,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Yahoo! Browser%%
 
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -1201,7 +1259,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + Yahoo! Browser%%
  
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -1230,7 +1288,7 @@ STAGE 6: Manual tools
 # v1.2 // 2014-07-07 #
 ######################
 tron.bat                         v1.2
- + stage_5_optimize:  Add detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to reddit.com/user/you_drown_now for help with this function.
+ + stage_5_optimize:  Add detection of SSD drives. If drive is detected, post-run defrag is skipped. Thanks to /u/you_drown_now for help with this function.
  * stage_3_de-bloat:  Improve logic, logging, and robustness for WMIC removal section
  * tron.bat:          Improve overall logging, appearance and commenting. Added clarification screens for various Safe Mode states
  / Intro screen:      Adjust runtime estimates based on user feedback
@@ -1283,7 +1341,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + Yahoo! Browser%%
  
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
  . Java Runtime Environment      8u5
@@ -1363,7 +1421,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + Yahoo! Browser%%
  
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
  - Adobe Shockwave               v12.1.2.152 -- REMOVED
@@ -1416,7 +1474,7 @@ STAGE 3: De-bloat target keywords
  . Launch Manager*
  
 STAGE 4: Patch
- . 7-zip                         v9.20
+ . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
  . Adobe Reader                  v11.0.07
  . Adobe Shockwave               v12.1.2.152
