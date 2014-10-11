@@ -21,7 +21,6 @@ Version number legend:
 tron.bat                         v3.6.0
  + tron.bat:prep:              Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to /u/cuddlychops06
  + stage_0_prep:vss_clean:     Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to /u/cuddlychops06
- + stage_0_prep:ProcessKiller: Add ProcessKiller.exe by /u/cuddlychops06. Nukes unecessary userland processes before starting rkill.
  / stage_1_tempclean:          Add 10-second delay after CCleaner and Bleachbit to give them time to finish before moving to next task.
  ! stage_3_de-bloat:Metro:     Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
  ! stage_3_de-bloat:Metro:     Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
