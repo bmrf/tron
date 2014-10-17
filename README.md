@@ -106,9 +106,11 @@ tron.bat                         Master script that launches all the other tools
 
 Tron prep jobs:
 
- . Detect SSD                    Detect solid state hard drives. If found, tron skips the Stage 5 defrag.
+ . Detect SSD                    Detect solid state hard drives. If found, tron skips the Stage 5 defrag
 
  . Detect Safe Mode              Detect whether or not we're in Safe Mode and notifies the user if we're not
+ 
+  . Enable F8 Safe Mode selection Re-enable the ability to use the F8 key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
  . Make log and quarantine dirs  Create the LOGPATH and QUARANTINE_PATH directories if they don't already exist
 
@@ -120,7 +122,7 @@ user.
 STAGE 0: Prep
 
  . Rkill                         rkill is an anti-malware prep tool; it looks for and kills a number of known malware that 
-interferes with removal tools
+interfere with removal tools
  
  . TDSS Killer                   anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags: -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 
