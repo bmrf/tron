@@ -4,13 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.6.0 + tron.bat:prep:              Add drive health check via SMART. If SMART check fails, warn user before continuing. Thanks to reddit.com/user/cuddlychops06
-::                      + stage_0_prep:vss_clean:     Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks to reddit.com/user/cuddlychops06
-::                      / stage_1_tempclean:          Add 10-second delay after CCleaner and Bleachbit to give them time to finish before moving to next task.
-::                      ! stage_3_de-bloat:Metro:     Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
-::                      ! stage_3_de-bloat:Metro:     Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
-::                      * stage_3_de-bloat:Metro:     Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks to reddit.com/user/nomaddave
-::                      + stage_4_patch:DISMreset:    Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks to reddit.com/user/nomaddave
+:: Version:       3.7.0 ! tron.bat:prep:          Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
+::                      + tron.bat:prep:          Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
+::                      * stage_2_disinfect:mbam: Update MBAM link to reflect new installer
+::                      * stage_4_patch:jre:      Update JRE links to reflect new installers
+::                      * stage_4_patch:jre:      Update Adobe links to reflect new installers
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -30,6 +28,14 @@
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
 SETLOCAL
 @echo off
+
+
+
+:: TODO: 
+:: - Date update (make sure to set CUR_DATE somewhere in the middle of the script to account for running over night). Thanks to /u/ScubaSteve
+:: - alter tron downloads into self-unpacking EXEs? Thanks to /u/cmorche
+:: - 
+
 
 
 :::::::::::::::
@@ -80,8 +86,8 @@ set PRESERVE_POWER_SCHEME=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.6.0
-set SCRIPT_DATE=2014-10-11
+set SCRIPT_VERSION=3.7.0
+set SCRIPT_DATE=2014-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -89,8 +95,8 @@ FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Preload variables for use and comparison.
-:: Most of these get clobbered later, so don't change them here.
-set DISK_HEALTH_CHECK_FAIL=no
+:: These get clobbered later, don't change them here.
+set DISK_HEALTH_CHK_FAILED=no
 set REPO_SCRIPT_VERSION=0
 set REPO_SCRIPT_DATE=0
 set HELP=no
@@ -142,6 +148,13 @@ popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+
+
+:: PREP JOB: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
+:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
+if "%WIN_VER:~0,9%"=="Windows 8" (
+	bcdedit /set {default} bootmenupolicy legacy
+	)
 
 
 :: PREP JOB: Make the log and quarantine directories and file if they don't already exist
@@ -258,7 +271,7 @@ if %CONFIG_DUMP%==yes (
 	echo.
 	echo   Variable values ^(script-internal^):
 	echo    CUR_DATE:               %CUR_DATE%
-	echo    DISK_HEALTH_CHECK_FAIL: %DISK_HEALTH_CHECK_FAIL%
+	echo    DISK_HEALTH_CHK_FAILED: %DISK_HEALTH_CHK_FAILED%
 	echo    DTS:                    %DTS%
 	echo    HELP:                   %HELP%
 	echo    SAFE_MODE:              %SAFE_MODE%
@@ -296,14 +309,14 @@ echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  ***************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
 echo  * Author: vocatus on reddit.com/r/sysadmin                  *
 echo  *                                                           *
-echo  * Stage:         Tools:                                     *
+echo  * Stage:        Tools:                                      *
 echo  * --------------------------------------------------------- *
-echo  *  0 Prep:       rkill, TDSSK, reg bckup, SysRstr/VSS clean *
-echo  *  1 TempClean:  TempFileCleanup, BleachBit, CCleaner, IE   *
-echo  *  2 Disinfect:  Sophos, Vipre, MBAM, DISM repair, sfc scan *
-echo  *  3 De-bloat:   Remove OEM bloatware (inc Metro apps)      *
-echo  *  4 Patch:      Update 7-Zip/Java/Flash/Windows            *
-echo  *  5 Optimize:   chkdsk, defrag %SystemDrive% (non-SSD only)           *
+echo  *  0 Prep:      rkill, TDSSK, reg bckup, SysRstr/VSS clean  *
+echo  *  1 TempClean: TempFileCleanup, BleachBit, CCleaner, IE    *
+echo  *  2 Disinfect: Sophos, Vipre, MBAM, DISM repair, sfc scan  *
+echo  *  3 De-bloat:  Remove OEM bloatware (inc Metro apps)       *
+echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows             *
+echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (non-SSD only)            *
 echo  *                                                           *
 echo  * \resources\stage_6_manual_tools contains additional tools *
 echo  * which may be run manually if necessary.                   *
@@ -399,22 +412,26 @@ if not "%SAFE_MODE%"=="yes" (
 :: Thanks to reddit.com/user/cuddlychops06
 pushd resources\stage_5_optimize\defrag
 setlocal enabledelayedexpansion
+set CHOICE=y
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl -H %%i
 	cls
 	if not "!ERRORLEVEL!"=="0" (
 		color 0c
-		set CHOICE=n
 		echo.
 		echo  WARNING:
 		echo.
-		echo  SMART disk health check failed for %%i ^(likely failing^).
+		echo  SMART health check failed for %%i ^(disk could be failing^).
 		echo  Tron is disk-intensive and running it could cause an 
-		echo  unstable disk to fail.
+		echo  unstable disk to fail. Keep in mind SMART checks can fail
+		echo  but the disk will continue to run for a long time. If the 
+		echo  disk is super old it might be risky, but generally it's safe
+		echo  to continue. This check is mostly to give you a heads up that
+		echo  there MIGHT be problems.
 		echo.
-		set /P CHOICE= Do you want to continue? [y/N]: 
+		set /P CHOICE= Continue anyway? [Y/n]: 
+		if !CHOICE!==y set DISK_HEALTH_CHK_FAILED=yes&& goto disk_health_check_end
 		if not !CHOICE!==y exit /B 1
-		if !CHOICE!==y set DISK_HEALTH_CHECK_FAILED=yes&& goto disk_health_check_end
 		echo.
 		)
 		
@@ -440,7 +457,8 @@ echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERN
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-
+pause
+pause
 :::::::::::::::::::
 :: STAGE 0: PREP ::
 :::::::::::::::::::
@@ -758,7 +776,7 @@ pushd mbam
 
 :: Install & remove the desktop icon
 if %DRY_RUN%==yes goto skip_mbam
-"Malwarebytes Anti-Malware v2.0.2.1012.exe" /verysilent
+"Malwarebytes Anti-Malware v2.0.3.1025.exe" /verysilent
 ::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
@@ -931,12 +949,12 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
 if %DRY_RUN%==yes goto skip_adobe_flash
-pushd "adobe\flash_player\v15.0.0.152\firefox"
+pushd "adobe\flash_player\v15.0.0.189\firefox"
 setlocal
 call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v15.0.0.152\internet explorer"
+pushd "adobe\flash_player\v15.0.0.189\internet explorer"
 setlocal
 call "Adobe Flash Player (IE).bat"
 endlocal
@@ -1004,17 +1022,17 @@ echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
-	pushd java\jre\8\u20\x86
+	pushd java\jre\8\u25\x86
 	setlocal
-	call "jre-8u20-windows-i586.bat"
+	call "jre-8u25-windows-i586.bat"
 	endlocal
 	popd
 ) else (
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...
-	pushd java\jre\8\u20\x64
+	pushd java\jre\8\u25\x64
 	setlocal
-	call "jre-8u20-windows-x64.bat"
+	call "jre-8u25-windows-x64.bat"
 	endlocal
 	popd
 	)
