@@ -18,7 +18,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 4. By default the log file is at `C:\Logs\tron.log`
 
-Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending on how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours. Basically set it and forget it.
+Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending on how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
 
 # SAFE MODE
@@ -138,19 +138,21 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
 
-2. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
+2. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
+
+3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **erunt**: Used to backup the registry before beginning a Tron run
+4. **erunt**: Used to backup the registry before beginning a Tron run
 
-4. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+5. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-5. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+6. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-6. **Check and repair WMI**: Tron checks WMI interface and attempts to repair it if it's broken. Tron uses WMI for a lot of stuff including getting the date into ISO format, wildcard OEM bloatware removal, and other stuff
+7. **Check and repair WMI**: Tron checks WMI interface and attempts to repair it if it's broken. Tron uses WMI for a lot of stuff including getting the date into ISO format, wildcard OEM bloatware removal, and other stuff
 
 
 ## STAGE 1: Tempclean
@@ -238,6 +240,8 @@ Tron does not run these automatically because most of them don't support command
 
 7. **Junkware Removal Tool**: Temp files and random junkware remover
 
-8. **TempFileCleaner**: OldTimer utility for cleaning temp files
+8. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-9. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
+9. **TempFileCleaner**: OldTimer utility for cleaning temp files
+
+10. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
