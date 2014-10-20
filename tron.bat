@@ -4,11 +4,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.7.0 ! tron.bat:prep:          Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
-::                      + tron.bat:prep:          Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
-::                      * stage_2_disinfect:mbam: Update MBAM link to reflect new installer
-::                      * stage_4_patch:jre:      Update JRE links to reflect new installers
-::                      * stage_4_patch:jre:      Update Adobe links to reflect new installers
+:: Version:       3.7.0 ! tron.bat:prep:            Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
+::                      ! tron.bat:date and time:   Set CUR_DATE again after finishing virus scans, since they take so long and we sometimes cross midnight into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
+::                      + tron.bat:prep:            Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
+::                      + tron.bat:Feature:         Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
+::                      + stage_0_prep:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
+::                      * stage_2_disinfect:mbam:   Update MBAM link to reflect new installer
+::                      * stage_4_patch:jre:        Update JRE links to reflect new installers
+::                      * stage_4_patch:jre:        Update Adobe links to reflect new installers
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -32,9 +35,8 @@ SETLOCAL
 
 
 :: TODO: 
-:: - Date update (make sure to set CUR_DATE somewhere in the middle of the script to account for running over night). Thanks to /u/ScubaSteve
 :: - alter tron downloads into self-unpacking EXEs? Thanks to /u/cmorche
-:: - 
+:: - add RogueKiller section to stage_0_prep
 
 
 
@@ -67,9 +69,11 @@ set SKIP_DEFRAG=no
 :: AUTORUN = automatic/silent execution (no welcome screen)
 :: DRY_RUN = run through script but skip all actual actions (test mode)
 :: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
+:: DO_SHUTDOWN = Shutdown the computer after the script finishes (-o flag). Default is no. If auto-reboot is set this will override it.
 set AUTORUN=no
 set DRY_RUN=no
 set PRESERVE_POWER_SCHEME=no
+set DO_SHUTDOWN=no
 
 
 
@@ -169,6 +173,7 @@ for %%i in (%*) do (
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-h set HELP=yes
+	if /i %%i==-o set DO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
@@ -262,6 +267,7 @@ if %CONFIG_DUMP%==yes (
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
+	echo    DO_SHUTDOWN:            %DO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
@@ -797,6 +803,7 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
+:: Thanks to /u/nomaddave
 echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...
 pushd dism_image_check
@@ -846,6 +853,11 @@ echo %CUR_DATE% %TIME%    Done.
 popd
 echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.
+
+:: Since this whole section takes a long time to run, re-set the date just in case we crossed over midnight into a new day during the scans.
+:: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug.
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 
 :::::::::::::::::::::::
@@ -1213,6 +1225,12 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.
 	)
 
+:: Check if shutdown was requested
+if "%DO_SHUTDOWN%"=="yes" (
+	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down immediately.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down immediately.
+)
+
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
@@ -1227,7 +1245,8 @@ echo ---------------------------------------------------------------------------
 
 
 if %DRY_RUN%==yes goto end_and_skip_shutdown
-if not "%AUTO_REBOOT_DELAY%"=="0" shutdown /r /f /t %AUTO_REBOOT_DELAY% /c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
+if not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
+if "%DO_SHUTDOWN%"=="yes" shutdown -f 
 
 :end_and_skip_shutdown
 pause
