@@ -10,7 +10,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 1. Boot into safe mode (with Network support is preferable).
 
-2. Copy tron.bat and the \resources folder to the target machine and **run tron.bat as an ADMINISTRATOR**.
+2. Copy tron.bat and the `\resources` folder to the target machine and **run tron.bat as an ADMINISTRATOR**.
 
    Tron will refuse to run if you don't run as an Administrator.
 
