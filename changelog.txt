@@ -16,24 +16,23 @@ Version number legend:
   
   
 ########################
-# v3.7.0 // 2014-10-xx #
+# v3.7.0 // 2014-10-22 #
 ########################
 tron.bat                         v3.7.0
- ! tron.bat:prep:            Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
- ! tron.bat:date and time:   Set CUR_DATE again after finishing virus scans, since they take so long and we sometimes cross midnight into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
- * tron.bat:prep:            Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
- + tron.bat:prep:            Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
- + tron.bat:Feature:         Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
- + tron.bat:Feature:         Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
- + stage_0_prep:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
- * stage_2_disinfect:mbam:   Update MBAM link to reflect new installer
- / stage_2_disinfect:DISM:   Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas.
- * stage_4_patch:jre:        Update JRE links to reflect new installers
- * stage_4_patch:jre:        Update Adobe links to reflect new installers
+ ! tron.bat:prep:                 Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
+ ! tron.bat:date and time:         Reset CUR_DATE after finishing virus scans, since they take so long and we sometimes cross into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
+ * tron.bat:prep:                 Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
+ + tron.bat:prep:                 Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
+ + tron.bat:Feature:              Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
+ + tron.bat:Feature:              Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
+ + stage_2_disinfect:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
+ * stage_2_disinfect:mbam:        Update MBAM link to reflect new installer
+ / stage_2_disinfect:DISM:        Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas.
+ * stage_4_patch:jre:             Update JRE links to reflect new installers
+ * stage_4_patch:jre:             Update Adobe links to reflect new installers
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- + RogueKiller                   v10.0.2.0
  . TDSS Killer                   v3.0.0.40
  . erunt                         v1.1j
   
@@ -43,18 +42,19 @@ STAGE 1: Tempclean
  . TempFileClean                 v3.4.4
 
 STAGE 2: Disinfect
+ + RogueKiller                   v10.0.2.0
  * Sophos Virus Removal Tool     v2.5.3, updated defs
  * Vipre Rescue Scanner          v7.0.7.8, updated defs
  * Malwarebytes Anti-Malware     v2.0.3.1025
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- . No changes
+ * A few redundant entries removed
 
 STAGE 4: Patch
  . 7-Zip                         v9.20         (multi-language)
  * Adobe Flash Player            v15.0.0.189   (language ignored)
  . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
- . Java Runtime Environment      8u20          (language ignored)
+ . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
  
@@ -64,10 +64,10 @@ STAGE 5: Optimize
  
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v4.0.0.0
+ * AdwCleaner                    v4.0.0.1
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
- . ComboFix                      v14.10.4.1
+ * ComboFix                      v14.10.21.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.1.4
  . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
