@@ -142,21 +142,19 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
 
-2. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
-
-3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
+2. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-4. **erunt**: Used to backup the registry before beginning a Tron run
+3. **erunt**: Used to backup the registry before beginning a Tron run
 
-5. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+4. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-6. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+5. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-7. **Check and repair WMI**: Tron checks WMI interface and attempts to repair it if it's broken. Tron uses WMI for a lot of stuff including getting the date into ISO format, wildcard OEM bloatware removal, and other stuff
+6. **Check and repair WMI**: Tron checks WMI interface and attempts to repair it if it's broken. Tron uses WMI for a lot of stuff including getting the date into ISO format, wildcard OEM bloatware removal, and other stuff
 
 
 ## STAGE 1: Tempclean
@@ -180,15 +178,17 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 2: Disinfect
 
-1. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Runs in debug mode for more verbose output
+1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
 
-2. **Vipre Rescue Scanner**: Command-line anti-virus scanner
+2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Runs in debug mode for more verbose output
 
-3. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input
+3. **Vipre Rescue Scanner**: Command-line anti-virus scanner
 
-4. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
+4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input
 
-5. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
+5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
+
+6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
 
 ## STAGE 3: De-bloat
