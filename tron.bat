@@ -4,17 +4,17 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.7.0 ! tron.bat:prep:            Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
-::                      ! tron.bat:date and time:   Set CUR_DATE again after finishing virus scans, since they take so long and we sometimes cross midnight into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
-::                      * tron.bat:prep:            Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
-::                      + tron.bat:prep:            Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
-::                      + tron.bat:Feature:         Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
-::                      + tron.bat:Feature:         Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled.
-::                      + stage_0_prep:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
-::                      * stage_2_disinfect:mbam:   Update MBAM link to reflect new installer
-::                      / stage_2_disinfect:DISM:   Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas.
-::                      * stage_4_patch:jre:        Update JRE links to reflect new installers
-::                      * stage_4_patch:jre:        Update Adobe links to reflect new installers
+:: Version:       3.7.0 ! tron.bat:prep:                 Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
+::                      ! tron.bat:date and time:        Reset CUR_DATE after finishing virus scans, since they take so long and we sometimes cross into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
+::                      * tron.bat:prep:                 Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
+::                      + tron.bat:prep:                 Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
+::                      + tron.bat:Feature:              Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
+::                      + tron.bat:Feature:              Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
+::                      + stage_2_disinfect:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
+::                      * stage_2_disinfect:mbam:        Update MBAM link to reflect new installer
+::                      / stage_2_disinfect:DISM:        Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas.
+::                      * stage_4_patch:jre:             Update JRE links to reflect new installers
+::                      * stage_4_patch:jre:             Update Adobe links to reflect new installers
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -41,7 +41,6 @@ SETLOCAL
 
 :: TODO: 
 :: - alter tron downloads into self-unpacking EXEs? Thanks to /u/cmorche
-:: - add RogueKiller section to stage_0_prep
 
 
 
@@ -98,7 +97,7 @@ set VERBOSE=no
 cls && echo. && echo  Loading...
 color 0f
 set SCRIPT_VERSION=3.7.0
-set SCRIPT_DATE=2014-10-xx
+set SCRIPT_DATE=2014-10-22
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -485,13 +484,13 @@ pause
 :::::::::::::::::::
 :stage_0_prep
 pushd resources\stage_0_prep
-echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_0_prep jobs...
+echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...
 
 
 :: JOB: rkill
-echo %CUR_DATE% %TIME%    Launching job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'rkill'...
+echo %CUR_DATE% %TIME%    Launch job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
 	if %DRY_RUN%==yes goto skip_rkill
 	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
@@ -516,8 +515,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 :: JOB: TDSS Killer
-echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'TDSSKiller'...
+echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...
 pushd tdss_killer
 if %DRY_RUN%==no (
 	"TDSSKiller v3.0.0.40.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
@@ -671,12 +670,12 @@ echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
 :stage_1_tempclean
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 pushd resources\stage_1_tempclean
-echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_1_tempclean jobs...
+echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...
 
 :: JOB: Clean Internet Explorer; Windows' built-in method
-echo %CUR_DATE% %TIME%    Launching job 'Clean Internet Explorer'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Clean Internet Explorer'...
+echo %CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'...
 pushd clean_internet_explorer
 if %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 popd
@@ -684,8 +683,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: TempFileCleanup.bat
-echo %CUR_DATE% %TIME%    Launching job 'TempFileCleanup'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'TempFileCleanup'...
+echo %CUR_DATE% %TIME%    Launch job 'TempFileCleanup'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'TempFileCleanup'...
 pushd tempfilecleanup
 if %DRY_RUN%==no call TempFileCleanup.bat>> "%LOGPATH%\%LOGFILE%" 2>NUL
 popd
@@ -693,8 +692,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: CCLeaner
-echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'CCleaner'...
+echo %CUR_DATE% %TIME%    Launch job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'CCleaner'...
 pushd ccleaner
 if %DRY_RUN%==no ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 if %DRY_RUN%==no ping 127.0.0.1 -n 10 >NUL
@@ -703,8 +702,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: BleachBit
-echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'BleachBit'...
+echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...
 pushd bleachbit
 if %DRY_RUN%==no bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
 if %DRY_RUN%==no ping 127.0.0.1 -n 10 >NUL
@@ -713,8 +712,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Clear Windows event logs
-echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Clear Windows event logs'...
+echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...
 pushd backup_and_clear_windows_event_logs
 
 :: Make a subdirectory in the logpath for the Windows event log backups
@@ -741,8 +740,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 :: JOB: Clear Windows Update cache
-echo %CUR_DATE% %TIME%    Launching job 'Clear Windows Update cache'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Clear Windows Update cache'...
+echo %CUR_DATE% %TIME%    Launch job 'Clear Windows Update cache'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Clear Windows Update cache'...
 pushd clear_windows_update_cache
 if %DRY_RUN%==no (
 	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%"
@@ -765,14 +764,27 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :stage_2_disinfect
 title TRON v%SCRIPT_VERSION% [stage_2_disinfect]
 pushd resources\stage_2_disinfect
-echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_2_disinfect jobs...
+echo %CUR_DATE% %TIME%   Launch stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_2_disinfect jobs...
+
+
+:: JOB: RogueKiller
+:: Thanks to /u/bodkov for suggestion
+echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (slow, be patient)...
+pushd roguekiller
+if %DRY_RUN%==no (
+	if %VERBOSE%==yes echo remove| RogueKillerCMD.exe -scan remove
+	if %VERBOSE%==no echo remove| RogueKillerCMD.exe -scan remove >> "%LOGPATH%\%LOGFILE%"
+	)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: Sophos Virus Remover
-echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Sophos Virus Removal Tool' (very slow)...
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
+echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
 pushd sophos_virus_remover
 if %DRY_RUN%==no (
 	if %VERBOSE%==yes svrtcli.exe -yes -debug
@@ -783,10 +795,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: VIPRE Rescue
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Vipre rescue scanner' (very slow)...
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Logging to console instead of logfile for this job...
+echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd vipre_rescue
 if %DRY_RUN%==no ( 
 	if %VERBOSE%==yes VipreRescueScanner.exe
@@ -797,8 +807,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
-echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Malwarebytes Anti-Malware', continuing other jobs...
+echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...
 pushd mbam
 
 :: Install & remove the desktop icon
@@ -825,8 +835,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
 :: Thanks to /u/nomaddave
-echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Dism Windows image check (Win8 only)'...
+echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 only)'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 only)'...
 pushd dism_image_check
 if %DRY_RUN%==yes goto skip_dism_image_check
 :: Read WIN_VER and run the scan if we're on some derivative of 8 or 2012
@@ -857,8 +867,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: System File Checker scan
-echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'System File Checker'...
+echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...
 pushd sfc
 if %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
@@ -887,8 +897,8 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :stage_3_de-bloat
 title TRON v%SCRIPT_VERSION% [stage_3_de-bloat]
 pushd resources\stage_3_de-bloat
-echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_3_de-bloat jobs...
+echo %CUR_DATE% %TIME%   Launch stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_3_de-bloat jobs...
 
 :: JOB: Remove crapware programs
 pushd oem
@@ -944,8 +954,8 @@ echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.
 :stage_4_patch
 title TRON v%SCRIPT_VERSION% [stage_4_patch]
 pushd resources\stage_4_patch
-echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_4_patch jobs...
+echo %CUR_DATE% %TIME%   Launch stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_4_patch jobs...
 
 
 :: Prep task: enable MSI installer in Safe Mode
@@ -956,8 +966,8 @@ if %DRY_RUN%==no (
 
 
 :: JOB: 7-Zip
-echo %CUR_DATE% %TIME%    Launching job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job '7-Zip'...
+echo %CUR_DATE% %TIME%    Launch job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job '7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if %DRY_RUN%==yes goto skip_7-Zip
@@ -979,8 +989,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Adobe Flash Player
-echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Flash Player'...
+echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'...
 if %DRY_RUN%==yes goto skip_adobe_flash
 pushd "adobe\flash_player\v15.0.0.189\firefox"
 setlocal
@@ -997,8 +1007,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Adobe Reader
-echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Update Adobe Reader'...
+echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'...
 if %DRY_RUN%==yes goto skip_adobe_reader
 pushd adobe\reader\v11.0.09\x86
 setlocal
@@ -1048,8 +1058,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Java Runtime 8
-echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Update Java Runtime Environment'...
+echo %CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'...
 
 :: Check if we're on 32-bit Windows and run the appropriate installer
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
@@ -1075,8 +1085,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Notepad++
-echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Update Notepad++'...
+echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...
 pushd notepad++\v6.6.9
 setlocal
 if %DRY_RUN%==no call "npp.Installer.bat"
@@ -1086,8 +1096,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Windows updates
-echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'Install Windows updates'...
+echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...
 pushd windows_updates
 if %DRY_RUN%==no wuauclt /detectnow /updatenow
 popd
@@ -1095,8 +1105,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
-echo %CUR_DATE% %TIME%    Launching job 'DISM base reset'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'DISM base reset'...
+echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...
 pushd dism_base_reset
 if %DRY_RUN%==yes goto skip_dism_base_reset
 if not "%WIN_VER:~0,9%"=="Microsoft" (
@@ -1119,12 +1129,12 @@ echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
 :stage_5_optimize
 title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 pushd resources\stage_5_optimize
-echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launching stage_5_optimize jobs...
+echo %CUR_DATE% %TIME%   Launch stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_5_optimize jobs...
 
 :: JOB: chkdsk the system drive
-echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launching job 'chkdsk'...
+echo %CUR_DATE% %TIME%    Launch job 'chkdsk'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'chkdsk'...
 pushd chkdsk
 echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
@@ -1163,8 +1173,8 @@ if "%SSD_DETECTED%"=="yes" (
 
 :: JOB: Defrag the system drive
 if "%SSD_DETECTED%"=="no" (
-	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    Launching job 'Defrag %SystemDrive%'...
+	echo %CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'...
 	pushd defrag
 	if %DRY_RUN%==no df.exe %SystemDrive%
 	popd
