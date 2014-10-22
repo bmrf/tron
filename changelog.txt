@@ -14,7 +14,13 @@ Version number legend:
   major feature change
 
   
-  
+########################
+# v3.7.1 // 2014-10-22 #
+########################
+tron.bat
+ ! tron.bat:prep:                 Remove two pause statements mistakenly left over from testing
+
+ 
 ########################
 # v3.7.0 // 2014-10-22 #
 ########################
