@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.7.0 ! tron.bat:prep:                 Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
+:: Version:       3.7.1 ! tron.bat:prep:                 Remove two pause statements mistakenly left over from testing
+::                3.7.0 ! tron.bat:prep:                 Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
 ::                      ! tron.bat:date and time:        Reset CUR_DATE after finishing virus scans, since they take so long and we sometimes cross into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
 ::                      * tron.bat:prep:                 Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
 ::                      + tron.bat:prep:                 Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
@@ -96,7 +97,7 @@ set VERBOSE=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.7.0
+set SCRIPT_VERSION=3.7.1
 set SCRIPT_DATE=2014-10-22
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -477,8 +478,7 @@ echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-pause
-pause
+
 :::::::::::::::::::
 :: STAGE 0: PREP ::
 :::::::::::::::::::
