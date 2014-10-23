@@ -14,6 +14,57 @@ Version number legend:
   major feature change
 
 
+  
+########################
+# v3.8.0 // 2014-10-xx #
+########################
+tron.bat                         v3.8.0
+ + tron.bat:feature: Add self-destruct (-x) flag. If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
+ * tron.bat:logging: Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . TDSS Killer                   v3.0.0.40
+ . erunt                         v1.1j
+  
+STAGE 1: Tempclean
+ . CCLeaner                      v4.18.4844
+ . BleachBit                     v1.4
+ . TempFileClean                 v3.4.4
+
+STAGE 2: Disinfect
+ . RogueKiller                   v10.0.2.0
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.3.1025
+ 
+STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.189   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.0.0.1
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ . ComboFix                      v14.10.21.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
 
 ########################
 # v3.7.2 // 2014-10-22 #
