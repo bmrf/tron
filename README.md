@@ -94,6 +94,24 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set DRY_RUN=no
   ```
 
+- To shut down the computer when Tron is finished, change this to `yes`:
+
+  ```
+  set DO_SHUTDOWN=no
+  ```
+
+- To display as much output as possible (verbose), change this to `yes`:
+
+  ```
+  set VERBOSE=no
+  ```
+
+- To have Tron delete itself after running (self-destruct), change this to `yes`:
+
+  ```
+  set SELF_DESTRUCT=no
+  ```
+
 
 # INTEGRITY
 
