@@ -4,19 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.7.2 ! tron.bat:diskhealthcheck:      Make Disk Health Check warning dialogue case-insensitive. Thanks to /u/Astrimedes
-::                3.7.1 ! tron.bat:prep:                 Remove two pause statements mistakenly left over from testing
-::                3.7.0 ! tron.bat:prep:                 Fix faulty disk health check (was exiting regardless what user chose). Thanks to /u/Tyrannosaurus_flex
-::                      ! tron.bat:date and time:        Reset CUR_DATE after finishing virus scans, since they take so long and we sometimes cross into a new day (therefor leaving CUR_DATE incorrect). Thanks to /u/ScubaSteve
-::                      * tron.bat:prep:                 Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
-::                      + tron.bat:prep:                 Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
-::                      + tron.bat:Feature:              Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks to /u/Stealth5325 and /u/Fogest
-::                      + tron.bat:Feature:              Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
-::                      + stage_2_disinfect:roguekiller: Add RogueKiller (CMD version). Thanks to /u/bodkov
-::                      * stage_2_disinfect:mbam:        Update MBAM link to reflect new installer
-::                      / stage_2_disinfect:DISM:        Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas.
-::                      * stage_4_patch:jre:             Update JRE links to reflect new installers
-::                      * stage_4_patch:jre:             Update Adobe links to reflect new installers
+:: Version:       3.8.0 + tron.bat:feature: Add self-destruct (-x) flag. If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
+::                      * tron.bat:logging: Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -32,6 +21,7 @@
 ::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
 
@@ -77,11 +67,13 @@ set SKIP_DEFRAG=no
 :: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
 :: DO_SHUTDOWN = Shutdown the computer after the script finishes (-o flag). Default is no. If auto-reboot is set this will override it.
 :: VERBOSE = When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower.
+:: SELF_DESTRUCT = Set to yes to have Tron automatically delete itself after running. Leaves logs intact.
 set AUTORUN=no
 set DRY_RUN=no
 set PRESERVE_POWER_SCHEME=no
 set DO_SHUTDOWN=no
 set VERBOSE=no
+set SELF_DESTRUCT=no
 
 
 
@@ -98,8 +90,8 @@ set VERBOSE=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.7.2
-set SCRIPT_DATE=2014-10-22
+set SCRIPT_VERSION=3.8.0-testing
+set SCRIPT_DATE=2014-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -186,6 +178,7 @@ for %%i in (%*) do (
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	if /i %%i==-v set VERBOSE=yes
+	if /i %%i==-x set SELF_DESTRUCT=yes
 	)
 
 
@@ -196,7 +189,7 @@ if %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -o -p -r -s -v^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -o -p -r -s -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic/silent mode ^(no welcome screen^)
@@ -209,6 +202,7 @@ if %HELP%==yes (
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
 	echo   Misc flags ^(must be used alone^)
 	echo    -h  Display this help text
@@ -284,6 +278,7 @@ if %CONFIG_DUMP%==yes (
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
+	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -474,6 +469,8 @@ echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERN
 echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo                          Logfile:   %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile:   %LOGPATH%\%LOGFILE%
+echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
+echo                          Command-line flags: %*
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPATH%\%LOGFILE%
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -1258,10 +1255,17 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	)
 
 :: Check if shutdown was requested
-if "%DO_SHUTDOWN%"=="yes" (
-	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down immediately.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down immediately.
+if %DO_SHUTDOWN%==yes (
+	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
 )
+
+:: Check if self-destruct was set
+if %SELF_DESTRUCT%==yes (
+	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...
+)
+
 
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -1272,15 +1276,28 @@ echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNA
 echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
+echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
+echo                          Command-line flags: %*
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPATH%\%LOGFILE%
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-
+:: Skip all this if we're doing a dry run
 if %DRY_RUN%==yes goto end_and_skip_shutdown
+
+:: Perform reboot if requested
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
-if "%DO_SHUTDOWN%"=="yes" shutdown -f 
+
+:: Perform shutdown if requested
+if %DO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY%
+
+:: De-rez self if requested
+if %SELF_DESTRUCT%==yes (
+	set CWD=%CD%
+	cd ..
+	rmdir /s /q %CWD%
+	)
 
 :end_and_skip_shutdown
 pause
