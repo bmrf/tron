@@ -34,7 +34,7 @@ That's it. Reboot and you should now be able to use F8 to select Safe Mode. Note
 
 Command-line use is optional. All flags are optional and can be combined
 
-    tron.bat [-a -c -d -o -p -r -s -v] | [-h]
+    tron.bat [-a -c -d -o -p -r -s -v -x] | [-h]
 
     -a  Automatic/silent mode (no welcome screen)
 
@@ -55,6 +55,8 @@ Command-line use is optional. All flags are optional and can be combined
     -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
     -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+    
+    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
    
 
 # CHANGE DEFAULTS (advanced)
