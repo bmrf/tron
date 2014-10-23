@@ -202,7 +202,7 @@ if %HELP%==yes (
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
-	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
+	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
 	echo   Misc flags ^(must be used alone^)
 	echo    -h  Display this help text
@@ -268,7 +268,7 @@ if %CONFIG_DUMP%==yes (
 	echo   Command-line arguments:
 	echo    %*
 	echo.
-	echo   Variable values ^(user-set^):
+	echo   Variables ^(user-set^):
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
@@ -282,7 +282,7 @@ if %CONFIG_DUMP%==yes (
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
-	echo   Variable values ^(script-internal^):
+	echo   Variables ^(script-internal^):
 	echo    CUR_DATE:               %CUR_DATE%
 	echo    DISK_HEALTH_CHK_FAILED: %DISK_HEALTH_CHK_FAILED%
 	echo    DTS:                    %DTS%
