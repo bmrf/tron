@@ -9,18 +9,25 @@ Legend:
 Version number legend:
   x.x.x
   | | |
-  | | program/definition update or minor change/bugfix
-  | minor feature change or critical bug fix
+  | | program/definition update, minor change, or bugfix (critical or regular)
+  | regular release or feature change
   major feature change
 
 
   
 ########################
-# v3.8.0 // 2014-10-xx #
+# v3.8.0 // 2014-10-29 #
 ########################
+ ! At request of a couple people, I've converted the static Tron packs from .7z archives into self-extracting .EXE archives. This is to make it easier to unpack Tron on computers that don't yet have 7-Zip installed.
+
 tron.bat                         v3.8.0
- + tron.bat:feature: Add self-destruct (-x) flag. If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
- * tron.bat:logging: Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
+ / tron:META:            Change Tron static packs from .7z archives to self-extracting .exe archives. Thanks to /u/cmorche
+ + tron.bat:feature:     Add self-destruct flag (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
+ * tron.bat:logging:     Add display of disk free space before and after to log header and trailer, and associated variables. Thanks to /u/cuddlychops06
+ * tron.bat:logging:     Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
+ * tron.bat:improvement: Make all IF comparisons case-insensitive. Thanks to /u/Astrimedes
+ - tron.bat:diskcheck:   Remove SMART disk health check and associated variables. Too many incorrect detections causing more of a hassle than it's worth.
+ ! stage_1_tempclean:    Fix Windows Update cache cleanup; Windows Update service wouldn't start in Safe Mode, now force it to start. Thanks to /u/GrizzlyWinter
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
@@ -55,10 +62,10 @@ STAGE 5: Optimize
  
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v4.0.0.1
+ * AdwCleaner                    v4.0.0.2
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
- . ComboFix                      v14.10.21.1
+ * ComboFix                      v14.10.29.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.1.4
  . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
