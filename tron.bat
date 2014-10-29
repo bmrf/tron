@@ -4,9 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.8.0 + tron.bat:feature:     Add self-destruct flag (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
+:: Version:       3.8.0  / tron:META:           Change Tron static packs from .7z archives to self-extracting .exe archives. Thanks to /u/cmorche
+::                      + tron.bat:feature:     Add self-destruct flag (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
+::                      * tron.bat:logging:     Add display of disk free space before and after to log header and trailer, and associated variables. Thanks to /u/cuddlychops06
 ::                      * tron.bat:logging:     Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
-::                      * tron.bat:improvement: Make all IF comparisons case-insensitive
+::                      * tron.bat:improvement: Make all IF comparisons case-insensitive. Thanks to /u/Astrimedes
 ::                      - tron.bat:diskcheck:   Remove SMART disk health check and associated variables. Too many incorrect detections causing more of a hassle than it's worth.
 ::                      ! stage_1_tempclean:    Fix Windows Update cache cleanup; Windows Update service wouldn't start in Safe Mode, now force it to start. Thanks to /u/GrizzlyWinter
 ::
@@ -32,11 +34,6 @@
 SETLOCAL
 @echo off
 
-
-
-:: TODO: 
-:: - alter tron downloads into self-unpacking EXEs? Thanks to /u/cmorche
-:: - add disk free space before/after calculation (stalled)
 
 
 :::::::::::::::
@@ -93,8 +90,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.8.0-testing
-set SCRIPT_DATE=2014-10-xx
+set SCRIPT_VERSION=3.8.0
+set SCRIPT_DATE=2014-10-29
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -102,7 +99,7 @@ FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Preload variables for use and comparison.
-:: These get clobbered later, don't change them here.
+:: These get clobbered later so don't change them here.
 set REPO_URL=http://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_VERSION=0
@@ -110,6 +107,9 @@ set REPO_SCRIPT_DATE=0
 set HELP=no
 set TARGET_METRO=no
 set CONFIG_DUMP=no
+set FREE_SPACE_AFTER=0
+set FREE_SPACE_BEFORE=0
+set FREE_SPACE_SAVED=0
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
@@ -149,8 +149,12 @@ endlocal disabledelayedexpansion
 
 
 :: PREP JOB: Get system drive free space and stash it for comparison later
-:: stalled until I find a way to convert the free space output (in bytes) to MB or GB
-::for /f "usebackq delims== tokens=2" %%x in (`wmic logicaldisk where "DeviceID='%SystemDrive%'" get FreeSpace /format:value`) do set FREE_SPACE=%%x
+:: Thanks to Stack Overflow user Aacini in this post: http://stackoverflow.com/a/20392479/1347428
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+:: GB version
+::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+:: MB version
+set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
 :: PREP JOB: Detect if the system is in Safe Mode
@@ -292,6 +296,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo   Variables ^(script-internal^):
 	echo    CUR_DATE:               %CUR_DATE%
 	echo    DTS:                    %DTS%
+	echo    FREE_SPACE_AFTER:       %FREE_SPACE_AFTER%
+	echo    FREE_SPACE_BEFORE:      %FREE_SPACE_BEFORE%
+	echo    FREE_SPACE_SAVED:       %FREE_SPACE_SAVED%
 	echo    HELP:                   %HELP%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
@@ -444,6 +451,8 @@ echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
 echo                          Command-line flags: %*
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPATH%\%LOGFILE%
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% GB>> %LOGPATH%\%LOGFILE%
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% GB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
@@ -1152,7 +1161,7 @@ if "%SSD_DETECTED%"=="no" (
 	echo %CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'...
 	pushd defrag
-	if /i %DRY_RUN%==no df.exe %SystemDrive%
+	if /i %DRY_RUN%==no defraggler.exe %SystemDrive%
 	popd
 	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Done.
@@ -1245,6 +1254,9 @@ if /i %SELF_DESTRUCT%==yes (
 )
 
 
+:: Calculate saved disk space
+set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
@@ -1258,6 +1270,12 @@ echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
 echo                          Command-line flags: %*
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPATH%\%LOGFILE%
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB>> %LOGPATH%\%LOGFILE%
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
+echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB>> %LOGPATH%\%LOGFILE%
+echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB
+echo                          Disk space reclaimed: %FREE_SPACE_SAVED% MB>> %LOGPATH%\%LOGFILE%
+echo                          Disk space reclaimed: %FREE_SPACE_SAVED% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
