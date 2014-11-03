@@ -14,7 +14,59 @@ Version number legend:
   major feature change
 
 
+
+########################
+# v3.8.1 // 2014-11-03 #
+########################
+tron.bat                         v3.8.1
+ ! tron.bat:bugfix: Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
+ / tron.bat:misc:   Rename all instances of "DO_SHUTDOWN" to "AUTO_SHUTDOWN"
+
+ STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . TDSS Killer                   v3.0.0.40
+ . erunt                         v1.1j
   
+STAGE 1: Tempclean
+ * CCLeaner                      v4.19.4867
+ . BleachBit                     v1.4
+ * TempFileClean                 v3.5.0
+  + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
+
+STAGE 2: Disinfect
+ . RogueKiller                   v10.0.2.0
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.3.1025
+ 
+STAGE 3: De-bloat. Try to remove programs listed here: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.189   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.0.0.2
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ . ComboFix                      v14.10.29.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
+
 ########################
 # v3.8.0 // 2014-10-29 #
 ########################
@@ -961,6 +1013,7 @@ Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . %%Trial%%
  . UserGuide%%
  . WildTangent%%
+
  . Yahoo! Browser%%
 
 STAGE 4: Patch
