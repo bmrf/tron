@@ -34,7 +34,7 @@ That's it. Reboot and you should now be able to use F8 to select Safe Mode. Note
 
 Command-line use is optional. All flags are optional and can be combined
 
-    tron.bat [-a -c -d -o -p -r -s -v -x] | [-h]
+    tron.bat [-a -c -d -m -o -p -r -s -v -x] | [-h]
 
     -a  Automatic/silent mode (no welcome screen)
 
@@ -45,6 +45,8 @@ Command-line use is optional. All flags are optional and can be combined
     -d  Dry run (run through script without executing any jobs)
 
     -h  Display help text
+    
+    -m  Preserve default Metro apps (don't remove them)
 
     -o  Power off after running (overrides -r if used together)
 
@@ -63,12 +65,6 @@ Command-line use is optional. All flags are optional and can be combined
 
 Defaults are always overridden by command-line flags, but if you don't want to use the command-line and don't like Tron's defaults, you can edit the script and change the following default variables:
 
-- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
-
-  ```
-  set SKIP_DEFRAG=no
-  ```
-
 - To change log location, edit these lines:
 
   ```
@@ -80,6 +76,12 @@ Defaults are always overridden by command-line flags, but if you don't want to u
 
   ```
   set AUTO_REBOOT_DELAY=0
+  ```
+
+- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
+
+  ```
+  set SKIP_DEFRAG=no
   ```
 
 - To always run automatically (no welcome screen), change this to `yes`:
@@ -94,10 +96,22 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set DRY_RUN=no
   ```
 
+  - To preserve default Metro apps (don't remove them), change this to yes:
+  
+  ```
+  set PRESERVE_METRO_APPS=no
+  ```
+
+- To preserve the power scheme (instead of resetting to Windows defaults), change this to yes:
+  
+  ```
+  set PRESERVE_POWER_SCHEME=no
+  ```
+
 - To shut down the computer when Tron is finished, change this to `yes`:
 
   ```
-  set DO_SHUTDOWN=no
+  set AUTO_SHUTDOWN=no
   ```
 
 - To display as much output as possible (verbose), change this to `yes`:
