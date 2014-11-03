@@ -4,13 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.8.0  / tron:META:           Change Tron static packs from .7z archives to self-extracting .exe archives. Thanks to /u/cmorche
-::                      + tron.bat:feature:     Add self-destruct flag (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks to /u/bodkov
-::                      * tron.bat:logging:     Add display of disk free space before and after to log header and trailer, and associated variables. Thanks to /u/cuddlychops06
-::                      * tron.bat:logging:     Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
-::                      * tron.bat:improvement: Make all IF comparisons case-insensitive. Thanks to /u/Astrimedes
-::                      - tron.bat:diskcheck:   Remove SMART disk health check and associated variables. Too many incorrect detections causing more of a hassle than it's worth.
-::                      ! stage_1_tempclean:    Fix Windows Update cache cleanup; Windows Update service wouldn't start in Safe Mode, now force it to start. Thanks to /u/GrizzlyWinter
+:: Version:       3.8.1 ! tron.bat:bugfix: Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
+::                      / tron.bat:misc:   Rename all instances of "DO_SHUTDOWN" to "AUTO_SHUTDOWN"
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -65,13 +60,13 @@ set SKIP_DEFRAG=no
 :: AUTORUN = automatic/silent execution (no welcome screen)
 :: DRY_RUN = run through script but skip all actual actions (test mode)
 :: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
-:: DO_SHUTDOWN = Shutdown the computer after the script finishes (-o flag). Default is no. If auto-reboot is set this will override it.
+:: AUTO_SHUTDOWN = Shutdown the computer after the script finishes (-o flag). Default is no. If auto-reboot is set this will override it.
 :: VERBOSE = When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower.
 :: SELF_DESTRUCT = Set to yes to have Tron automatically delete itself after running. Leaves logs intact.
 set AUTORUN=no
 set DRY_RUN=no
 set PRESERVE_POWER_SCHEME=no
-set DO_SHUTDOWN=no
+set AUTO_SHUTDOWN=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -90,8 +85,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.8.0
-set SCRIPT_DATE=2014-10-29
+set SCRIPT_VERSION=3.8.1
+set SCRIPT_DATE=2014-11-03
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -184,7 +179,7 @@ for %%i in (%*) do (
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-h set HELP=yes
-	if /i %%i==-o set DO_SHUTDOWN=yes
+	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
@@ -283,7 +278,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
-	echo    DO_SHUTDOWN:            %DO_SHUTDOWN%
+	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
@@ -744,6 +739,7 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :: STAGE 2: Disinfect ::
 ::::::::::::::::::::::::
 :stage_2_disinfect
+
 title TRON v%SCRIPT_VERSION% [stage_2_disinfect]
 pushd resources\stage_2_disinfect
 echo %CUR_DATE% %TIME%   Launch stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
@@ -1242,7 +1238,7 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	)
 
 :: Check if shutdown was requested
-if /i %DO_SHUTDOWN%==yes (
+if /i %AUTO_SHUTDOWN%==yes (
 	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
 )
@@ -1253,9 +1249,14 @@ if /i %SELF_DESTRUCT%==yes (
 	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...
 )
 
-
 :: Calculate saved disk space
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+:: GB version
+::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+:: MB version
+set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+
 
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -1286,7 +1287,7 @@ if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
 
 :: Perform shutdown if requested
-if /i %DO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY%
+if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY%
 
 :: De-rez self if requested
 if /i %SELF_DESTRUCT%==yes (
