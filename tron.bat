@@ -4,18 +4,21 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.8.1 ! tron.bat:bugfix: Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
-::                      / tron.bat:misc:   Rename all instances of "DO_SHUTDOWN" to "AUTO_SHUTDOWN"
+:: Version:       3.9.0 ! tron.bat:bugfix:  Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
+::                      ! tron.bat:bugfix:  Fix a registry modification that mistakenly executed even if the script was in dry run mode (-d)
+::                      + tron.bat:feature: Add -m flag and associated PRESERVE_METRO_APPS variable to preserve default Metro apps (don't remove them). Thanks to /u/swtester
+::                      / tron.bat:misc:    Rename all instances of DO_SHUTDOWN to AUTO_SHUTDOWN
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
-::                      -a  Automatic/silent mode (no welcome screen)
+::                      -a  Automatic mode (no welcome screen or prompts)
 ::                      -c  Config dump (display current config. Can be used with other flags
 ::                          to see what WOULD happen, but script will never execute if this 
 ::                          flag is used)
 ::                      -d  Dry run (run through script without executing any jobs)
 ::                      -h  Display help text
+::                      -m  Preserve default Metro apps (don't remove them)
 ::                      -o  Power off after running (overrides -r if used together)
 ::                      -p  Preserve power settings (don't reset power settings to default)
 ::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
@@ -23,7 +26,8 @@
 ::                      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
 ::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
-::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults. All command-line flags override their respective default settings.
+::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
+::                All command-line flags override their respective default settings.
 
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
 SETLOCAL
@@ -57,14 +61,16 @@ set AUTO_REBOOT_DELAY=0
 :: Leave as "no" to let the script auto-detect SSDs
 set SKIP_DEFRAG=no
 
-:: AUTORUN = automatic/silent execution (no welcome screen)
-:: DRY_RUN = run through script but skip all actual actions (test mode)
-:: PRESERVE_POWER_SCHEME = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
-:: AUTO_SHUTDOWN = Shutdown the computer after the script finishes (-o flag). Default is no. If auto-reboot is set this will override it.
-:: VERBOSE = When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower.
-:: SELF_DESTRUCT = Set to yes to have Tron automatically delete itself after running. Leaves logs intact.
+:: AUTORUN (-a) = Automatic execution (no welcome screen or prompts)
+:: DRY_RUN (-d) = run through script but skip all actual actions (test mode)
+:: PRESERVE_METRO_APPS (-m) = Don't remove stock Metro apps 
+:: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
+:: AUTO_SHUTDOWN (-o) = Shutdown after the script finishes. Default is no. If auto-reboot is set this will override it.
+:: VERBOSE (-v) = When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower.
+:: SELF_DESTRUCT (-x) = Set to yes to have Tron automatically delete itself after running. Leaves logs intact.
 set AUTORUN=no
 set DRY_RUN=no
+set PRESERVE_METRO_APPS=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_SHUTDOWN=no
 set VERBOSE=no
@@ -74,7 +80,7 @@ set SELF_DESTRUCT=no
 
 
 
-:: ---------------------------- Don't edit anything below this line ---------------------------- ::
+:: ---------------------------- Don't edit anything below this line lest you awaken the Balrog ---------------------------- ::
 
 
 
@@ -85,7 +91,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.8.1
+set SCRIPT_VERSION=3.9.0
 set SCRIPT_DATE=2014-11-03
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -179,6 +185,7 @@ for %%i in (%*) do (
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-h set HELP=yes
+	if /i %%i==-m set PRESERVE_METRO_APPS=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
@@ -195,14 +202,15 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -o -p -r -s -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -m -o -p -r -s -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
-	echo    -a  Automatic/silent mode ^(no welcome screen^)
+	echo    -a  Automatic mode ^(no welcome screen or prompts^)
  	echo    -c  Config dump ^(display current config. Can be used with other
 	echo        flags to see what WOULD happen, but script will never execute
 	echo        if this flag is used^)
 	echo    -d  Dry run ^(run through script but don't execute any jobs^)
+	echo    -m  Preserve default Metro apps ^(don't remove them^)
 	echo    -o  Power off after running ^(overrides -r if used together^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
@@ -282,6 +290,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
+	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
@@ -346,8 +355,8 @@ echo.
 :: So ugly
 echo  Current settings (edit script to change):
 echo     Log location:            %LOGPATH%\%LOGFILE%
-if not "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: %AUTO_REBOOT_DELAY% seconds
-if "%AUTO_REBOOT_DELAY%"=="0" echo     Post-clean reboot delay: disabled
+if not "%AUTO_REBOOT_DELAY%"=="0" echo     Auto-reboot delay:       %AUTO_REBOOT_DELAY% seconds
+if "%AUTO_REBOOT_DELAY%"=="0" echo     Auto-reboot delay:       disabled
 if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (defrag skipped)
 if "%SSD_DETECTED%"=="no" echo     SSD detected?            %SSD_DETECTED%
 if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%, without Networking
@@ -446,8 +455,8 @@ echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
 echo                          Command-line flags: %*
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPATH%\%LOGFILE%
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
-echo                          Free space before Tron run: %FREE_SPACE_BEFORE% GB>> %LOGPATH%\%LOGFILE%
-echo                          Free space before Tron run: %FREE_SPACE_BEFORE% GB
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB>> %LOGPATH%\%LOGFILE%
+echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
@@ -899,21 +908,25 @@ echo %CUR_DATE% %TIME%    Done.
 pushd win8_metro_apps
 
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
-:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8 we're on. 
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
 :: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
 if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
+:: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
+if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
 	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
-	net start AppXSVC
-	:: Enable scripts in PowerShell
-	if /i %DRY_RUN%==no powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
-	:: Call PowerShell to run the commands
-	if /i %DRY_RUN%==no powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-	if /i %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+	if /i %DRY_RUN%==no (
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
+		net start AppXSVC
+		:: Enable scripts in PowerShell
+		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
+		:: Call PowerShell to run the commands
+		powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+		powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+		)
 	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...
 	:: Thanks to reddit.com/user/nommaddave
