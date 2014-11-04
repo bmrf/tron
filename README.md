@@ -32,7 +32,7 @@ Reboot and you should now be able to use F8 to select Safe Mode. Note that this 
 
 # COMMAND-LINE USE
 
-Command-line use is optional. All flags are optional and can be combined
+Command-line use is fully supported. All flags are optional and can be combined.
 
     tron.bat [-a -c -d -m -o -p -q -r -s -v -x] | [-h]
 
