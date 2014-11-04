@@ -10,7 +10,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 1. Boot into safe mode (with Network support is preferable).
 
-2. Copy tron.bat and the `\resources` folder to the target machine and **run tron.bat as an ADMINISTRATOR**.
+2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR**.
 
    Tron will refuse to run if you don't run as an Administrator.
 
@@ -27,7 +27,7 @@ Microsoft, in their long-standing tradition of breaking useful, heavily-used fun
 
     bcdedit /set {default} bootmenupolicy legacy
 
-That's it. Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
+Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
 
 
 # COMMAND-LINE USE
