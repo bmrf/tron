@@ -2,12 +2,20 @@
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended
+::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       3.9.0 ! tron.bat:bugfix:  Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
-::                      ! tron.bat:bugfix:  Fix a registry modification that mistakenly executed even if the script was in dry run mode (-d)
-::                      + tron.bat:feature: Add -m flag and associated PRESERVE_METRO_APPS variable to preserve default Metro apps (don't remove them). Thanks to /u/swtester
-::                      / tron.bat:misc:    Rename all instances of DO_SHUTDOWN to AUTO_SHUTDOWN
+:: Version:       4.0.0 + tron.bat:feature:       Add speak ability. Tron will now audibly announce when it starts and when it finishes. Mute with the -q flag or the SHUT_UP variable
+::                                                Depending on interest, may add ability to audibly announce start of each stage
+::                      + tron.bat:stage_0_prep:  Add nircmd.exe to support speak feature, among other things
+::                      * tron.bat:stage_4_patch: Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
+::                                                Should reduce number of places we need to update when a new version is released
+::                      * tron.bat:misc:          Replace many redundant IF comparison statements with single statements. Should grant small speed increase and complexity reduction
+::                      - tron.bat:misc:          Remove unused labels: detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset
+::                      ! tron.bat:bugfix:        Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
+::                      ! tron.bat:bugfix:        Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
+::                      ! tron.bat:bugfix:        Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
+::                      ! tron.bat:bugfix:        Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
+::                      ! tron.bat:bugfix:        Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -21,6 +29,7 @@
 ::                      -m  Preserve default Metro apps (don't remove them)
 ::                      -o  Power off after running (overrides -r if used together)
 ::                      -p  Preserve power settings (don't reset power settings to default)
+::                      -q  Don't audibly speak when Tron is starting and finishing
 ::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
@@ -34,45 +43,42 @@ SETLOCAL
 @echo off
 
 
-
 :::::::::::::::
-:: VARIABLES :: ---------- These are the defaults. Change them if you so desire ---------------- ::
+:: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
 :::::::::::::::
 :: Rules for variables:
-::  * NO quotes!                       (bad:  "c:\directory\path"       )
-::  * NO trailing slashes on the path! (bad:   c:\directory\            )
-::  * Spaces are okay                  (okay:  c:\my folder\with spaces )
-::  * Network paths are okay           (okay:  \\server\share name      )
-::                                     (       \\172.16.1.5\share name  )
-
-:: ! All variables here are overridden if their respective command-line flag is used
+::  * NO quotes!                    (bad:  "c:\directory\path"       )
+::  * NO trailing slashes on paths! (bad:   c:\directory\            )
+::  * Spaces are okay               (okay:  c:\my folder\with spaces )
+::  * Network paths are okay        (okay:  \\server\share name      )
 
 :: Log settings
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
 
-:: Quarantined files path
+:: Quarantined files path. Currently unused by Tron
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 
-:: Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot.
-set AUTO_REBOOT_DELAY=0
+:: ! All variables here are overridden if their respective command-line flag is used
 
-:: Set to yes to skip defrag regardless whether the system drive is an SSD or not.
-:: Leave as "no" to let the script auto-detect SSDs
-set SKIP_DEFRAG=no
-
-:: AUTORUN (-a) = Automatic execution (no welcome screen or prompts)
-:: DRY_RUN (-d) = run through script but skip all actual actions (test mode)
-:: PRESERVE_METRO_APPS (-m) = Don't remove stock Metro apps 
-:: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron.
-:: AUTO_SHUTDOWN (-o) = Shutdown after the script finishes. Default is no. If auto-reboot is set this will override it.
-:: VERBOSE (-v) = When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower.
-:: SELF_DESTRUCT (-x) = Set to yes to have Tron automatically delete itself after running. Leaves logs intact.
+:: AUTORUN               (-a)  =  Automatic execution (no welcome screen or prompts)
+:: DRY_RUN               (-d)  =  run through script but skip all actual actions (test mode)
+:: PRESERVE_METRO_APPS   (-m)  =  Don't remove stock Metro apps 
+:: AUTO_SHUTDOWN         (-o)  =  Shutdown after the script finishes. Default is no. If auto-reboot is set this will override it
+:: PRESERVE_POWER_SCHEME (-p)  =  Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: SHUT_UP               (-q)  =  Don't audibly speak when Tron is starting and finishing
+:: AUTO_REBOOT_DELAY     (-r)  =  Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
+:: SKIP_DEFRAG           (-s)  =  Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
+:: VERBOSE               (-v)  =  When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
+:: SELF_DESTRUCT         (-x)  =  Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
 set PRESERVE_METRO_APPS=no
-set PRESERVE_POWER_SCHEME=no
 set AUTO_SHUTDOWN=no
+set PRESERVE_POWER_SCHEME=no
+set SHUT_UP=no
+set AUTO_REBOOT_DELAY=0
+set SKIP_DEFRAG=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -80,7 +86,9 @@ set SELF_DESTRUCT=no
 
 
 
-:: ---------------------------- Don't edit anything below this line lest you awaken the Balrog ---------------------------- ::
+:: ------------------------------------------------------------------------------------------------- ::
+:: ---------------- Don't edit anything below this line lest you awaken the Balrog ----------------- ::
+:: ------------------------------------------------------------------------------------------------- ::
 
 
 
@@ -91,20 +99,20 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls && echo. && echo  Loading...
 color 0f
-set SCRIPT_VERSION=3.9.0
-set SCRIPT_DATE=2014-11-03
+set SCRIPT_VERSION=4.0.0
+set SCRIPT_DATE=2014-11-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
-:: Preload variables for use and comparison.
-:: These get clobbered later so don't change them here.
+:: Initialize variables for use and comparison
+:: These get clobbered later so don't change them here
 set REPO_URL=http://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
-set REPO_SCRIPT_VERSION=0
 set REPO_SCRIPT_DATE=0
+set REPO_SCRIPT_VERSION=0
 set HELP=no
 set TARGET_METRO=no
 set CONFIG_DUMP=no
@@ -121,14 +129,12 @@ pushd %~dp0 2>NUL
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
-:detect_os
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 :: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
-:detect_ssd
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
 setlocal enabledelayedexpansion
@@ -148,22 +154,21 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	)
 endlocal disabledelayedexpansion
 
-
-:: PREP JOB: Get system drive free space and stash it for comparison later
-:: Thanks to Stack Overflow user Aacini in this post: http://stackoverflow.com/a/20392479/1347428
-for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
-:: GB version
-::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
-:: MB version
-set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
-
-
 :: PREP JOB: Detect if the system is in Safe Mode
 :detect_safe_mode
 popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+
+
+:: PREP JOB: Get free space on the system drive and stash it for comparison later
+:: Thanks to Stack Overflow user Aacini in this post: http://stackoverflow.com/a/20392479/1347428
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+:: GB version
+::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+:: MB version
+set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
 :: PREP JOB: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
@@ -175,7 +180,8 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 
 :: PREP JOB: Make the log and quarantine directories and file if they don't already exist
 if not exist "%LOGPATH%" mkdir "%LOGPATH%"
-if not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
+:: Disabled for now
+::if not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
 if not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
 
 
@@ -188,6 +194,7 @@ for %%i in (%*) do (
 	if /i %%i==-m set PRESERVE_METRO_APPS=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
+	if /i %%i==-q set SHUT_UP=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	if /i %%i==-v set VERBOSE=yes
@@ -202,21 +209,22 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -m -o -p -r -s -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -m -o -p -q -r -s -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
-	echo    -a  Automatic mode ^(no welcome screen or prompts^)
- 	echo    -c  Config dump ^(display current config. Can be used with other
-	echo        flags to see what WOULD happen, but script will never execute
-	echo        if this flag is used^)
-	echo    -d  Dry run ^(run through script but don't execute any jobs^)
-	echo    -m  Preserve default Metro apps ^(don't remove them^)
-	echo    -o  Power off after running ^(overrides -r if used together^)
-	echo    -p  Preserve power settings ^(don't reset power settings to default^)
-	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
-	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
-	echo    -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
-	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
+	echo      -a  Automatic mode ^(no welcome screen or prompts^)
+ 	echo      -c  Config dump ^(display current config. Can be used with other
+	echo          flags to see what WOULD happen, but script will never execute
+	echo          if this flag is used^)
+	echo      -d  Dry run ^(run through script but don't execute any jobs^)
+	echo      -m  Preserve default Metro apps ^(don't remove them^)
+	echo      -o  Power off after running ^(overrides -r if used together^)
+	echo      -p  Preserve power settings ^(don't reset power settings to default^)
+	echo      -q  Don't audibly speak when Tron is starting and finishing
+	echo      -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
+	echo      -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+	echo      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
 	echo   Misc flags ^(must be used alone^)
 	echo    -h  Display this help text
@@ -294,6 +302,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
+	echo    SHUT_UP:                %SHUT_UP%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -389,8 +398,8 @@ if not "%SAFE_MODE%"=="yes" (
 		echo  Windows and anti-virus updates.
 		echo.
 		echo  Tron should still run OK, but if you have infections
-		echo  or problems after running, recommend booting
-		echo  to "Safe Mode with Networking" to re-run.
+		echo  or problems after running, recommend booting to
+		echo  "Safe Mode with Networking" and re-running.
 		echo.
 		pause
 		cls
@@ -442,7 +451,7 @@ if not "%SAFE_MODE%"=="yes" (
 cls
 color 0f
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
-:: Create the log header for this job
+:: Create log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture>> %LOGPATH%\%LOGFILE%
@@ -460,6 +469,18 @@ echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
+:: Speak
+pushd resources\stage_0_prep\speak
+if /i %SHUT_UP%==no (
+	:: Unmute volume
+	nircmd.exe mutesysvolume 0 
+	:: Set system volume to 65%
+	nircmd.exe setsysvolume 42597
+	:: Announce that we're starting
+	start "" nircmd.exe speak text "Beginning Tron run at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
+	)
+popd
+
 
 :::::::::::::::::::
 :: STAGE 0: PREP ::
@@ -474,13 +495,13 @@ echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...
 echo %CUR_DATE% %TIME%    Launch job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
-	if /i %DRY_RUN%==yes goto skip_rkill
+if /i %DRY_RUN%==no (
 	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
 	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.com -s -l "%TEMP%\tron_rkill.log"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
-:skip_rkill
+	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -517,11 +538,16 @@ echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Vista and up)...
 pushd purge_shadow_copies
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: So if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
+:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
 if not "%WIN_VER:~0,9%"=="Microsoft" (
-	:: Force allow us to start VSS service in Safe Mode
-	if /i %DRY_RUN%==no reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
-	if /i %DRY_RUN%==no net start VSS
-	if /i %DRY_RUN%==no vssadmin delete shadows /for=%SystemDrive% /oldest
+	if not "%WIN_VER:~0,9%"=="Windows V" (
+		if /i %DRY_RUN%==no (
+			:: Force allow us to start VSS service in Safe Mode
+			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
+			net start VSS
+			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet 2>NUL
+			)
+		)
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -679,8 +705,10 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launch job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'CCleaner'...
 pushd ccleaner
-if /i %DRY_RUN%==no ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-if /i %DRY_RUN%==no ping 127.0.0.1 -n 10 >NUL
+if /i %DRY_RUN%==no (
+	ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	ping 127.0.0.1 -n 12 >NUL
+	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -689,8 +717,10 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...
 pushd bleachbit
-if /i %DRY_RUN%==no bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
-if /i %DRY_RUN%==no ping 127.0.0.1 -n 10 >NUL
+if /i %DRY_RUN%==no (
+	bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	ping 127.0.0.1 -n 12 >NUL
+	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -699,20 +729,17 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...
 pushd backup_and_clear_windows_event_logs
-
 :: Make a subdirectory in the logpath for the Windows event log backups
 if not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
-
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...
-
-:: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
+:: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
+:: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\tron_event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 endlocal disabledelayedexpansion
 echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backups done, now clearing...
-
 :: Now we clear the logs
 if /i %DRY_RUN%==no %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
 :: Alternate Vista-and-up only method
@@ -783,8 +810,9 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: VIPRE Rescue
-:: Haven't been able to figure out where Vipre saves it's log file to, so we can't grab it like with do with Sophos above
+:: Haven't been able to figure out where Vipre saves its log file to, so we can't grab it like with do with Sophos above
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd vipre_rescue
@@ -796,39 +824,42 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: MBAM (MalwareBytes Anti-Malware)
 echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...
 pushd mbam
+:: Install MBAM & remove the desktop icon
+if /i %DRY_RUN%==no ( 
+	"Malwarebytes Anti-Malware v2.0.3.1025.exe" /verysilent
+	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
+	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 
-:: Install & remove the desktop icon
-if /i %DRY_RUN%==yes goto skip_mbam
-"Malwarebytes Anti-Malware v2.0.3.1025.exe" /verysilent
-::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
-if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
-if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+	:: Scan for and launch appropriate architecture version
+	if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
+		pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
+	) else (
+		pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
+		)
+	start "" "mbam.exe"
+	popd
+)
 
-:: Scan for and launch appropriate architecture version
-if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
-    pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
-) else (
-    pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
-	)
-start "" "mbam.exe"
-popd
 
-:skip_mbam
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
 :: Thanks to /u/nomaddave
-echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 only)'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 only)'...
+echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8/2012 only)'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8/2012 only)'...
 pushd dism_image_check
 if /i %DRY_RUN%==yes goto skip_dism_image_check
+
 :: Read WIN_VER and run the scan if we're on some derivative of 8 or 2012
 if "%WIN_VER:~0,9%"=="Windows Server 2012" (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
@@ -840,21 +871,31 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 	
 :: If we detect errors, try to repair them
-if not %ERRORLEVEL%==0 ( 
-	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
-	:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
-	Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
-	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
-) else (
-	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    DISM: No image corruption detected.
+if not %ERRORLEVEL%==0 (
+	if "%WIN_VER:~0,9%"=="Windows Server 2012" (
+		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
+		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
+		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
+		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+		)
+	if "%WIN_VER:~0,9%"=="Windows 8" (
+		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
+		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
+		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
+		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+	) else (
+		echo %CUR_DATE% %TIME%    DISM: No image corruption detected.>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME%    DISM: No image corruption detected.
+		)
 	)
 
 :skip_dism_image_check
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: System File Checker scan
 echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
@@ -892,8 +933,8 @@ echo %CUR_DATE% %TIME%   Launch stage_3_de-bloat jobs...
 
 :: JOB: Remove crapware programs
 pushd oem
-echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Searching for and removing common OEM junkware programs...
+echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt
 :: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
@@ -906,7 +947,6 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Remove default Metro apps (Windows 8/8.1/2012/2012-R2 only). Thanks to https://keybase.io/exabrial
 pushd win8_metro_apps
-
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
 :: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
 :: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
@@ -915,8 +955,8 @@ if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
 if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
-	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    %WIN_VER% detected, removing default Metro apps...
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
@@ -960,8 +1000,8 @@ if /i %DRY_RUN%==no (
 
 
 :: JOB: 7-Zip
-echo %CUR_DATE% %TIME%    Launch job '7-Zip'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job '7-Zip'...
+echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
@@ -985,31 +1025,27 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Adobe Flash Player
 echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'...
-if /i %DRY_RUN%==yes goto skip_adobe_flash
-pushd "adobe\flash_player\v15.0.0.189\firefox"
+pushd "adobe\flash_player\firefox"
 setlocal
-call "Adobe Flash Player (Firefox).bat"
+if /i %DRY_RUN%==no call "Adobe Flash Player (Firefox).bat"
 endlocal
 popd
-pushd "adobe\flash_player\v15.0.0.189\internet explorer"
+pushd "adobe\flash_player\internet explorer"
 setlocal
-call "Adobe Flash Player (IE).bat"
+if /i %DRY_RUN%==no call "Adobe Flash Player (IE).bat"
 endlocal
 popd
-:skip_adobe_flash
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Adobe Reader
 echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'...
-if /i %DRY_RUN%==yes goto skip_adobe_reader
-pushd adobe\reader\v11.0.09\x86
+pushd adobe\reader\x86
 setlocal
-call "Adobe Reader.bat"
+if /i %DRY_RUN%==no call "Adobe Reader.bat"
 endlocal
 popd
-:skip_adobe_reader
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
@@ -1059,17 +1095,17 @@ echo %CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'...
 if '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
-	pushd java\jre\8\u25\x86
+	pushd java\jre\8\x86
 	setlocal
-	call "jre-8u25-windows-i586.bat"
+	call "jre-8-i586.bat"
 	endlocal
 	popd
 ) else (
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x64 architecture detected, installing x64 version...
-	pushd java\jre\8\u25\x64
+	pushd java\jre\8\x64
 	setlocal
-	call "jre-8u25-windows-x64.bat"
+	call "jre-8-x64.bat"
 	endlocal
 	popd
 	)
@@ -1081,7 +1117,7 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Notepad++
 echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...
-pushd notepad++\v6.6.9
+pushd notepad++\x86
 setlocal
 if /i %DRY_RUN%==no call "npp.Installer.bat"
 endlocal
@@ -1099,15 +1135,16 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
+:: Windows 8/2012 and up only
 echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...
 pushd dism_base_reset
-if /i %DRY_RUN%==yes goto skip_dism_base_reset
-if not "%WIN_VER:~0,9%"=="Microsoft" (
-	Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
-	type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no (
+	if not "%WIN_VER:~0,9%"=="Microsoft" (
+		Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
+		type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+		)
 	)
-:skip_dism_base_reset
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1151,8 +1188,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "yes". Skipping defrag.
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "%SKIP_DEFRAG%". Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "%SKIP_DEFRAG%". Skipping defrag.
 	popd
 	goto :wrap-up
 	)
@@ -1271,6 +1308,20 @@ set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 
+:: Speak - announce completion
+pushd resources\stage_0_prep\speak
+if /i %SHUT_UP%==no (
+	:: Unmute the system volume
+	nircmd.exe mutesysvolume 0 
+	:: Set system volume to 65%
+	nircmd.exe setsysvolume 42597
+	:: Announce that we're starting
+	start "" nircmd.exe speak text "Tron run complete at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
+	if /i %SELF_DESTRUCT%==yes start "" nircmd.exe speak text "Self-destruct selected. De-rezzing self. Goodbye..." -1 100
+	)
+popd
+
+
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
@@ -1300,7 +1351,7 @@ if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 if not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
 
 :: Perform shutdown if requested
-if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY%
+if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
 
 :: De-rez self if requested
 if /i %SELF_DESTRUCT%==yes (
