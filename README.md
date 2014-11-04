@@ -8,7 +8,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 # USE
 
-1. Boot into safe mode (with Network support is preferable).
+1. Boot into Safe Mode with Network Support (Safe Mode is not REQUIRED but is strongly recommended)
 
 2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR**.
 
