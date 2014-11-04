@@ -34,7 +34,7 @@ That's it. Reboot and you should now be able to use F8 to select Safe Mode. Note
 
 Command-line use is optional. All flags are optional and can be combined
 
-    tron.bat [-a -c -d -m -o -p -r -s -v -x] | [-h]
+    tron.bat [-a -c -d -m -o -p -q -r -s -v -x] | [-h]
 
     -a  Automatic/silent mode (no welcome screen)
 
@@ -51,6 +51,8 @@ Command-line use is optional. All flags are optional and can be combined
     -o  Power off after running (overrides -r if used together)
 
     -p  Preserve power settings (don't reset power settings to default)
+    
+    -q  Don't audibly speak when Tron is starting and finishing
 
     -r  Reboot automatically (auto-reboot 30 seconds after Tron completes)
 
@@ -71,17 +73,10 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set LOGPATH=%SystemDrive%\Logs
   set LOGFILE=tron.log
   ```
-
-- To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
-
+  
+- To change where Tron stores quarantined files, change this path (note: this is currently unused by Tron, so setting it has no effect):
   ```
-  set AUTO_REBOOT_DELAY=0
-  ```
-
-- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
-
-  ```
-  set SKIP_DEFRAG=no
+  set QUARANTINE_PATH=C:\path\to\your\desired\folder
   ```
 
 - To always run automatically (no welcome screen), change this to `yes`:
@@ -102,16 +97,33 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set PRESERVE_METRO_APPS=no
   ```
 
+- To shut down the computer when Tron is finished, change this to `yes`:
+
+  ```
+  set AUTO_SHUTDOWN=no
+  ```
+
 - To preserve the power scheme (instead of resetting to Windows defaults), change this to `yes`:
   
   ```
   set PRESERVE_POWER_SCHEME=no
   ```
 
-- To shut down the computer when Tron is finished, change this to `yes`:
+- To prevent Tron from audibly announcing when starting and finishing, change this to yes:
+  ```
+  set SHUT_UP=no
+  ```
+
+- To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
 
   ```
-  set AUTO_SHUTDOWN=no
+  set AUTO_REBOOT_DELAY=0
+  ```
+  
+- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
+
+  ```
+  set SKIP_DEFRAG=no
   ```
 
 - To display as much output as possible (verbose), change this to `yes`:
@@ -188,7 +200,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 5. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-6. **Check and repair WMI**: Tron checks WMI interface and attempts to repair it if it's broken. Tron uses WMI for a lot of stuff including getting the date into ISO format, wildcard OEM bloatware removal, and other stuff
+6. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+7. **nircmd.exe**: Third-party utility designed for system administrators. Tron uses this for the speak function (audibly announcing beginning and end times). Using the -q flag will prevent the use of this
 
 
 ## STAGE 1: Tempclean
