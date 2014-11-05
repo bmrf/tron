@@ -4,18 +4,19 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.0 + tron.bat:feature:       Add speak ability. Tron will now audibly announce when it starts and when it finishes. Mute with the -q flag or the SHUT_UP variable
-::                                                Depending on interest, may add ability to audibly announce start of each stage
-::                      + tron.bat:stage_0_prep:  Add nircmd.exe to support speak feature, among other things
-::                      * tron.bat:stage_4_patch: Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
-::                                                Should reduce number of places we need to update when a new version is released
-::                      * tron.bat:misc:          Replace many redundant IF comparison statements with single statements. Should grant small speed increase and complexity reduction
-::                      - tron.bat:misc:          Remove unused labels: detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset
-::                      ! tron.bat:bugfix:        Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
-::                      ! tron.bat:bugfix:        Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
-::                      ! tron.bat:bugfix:        Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
-::                      ! tron.bat:bugfix:        Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
-::                      ! tron.bat:bugfix:        Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
+:: Version:       4.0.0 + stage_0_prep:feature:     Add speak ability. Tron will now audibly announce when it starts and when it finishes. Mute with the -q flag or the SHUT_UP variable
+::                                                  Depending on interest, may add ability to audibly announce start of each stage
+::                      + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
+::                      ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
+::                      ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
+::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
+::                      ! stage_3_de-bloat:bugfix:  Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
+::                      ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset)
+::                      - stage_4_patch:cleanup:    Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
+::                                                  Should reduce number of places we need to update when a new version is released
+::                      ! misc:bugfix:              Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
+::                      * misc:cleanup:             Replace many redundant IF comparison statements with single bracketed statements. Should grant small speed increase and complexity reduction
+::                      - misc:cleanup:             Remove unused labels: detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -43,6 +44,8 @@ SETLOCAL
 @echo off
 
 
+
+
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
 :::::::::::::::
@@ -64,7 +67,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: AUTORUN               (-a)  =  Automatic execution (no welcome screen or prompts)
 :: DRY_RUN               (-d)  =  run through script but skip all actual actions (test mode)
 :: PRESERVE_METRO_APPS   (-m)  =  Don't remove stock Metro apps 
-:: AUTO_SHUTDOWN         (-o)  =  Shutdown after the script finishes. Default is no. If auto-reboot is set this will override it
+:: AUTO_SHUTDOWN         (-o)  =  Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p)  =  Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: SHUT_UP               (-q)  =  Don't audibly speak when Tron is starting and finishing
 :: AUTO_REBOOT_DELAY     (-r)  =  Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
@@ -496,8 +499,8 @@ echo %CUR_DATE% %TIME%    Launch job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
 if /i %DRY_RUN%==no (
-	if '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
-	if '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.com -s -l "%TEMP%\tron_rkill.log"
+	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
+	if /i '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.com -s -l "%TEMP%\tron_rkill.log"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
@@ -539,7 +542,7 @@ pushd purge_shadow_copies
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: So if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
-if not "%WIN_VER:~0,9%"=="Microsoft" (
+if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if not "%WIN_VER:~0,9%"=="Windows V" (
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
@@ -620,7 +623,7 @@ if /i %DRY_RUN%==yes goto skip_repair_wmi
 
 :: Do a quick check to make sure WMI is working, and if not, repair it
 %WMIC% timezone >NUL
-if not %ERRORLEVEL%==0 (
+if /i not %ERRORLEVEL%==0 (
     echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...>> "%LOGPATH%\%LOGFILE%"
     echo %CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient...
     net stop winmgmt
@@ -871,7 +874,7 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 	
 :: If we detect errors, try to repair them
-if not %ERRORLEVEL%==0 (
+if /i not %ERRORLEVEL%==0 (
 	if "%WIN_VER:~0,9%"=="Windows Server 2012" (
 		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...>> "%LOGPATH%\%LOGFILE%"
 		echo %CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair...
@@ -1005,7 +1008,7 @@ echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
-if '%PROCESSOR_ARCHITECTURE%'=='x86' (
+if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	pushd 7-Zip\v9.20\x86
 	setlocal
 	call "7-Zip v9.20 x86.bat"
@@ -1092,7 +1095,7 @@ echo %CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'...>> "%LO
 echo %CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'...
 
 :: Check if we're on 32-bit Windows and run the appropriate installer
-if '%PROCESSOR_ARCHITECTURE%'=='x86' (
+if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    x86 architecture detected, installing x86 version...
 	pushd java\jre\8\x86
@@ -1141,8 +1144,10 @@ echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...
 pushd dism_base_reset
 if /i %DRY_RUN%==no (
 	if not "%WIN_VER:~0,9%"=="Microsoft" (
-		Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
-		type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+		if not "%WIN_VER:~0,11%"=="Windows V" (
+			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
+			type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+			)
 		)
 	)
 popd
@@ -1172,7 +1177,7 @@ echo %CUR_DATE% %TIME%    Checking %SystemDrive% for errors...
 
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
 if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
-if not %ERRORLEVEL%==0 ( 
+if /i not %ERRORLEVEL%==0 ( 
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot.
 	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
