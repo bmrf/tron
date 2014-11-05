@@ -55,12 +55,11 @@ SETLOCAL
 ::  * Spaces are okay               (okay:  c:\my folder\with spaces )
 ::  * Network paths are okay        (okay:  \\server\share name      )
 
-:: Log settings
+:: Log settings and quarantined files path (note: quarantined files path is currently unused by Tron)
 set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
-
-:: Quarantined files path. Currently unused by Tron
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
+
 
 :: ! All variables here are overridden if their respective command-line flag is used
 
@@ -122,6 +121,7 @@ set CONFIG_DUMP=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
+set UNICORN_POWER_MODE=off
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
@@ -202,6 +202,7 @@ for %%i in (%*) do (
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
+	if %%i==-UPM set UNICORN_POWER_MODE=on
 	)
 
 
@@ -307,6 +308,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SHUT_UP:                %SHUT_UP%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
+	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
 	echo   Variables ^(script-internal^):
@@ -338,6 +340,10 @@ if /i %CONFIG_DUMP%==yes (
 	)
 
 
+:: PREP JOB: Unicorn power mode detection circuit #1
+if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
+
+	
 :: PREP JOB: Act on autorun flag if it got set. Basically just skip the menu
 if /i %AUTORUN%==yes goto execute_jobs
 
@@ -345,7 +351,6 @@ if /i %AUTORUN%==yes goto execute_jobs
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
-color 0f
 cls
 echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  ****************
 echo  * Script to automate a series of cleanup/disinfect tools.   *
@@ -382,6 +387,7 @@ if not "%SKIP_DEFRAG%"=="no" (
 if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        4-6 hours
 if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        6-8 hours
 if /i %DRY_RUN%==yes echo   ! DRY_RUN set; will not execute any jobs
+if /i %UNICORN_POWER_MODE%==on echo   ! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
 pause
@@ -452,7 +458,8 @@ if not "%SAFE_MODE%"=="yes" (
 ::::::::::::::::::
 :execute_jobs
 cls
-color 0f
+:: Unicorn power mode detection circuit #2
+if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :: Create log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
@@ -480,6 +487,7 @@ if /i %SHUT_UP%==no (
 	:: Set system volume to 65%
 	nircmd.exe setsysvolume 42597
 	:: Announce that we're starting
+	if /i %UNICORN_POWER_MODE%==on nircmd.exe speak text "UNICORN POWER MODE ACTIVATED!!" -2 100
 	start "" nircmd.exe speak text "Beginning Tron run at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
 	)
 popd
@@ -525,7 +533,7 @@ echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...
 pushd tdss_killer
 if /i %DRY_RUN%==no (
-	"TDSSKiller v3.0.0.40.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"TDSSKiller v3.0.0.41.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
@@ -686,6 +694,7 @@ pushd resources\stage_1_tempclean
 echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...
 
+
 :: JOB: Clean Internet Explorer; Windows' built-in method
 echo %CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'...
@@ -695,14 +704,18 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: TempFileCleanup.bat
 echo %CUR_DATE% %TIME%    Launch job 'TempFileCleanup'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'TempFileCleanup'...
 pushd tempfilecleanup
 if /i %DRY_RUN%==no call TempFileCleanup.bat>> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: Reset window title since TempeFileCleanup clobbers it
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: CCLeaner
 echo %CUR_DATE% %TIME%    Launch job 'CCleaner'...>> "%LOGPATH%\%LOGFILE%"
@@ -716,6 +729,7 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: BleachBit
 echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'BleachBit'...
@@ -727,6 +741,7 @@ if /i %DRY_RUN%==no (
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: Clear Windows event logs
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
@@ -1312,21 +1327,6 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
-
-:: Speak - announce completion
-pushd resources\stage_0_prep\speak
-if /i %SHUT_UP%==no (
-	:: Unmute the system volume
-	nircmd.exe mutesysvolume 0 
-	:: Set system volume to 65%
-	nircmd.exe setsysvolume 42597
-	:: Announce that we're starting
-	start "" nircmd.exe speak text "Tron run complete at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
-	if /i %SELF_DESTRUCT%==yes start "" nircmd.exe speak text "Self-destruct selected. De-rezzing self. Goodbye..." -1 100
-	)
-popd
-
-
 :: Log trailer
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
@@ -1349,6 +1349,19 @@ echo                          Disk space reclaimed: %FREE_SPACE_SAVED% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
+:: Speak - announce completion
+pushd resources\stage_0_prep\speak
+if /i %SHUT_UP%==no (
+	:: Unmute the system volume
+	nircmd.exe mutesysvolume 0 
+	:: Set system volume to 65%
+	nircmd.exe setsysvolume 42597
+	:: Announce that we're starting
+	nircmd.exe speak text "Tron run complete at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
+	if /i %SELF_DESTRUCT%==yes start "" nircmd.exe speak text "Self-destruct was selected. De-rezing self. Goodbye..." -2 100
+	)
+popd
+
 :: Skip all this if we're doing a dry run
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 
@@ -1367,3 +1380,4 @@ if /i %SELF_DESTRUCT%==yes (
 
 :end_and_skip_shutdown
 pause
+color
