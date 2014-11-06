@@ -1,4 +1,4 @@
-| NAME       | Tron, an automatic cleaner/scanner/disinfector                                              |
+| NAME       | Tron, an automated cleaner/scanner/disinfection tool                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
 | AUTHOR     | vocatus on reddit.com/r/sysadmin (`vocatus d0t gate@gmail.com`) // PGP key ID: `0x82A211A2` |
 | BACKGROUND | Why the name Tron? Tron "Fights for the User"                                               |
@@ -8,7 +8,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 # USE
 
-1. Boot into Safe Mode with Network Support (Safe Mode is not REQUIRED but is strongly recommended)
+1. Boot into Safe Mode with Network Support (Safe Mode is NOT required but is strongly recommended)
 
 2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR**.
 
@@ -32,17 +32,19 @@ Reboot and you should now be able to use F8 to select Safe Mode. Note that this 
 
 # COMMAND-LINE USE
 
-Command-line use is fully supported. All flags are optional and can be combined.
+Command-line use is fully supported. All flags are optional and can be combined. *
 
     tron.bat [-a -c -d -m -o -p -q -r -s -v -x] | [-h]
 
-    -a  Automatic/silent mode (no welcome screen)
+    -a  Automatic mode (no welcome screen or prompts; implies -e)
 
     -c  Config dump (display current config. Can be used with other
         flags to see what WOULD happen, but script will never execute
         if this flag is used)
 
     -d  Dry run (run through script without executing any jobs)
+    
+    -e  Accept EULA (suppress display of disclaimer warning screen)
 
     -h  Display help text
     
@@ -52,13 +54,13 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     -p  Preserve power settings (don't reset power settings to default)
     
-    -q  Don't audibly speak when Tron is starting and finishing
+    -q  Quiet. Don't audibly speak when starting and finishing
 
-    -r  Reboot automatically (auto-reboot 30 seconds after Tron completes)
+    -r  Reboot automatically (auto-reboot 30 seconds after completion)
 
     -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
-    -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
     
     -x  Self-destruct. Tron deletes itself after running and leaves logs intact
    
@@ -90,6 +92,11 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   ```
   set DRY_RUN=no
   ```
+  
+- To permanently accept the End User License Agreement (suppress display of disclaimer warning screen), change this to `yes`:
+  ```
+  set EULA_ACCEPTED=no
+  ```
 
 - To preserve default Metro apps (don't remove them), change this to `yes`:
   
@@ -109,7 +116,7 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set PRESERVE_POWER_SCHEME=no
   ```
 
-- To prevent Tron from audibly announcing when starting and finishing, change this to yes:
+- To prevent Tron from audibly announcing when starting and finishing, change this to `yes`:
   ```
   set SHUT_UP=no
   ```
@@ -138,6 +145,8 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set SELF_DESTRUCT=no
   ```
 
+* There is no -UPM flag
+
 
 # INTEGRITY
 
@@ -151,7 +160,7 @@ Tron and any associated bootstrapper scripts and `.reg` files that I've written 
 
 # OTHER
 
-I try to keep everything updated. If you notice some of the packages are out of date (e.g. Java, which updates at the frequency of every 3 minutes), PM me on reddit or send me an email (listed above). I respond pretty quickly most days (<=6 hours).
+I try to keep everything updated. If you notice some of the packages are out of date (e.g. Java, which updates at the frequency of every 3 minutes), PM me on reddit or send me an email (listed above). I respond pretty quickly most days.
 
 Hope this is helpful to other PC techs,
 
@@ -186,20 +195,23 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
 
-2. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
+2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron
+
+3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **erunt**: Used to backup the registry before beginning a Tron run
+4. **erunt**: Used to backup the registry before beginning a Tron run
 
-4. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+5. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-5. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+6. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-6. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
-7. **nircmd.exe**: Third-party utility designed for system administrators. Tron uses this for the speak function (audibly announcing beginning and end times). Using the -q flag will prevent the use of this
+7. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+
+8. **nircmd.exe**: Third-party utility designed for system administrators. Tron uses this for the speak function (audibly announcing beginning and end times). Using the -q flag will prevent the use of this
 
 
 ## STAGE 1: Tempclean
