@@ -25,7 +25,7 @@
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
-::                      -a  Automatic mode (no welcome screen or prompts, implies -e)
+::                      -a  Automatic mode (no welcome screen or prompts; implies -e)
 ::                      -c  Config dump (display config. Can be used with other flags to see what
 ::                          WOULD happen, but script will never execute if this flag is used)
 ::                      -d  Dry run (run through script without executing any jobs)
@@ -35,7 +35,7 @@
 ::                      -o  Power off after running (overrides -r if used together)
 ::                      -p  Preserve power settings (don't reset power settings to default)
 ::                      -q  Quiet. Don't audibly speak when starting and finishing
-::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
+::                      -r  Reboot (auto-reboot 30 seconds after completion)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
