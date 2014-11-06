@@ -181,8 +181,6 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 5. **Check for update**: Use `wget` to pull down md5sums.txt from the Tron mirror and see if we're on the current version
 
-6. **Disk health check**: Use `smartctl.exe` to run a quick SMART health check on the system drive. If it fails, notify the user
-
 
 ## STAGE 0: Prep
 
