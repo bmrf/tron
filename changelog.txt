@@ -16,25 +16,31 @@ Version number legend:
 
   
 ########################
-# v4.0.0 // 2014-11-xx #
+# v4.0.0 // 2014-11-06 #
 ########################
 tron.bat                         v4.0.0
- + tron.bat:feature:       Add speak ability. Tron will now audibly announce when it starts and when it finishes. Mute with the -q flag or the SHUT_UP variable
-                           Depending on interest, may add ability to audibly announce start of each stage
- + tron.bat:stage_0_prep:  Add nircmd.exe to support speak feature, among other things
- * tron.bat:stage_4_patch: Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
-                           Should reduce number of places we need to update when a new version is released
- * tron.bat:misc:          Replace many redundant IF comparison statements with single statements. Should grant small speed increase and complexity reduction
- - tron.bat:misc:          Remove unused labels: detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset
- ! tron.bat:bugfix:        Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
- ! tron.bat:bugfix:        Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
- ! tron.bat:bugfix:        Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
- ! tron.bat:bugfix:        Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
- ! tron.bat:bugfix:        Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
+ + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
+ + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks to /u/cuddlychops06
+ + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
+                             or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes.
+ + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
+ ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
+ ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
+ ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup. Sigh)
+ ! stage_3_de-bloat:bugfix:  Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
+ ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset. Sigh)
+ - stage_4_patch:cleanup:    Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
+                             Should reduce number of places we need to update when a new version is released
+ ! misc:bugfix:              Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
+ * misc:cleanup:             Replace many redundant IF comparison statements with single bracketed statements. Should grant small speed increase and complexity reduction
+ * misc:cleanup:             Don't create LOGPATH and LOGFILE until Tron has actually started. We were incorrectly creating even if a user only requested help (-h)
+ * misc:cleanup:             Restructure all screens to provide more space for text while remaining under the default command-prompt 80 character width
+ - misc:cleanup:             Remove unused labels from IF block cleanup (detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset)
 
  STAGE 0: Prep
  . Rkill                         v2.6.8.0
- . TDSS Killer                   v3.0.0.40
+ + ProcessKiller                 v1.0          (provided by /u/cuddlychops06)
+ * TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
  + nircmd                        v2.75
   
@@ -918,7 +924,7 @@ tron.bat                         v1.9.0
     -d  Dry run. Run through Tron without executing any jobs (mostly for my testing)
     -s  Skip defrag. Force Tron to skip defrag regardless whether an SSD is detected
     -h  Spit out help on using Tron via command-line
-    -r  Reboot (auto-reboot 30 seconds after Tron completes)
+    -r  Reboot (auto-reboot 30 seconds after completion)
  * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to /u/Undeadlord for suggestion
  - tron.bat: Removed support for --auto flag (use -a instead) 
  ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
