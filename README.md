@@ -91,7 +91,7 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set DRY_RUN=no
   ```
 
-  - To preserve default Metro apps (don't remove them), change this to `yes`:
+- To preserve default Metro apps (don't remove them), change this to `yes`:
   
   ```
   set PRESERVE_METRO_APPS=no
