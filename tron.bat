@@ -4,14 +4,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.0 + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with tron.bat -e, or change associated EULA_ACCEPTED variable to yes to permanently accept
+:: Version:       4.0.0 + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
 ::                      + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks to /u/cuddlychops06
 ::                      + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
 ::                                                  or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes.
 ::                      + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
 ::                      ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
 ::                      ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
-::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
+::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup. Sigh)
 ::                      ! stage_3_de-bloat:bugfix:  Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
 ::                      ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset. Sigh)
 ::                      - stage_4_patch:cleanup:    Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
@@ -34,7 +34,7 @@
 ::                      -m  Preserve default Metro apps (don't remove them)
 ::                      -o  Power off after running (overrides -r if used together)
 ::                      -p  Preserve power settings (don't reset power settings to default)
-::                      -q  Quiet. Don't audibly speak when Tron is starting and finishing
+::                      -q  Quiet. Don't audibly speak when starting and finishing
 ::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -70,7 +70,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: PRESERVE_METRO_APPS   (-m) = Don't remove stock Metro apps 
 :: AUTO_SHUTDOWN         (-o) = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
-:: SHUT_UP               (-q) = Quiet. Don't audibly speak when Tron is starting and finishing
+:: SHUT_UP               (-q) = Quiet. Don't audibly speak when starting and finishing
 :: AUTO_REBOOT_DELAY     (-r) = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_DEFRAG           (-s) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: VERBOSE               (-v) = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
@@ -105,7 +105,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=4.0.0
-set SCRIPT_DATE=2014-11-xx
+set SCRIPT_DATE=2014-11-06
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -169,7 +169,7 @@ if /i %HELP%==yes (
 	echo    -m  Preserve default Metro apps ^(don't remove them^)
 	echo    -o  Power off after running ^(overrides -r if used together^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
-	echo    -q  Quiet. Don't audibly speak when Tron is starting and finishing
+	echo    -q  Quiet. Don't audibly speak when starting and finishing
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -378,6 +378,13 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
+pushd resources\stage_0_prep\speak
+if %UNICORN_POWER_MODE%==on (
+	nircmd.exe mutesysvolume 0
+	nircmd.exe setsysvolume 49150
+	start "" nircmd.exe speak text "UNICORN POWER MODE ACTIVATED!!" 3 100
+	)
+popd
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfect tools              *
