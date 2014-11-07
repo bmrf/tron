@@ -15,6 +15,14 @@ Version number legend:
 
 
   
+  
+########################
+# v4.0.1 // 2014-11-07 #
+########################
+tron.bat                         v4.0.1
+ ! stage_0_prep:bugfix:      Fix bug with speak feature where we weren't starting the Windows audio service in Safe Mode. Now force it to start. Thanks to EnrichedFetus
+  
+  
 ########################
 # v4.0.0 // 2014-11-06 #
 ########################
@@ -22,7 +30,7 @@ tron.bat                         v4.0.0
  + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
  + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks to /u/cuddlychops06
  + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
-                             or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes.
+                             or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes
  + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
  ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
  ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
