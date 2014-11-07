@@ -187,16 +187,6 @@ if /i %HELP%==yes (
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
 
-:: PREP JOB: Enable the Windows Audio service if -q or SHUT_UP isn't being used
-if /i %SHUT_UP%==no (
-	:: Enable the audio service in Safe Mode and start it
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioEndpointBuilder" /ve /t reg_sz /d Service /f 2>NUL
-	net start AudioSrv 2>NUL
-	net start AudioEndpointBuilder 2>NUL
-	)
-
-
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
@@ -224,12 +214,23 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	)
 endlocal disabledelayedexpansion
 
+
 :: PREP JOB: Detect if the system is in Safe Mode
 :detect_safe_mode
 popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+
+
+:: PREP JOB: Enable the Windows Audio service if -q or SHUT_UP isn't being used
+if /i %SHUT_UP%==no (
+	:: Enable the audio service in Safe Mode and start it
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioEndpointBuilder" /ve /t reg_sz /d Service /f 2>NUL
+	net start AudioSrv 2>NUL
+	net start AudioEndpointBuilder 2>NUL
+	)
 
 
 :: PREP JOB: Get free space on the system drive and stash it for comparison later
