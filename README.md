@@ -64,7 +64,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
     
     -x  Self-destruct. Tron deletes itself after running and leaves logs intact
    
-* There is no UDM flag
+\* There is no UDM flag
 
 # CHANGE DEFAULTS (advanced)
 
