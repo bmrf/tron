@@ -4,36 +4,41 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.0 + stage_0_prep:feature:     Add speak ability. Tron will now audibly announce when it starts and when it finishes
-::                                                  Mute with the -q flag or the SHUT_UP variable. Depending on interest, may add ability to announce each stage
+:: Version:       4.0.1 ! stage_0_prep:bugfix:      Fix bug with speak feature where we weren't starting the Windows audio service in Safe Mode. Now force it to start. Thanks to EnrichedFetus
+::                4.0.0 + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
+::                      + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks to /u/cuddlychops06
+::                      + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
+::                                                  or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes.
 ::                      + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
 ::                      ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
 ::                      ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
-::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup)
+::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup. Sigh)
 ::                      ! stage_3_de-bloat:bugfix:  Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
-::                      ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset)
+::                      ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset. Sigh)
 ::                      - stage_4_patch:cleanup:    Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
 ::                                                  Should reduce number of places we need to update when a new version is released
 ::                      ! misc:bugfix:              Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
 ::                      * misc:cleanup:             Replace many redundant IF comparison statements with single bracketed statements. Should grant small speed increase and complexity reduction
-::                      - misc:cleanup:             Remove unused labels: detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset
+::                      * misc:cleanup:             Don't create LOGPATH and LOGFILE until Tron has actually started. We were incorrectly creating even if a user only requested help (-h)
+::                      * misc:cleanup:             Restructure all screens to provide more space for text while remaining under the default command-prompt 80 character width
+::                      - misc:cleanup:             Remove unused labels from IF block cleanup (detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset)
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
-::                      -a  Automatic mode (no welcome screen or prompts)
-::                      -c  Config dump (display current config. Can be used with other flags
-::                          to see what WOULD happen, but script will never execute if this 
-::                          flag is used)
+::                      -a  Automatic mode (no welcome screen or prompts; implies -e)
+::                      -c  Config dump (display config. Can be used with other flags to see what
+::                          WOULD happen, but script will never execute if this flag is used)
 ::                      -d  Dry run (run through script without executing any jobs)
+::                      -e  Accept EULA (suppress display of disclaimer warning screen)
 ::                      -h  Display help text
 ::                      -m  Preserve default Metro apps (don't remove them)
-::                      -o  Power off after running (overrides -r if used together)
+::                      -o  Power off after running (overrides -r)
 ::                      -p  Preserve power settings (don't reset power settings to default)
-::                      -q  Don't audibly speak when Tron is starting and finishing
-::                      -r  Reboot (auto-reboot 30 seconds after Tron completes)
+::                      -q  Quiet. Don't audibly speak when starting and finishing
+::                      -r  Reboot (auto-reboot 30 seconds after completion)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
-::                      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
+::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
@@ -59,21 +64,21 @@ set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 
-
 :: ! All variables here are overridden if their respective command-line flag is used
-
-:: AUTORUN               (-a)  =  Automatic execution (no welcome screen or prompts)
-:: DRY_RUN               (-d)  =  run through script but skip all actual actions (test mode)
-:: PRESERVE_METRO_APPS   (-m)  =  Don't remove stock Metro apps 
-:: AUTO_SHUTDOWN         (-o)  =  Shutdown after the finishing. Overrides auto-reboot
-:: PRESERVE_POWER_SCHEME (-p)  =  Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
-:: SHUT_UP               (-q)  =  Don't audibly speak when Tron is starting and finishing
-:: AUTO_REBOOT_DELAY     (-r)  =  Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_DEFRAG           (-s)  =  Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
-:: VERBOSE               (-v)  =  When possible, display as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
-:: SELF_DESTRUCT         (-x)  =  Set to yes to have Tron automatically delete itself after running. Leaves logs intact
+:: AUTORUN               (-a) = Automatic execution (no welcome screen or prompts)
+:: DRY_RUN               (-d) = Run through script but skip all actual actions (test mode)
+:: EULA_ACCEPTED         (-e) = Accept EULA (suppress display of disclaimer warning screen)
+:: PRESERVE_METRO_APPS   (-m) = Don't remove stock Metro apps 
+:: AUTO_SHUTDOWN         (-o) = Shutdown after the finishing. Overrides auto-reboot
+:: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: SHUT_UP               (-q) = Quiet. Don't audibly speak when starting and finishing
+:: AUTO_REBOOT_DELAY     (-r) = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
+:: SKIP_DEFRAG           (-s) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
+:: VERBOSE               (-v) = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
+:: SELF_DESTRUCT         (-x) = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
+set EULA_ACCEPTED=no
 set PRESERVE_METRO_APPS=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
@@ -98,41 +103,104 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-cls && echo. && echo  Loading...
+cls
 color 0f
-set SCRIPT_VERSION=4.0.0
-set SCRIPT_DATE=2014-11-xx
+set SCRIPT_VERSION=4.0.1
+set SCRIPT_DATE=2014-11-07
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
-:: Initialize variables for use and comparison
-:: These get clobbered later so don't change them here
+:: Initialize script-internal variables. Most of these get clobbered later so don't change them here
+set CONFIG_DUMP=no
 set REPO_URL=http://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_DATE=0
 set REPO_SCRIPT_VERSION=0
 set HELP=no
 set TARGET_METRO=no
-set CONFIG_DUMP=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set UNICORN_POWER_MODE=off
+
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
 :: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
 
-:: Force WMIC location in case the system PATH is messed up
+
+:: PREP JOB: Parse command-line arguments
+for %%i in (%*) do (
+	if /i %%i==-a set AUTORUN=yes
+	if /i %%i==-c set CONFIG_DUMP=yes
+	if /i %%i==-d set DRY_RUN=yes
+	if /i %%i==-e set EULA_ACCEPTED=yes
+	if /i %%i==-h set HELP=yes
+	if /i %%i==-m set PRESERVE_METRO_APPS=yes
+	if /i %%i==-o set AUTO_SHUTDOWN=yes
+	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
+	if /i %%i==-q set SHUT_UP=yes
+	if /i %%i==-r set AUTO_REBOOT_DELAY=30
+	if /i %%i==-s set SKIP_DEFRAG=yes
+	if /i %%i==-v set VERBOSE=yes
+	if /i %%i==-x set SELF_DESTRUCT=yes
+	if %%i==-UPM set UNICORN_POWER_MODE=on
+	)
+
+
+:: PREP JOB: Execute help if requested
+if /i %HELP%==yes (
+	::cls
+	echo. 
+	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
+	echo  Author: vocatus on reddit.com/r/sysadmin
+	echo.
+	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -q -r -s -v -x^] ^| ^[-h^]
+	echo.
+	echo   Optional flags ^(can be combined^):
+	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
+ 	echo    -c  Config dump ^(display config. Can be used with other flags to see what
+	echo        WOULD happen, but script will never execute if this flag is used^)
+	echo    -d  Dry run ^(run through script but don't execute any jobs^)
+	echo    -e  Accept EULA ^(suppress display of disclaimer warning screen^)
+	echo    -m  Preserve default Metro apps ^(don't remove them^)
+	echo    -o  Power off after running ^(overrides -r^)
+	echo    -p  Preserve power settings ^(don't reset power settings to default^)
+	echo    -q  Quiet. Don't audibly speak when starting and finishing
+	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
+	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
+	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
+ 	echo.
+	echo   Misc flags ^(must be used alone^)
+	echo    -h  Display this help text
+	echo.
+	exit /b 0
+	)
+
+
+:: PREP JOB: Force WMIC location in case the system PATH is messed up
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
+
+
+:: PREP JOB: Enable the Windows Audio service if -q or SHUT_UP isn't being used
+if /i %SHUT_UP%==no (
+	:: Enable the audio service in Safe Mode and start it
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioEndpointBuilder" /ve /t reg_sz /d Service /f 2>NUL
+	net start AudioSrv 2>NUL
+	net start AudioEndpointBuilder 2>NUL
+	)
+
 
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
@@ -178,63 +246,6 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	bcdedit /set {default} bootmenupolicy legacy
 	)
-
-
-:: PREP JOB: Make the log and quarantine directories and file if they don't already exist
-if not exist "%LOGPATH%" mkdir "%LOGPATH%"
-:: Disabled for now
-::if not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
-if not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
-
-
-:: PREP JOB: Check and parse command-line arguments
-for %%i in (%*) do (
-	if /i %%i==-a set AUTORUN=yes
-	if /i %%i==-c set CONFIG_DUMP=yes
-	if /i %%i==-d set DRY_RUN=yes
-	if /i %%i==-h set HELP=yes
-	if /i %%i==-m set PRESERVE_METRO_APPS=yes
-	if /i %%i==-o set AUTO_SHUTDOWN=yes
-	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
-	if /i %%i==-q set SHUT_UP=yes
-	if /i %%i==-r set AUTO_REBOOT_DELAY=30
-	if /i %%i==-s set SKIP_DEFRAG=yes
-	if /i %%i==-v set VERBOSE=yes
-	if /i %%i==-x set SELF_DESTRUCT=yes
-	if %%i==-UPM set UNICORN_POWER_MODE=on
-	)
-
-
-:: PREP JOB: Execute help if requested
-if /i %HELP%==yes (
-	cls
-	echo. 
-	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo  Author: vocatus on reddit.com/r/sysadmin
-	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -m -o -p -q -r -s -v -x^] ^| ^[-h^]
-	echo.
-	echo   Optional flags ^(can be combined^):
-	echo      -a  Automatic mode ^(no welcome screen or prompts^)
- 	echo      -c  Config dump ^(display current config. Can be used with other
-	echo          flags to see what WOULD happen, but script will never execute
-	echo          if this flag is used^)
-	echo      -d  Dry run ^(run through script but don't execute any jobs^)
-	echo      -m  Preserve default Metro apps ^(don't remove them^)
-	echo      -o  Power off after running ^(overrides -r if used together^)
-	echo      -p  Preserve power settings ^(don't reset power settings to default^)
-	echo      -q  Don't audibly speak when Tron is starting and finishing
-	echo      -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
-	echo      -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
-	echo      -v  Verbose. Display as much output as possible. NOTE: Significantly slower!
-	echo      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
- 	echo.
-	echo   Misc flags ^(must be used alone^)
-	echo    -h  Display this help text
-	echo.
-	exit /b 0
-	)
-
 
 :: PREP JOB: Update check (check if we're running the latest version)
 pushd resources\stage_0_prep\check_update
@@ -299,6 +310,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
+	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
@@ -339,54 +351,89 @@ if /i %CONFIG_DUMP%==yes (
 	)
 
 
-:: PREP JOB: Unicorn power mode detection circuit #1
-if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
-
-	
-:: PREP JOB: Act on autorun flag if it got set. Basically just skip the menu
+:: PREP JOB: Act on autorun flag. Skips safe mode checks, admin rights check, and EULA check. I assume if you use the auto flag (-a) you know what you're doing
 if /i %AUTORUN%==yes goto execute_jobs
+
+
+:: PREP JOB: Display the annoying disclaimer screen. Sigh
+cls
+if /i not %EULA_ACCEPTED%==yes (
+	color FC
+	echo  ************************** ANNOYING DISCLAIMER **************************
+	echo  * NOTE! By running Tron you accept COMPLETE responsibility for ANYTHING *
+	echo  * that happens. Although I think the chance of something bad happening  *
+	echo  * due to Tron is pretty remote, it's always a possibility, and so Tron  *
+	echo  * has ZERO WARRANTY for ANY purpose. READ THE INSTRUCTIONS, and know    *
+	echo  * you run it AT YOUR OWN RISK.                                          *
+	echo  *                                                                       *
+	echo  * Tron.bat and all supporting code and scripts I've written are free    *
+	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
+	echo  * ^(MBAM, TDSSK, etc^) are bound by their respective licenses. It is      *
+	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
+	echo  * tools in whatever environment you use Tron in.                        *
+	echo  *                                                                       *
+	echo  * The bottom line is there is NO WARRANTY, you are ON YOUR OWN, and     *
+	echo  * anything that happens, good or bad, is YOUR RESPONSIBILITY.           *
+	echo  *************************************************************************
+	echo.
+	echo  Press any key to accept this agreement and start Tron, or press ctrl^+c
+	echo  to cancel.
+	echo.
+	pause >NUL
+	color 0f
+	)
+
+
+:: PREP JOB: UPM detection circuit #1
+if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
+pushd resources\stage_0_prep\speak
+if %UNICORN_POWER_MODE%==on (
+	nircmd.exe mutesysvolume 0
+	nircmd.exe setsysvolume 49150
+	start "" nircmd.exe speak text "UNICORN POWER MODE ACTIVATED!!" 3 100
+	)
+popd
 cls
-echo  *****************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  ****************
-echo  * Script to automate a series of cleanup/disinfect tools.   *
-echo  * Author: vocatus on reddit.com/r/sysadmin                  *
-echo  *                                                           *
-echo  * Stage:        Tools:                                      *
-echo  * --------------------------------------------------------- *
-echo  *  0 Prep:      rkill, TDSSK, reg bckup, SysRstr/VSS clean  *
-echo  *  1 TempClean: TempFileCleanup, BleachBit, CCleaner, IE    *
-echo  *  2 Disinfect: Sophos, Vipre, MBAM, DISM repair, sfc scan  *
-echo  *  3 De-bloat:  Remove OEM bloatware (inc Metro apps)       *
-echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows             *
-echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (non-SSD only)            *
-echo  *                                                           *
-echo  * \resources\stage_6_manual_tools contains additional tools *
-echo  * which may be run manually if necessary.                   *
-echo  *************************************************************
-echo.
+echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
+echo  * Script to automate a series of cleanup/disinfect tools              *
+echo  * Author: vocatus on reddit.com/r/sysadmin                            *
+echo  *                                                                     *
+echo  * Stage:        Tools:                                                *
+echo  * ------------------------------------------------------------------- *
+echo  *  0 Prep:      rkill, PrcsKillr, TDSSK, reg bckup, SysRstr/VSS clean *
+echo  *  1 TempClean: TempFileCleanup, BlchBit, CCleaner,IE ^& EvtLogs clean *
+echo  *  2 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
+echo  *  3 De-bloat:  Remove OEM bloatware, remove OEM Metro bloatware      *
+echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base reset      *
+echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (mechanical disks only, no SSDs)    *
+echo  *                                                                     *
+echo  * \resources\stage_6_manual_tools contains additional tools which may *
+echo  * be run manually if necessary.                                       *
+echo  ***********************************************************************
 :: So ugly
-echo  Current settings (edit script to change):
-echo     Log location:            %LOGPATH%\%LOGFILE%
-if not "%AUTO_REBOOT_DELAY%"=="0" echo     Auto-reboot delay:       %AUTO_REBOOT_DELAY% seconds
-if "%AUTO_REBOOT_DELAY%"=="0" echo     Auto-reboot delay:       disabled
-if "%SSD_DETECTED%"=="yes" echo     SSD detected?            %SSD_DETECTED% (defrag skipped)
-if "%SSD_DETECTED%"=="no" echo     SSD detected?            %SSD_DETECTED%
-if "%SAFEBOOT_OPTION%"=="MINIMAL" echo     Safe mode?               %SAFE_MODE%, without Networking
-if "%SAFEBOOT_OPTION%"=="NETWORK" echo     Safe mode?               %SAFE_MODE%, with Networking (ideal)
-if not "%SAFE_MODE%"=="yes" echo     Safe mode?               %SAFE_MODE% (not ideal)
-if not "%SKIP_DEFRAG%"=="no" (
-	echo   ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
-	echo     Runtime estimate:        4-6 hours
+echo  Current settings (run tron.bat -c to see FULL config):
+echo    Log location:            %LOGPATH%\%LOGFILE%
+if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
+if "%SSD_DETECTED%"=="yes" (echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^) ) else (echo    SSD detected?            %SSD_DETECTED%)
+if "%SAFE_MODE%"=="no" (
+		echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
+	) else (
+		if "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
+		if "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
+	)
+if /i not "%SKIP_DEFRAG%"=="no" (
+	echo  ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
+	echo    Runtime estimate:        4-6 hours
 	goto welcome_screen_trailer
 	)
-if "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        4-6 hours
-if not "%SSD_DETECTED%"=="yes" echo     Runtime estimate:        6-8 hours
-if /i %DRY_RUN%==yes echo   ! DRY_RUN set; will not execute any jobs
-if /i %UNICORN_POWER_MODE%==on echo   ! UNICORN POWER MODE ACTIVATED !!
+if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        6-8 hours)
+if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
+if /i %UNICORN_POWER_MODE%==on echo  ! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
 pause
@@ -395,7 +442,7 @@ pause
 :: SAFE MODE CHECK ::
 :::::::::::::::::::::
 :: Check if we're in safe mode
-if not "%SAFE_MODE%"=="yes" (
+if /i not "%SAFE_MODE%"=="yes" (
 		color 0c
 		cls
 		echo.
@@ -435,10 +482,10 @@ if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
 :: thanks to /u/agent-squirrel
-:: Because command prompts always start with Admin rights when the system is in Safe Mode, we skip this check if we're in Safe Mode
-if not "%SAFE_MODE%"=="yes" (
+:: We skip this check if we're in Safe Mode because Safe Mode command prompts always start with Admin rights
+if /i not "%SAFE_MODE%"=="yes" (
 	net session >nul 2>&1
-	if not "%ERRORLEVEL%"=="0" (
+	if /i not "%ERRORLEVEL%"=="0" (
 		color cf
 		cls
 		echo.
@@ -452,14 +499,23 @@ if not "%SAFE_MODE%"=="yes" (
 	)
 )
 
+
 ::::::::::::::::::
 :: EXECUTE JOBS ::
 ::::::::::::::::::
 :execute_jobs
 cls
-:: Unicorn power mode detection circuit #2
-if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
+
+:: Make the log and quarantine directories and file if they don't already exist
+if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
+if /i not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
+:: Creation of the QUARANTINE_PATH is disabled for now
+::if /i not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
+
+:: UPM detection circuit #2
+if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
+
 :: Create log header for this job
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
@@ -517,6 +573,16 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
+:: JOB: ProcessKiller
+echo %CUR_DATE% %TIME%    Launch Job 'ProcessKiller'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch Job 'ProcessKiller'...
+pushd processkiller
+if /i %DRY_RUN%==no ProcessKiller.exe
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
 :: JOB: Backup registry
 echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"...
@@ -543,14 +609,14 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 :: JOB: Purge oldest shadow copies
-echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Vista and up)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Vista and up)...
+echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (7 and up)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Purging oldest Shadow Copy set (7 and up)...
 pushd purge_shadow_copies
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: So if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	if not "%WIN_VER:~0,9%"=="Windows V" (
+	if /i not "%WIN_VER:~0,9%"=="Windows V" (
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
@@ -667,12 +733,12 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Reduce SysRestore space
-echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 5%% of disk...
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%% of disk...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%% of disk...
 pushd reduce_system_restore
 if /i %DRY_RUN%==no (
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000005 /f
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000005 /f
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -747,7 +813,7 @@ echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...>> "%LOGPATH%\
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...
 pushd backup_and_clear_windows_event_logs
 :: Make a subdirectory in the logpath for the Windows event log backups
-if not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
+if /i not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...
 :: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
@@ -920,7 +986,7 @@ echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...
 pushd sfc
 if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
-if not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
+if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
 %SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
 :skip_sfc
@@ -1157,8 +1223,8 @@ echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...>> "%LOGPATH%\%LOGFILE%
 echo %CUR_DATE% %TIME%    Launch job 'DISM base reset'...
 pushd dism_base_reset
 if /i %DRY_RUN%==no (
-	if not "%WIN_VER:~0,9%"=="Microsoft" (
-		if not "%WIN_VER:~0,11%"=="Windows V" (
+	if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+		if /i not "%WIN_VER:~0,11%"=="Windows V" (
 			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
 			type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
 			)
@@ -1365,7 +1431,7 @@ popd
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 
 :: Perform reboot if requested
-if not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
+if /i not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "Rebooting in %AUTO_REBOOT_DELAY% seconds to finish cleanup."
 
 :: Perform shutdown if requested
 if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
