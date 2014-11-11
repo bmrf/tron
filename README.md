@@ -156,7 +156,7 @@ In every release `checksums.txt` is signed with my PGP key (`0x82A211A2`, includ
 
 # LICENSE
 
-Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required.
+Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses, and it is YOUR RESPONSIBILITY to determine if you have the rights to use these tools in whatever environment you use Tron in.
 
 
 # OTHER
@@ -183,7 +183,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
 
-2. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notifies the user if we're not
+2. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
 
 3. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
@@ -196,7 +196,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
 
-2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron
+2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: ClassicShellService.exe, explorer.exe, dwm.exe, cmd.exe, mbam.exe, teamviewer.exe, TeamViewer_Service.exe, Taskmgr.exe, Teamviewer_Desktop.exe, MsMpEng.exe, tv_w32.exe, VTTimer.exe, Tron.bat, rkill.exe, rkill64.exe, rkill.com, rkill64.com, conhost.exe, dashost.exe, wget.exe
 
 3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
 
