@@ -257,7 +257,7 @@ Master script that launches all the other tools. It performs a lot of actions on
   \resources\stage_3_de-bloat\oem\programs_to_target.txt
   ```
 
-2. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (stuff like Calculator, Paint etc is not removed). Purges them from the cache (can always fetch from Windows Update later)
+2. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
 
 
 ## STAGE 4: Patch
