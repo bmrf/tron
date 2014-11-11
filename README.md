@@ -288,7 +288,7 @@ Tron installs or updates these programs:
 ## STAGE 6: Manual tools
 Tron does not run these automatically because most of them don't support command-line use.
 
-1. **ADSSpy**: Scans for hidden ADS streams
+1. **ADSSpy**: Scans for hidden NTFS Alternate Data Streams
 
 2. **AdwCleaner**: Popular user-suggested adware removal tool
 
