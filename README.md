@@ -3,7 +3,7 @@
 | AUTHOR     | vocatus on reddit.com/r/sysadmin (`vocatus d0t gate@gmail.com`) // PGP key ID: `0x82A211A2` |
 | BACKGROUND | Why the name Tron? Tron "Fights for the User"                                               |
 
-I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just script everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
 
 # USE
