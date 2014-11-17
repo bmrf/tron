@@ -4,24 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.1 ! stage_0_prep:bugfix:      Fix bug with speak feature where we weren't starting the Windows audio service in Safe Mode. Now force it to start. Thanks to EnrichedFetus
-::                4.0.0 + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
-::                      + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks to /u/cuddlychops06
-::                      + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
-::                                                  or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes.
-::                      + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
-::                      ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
-::                      ! stage_0_prep:bugfix:      Fix logic error where we skipped calculating free hard drive space if the system drive was an SSD. Now detect free space regardless of disk type
-::                      ! stage_2_disinfect:bugfix: Fix incorrect attempt to launch DISM image cleanup on Vista (Vista does not support DISM image cleanup. Sigh)
-::                      ! stage_3_de-bloat:bugfix:  Fix crash error on Windows Vista Ultimate in Metro de-bloat section. Was crashing on string comparison due to "(TM)" symbols in Vista Ultimate name. Sigh
-::                      ! stage_4_patch:bugfix:     Fix incorrect attempt to run DISM base reset on Vista (Vista does not support DISM base reset. Sigh)
-::                      - stage_4_patch:cleanup:    Remove all version-specific subfolders for Java, Flash, Reader, and Notepad++, and rename all .bat installers to be version-neutral
-::                                                  Should reduce number of places we need to update when a new version is released
-::                      ! misc:bugfix:              Fix broken shutdown command at end of script. Will now correctly auto-shutdown if requested
-::                      * misc:cleanup:             Replace many redundant IF comparison statements with single bracketed statements. Should grant small speed increase and complexity reduction
-::                      * misc:cleanup:             Don't create LOGPATH and LOGFILE until Tron has actually started. We were incorrectly creating even if a user only requested help (-h)
-::                      * misc:cleanup:             Restructure all screens to provide more space for text while remaining under the default command-prompt 80 character width
-::                      - misc:cleanup:             Remove unused labels from IF block cleanup (detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset)
+:: Version:       4.0.2 * tron.bat: Swap order of Stage 2 disinfect and Stage 3 de-bloat. By running debloat first we reduce the raw number of files that need to be scanned, which should reduce total run time. Thanks to /u/dl1828 for suggestion
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -105,8 +88,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.0.1
-set SCRIPT_DATE=2014-11-07
+set SCRIPT_VERSION=4.0.2
+set SCRIPT_DATE=2014-11-17
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -226,10 +209,12 @@ if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 :: PREP JOB: Enable the Windows Audio service if -q or SHUT_UP isn't being used
 if /i %SHUT_UP%==no (
 	:: Enable the audio service in Safe Mode and start it
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MMCSS" /ve /t reg_sz /d Service /f 2>NUL
 	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioEndpointBuilder" /ve /t reg_sz /d Service /f 2>NUL
-	net start AudioSrv 2>NUL
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
+	net start MMCSS 2>NUL
 	net start AudioEndpointBuilder 2>NUL
+	net start AudioSrv 2>NUL
 	)
 
 
@@ -248,7 +233,8 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	bcdedit /set {default} bootmenupolicy legacy
 	)
 
-:: PREP JOB: Update check (check if we're running the latest version)
+
+:: PREP JOB: Update check
 pushd resources\stage_0_prep\check_update
 :: Skip this job if we're doing a dry run
 if /i %DRY_RUN%==yes goto skip_update_check
@@ -359,13 +345,13 @@ if /i %AUTORUN%==yes goto execute_jobs
 :: PREP JOB: Display the annoying disclaimer screen. Sigh
 cls
 if /i not %EULA_ACCEPTED%==yes (
-	color FC
+	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
 	echo  * NOTE! By running Tron you accept COMPLETE responsibility for ANYTHING *
-	echo  * that happens. Although I think the chance of something bad happening  *
-	echo  * due to Tron is pretty remote, it's always a possibility, and so Tron  *
-	echo  * has ZERO WARRANTY for ANY purpose. READ THE INSTRUCTIONS, and know    *
-	echo  * you run it AT YOUR OWN RISK.                                          *
+	echo  * that happens. Although the chance of something bad happening due to   *
+	echo  * Tron is pretty remote, it's always a possibility, and Tron has ZERO   *
+	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS and understand you    *
+	echo  * run it AT YOUR OWN RISK.                                              *
 	echo  *                                                                       *
 	echo  * Tron.bat and all supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
@@ -377,10 +363,12 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * anything that happens, good or bad, is YOUR RESPONSIBILITY.           *
 	echo  *************************************************************************
 	echo.
-	echo  Press any key to accept this agreement and start Tron, or press ctrl^+c
-	echo  to cancel.
+	echo  Type I AGREE ^(all caps^) to accept this agreement and start Tron, or press
+	echo  ctrl^+c to cancel.
 	echo.
-	pause >NUL
+	:eula_prompt
+	set /p CHOICE= Response: 
+	if not "%CHOICE%"=="I AGREE" echo You must type I AGREE to continue&& goto eula_prompt
 	color 0f
 	)
 
@@ -408,8 +396,8 @@ echo  * Stage:        Tools:                                                *
 echo  * ------------------------------------------------------------------- *
 echo  *  0 Prep:      rkill, PrcsKillr, TDSSK, reg bckup, SysRstr/VSS clean *
 echo  *  1 TempClean: TempFileCleanup, BlchBit, CCleaner,IE ^& EvtLogs clean *
-echo  *  2 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
-echo  *  3 De-bloat:  Remove OEM bloatware, remove OEM Metro bloatware      *
+echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
+echo  *  3 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
 echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base reset      *
 echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (mechanical disks only, no SSDs)    *
 echo  *                                                                     *
@@ -855,15 +843,75 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.>> "%LOGPATH%\%LOGFILE
 echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 
 
-::::::::::::::::::::::::
-:: STAGE 2: Disinfect ::
-::::::::::::::::::::::::
-:stage_2_disinfect
+:::::::::::::::::::::::
+:: STAGE 2: De-Bloat ::
+:::::::::::::::::::::::
+:stage_2_de-bloat
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
+pushd resources\stage_2_de-bloat
+echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...
 
-title TRON v%SCRIPT_VERSION% [stage_2_disinfect]
-pushd resources\stage_2_disinfect
-echo %CUR_DATE% %TIME%   Launch stage_2_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_2_disinfect jobs...
+:: JOB: Remove crapware programs
+pushd oem
+echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt
+:: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Remove default Metro apps (Windows 8/8.1/2012/2012-R2 only). Thanks to https://keybase.io/exabrial
+pushd win8_metro_apps
+:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
+:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
+:: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
+if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
+if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
+:: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
+if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
+if /i %TARGET_METRO%==yes (
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...
+	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
+	if /i %DRY_RUN%==no (
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
+		net start AppXSVC
+		:: Enable scripts in PowerShell
+		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
+		:: Call PowerShell to run the commands
+		powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+		powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+		)
+	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...
+	:: Thanks to reddit.com/user/nommaddave
+	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.	
+	)
+	popd
+
+
+popd
+echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
+
+
+::::::::::::::::::::::::
+:: STAGE 3: Disinfect ::
+::::::::::::::::::::::::
+:stage_3_disinfect
+
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
+pushd resources\stage_3_disinfect
+echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...
 
 
 :: JOB: RogueKiller
@@ -997,73 +1045,13 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_2_disinfect jobs.
+echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans.
 :: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug.
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
-
-
-:::::::::::::::::::::::
-:: STAGE 3: De-Bloat ::
-:::::::::::::::::::::::
-:stage_3_de-bloat
-title TRON v%SCRIPT_VERSION% [stage_3_de-bloat]
-pushd resources\stage_3_de-bloat
-echo %CUR_DATE% %TIME%   Launch stage_3_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_3_de-bloat jobs...
-
-:: JOB: Remove crapware programs
-pushd oem
-echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_3_de-bloat\oem\programs_to_target.txt
-:: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-
-popd
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Done.
-
-
-:: JOB: Remove default Metro apps (Windows 8/8.1/2012/2012-R2 only). Thanks to https://keybase.io/exabrial
-pushd win8_metro_apps
-:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
-:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
-:: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
-if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
-if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
-:: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
-if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
-if /i %TARGET_METRO%==yes (
-	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...
-	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
-	if /i %DRY_RUN%==no (
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
-		net start AppXSVC
-		:: Enable scripts in PowerShell
-		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
-		:: Call PowerShell to run the commands
-		powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-		powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-		)
-	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries...
-	:: Thanks to reddit.com/user/nommaddave
-	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
-	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    Done.	
-	)
-	popd
-
-
-popd
-echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_3_de-bloat jobs.
 
 
 ::::::::::::::::::::::
@@ -1410,8 +1398,8 @@ echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB>> %LOGPATH%\%LOGFILE%
 echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB
-echo                          Disk space reclaimed: %FREE_SPACE_SAVED% MB>> %LOGPATH%\%LOGFILE%
-echo                          Disk space reclaimed: %FREE_SPACE_SAVED% MB
+echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB>> %LOGPATH%\%LOGFILE%
+echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
