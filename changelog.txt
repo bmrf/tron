@@ -14,8 +14,59 @@ Version number legend:
   major feature change
 
 
+########################
+# v4.0.2 // 2014-11-17 #
+########################
+tron.bat                         v4.0.2
+ * tron.bat: Swap order of Stage 2 disinfect and Stage 3 de-bloat. By running debloat first we reduce the raw number of files that need to be scanned, which should reduce total run time. Thanks to /u/dl1828 for suggestion
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.41
+ . erunt                         v1.1j
+ . nircmd                        v2.75
   
-  
+STAGE 1: Tempclean
+ . CCLeaner                      v4.19.4867
+ . BleachBit                     v1.4
+ . TempFileClean                 v3.5.0
+
+STAGE 2: De-bloat
+Try to remove programs listed here: \resources\stage_3_de-bloat\programs_to_target.txt
+ . No changes
+	
+STAGE 3: Disinfect
+ . RogueKiller                   v10.0.2.0
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.3.1025
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ * Adobe Flash Player            v15.0.0.223   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.0.0.2
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.11.15.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.1.4
+ . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
 ########################
 # v4.0.1 // 2014-11-07 #
 ########################
@@ -45,7 +96,7 @@ tron.bat                         v4.0.0
  * misc:cleanup:             Restructure all screens to provide more space for text while remaining under the default command-prompt 80 character width
  - misc:cleanup:             Remove unused labels from IF block cleanup (detect_ssd, detect_os, skip_adobe_flash, skip_rkill, skip_adobe_reader, skip_dism_base_reset)
 
- STAGE 0: Prep
+STAGE 0: Prep
  . Rkill                         v2.6.8.0
  + ProcessKiller                 v1.0          (provided by /u/cuddlychops06)
  * TDSS Killer                   v3.0.0.41
