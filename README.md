@@ -234,22 +234,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 6. **Clear Windows Update cache**: Purges uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space
 
 
-## STAGE 2: Disinfect
-
-1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
-
-2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Runs in debug mode for more verbose output
-
-3. **Vipre Rescue Scanner**: Command-line anti-virus scanner
-
-4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input
-
-5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
-
-6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
-
-
-## STAGE 3: De-bloat
+## STAGE 2: De-bloat
 
 1. **OEM de-bloat**: Use WMI to attempt to uninstall any program listed in this file:
 
@@ -276,6 +261,21 @@ Tron installs or updates these programs:
 6. **Windows updates**: Self-explanatory
 
 7. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
+
+
+## STAGE 3: Disinfect
+
+1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
+
+2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Runs in debug mode for more verbose output
+
+3. **Vipre Rescue Scanner**: Command-line anti-virus scanner
+
+4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input
+
+5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
+
+6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
 
 ## STAGE 5: Optimize
