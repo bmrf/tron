@@ -94,8 +94,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.0.3
-set SCRIPT_DATE=2014-11-xx
+set SCRIPT_VERSION=4.1.0
+set SCRIPT_DATE=2014-11-18
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
