@@ -4,7 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.3 - feature: Remove speak ability and associated SHUT_UP variable, due to lack of audio support in Safe Mode
+:: Version:       4.1.0 + feature: Add -sa flag and associated SKIP_ANTIVIRUS_SCANS variable. Use this to skip Sophos, Vipre and MBAM scans
+::                      + feature: Add -sp flag and associated SKIP_PATCHES variable. Use this to skip patching 7-Zip, Java, and Adobe Flash and Reader
+::                      / feature: Change -s flag (skip defrag) to -sd to fit convention with other skip flags. Undocumented support for -s flag remains for one more version and then will be removed
+::                      - feature: Remove -q flag and associated SHUT_UP variable, due to lack of audio support in Safe Mode
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -19,7 +22,9 @@
 ::                      -o  Power off after running (overrides -r)
 ::                      -p  Preserve power settings (don't reset power settings to default)
 ::                      -r  Reboot (auto-reboot 30 seconds after completion)
-::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
+::                      -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
@@ -47,16 +52,18 @@ set LOGFILE=tron.log
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 
 :: ! All variables here are overridden if their respective command-line flag is used
-:: AUTORUN               (-a) = Automatic execution (no welcome screen or prompts)
-:: DRY_RUN               (-d) = Run through script but skip all actual actions (test mode)
-:: EULA_ACCEPTED         (-e) = Accept EULA (suppress display of disclaimer warning screen)
-:: PRESERVE_METRO_APPS   (-m) = Don't remove stock Metro apps 
-:: AUTO_SHUTDOWN         (-o) = Shutdown after the finishing. Overrides auto-reboot
-:: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
-:: AUTO_REBOOT_DELAY     (-r) = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_DEFRAG           (-s) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
-:: VERBOSE               (-v) = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
-:: SELF_DESTRUCT         (-x) = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
+:: AUTORUN               (-a)  = Automatic execution (no welcome screen or prompts)
+:: DRY_RUN               (-d)  = Run through script but skip all actual actions (test mode)
+:: EULA_ACCEPTED         (-e)  = Accept EULA (suppress display of disclaimer warning screen)
+:: PRESERVE_METRO_APPS   (-m)  = Don't remove stock Metro apps 
+:: AUTO_SHUTDOWN         (-o)  = Shutdown after the finishing. Overrides auto-reboot
+:: PRESERVE_POWER_SCHEME (-p)  = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
+:: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip Stage 3 (Sophos, Vipre, MBAM, DISM repair)
+:: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
+:: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Reader)
+:: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
+:: SELF_DESTRUCT         (-x)  = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
 set EULA_ACCEPTED=no
@@ -64,7 +71,9 @@ set PRESERVE_METRO_APPS=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_REBOOT_DELAY=0
+set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEFRAG=no
+set SKIP_PATCHES=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -124,7 +133,11 @@ for %%i in (%*) do (
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
+	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-sd set SKIP_DEFRAG=yes
+	:: The following line is for legacy support and will be removed in the next version of Tron
 	if /i %%i==-s set SKIP_DEFRAG=yes
+	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
@@ -138,7 +151,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -r -s -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -r -sa -sd -sp -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -150,7 +163,9 @@ if /i %HELP%==yes (
 	echo    -o  Power off after running ^(overrides -r^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
-	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -sa Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
+	echo    -sd Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -sp Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
@@ -287,8 +302,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
-	echo    SHUT_UP:                %SHUT_UP%
+	echo    SKIP_ANTIVIRUS_SCANS    %SKIP_ANTIVIRUS_SCANS%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
+	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -374,7 +390,7 @@ echo  *  0 Prep:      rkill, PrcsKillr, TDSSK, reg bckup, SysRstr/VSS clean *
 echo  *  1 TempClean: TempFileCleanup, BlchBit, CCleaner,IE ^& EvtLogs clean *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
-echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base reset      *
+echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
 echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (mechanical disks only, no SSDs)    *
 echo  *                                                                     *
 echo  * \resources\stage_6_manual_tools contains additional tools which may *
@@ -426,7 +442,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 		)
 
 :: Check if we have network support
-if /i  "%SAFEBOOT_OPTION%"=="MINIMAL" (
+if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		color 0e
 		cls
 		echo.
@@ -870,7 +886,6 @@ echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
 :: STAGE 3: Disinfect ::
 ::::::::::::::::::::::::
 :stage_3_disinfect
-
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 pushd resources\stage_3_disinfect
 echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
@@ -889,6 +904,14 @@ if /i %DRY_RUN%==no (
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: Check for the -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if used
+if /i %SKIP_ANTIVIRUS_SCANS%==yes (
+	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...
+	goto skip_antivirus_scans
+	)
 
 
 :: JOB: Sophos Virus Remover
@@ -946,6 +969,7 @@ if /i %DRY_RUN%==no (
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+:skip_antivirus_scans
 
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
@@ -964,7 +988,7 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
 	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 	)
-	
+
 :: If we detect errors, try to repair them
 if /i not %ERRORLEVEL%==0 (
 	if "%WIN_VER:~0,9%"=="Windows Server 2012" (
@@ -992,7 +1016,7 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: System File Checker scan
+:: JOB: System File Checker (SFC) scan
 echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'System File Checker'...
 pushd sfc
@@ -1010,6 +1034,7 @@ echo %CUR_DATE% %TIME%    Done.
 popd
 echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.
+
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans.
 :: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug.
@@ -1033,6 +1058,14 @@ if /i %DRY_RUN%==no (
 	net start msiserver
 	)
 
+	
+:: Check for skip patches (-sp) flag or variable and skip to Windows Update if used
+if /i %SKIP_PATCHES%==yes (
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_DEFRAG%". Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_DEFRAG%". Skipping app patches...
+	goto skip_patches
+	)
+	
 
 :: JOB: 7-Zip
 echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...>> "%LOGPATH%\%LOGFILE%"
@@ -1149,6 +1182,7 @@ if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
 :: JOB: Notepad++
 echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...
@@ -1160,6 +1194,11 @@ popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
+
+:: JOB: Skip point for if -sp (skip patches) flag was used
+:skip_patches
+
+
 :: JOB: Windows updates
 echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...
@@ -1168,6 +1207,7 @@ if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
+
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
 :: Windows 8/2012 and up only
@@ -1344,7 +1384,7 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
-:: Log trailer
+:: Display and log the job summary
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete>> %LOGPATH%\%LOGFILE%
