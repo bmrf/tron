@@ -34,7 +34,7 @@ Reboot and you should now be able to use F8 to select Safe Mode. Note that this 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -m -o -p -q -r -s -v -x] | [-h]
+    tron.bat [-a -c -d -m -o -p -q -r -sa -sd -sv -v -x] | [-h]
 
     -a  Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -58,13 +58,17 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     -r  Reboot automatically (auto-reboot 30 seconds after completion)
 
-    -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+    -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
+
+    -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+
+    -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 
     -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
     
     -x  Self-destruct. Tron deletes itself after running and leaves logs intact
    
-\* There is no UDM flag
+\* There is no UPM flag
 
 # CHANGE DEFAULTS (advanced)
 
@@ -117,21 +121,28 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set PRESERVE_POWER_SCHEME=no
   ```
 
-- To prevent Tron from audibly announcing when starting and finishing, change this to `yes`:
-  ```
-  set SHUT_UP=no
-  ```
-
 - To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
 
   ```
   set AUTO_REBOOT_DELAY=0
   ```
   
+- To skip anti-virus scan engines (Sophos, Vipre, MBAM), change this to `yes`:
+
+  ```
+  set SKIP_ANTIVIRUS_SCANS=no
+  ```
+  
 - To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
 
   ```
   set SKIP_DEFRAG=no
+  ```
+
+- To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
+
+  ```
+  set SKIP_PATCHES=no
   ```
 
 - To display as much output as possible (verbose), change this to `yes`:
@@ -176,7 +187,7 @@ If you feel overly charitable:
 # FULL TRON DESCRIPTION
 
 ## tron.bat
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, it calls an external utility or script.
+Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
 
 
 ## Tron prep jobs
@@ -196,7 +207,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
 
-2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: ClassicShellService.exe, explorer.exe, dwm.exe, cmd.exe, mbam.exe, teamviewer.exe, TeamViewer_Service.exe, Taskmgr.exe, Teamviewer_Desktop.exe, MsMpEng.exe, tv_w32.exe, VTTimer.exe, Tron.bat, rkill.exe, rkill64.exe, rkill.com, rkill64.com, conhost.exe, dashost.exe, wget.exe
+2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
 3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
 
@@ -245,37 +256,37 @@ Master script that launches all the other tools. It performs a lot of actions on
 2. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
 
 
-## STAGE 4: Patch
-Tron installs or updates these programs:
-
-1. **7-zip**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR)
-
-2. **Adobe Flash Player**: Used by YouTube and various other sites
-
-3. **Adobe Reader**: Standard PDF reader
-
-4. **Java Runtime Environment**: I hate Java, but it is still widely used so we at least get the system on the latest version
-
-5. **Notepad++**: Open-source text editor with syntax highlighting
-
-6. **Windows updates**: Self-explanatory
-
-7. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
-
-
 ## STAGE 3: Disinfect
 
 1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
 
-2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Runs in debug mode for more verbose output
+2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
 
-3. **Vipre Rescue Scanner**: Command-line anti-virus scanner
+3. **Vipre Rescue Scanner**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
 
-4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input
+4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` flag skips this component
 
 5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
 
 6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
+
+
+## STAGE 4: Patch
+Tron installs or updates these programs:
+
+1. **7-zip**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using Tron's `-sp` flag skips this component
+
+2. **Adobe Flash Player**: Used by YouTube and various other sites. Using Tron's `-sp` flag skips this component
+
+3. **Adobe Reader**: Standard PDF reader. Using Tron's `-sp` flag skips this component
+
+4. **Java Runtime Environment**: I hate Java, but it is still widely used so we at least get the system on the latest version. Using Tron's `-sp` flag skips this component
+
+5. **Notepad++**: Open-source text editor with syntax highlighting. Using Tron's `-sp` flag skips this component
+
+6. **Windows updates**: Self-explanatory
+
+7. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
 
 
 ## STAGE 5: Optimize
