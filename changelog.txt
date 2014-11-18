@@ -15,6 +15,62 @@ Version number legend:
 
 
 ########################
+# v4.1.0 // 2014-11-18 #
+########################
+tron.bat                         v4.1.0
+ + feature: Add -sa flag and associated SKIP_ANTIVIRUS_SCANS variable. Use this to skip Sophos, Vipre and MBAM scans
+ + feature: Add -sp flag and associated SKIP_PATCHES variable. Use this to skip patching 7-Zip, Java, and Adobe Flash and Reader
+ / feature: Change -s flag (skip defrag) to -sd to fit convention with other skip flags. Undocumented support for -s flag remains for one more version and then will be removed
+ - feature: Remove -q flag and associated SHUT_UP variable, due to lack of audio support in Safe Mode
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.41
+ . erunt                         v1.1j
+ - nircmd                        v2.75
+  
+STAGE 1: Tempclean
+ . CCLeaner                      v4.19.4867
+ . BleachBit                     v1.4
+ . TempFileClean                 v3.5.0
+
+STAGE 2: De-bloat
+Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
+ . No changes
+	
+STAGE 3: Disinfect
+ . RogueKiller                   v10.0.2.0
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.3.1025
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ . Adobe Flash Player            v15.0.0.223   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Notepad++                     v6.6.9        (multi-language)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.1.0.1
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.11.17.1
+ . gmer                          v2.1.19357
+ * Junkware Removal Tool         v6.3.9
+ . ServicesRepair.exe            v1.0.0.3
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+  
+
+########################
 # v4.0.2 // 2014-11-17 #
 ########################
 tron.bat                         v4.0.2
@@ -33,7 +89,7 @@ STAGE 1: Tempclean
  . TempFileClean                 v3.5.0
 
 STAGE 2: De-bloat
-Try to remove programs listed here: \resources\stage_3_de-bloat\programs_to_target.txt
+Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
 	
 STAGE 3: Disinfect
