@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.0.2 * tron.bat: Swap order of Stage 2 disinfect and Stage 3 de-bloat. By running debloat first we reduce the raw number of files that need to be scanned, which should reduce total run time. Thanks to /u/dl1828 for suggestion
+:: Version:       4.0.3 - feature: Remove speak ability and associated SHUT_UP variable, due to lack of audio support in Safe Mode
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -18,7 +18,6 @@
 ::                      -m  Preserve default Metro apps (don't remove them)
 ::                      -o  Power off after running (overrides -r)
 ::                      -p  Preserve power settings (don't reset power settings to default)
-::                      -q  Quiet. Don't audibly speak when starting and finishing
 ::                      -r  Reboot (auto-reboot 30 seconds after completion)
 ::                      -s  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -54,7 +53,6 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: PRESERVE_METRO_APPS   (-m) = Don't remove stock Metro apps 
 :: AUTO_SHUTDOWN         (-o) = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p) = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
-:: SHUT_UP               (-q) = Quiet. Don't audibly speak when starting and finishing
 :: AUTO_REBOOT_DELAY     (-r) = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_DEFRAG           (-s) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: VERBOSE               (-v) = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
@@ -65,7 +63,6 @@ set EULA_ACCEPTED=no
 set PRESERVE_METRO_APPS=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
-set SHUT_UP=no
 set AUTO_REBOOT_DELAY=0
 set SKIP_DEFRAG=no
 set VERBOSE=no
@@ -88,8 +85,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.0.2
-set SCRIPT_DATE=2014-11-17
+set SCRIPT_VERSION=4.0.3
+set SCRIPT_DATE=2014-11-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -126,7 +123,6 @@ for %%i in (%*) do (
 	if /i %%i==-m set PRESERVE_METRO_APPS=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
-	if /i %%i==-q set SHUT_UP=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-s set SKIP_DEFRAG=yes
 	if /i %%i==-v set VERBOSE=yes
@@ -142,7 +138,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -q -r -s -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -r -s -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -153,7 +149,6 @@ if /i %HELP%==yes (
 	echo    -m  Preserve default Metro apps ^(don't remove them^)
 	echo    -o  Power off after running ^(overrides -r^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
-	echo    -q  Quiet. Don't audibly speak when starting and finishing
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -s  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -204,18 +199,6 @@ popd
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
-
-
-:: PREP JOB: Enable the Windows Audio service if -q or SHUT_UP isn't being used
-if /i %SHUT_UP%==no (
-	:: Enable the audio service in Safe Mode and start it
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MMCSS" /ve /t reg_sz /d Service /f 2>NUL
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioEndpointBuilder" /ve /t reg_sz /d Service /f 2>NUL
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AudioSrv" /ve /t reg_sz /d Service /f 2>NUL
-	net start MMCSS 2>NUL
-	net start AudioEndpointBuilder 2>NUL
-	net start AudioSrv 2>NUL
-	)
 
 
 :: PREP JOB: Get free space on the system drive and stash it for comparison later
@@ -380,13 +363,6 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
-pushd resources\stage_0_prep\speak
-if %UNICORN_POWER_MODE%==on (
-	nircmd.exe mutesysvolume 0
-	nircmd.exe setsysvolume 49150
-	start "" nircmd.exe speak text "UNICORN POWER MODE ACTIVATED!!" 3 100
-	)
-popd
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfect tools              *
@@ -522,19 +498,6 @@ echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-
-:: Speak
-pushd resources\stage_0_prep\speak
-if /i %SHUT_UP%==no (
-	:: Unmute volume
-	nircmd.exe mutesysvolume 0 
-	:: Set system volume to 65%
-	nircmd.exe setsysvolume 42597
-	:: Announce that we're starting
-	if /i %UNICORN_POWER_MODE%==on nircmd.exe speak text "UNICORN POWER MODE ACTIVATED!!" -2 100
-	start "" nircmd.exe speak text "Beginning Tron run at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
-	)
-popd
 
 
 :::::::::::::::::::
@@ -1403,18 +1366,6 @@ echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
-:: Speak - announce completion
-pushd resources\stage_0_prep\speak
-if /i %SHUT_UP%==no (
-	:: Unmute the system volume
-	nircmd.exe mutesysvolume 0 
-	:: Set system volume to 65%
-	nircmd.exe setsysvolume 42597
-	:: Announce that we're starting
-	nircmd.exe speak text "Tron run complete at ~$currtime.HH:mm tt$ on system %COMPUTERNAME%." -2 100
-	if /i %SELF_DESTRUCT%==yes start "" nircmd.exe speak text "Self-destruct was selected. De-rezing self. Goodbye..." -2 100
-	)
-popd
 
 :: Skip all this if we're doing a dry run
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
