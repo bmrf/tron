@@ -282,11 +282,9 @@ Tron installs or updates these programs:
 
 4. **Java Runtime Environment**: I hate Java, but it is still widely used so we at least get the system on the latest version. Using Tron's `-sp` flag skips this component
 
-5. **Notepad++**: Open-source text editor with syntax highlighting. Using Tron's `-sp` flag skips this component
+5. **Windows updates**: Self-explanatory
 
-6. **Windows updates**: Self-explanatory
-
-7. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
+6. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
 
 
 ## STAGE 5: Optimize
