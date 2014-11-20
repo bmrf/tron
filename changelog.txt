@@ -14,6 +14,18 @@ Version number legend:
   major feature change
 
 
+
+########################
+# v4.1.1 // 2014-11-19 #
+########################  
+tron.bat                         v4.1.1
+ - feature: Remove Notepad++ installation. While it's a great text editor not everyone wants it on their PC, so we just stick to updating common vulnerable apps (Java,Reader,Flash). Thanks to /u/SubtleContradiction
+
+STAGE 1: Tempclean
+ . TempFileCleanup               v3.5.0
+    * Minor modification to TempFileCleanup sub-script. Disable deletion of Chrome cache since it seems to be causing problems. Will probably remove this script once Bleachbit v1.6 is released. Thanks to /u/easyjet
+
+
 ########################
 # v4.1.0 // 2014-11-18 #
 ########################
@@ -33,7 +45,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
- . TempFileClean                 v3.5.0
+ . TempFileCleanup               v3.5.0
 
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
@@ -86,7 +98,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
- . TempFileClean                 v3.5.0
+ . TempFileCleanup               v3.5.0
 
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
@@ -277,7 +289,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
@@ -351,7 +363,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  + RogueKiller                   v10.0.2.0
@@ -408,7 +420,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  * CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, updated defs
@@ -467,7 +479,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, updated defs
@@ -521,7 +533,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
@@ -568,7 +580,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
- . TempFileClean                 v3.4.4
+ . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
