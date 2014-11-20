@@ -4,10 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.1.0 + feature: Add -sa flag and associated SKIP_ANTIVIRUS_SCANS variable. Use this to skip Sophos, Vipre and MBAM scans
-::                      + feature: Add -sp flag and associated SKIP_PATCHES variable. Use this to skip patching 7-Zip, Java, and Adobe Flash and Reader
-::                      / feature: Change -s flag (skip defrag) to -sd to fit convention with other skip flags. Undocumented support for -s flag remains for one more version and then will be removed
-::                      - feature: Remove -q flag and associated SHUT_UP variable, due to lack of audio support in Safe Mode
+:: Version:       4.1.1 - feature: Remove Notepad++ installation. While it's a great text editor not everyone wants it on their PC, so we just stick to updating common vulnerable apps (Java,Reader,Flash). Thanks to /u/SubtleContradiction
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -94,8 +91,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.1.0
-set SCRIPT_DATE=2014-11-18
+set SCRIPT_VERSION=4.1.1
+set SCRIPT_DATE=2014-11-19
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -135,8 +132,6 @@ for %%i in (%*) do (
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
-	:: The following line is for legacy support and will be removed in the next version of Tron
-	if /i %%i==-s set SKIP_DEFRAG=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
@@ -1179,18 +1174,6 @@ if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	)
 
 :skip_jre_update
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Done.
-
-
-:: JOB: Notepad++
-echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job 'Update Notepad++'...
-pushd notepad++\x86
-setlocal
-if /i %DRY_RUN%==no call "npp.Installer.bat"
-endlocal
-popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
