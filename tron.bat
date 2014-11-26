@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.1.1 - feature: Remove Notepad++ installation. While it's a great text editor not everyone wants it on their PC, so we just stick to updating common vulnerable apps (Java,Reader,Flash). Thanks to /u/SubtleContradiction
+:: Version:       4.2.0 + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks to /u/bodkov
+::                      + stages:  Add stage_6_wrap-up to support new email report functionality
+::                      / stages:  Rename stage_6_manual_tools to stage_7_manual_tools
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -14,6 +16,7 @@
 ::                          WOULD happen, but script will never execute if this flag is used)
 ::                      -d  Dry run (run through script without executing any jobs)
 ::                      -e  Accept EULA (suppress display of disclaimer warning screen)
+::                      -er Email a report when finished. Requires you to configure SwithMailSettings.xml
 ::                      -h  Display help text
 ::                      -m  Preserve default Metro apps (don't remove them)
 ::                      -o  Power off after running (overrides -r)
@@ -52,18 +55,20 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: AUTORUN               (-a)  = Automatic execution (no welcome screen or prompts)
 :: DRY_RUN               (-d)  = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)  = Accept EULA (suppress display of disclaimer warning screen)
+:: EMAIL_REPORT          (-er) = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
 :: PRESERVE_METRO_APPS   (-m)  = Don't remove stock Metro apps 
 :: AUTO_SHUTDOWN         (-o)  = Shutdown after the finishing. Overrides auto-reboot
-:: PRESERVE_POWER_SCHEME (-p)  = Preserve the active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: PRESERVE_POWER_SCHEME (-p)  = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip Stage 3 (Sophos, Vipre, MBAM, DISM repair)
+:: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
 :: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
-:: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Reader)
+:: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)  = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
 set EULA_ACCEPTED=no
+set EMAIL_REPORT=no
 set PRESERVE_METRO_APPS=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
@@ -91,8 +96,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.1.1
-set SCRIPT_DATE=2014-11-19
+set SCRIPT_VERSION=4.2.0
+set SCRIPT_DATE=2014-11-26
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -125,6 +130,7 @@ for %%i in (%*) do (
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-e set EULA_ACCEPTED=yes
+	if /i %%i==-er set EMAIL_REPORT=yes
 	if /i %%i==-h set HELP=yes
 	if /i %%i==-m set PRESERVE_METRO_APPS=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
@@ -146,7 +152,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -m -o -p -r -sa -sd -sp -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sd -sp -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -154,6 +160,7 @@ if /i %HELP%==yes (
 	echo        WOULD happen, but script will never execute if this flag is used^)
 	echo    -d  Dry run ^(run through script but don't execute any jobs^)
 	echo    -e  Accept EULA ^(suppress display of disclaimer warning screen^)
+	echo    -er Email a report when finished. Requires you to configure SwithMailSettings.xml
 	echo    -m  Preserve default Metro apps ^(don't remove them^)
 	echo    -o  Power off after running ^(overrides -r^)
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
@@ -264,7 +271,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo    Option 1: Sync directly from repo using BT Sync read-only key:
 	echo     %REPO_BTSYNC_KEY%
 	echo.
-	echo    Option 2: Download the latest .7z static pack:
+	echo    Option 2: Download the latest self-extracting .exe:
 	echo     %REPO_URL%
 	echo.
 	pause
@@ -290,6 +297,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
+	echo	EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
@@ -376,8 +384,8 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 ::::::::::::::::::::
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
-echo  * Script to automate a series of cleanup/disinfect tools              *
-echo  * Author: vocatus on reddit.com/r/sysadmin                            *
+echo  * Script to automate a series of cleanup/disinfection tools           *
+echo  * Author: vocatus on reddit.com/r/TronScript                          *
 echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  * ------------------------------------------------------------------- *
@@ -387,12 +395,13 @@ echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
 echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
 echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (mechanical disks only, no SSDs)    *
+echo  *  6 Wrap-up:   collect misc logs, send email report (if requested)   *
 echo  *                                                                     *
-echo  * \resources\stage_6_manual_tools contains additional tools which may *
+echo  * \resources\stage_7_manual_tools contains additional tools which may *
 echo  * be run manually if necessary.                                       *
 echo  ***********************************************************************
 :: So ugly
-echo  Current settings (run tron.bat -c to see FULL config):
+echo  Current settings (run tron.bat -c to dump full config):
 echo    Log location:            %LOGPATH%\%LOGFILE%
 if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
 if "%SSD_DETECTED%"=="yes" (echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^) ) else (echo    SSD detected?            %SSD_DETECTED%)
@@ -413,6 +422,37 @@ if /i %UNICORN_POWER_MODE%==on echo  ! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
 pause
+
+
+::::::::::::::::::::::::
+:: EMAIL CONFIG CHECK ::
+::::::::::::::::::::::::
+:: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
+setlocal enabledelayedexpansion
+if /i %EMAIL_REPORT%==yes (
+	pushd resources\stage_6_wrap-up\email_report
+	findstr "YOUR-PASSWORD-HERE" .\SwithMailSettings.xml >NUL
+	if !ERRORLEVEL!==0 (
+		color cf
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  You requested an email report ^(used the -er flag or set
+		echo  the EMAIL_REPORT variable to "yes"^) but didn't configure
+		echo  the settings file with your information. Update the following
+		echo  file with your SMTP username, password, etc:
+		echo.
+		echo  \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
+		echo.
+		echo  Alternatively you can run SwithMail.exe to have the GUI generate
+		echo  a config file for you.
+		pause
+	)
+popd
+)
+endlocal disabledelayedexpansion
+
 
 :::::::::::::::::::::
 :: SAFE MODE CHECK ::
@@ -483,11 +523,9 @@ if /i not "%SAFE_MODE%"=="yes" (
 cls
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
 
-:: Make the log and quarantine directories and file if they don't already exist
+:: Make log directory and file if they don't already exist
 if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
 if /i not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
-:: Creation of the QUARANTINE_PATH is disabled for now
-::if /i not exist "%QUARANTINE_PATH%" mkdir "%QUARANTINE_PATH%"
 
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
@@ -583,7 +621,7 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
-			net start VSS
+			net start VSS >NUL
 			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet 2>NUL
 			)
 		)
@@ -700,8 +738,8 @@ echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%% of di
 echo %CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%% of disk...
 pushd reduce_system_restore
 if /i %DRY_RUN%==no (
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -1335,8 +1373,8 @@ echo %CUR_DATE% %TIME%    Done.
 	
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
-echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_6_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_6_manual_tools if further cleaning is required.
+echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_7_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use tools in resources\stage_7_manual_tools if further cleaning is required.
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
@@ -1366,6 +1404,28 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 :: MB version
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+
+
+:: Email report if it was requested
+:: This line needed for param5 (/p5)
+set ARGUMENTS='%*'
+setlocal enabledelayedexpansion
+if /i %EMAIL_REPORT%==yes (
+	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...
+	pushd resources\stage_6_wrap-up\email_report
+	SwithMail.exe /s /x "SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+	if %ERRORLEVEL%==0 (
+		echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME%   Done.
+		) else (
+		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.
+	)
+)
+endlocal disabledelayedexpansion
+
+
 
 :: Display and log the job summary
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
