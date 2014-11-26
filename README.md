@@ -20,21 +20,11 @@ I got tired of running these utilities manually and decided to just script every
 
 Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending on how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
-
-# SAFE MODE
-
-Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode for Windows 8, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
-
-    bcdedit /set {default} bootmenupolicy legacy
-
-Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
-
-
 # COMMAND-LINE USE
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -m -o -p -q -r -sa -sd -sv -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sd -sv -v -x] | [-h]
 
     -a  Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -45,6 +35,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -d  Dry run (run through script without executing any jobs)
     
     -e  Accept EULA (suppress display of disclaimer warning screen)
+    
+    -er Email a report when finished. Requires you to configure SwithMailSettings.xml
 
     -h  Display help text
     
@@ -54,8 +46,6 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     -p  Preserve power settings (don't reset power settings to default)
     
-    -q  Quiet. Don't audibly speak when starting and finishing
-
     -r  Reboot automatically (auto-reboot 30 seconds after completion)
 
     -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
@@ -69,6 +59,16 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -x  Self-destruct. Tron deletes itself after running and leaves logs intact
    
 \* There is no UPM flag
+
+
+# SAFE MODE
+
+Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode for Windows 8, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
+
+    bcdedit /set {default} bootmenupolicy legacy
+
+Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
+
 
 # CHANGE DEFAULTS (advanced)
 
@@ -223,8 +223,6 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 7. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-8. **nircmd.exe**: Third-party utility designed for system administrators. Tron uses this for the speak function (audibly announcing beginning and end times). Using the -q flag will prevent the use of this
-
 
 ## STAGE 1: Tempclean
 
@@ -295,6 +293,11 @@ Tron installs or updates these programs:
 
 
 ## STAGE 6: Manual tools
+
+1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
+
+
+## STAGE 7: Manual tools
 Tron does not run these automatically because most of them don't support command-line use.
 
 1. **ADSSpy**: Scans for hidden NTFS Alternate Data Streams
