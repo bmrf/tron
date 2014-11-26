@@ -14,6 +14,62 @@ Version number legend:
   major feature change
 
 
+  
+########################
+# v4.2.0 // 2014-11-26 #
+########################
+tron.bat                         v4.2.0
+ + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks to /u/bodkov
+ + stages:  Add stage_6_wrap-up to support new email report functionality
+ / stages:  Rename stage_6_manual_tools to stage_7_manual_tools
+
+STAGE 0: Prep
+ . Rkill                         v2.6.8.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.41
+ . erunt                         v1.1j
+  
+STAGE 1: Tempclean
+ * CCLeaner                      v5.00.5050
+ * BleachBit                     v1.6
+ . TempFileCleanup               v3.5.0
+
+STAGE 2: De-bloat
+Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
+ . No changes
+	
+STAGE 3: Disinfect
+ . RogueKiller                   v10.0.2.0
+ * Sophos Virus Removal Tool     v2.5.3, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.3.1025
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ * Adobe Flash Player            v15.0.0.239   (language ignored)
+ . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Wrap-up
+ + SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.1.0.2
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.11.25.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.3.9
+ . ServicesRepair.exe            v1.0.0.3
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+ 
 
 ########################
 # v4.1.1 // 2014-11-19 #
