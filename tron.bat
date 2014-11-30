@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.2.0 + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks to /u/bodkov
+:: Version:       4.2.1 ! bugfix:  Fix broken -x (self-destruct) functionality due to uninitialized variable. Thanks to /u/HittingSmoke
+::                4.2.0 + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks to /u/bodkov
 ::                      + stages:  Add stage_6_wrap-up to support new email report functionality
 ::                      / stages:  Rename stage_6_manual_tools to stage_7_manual_tools
 ::
@@ -52,7 +53,7 @@ set LOGFILE=tron.log
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 
 :: ! All variables here are overridden if their respective command-line flag is used
-:: AUTORUN               (-a)  = Automatic execution (no welcome screen or prompts)
+:: AUTORUN               (-a)  = Automatic execution (no welcome screen or prompts), implies -e.
 :: DRY_RUN               (-d)  = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)  = Accept EULA (suppress display of disclaimer warning screen)
 :: EMAIL_REPORT          (-er) = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
@@ -96,8 +97,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.2.0
-set SCRIPT_DATE=2014-11-26
+set SCRIPT_VERSION=4.2.1
+set SCRIPT_DATE=2014-11-30
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -1460,9 +1461,10 @@ if /i not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "R
 if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
 
 :: De-rez self if requested
+set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
-	set CWD=%CD%
-	cd ..
+	%SystemDrive%
+	cd \
 	rmdir /s /q %CWD%
 	)
 
