@@ -24,7 +24,7 @@ Tron will briefly check for a newer version when it starts up and notify you if 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sd -sv -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -v -x] | [-h]
 
     -a  Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -49,6 +49,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -r  Reboot automatically (auto-reboot 30 seconds after completion)
 
     -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
+    
+     -sb Skip de-bloat (OEM bloatware removal)
 
     -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
@@ -131,6 +133,12 @@ Defaults are always overridden by command-line flags, but if you don't want to u
 
   ```
   set SKIP_ANTIVIRUS_SCANS=no
+  ```
+
+- To skip OEM debloat, change this to `yes`:
+  
+  ```     
+  set SKIP_DEBLOAT=no
   ```
   
 - To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
