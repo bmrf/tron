@@ -14,6 +14,63 @@ Version number legend:
   major feature change
 
 
+
+########################
+# v4.3.0 // 2014-12-17 #
+########################
+tron.bat                         v4.3.0
+ + feature: Add skip debloat flag (-sb) and associated SKIP_DEBLOAT variable. Set to yes to skip de-bloat section
+ ! bugfix:  Fix small bug with EULA screen (was requiring typing "I AGREE" twice)
+ * update:  Update all binary references to new versions
+
+STAGE 0: Prep
+ * Rkill                         v2.6.9.0 // Renamed to explore.exe to avoid malware blocking. Thanks to /u/ExcessiveIrritation
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.41
+ . erunt                         v1.1j
+  
+STAGE 1: Tempclean
+ . CCLeaner                      v5.00.5050
+ . BleachBit                     v1.6
+ . TempFileCleanup               v3.5.0
+
+STAGE 2: De-bloat
+Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
+ . No changes
+	
+STAGE 3: Disinfect
+ * RogueKiller                   v10.1.0.0
+ * Sophos Virus Removal Tool     v2.5.4, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Malwarebytes Anti-Malware     v2.0.4.1028
+
+STAGE 4: Patch
+ . 7-Zip                         v9.20         (multi-language)
+ * Adobe Flash Player            v16.0.0.235   (language ignored)
+ * Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+ 
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.1.0.5
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ * ComboFix                      v14.12.14.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.3.9
+ . ServicesRepair.exe            v1.0.0.3
+ . TempFileCleaner               v3.1.9.0
+ . VirusTotal uploader tool      v2.2
+
+
 ########################
 # v4.2.1 // 2014-11-30 #
 ########################
@@ -1317,6 +1374,7 @@ tron.bat                         v1.7.4
 ########################
 tron.bat                         v1.7.3
  ! prep and checks: Fix SSD detection (possibly). Please test and report if it fails on your drive
+
  * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
 
  
