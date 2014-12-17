@@ -4,10 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.2.1 ! bugfix:  Fix broken -x (self-destruct) functionality due to uninitialized variable. Thanks to /u/HittingSmoke
-::                4.2.0 + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks to /u/bodkov
-::                      + stages:  Add stage_6_wrap-up to support new email report functionality
-::                      / stages:  Rename stage_6_manual_tools to stage_7_manual_tools
+:: Version:       4.3.0  + feature: Add skip debloat flag (-sb) and associated SKIP_DEBLOAT variable. Set to yes to skip de-bloat section
+::                       ! bugfix:  Fix small bug with EULA screen (was requiring typing "I AGREE" twice)
+::                       * update:  Update all binary references to new versions
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -24,6 +23,7 @@
 ::                      -p  Preserve power settings (don't reset power settings to default)
 ::                      -r  Reboot (auto-reboot 30 seconds after completion)
 ::                      -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
+::                      -sb Skip de-bloat (OEM bloatware removal)
 ::                      -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -62,6 +62,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: PRESERVE_POWER_SCHEME (-p)  = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
+:: SKIP_DEBLOAT          (-sb) = Set to yes to skip de-bloat section (OEM bloat remova)
 :: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
@@ -75,6 +76,7 @@ set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_REBOOT_DELAY=0
 set SKIP_ANTIVIRUS_SCANS=no
+set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_PATCHES=no
 set VERBOSE=no
@@ -97,8 +99,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.2.1
-set SCRIPT_DATE=2014-11-30
+set SCRIPT_VERSION=4.3.0
+set SCRIPT_DATE=2014-12-17
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -138,6 +140,7 @@ for %%i in (%*) do (
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=30
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-v set VERBOSE=yes
@@ -153,7 +156,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sd -sp -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -167,6 +170,7 @@ if /i %HELP%==yes (
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -sa Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
+	echo    -sb Skip de-bloat ^(OEM bloatware removal^)
 	echo    -sd Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sp Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -307,6 +311,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_ANTIVIRUS_SCANS    %SKIP_ANTIVIRUS_SCANS%
+	echo    SKIP_DEBLOAT		%SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
@@ -347,6 +352,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 
 :: PREP JOB: Display the annoying disclaimer screen. Sigh
 cls
+setlocal enabledelayedexpansion
 if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
@@ -371,9 +377,10 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo.
 	:eula_prompt
 	set /p CHOICE= Response: 
-	if not "%CHOICE%"=="I AGREE" echo You must type I AGREE to continue&& goto eula_prompt
+	if not "!CHOICE!"=="I AGREE" echo You must type I AGREE to continue&& goto eula_prompt
 	color 0f
 	)
+endlocal disabledelayedexpansion
 
 
 :: PREP JOB: UPM detection circuit #1
@@ -419,7 +426,7 @@ if /i not "%SKIP_DEFRAG%"=="no" (
 	)
 if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        6-8 hours)
 if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
-if /i %UNICORN_POWER_MODE%==on echo  ! UNICORN POWER MODE ACTIVATED !!
+if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
 pause
@@ -564,8 +571,7 @@ echo %CUR_DATE% %TIME%    Launch job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
 if /i %DRY_RUN%==no (
-	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' rkill64.com -s -l "%TEMP%\tron_rkill.log"
-	if /i '%PROCESSOR_ARCHITECTURE%'=='x86' rkill.com -s -l "%TEMP%\tron_rkill.log"
+	explore.exe -s -l "%TEMP%\tron_rkill.log"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
@@ -861,6 +867,12 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :::::::::::::::::::::::
 :stage_2_de-bloat
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
+if %SKIP_DEBLOAT%==yes (
+	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs...
+	goto skip_debloat
+	)
+
 pushd resources\stage_2_de-bloat
 echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...
@@ -914,6 +926,7 @@ if /i %TARGET_METRO%==yes (
 popd
 echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
+:skip_debloat
 
 
 ::::::::::::::::::::::::
@@ -983,7 +996,7 @@ echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing oth
 pushd mbam
 :: Install MBAM & remove the desktop icon
 if /i %DRY_RUN%==no ( 
-	"Malwarebytes Anti-Malware v2.0.3.1025.exe" /verysilent
+	"Malwarebytes Anti-Malware v2.0.4.1028.exe" /verysilent
 	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
