@@ -4,9 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.3.0  + feature: Add skip debloat flag (-sb) and associated SKIP_DEBLOAT variable. Set to yes to skip de-bloat section
-::                       ! bugfix:  Fix small bug with EULA screen (was requiring typing "I AGREE" twice)
-::                       * update:  Update all binary references to new versions
+:: Version:       4.3.1 ! bugfix: Fix missing escape characters in echo statement near check for -sb flag. Thanks to /u/scan2006, /u/SubtleContradiction and /u/ChristopherSitten
+::                      ! bugfix: Skip update check if running automatically. Thanks to /u/dangolo
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -23,7 +22,7 @@
 ::                      -p  Preserve power settings (don't reset power settings to default)
 ::                      -r  Reboot (auto-reboot 30 seconds after completion)
 ::                      -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
-::                      -sb Skip de-bloat (OEM bloatware removal)
+::                      -sb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -62,7 +61,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: PRESERVE_POWER_SCHEME (-p)  = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
-:: SKIP_DEBLOAT          (-sb) = Set to yes to skip de-bloat section (OEM bloat remova)
+:: SKIP_DEBLOAT          (-sb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
@@ -99,8 +98,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.3.0
-set SCRIPT_DATE=2014-12-17
+set SCRIPT_VERSION=4.3.1
+set SCRIPT_DATE=2014-12-18
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -170,7 +169,7 @@ if /i %HELP%==yes (
 	echo    -p  Preserve power settings ^(don't reset power settings to default^)
 	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
 	echo    -sa Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
-	echo    -sb Skip de-bloat ^(OEM bloatware removal^)
+	echo    -sb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sp Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -241,8 +240,9 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 
 :: PREP JOB: Update check
 pushd resources\stage_0_prep\check_update
-:: Skip this job if we're doing a dry run
+:: Skip this job if we're doing a dry run or if AUTORUN is set
 if /i %DRY_RUN%==yes goto skip_update_check
+if /i %AUTORUN%==yes goto skip_update_check
 
 :: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
 :: Get the file from the repo
@@ -868,8 +868,8 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :stage_2_de-bloat
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if %SKIP_DEBLOAT%==yes (
-	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs...
+	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs...
 	goto skip_debloat
 	)
 
