@@ -16,6 +16,14 @@ Version number legend:
 
 
 ########################
+# v4.3.1 // 2014-12-18 #
+########################
+tron.bat                         v4.3.1
+ ! bugfix: Fix missing escape characters in echo statement near check for -sb flag. Thanks to /u/scan2006, /u/SubtleContradiction and /u/ChristopherSitten
+ ! bugfix: Skip update check if running automatically. Thanks to /u/dangolo
+
+
+########################
 # v4.3.0 // 2014-12-17 #
 ########################
 tron.bat                         v4.3.0
