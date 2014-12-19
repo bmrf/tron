@@ -4,8 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.3.1 ! bugfix: Fix missing escape characters in echo statement near check for -sb flag. Thanks to /u/scan2006, /u/SubtleContradiction and /u/ChristopherSitten
-::                      ! bugfix: Skip update check if running automatically. Thanks to /u/dangolo
+:: Version:       4.3.2 * improvement:ssd_check: Check for additional string commonly seen on SSDs: "SandForce". Thanks to /u/Techie4Life83
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -98,8 +97,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.3.1
-set SCRIPT_DATE=2014-12-18
+set SCRIPT_VERSION=4.3.2
+set SCRIPT_DATE=2014-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -201,14 +200,16 @@ for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "Solid State" >NUL
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "SSD" >NUL
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "RAID" >NUL
+	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	)
+for /f "tokens=1" %%i in ('smartctl --scan') do (
+	smartctl %%i -a | find /i "SandForce" >NUL
 	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 endlocal disabledelayedexpansion
