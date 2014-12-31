@@ -4,8 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.3.2 ! bugfix:                Fix crash condition where script would terminate if run by a user with spaces in the name. Thanks to /u/evileyerex
-::                      * improvement:ssd_check: Check for additional string commonly seen on SSDs: "SandForce". Thanks to /u/Techie4Life83
+:: Version:       4.3.3 / stage_4_patch:7-zip: Update links to reflect new version of 7-Zip. Thanks to /u/Reverent
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -98,8 +97,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.3.2
-set SCRIPT_DATE=2014-12-23
+set SCRIPT_VERSION=4.3.3
+set SCRIPT_DATE=2014-12-31
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -1123,15 +1122,15 @@ echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	pushd 7-Zip\v9.20\x86
+	pushd 7-Zip\v9.36\x86
 	setlocal
-	call "7-Zip v9.20 x86.bat"
+	call "7-Zip v9.36 x86.bat"
 	endlocal
 	popd
 ) else (
-	pushd 7-Zip\v9.20\x64
+	pushd 7-Zip\v9.36\x64
 	setlocal
-	call "7-Zip v9.20 x64.bat"
+	call "7-Zip v9.36 x64.bat"
 	endlocal
 	popd
 	)
@@ -1340,7 +1339,7 @@ echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Wrapping up...
 
 :: If selected, import the original power settings, re-activate them, and delete the backup
-:: Otherwise, just reset the power settings back to their defaults
+:: Otherwise, just reset power settings back to their defaults
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...
