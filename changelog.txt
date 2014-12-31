@@ -16,6 +16,14 @@ Version number legend:
 
 
 ########################
+# v4.3.2 // 2014-12-23 #
+########################
+tron.bat                         v4.3.2
+ ! bugfix:                Fix crash condition where script would terminate if run by a user with spaces in the name. Thanks to /u/evileyerex
+ * improvement:ssd_check: Check for additional string commonly seen on SSDs: "SandForce". Thanks to /u/Techie4Life83
+
+
+########################
 # v4.3.1 // 2014-12-18 #
 ########################
 tron.bat                         v4.3.1
