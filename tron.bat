@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.3.2 * improvement:ssd_check: Check for additional string commonly seen on SSDs: "SandForce". Thanks to /u/Techie4Life83
+:: Version:       4.3.2 ! bugfix:                Fix crash condition where script would terminate if run by a user with spaces in the name. Thanks to /u/evileyerex
+::                      * improvement:ssd_check: Check for additional string commonly seen on SSDs: "SandForce". Thanks to /u/Techie4Life83
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -98,7 +99,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=4.3.2
-set SCRIPT_DATE=2014-12-xx
+set SCRIPT_DATE=2014-12-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -544,8 +545,8 @@ echo ---------------------------------------------------------------------------
 echo -------------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture>> %LOGPATH%\%LOGFILE%
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture
-echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
-echo                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+echo                          Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
+echo                          Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%
 echo                          Logfile:   %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile:   %LOGPATH%\%LOGFILE%
 echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
@@ -1447,8 +1448,8 @@ echo ---------------------------------------------------------------------------
 echo -------------------------------------------------------------------------------
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete>> %LOGPATH%\%LOGFILE%
 echo  %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
-echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
-echo                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+echo                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
+echo                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
