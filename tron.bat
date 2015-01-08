@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.3.3 / stage_4_patch:7-zip: Update links to reflect new version of 7-Zip. Thanks to /u/Reverent
+:: Version:       4.4.0 ! stage_4_patch:flash: Fix broken Flash installer (IE)
+::                      + stage_1_tempcleanup: Add unused USB device driver cleanup. Thanks to Uwe Sieber ( www.uwe-sieber.de )
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -97,8 +98,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.3.3
-set SCRIPT_DATE=2014-12-31
+set SCRIPT_VERSION=4.3.4
+set SCRIPT_DATE=2015-01-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -811,6 +812,19 @@ pushd bleachbit
 if /i %DRY_RUN%==no (
 	bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
+	)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
+
+:: JOB: USB Device Cleanup
+echo %CUR_DATE% %TIME%    Launch job 'USB Device Cleanup'...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'USB Device Cleanup'...
+pushd usb_cleanup
+if /i %DRY_RUN%==no (
+	if %VERBOSE%==yes DriveCleanup.exe -t -n
+	DriveCleanup.exe -n>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
