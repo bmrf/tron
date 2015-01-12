@@ -15,22 +15,25 @@ Version number legend:
 
 
 ########################
-# v4.4.0 // 2015-01-xx #
+# v4.4.0 // 2015-01-12 #
 ########################
 tron.bat                         v4.4.0
-
+ + stage_1_tempcleanup: Add unused USB device driver cleanup. Thanks to Uwe Sieber ( www.uwe-sieber.de )
+ ! stage_4_patch:flash: Fix broken Flash installer (IE)
 
 STAGE 0: Prep
- . Rkill                         v2.6.9.0
+ . Rkill                         v2.7.0.0
  . ProcessKiller                 v1.0
- . TDSS Killer                   v3.0.0.41
+ * TDSS Killer                   v3.0.0.42
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
  . CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
- * TempFileCleanup               v1.0.0-TRON // Remove many unnecessary sections which aren't applicable to Tron
- + USB Device Cleanup            v0.8.1  // thanks to Uwe Sieber (www.uwe-sieber.de). Cleans out unused USB devices
+ * TempFileCleanup               v1.0.0-TRON 
+   - Remove many unnecessary sections which aren't applicable to Tron
+   - Disable deletion of C:\temp since a lot of people seem to run Tron from there
+ + USB Device Cleanup            v0.8.1      // thanks to Uwe Sieber (www.uwe-sieber.de). Cleans out unused USB devices
 
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
@@ -58,10 +61,10 @@ STAGE 6: Wrap-up
  
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v4.1.0.6
+ * AdwCleaner                    v4.1.0.6
  . aswMBR                        v1.0.1.2041
  . autoruns                      v12.01
- . ComboFix                      v14.12.30.1
+ * ComboFix                      v 15.1.8.1
  . gmer                          v2.1.19357
  . Junkware Removal Tool         v6.4.1
  + Malwarebytes Anti-Rootkit     v1.08.2.1001
