@@ -22,7 +22,7 @@ tron.bat                         v4.4.0
  ! stage_4_patch:flash: Fix broken Flash installer (IE)
 
 STAGE 0: Prep
- . Rkill                         v2.7.0.0
+ * Rkill                         v2.7.0.0
  . ProcessKiller                 v1.0
  * TDSS Killer                   v3.0.0.42
  . erunt                         v1.1j
