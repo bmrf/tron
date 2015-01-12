@@ -246,9 +246,11 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **TempFileClean**: Script I wrote to clean some areas that other tools seem to miss
 
-5. **Clear Windows event logs**: Backs up Windows event logs by default to the LOGPATH directory, then clears all log files
+5. **DriveCleanup.exe**: Cleans unused/not present USB device drivers. Utility from Uwe Sieber ( www.uwe-sieber.de )
 
-6. **Clear Windows Update cache**: Purges uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space
+6. **Clear Windows event logs**: Backs up Windows event logs by default to the LOGPATH directory, then clears all log files
+
+7. **Clear Windows Update cache**: Purges uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space
 
 
 ## STAGE 2: De-bloat
