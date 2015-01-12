@@ -1,9 +1,9 @@
-| NAME       | Tron, an automated cleaner/scanner/disinfection tool                                        |
+| NAME       | Tron, an automated PC cleanup script                                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
 | AUTHOR     | vocatus on reddit.com/r/sysadmin (`vocatus d0t gate@gmail.com`) // PGP key ID: `0x82A211A2` |
 | BACKGROUND | Why the name Tron? Tron "Fights for the User"                                               |
 
-I got tired of running these utilities manually and decided to just script everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just script everything, so Tron basically automates a variety of utilities to clean up and disinfect a Windows machine.
 
 
 # USE
