@@ -4,8 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.4.0 + stage_1_tempcleanup: Add unused USB device driver cleanup. Thanks to Uwe Sieber ( www.uwe-sieber.de )
-::                      ! stage_4_patch:flash: Fix broken Flash installer (IE)
+:: Version:       4.5.0 + stage_2_de-bloat: Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -98,8 +97,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.4.0
-set SCRIPT_DATE=2015-01-12
+set SCRIPT_VERSION=4.5.0
+set SCRIPT_DATE=2015-01-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -196,24 +195,24 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 :: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
 pushd resources\stage_5_optimize\defrag
 set SSD_DETECTED=no
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "Solid State" >NUL
-	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "SSD" >NUL
-	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "RAID" >NUL
-	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 for /f "tokens=1" %%i in ('smartctl --scan') do (
 	smartctl %%i -a | find /i "SandForce" >NUL
-	if "!ERRORLEVEL!"=="0" endlocal disabledelayedexpansion && set SSD_DETECTED=yes&& goto detect_safe_mode
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-endlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: PREP JOB: Detect if the system is in Safe Mode
@@ -240,14 +239,14 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 
+
 :: PREP JOB: Update check
 pushd resources\stage_0_prep\check_update
 :: Skip this job if we're doing a dry run or if AUTORUN is set
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
 
-:: We use wget to fetch md5sums.txt from the repo and parse through it, extracting the latest version number and release date from last line of the file (which is always the latest release)
-:: Get the file from the repo
+:: Use wget to fetch md5sums.txt from the repo and parse through it. Extract latest version number and release date from last line of the file (which is always the latest release)
 wget %REPO_URL%/md5sums.txt -O %TEMP%\md5sums.txt 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if /i %ERRORLEVEL%==0 (
@@ -264,29 +263,44 @@ if exist %TEMP%\md5sum* del %TEMP%\md5sum*
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Notify if an update was found
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
+	set CHOICE=y
 	color 8a
 	cls
 	echo.
-	echo  ! A newer version of Tron is available on the official repo.
+	echo  ^^! A newer version of Tron is available on the official repo.
 	echo.
 	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
 	echo.
-	echo    Strongly recommend grabbing latest version before continuing.
-	echo.
 	echo    Option 1: Sync directly from repo using BT Sync read-only key:
 	echo     %REPO_BTSYNC_KEY%
 	echo.
-	echo    Option 2: Download the latest self-extracting .exe:
+	echo    Option 2: Download the latest self-extracting .exe yourself:
 	echo     %REPO_URL%
 	echo.
+	echo    Option 3: Automatically download latest .exe to the desktop
+	echo              ^(This copy of Tron will self-destruct afterwards^)
+	echo.
+	set /p CHOICE= Auto-download latest version now? [Y/n]: 
+		cls
+		echo.
+		echo  Downloading new version to current users desktop, please wait...
+		wget "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+		echo.
+		echo  Done. The latest copy has been placed on the current users desktop.
+		echo.
+		echo  This copy of Tron will now self-destruct. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
+		)
 	pause
 	color 0f
 	)
-	
+ENDLOCAL DISABLEDELAYEDEXPANSION
+
 :skip_update_check
 popd
+
 
 
 :: PREP JOB: Execute config dump if requested
@@ -339,9 +353,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
 	:: We need this setlocal/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
-	setlocal enabledelayedexpansion
+	SETLOCAL ENABLEDELAYEDEXPANSION
 	echo    WIN_VER:                !WIN_VER!
-	endlocal disabledelayedexpansion
+	ENDLOCAL DISABLEDELAYEDEXPANSION
 	echo    WMIC:                   %WMIC%
 	echo.
 	exit /b 0
@@ -354,7 +368,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 
 :: PREP JOB: Display the annoying disclaimer screen. Sigh
 cls
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
@@ -382,7 +396,7 @@ if /i not %EULA_ACCEPTED%==yes (
 	if not "!CHOICE!"=="I AGREE" echo You must type I AGREE to continue&& goto eula_prompt
 	color 0f
 	)
-endlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: PREP JOB: UPM detection circuit #1
@@ -438,10 +452,10 @@ pause
 :: EMAIL CONFIG CHECK ::
 ::::::::::::::::::::::::
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	pushd resources\stage_6_wrap-up\email_report
-	findstr "YOUR-PASSWORD-HERE" .\SwithMailSettings.xml >NUL
+	findstr "YOUR-EMAIL-ADDRESS-HERE" .\SwithMailSettings.xml >NUL
 	if !ERRORLEVEL!==0 (
 		color cf
 		cls
@@ -461,7 +475,7 @@ if /i %EMAIL_REPORT%==yes (
 	)
 popd
 )
-endlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 :::::::::::::::::::::
@@ -650,7 +664,7 @@ echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always
 echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...
 
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 :: Windows XP version
 if "%WIN_VER%"=="Microsoft Windows XP" (
 	:: Extract the line containing the current power GUID
@@ -687,7 +701,7 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 
 :: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
 :: We need the POWER_SCHEME GUID for later when we re-import everything
-endlocal disabledelayedexpansion && set POWER_SCHEME=%POWER_SCHEME%
+ENDLOCAL DISABLEDELAYEDEXPANSION && set POWER_SCHEME=%POWER_SCHEME%
 
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -841,9 +855,9 @@ echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" firs
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...
 :: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\tron_event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-endlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backups done, now clearing...
 :: Now we clear the logs
@@ -892,15 +906,27 @@ pushd resources\stage_2_de-bloat
 echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...
 
-:: JOB: Remove crapware programs
+
+:: JOB: Remove crapware programs, phase 1 (by name)
 pushd oem
-echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Attempting to remove common OEM junkware programs...
+echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by name)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by name)...
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt
-:: This searches through the list of programs in "programs_to_target.txt" file and uninstalls them one-by-one
+:: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
 
+
+:: JOB: Remove crapware programs, phase 2 (by GUID)
+pushd oem
+echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (by GUID)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (by GUID)...
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+if /i %DRY_RUN%==no call "programs_to_target_by_GUID.bat"
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1438,7 +1464,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 :: Email report if it was requested
 :: This line needed for param5 (/p5)
 set ARGUMENTS='%*'
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...
@@ -1452,7 +1478,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.
 	)
 )
-endlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 
@@ -1489,6 +1515,7 @@ if /i not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "R
 if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
 
 :: De-rez self if requested
+:self_destruct
 set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
 	%SystemDrive%
