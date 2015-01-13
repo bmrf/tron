@@ -3,22 +3,41 @@
 | AUTHOR     | vocatus on reddit.com/r/sysadmin (`vocatus d0t gate@gmail.com`) // PGP key ID: `0x82A211A2` |
 | BACKGROUND | Why the name Tron? Tron "Fights for the User"                                               |
 
-I got tired of running these utilities manually and decided to just script everything, so Tron basically automates a variety of utilities to clean up and disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
+# CONTENTS:
+
+1. Usage Summary
+
+2. Command-Line Use
+
+3. Notes on Safe Mode
+
+4. Sending a Post-Run Email Report
+
+5. Changing Defaults
+
+6. Pack Integrity
+
+7. License
+
+8. Contact Info
+
+9. Full details of ALL steps
 
 # USE
 
 1. Boot into Safe Mode with Network Support (Safe Mode is NOT required but is strongly recommended)
 
-2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR**.
+2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron will refuse to run if you don't run as an Administrator)
 
-   Tron will refuse to run if you don't run as an Administrator.
+3. Wait anywhere from **3-10 hours** (yes, it really does take that long)
 
-3. Wait anywhere from **3-10 hours** (yes, it really does take that long).
+4. Reboot
 
-4. By default the log file is at `C:\Logs\tron.log`
+By default the log file is at `C:\Logs\tron.log`
 
-Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending on how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
+Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
 # COMMAND-LINE USE
 
@@ -70,6 +89,12 @@ Microsoft, in their long-standing tradition of breaking useful, heavily-used fun
     bcdedit /set {default} bootmenupolicy legacy
 
 Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
+
+
+# EMAIL REPORTS:
+To have Tron send an email report at completion, you need to edit the file \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml and specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report.
+
+Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
 
 # CHANGE DEFAULTS (advanced)
@@ -175,12 +200,12 @@ In every release `checksums.txt` is signed with my PGP key (`0x82A211A2`, includ
 
 # LICENSE
 
-Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses, and it is YOUR RESPONSIBILITY to determine if you have the rights to use these tools in whatever environment you use Tron in.
+Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses.
 
 
 # OTHER
 
-I try to keep everything updated. If you notice some of the packages are out of date (e.g. Java, which updates at the frequency of every 3 minutes), PM me on reddit or send me an email (listed above). I respond pretty quickly most days.
+I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I respond pretty quickly most days.
 
 Hope this is helpful to other PC techs,
 
@@ -188,7 +213,7 @@ Hope this is helpful to other PC techs,
 
 If you feel overly charitable:
 ```
-1JZmSPe1MCr8XwQ2b8pgjyp2KxmLEAfUi7
+1JWMVs5hQ5SnHxMu5QbRffQWkMy8k4SmLV
 ```
 
 
