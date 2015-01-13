@@ -15,10 +15,68 @@ Version number legend:
 
 
 ########################
+# v4.5.0 // 2015-01-xx #
+########################
+tron.bat                         v4.5.0
+ + stage_0_prep:     Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished.
+ + stage_2_de-bloat: Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.42
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.01.5075
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.0-TRON 
+ . USB Device Cleanup            v0.8.1
+
+STAGE 2: De-bloat
+ * \resources\stage_2_de-bloat\programs_to_target.txt
+    * Removal of some redundant entries, should grant small speed increase
+ + \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    ` This file contains specific GUIDs to target. Initial list thanks to /u/tuxedo_jack
+	
+STAGE 3: Disinfect
+ . RogueKiller                   v10.1.1.0
+ * Sophos Virus Removal Tool     v2.5.4, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.4.1028
+
+STAGE 4: Patch
+ . 7-Zip                         v9.36         (multi-language)
+ . Adobe Flash Player            v16.0.0.235   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u25          (language ignored)
+ . Windows updates               <pulled down live>
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.1.0.6
+ . aswMBR                        v1.0.1.2041
+ . autoruns                      v12.01
+ . ComboFix                      v 15.1.8.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.4.1
+ . Malwarebytes Anti-Rootkit     v1.08.2.1001
+ . ServicesRepair.exe            v1.0.0.3
+ . VirusTotal uploader tool      v2.2
+
+
+########################
 # v4.4.0 // 2015-01-12 #
 ########################
 tron.bat                         v4.4.0
- + stage_1_tempcleanup: Add unused USB device driver cleanup. Thanks to Uwe Sieber ( www.uwe-sieber.de )
+ + stage_1_tempcleanup: Add unused USB device cleanup. Thanks to Uwe Sieber ( www.uwe-sieber.de )
  ! stage_4_patch:flash: Fix broken Flash installer (IE)
 
 STAGE 0: Prep
