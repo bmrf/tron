@@ -113,7 +113,7 @@ Defaults are always overridden by command-line flags, but if you don't want to u
   set QUARANTINE_PATH=C:\path\to\your\desired\folder
   ```
 
-- To always run automatically (no welcome screen), change this to `yes`:
+- To always run automatically (no welcome screen, implies acceptance of EULA), change this to `yes`:
 
   ```
   set AUTORUN=no
