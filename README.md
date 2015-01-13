@@ -255,13 +255,19 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 2: De-bloat
 
-1. **OEM de-bloat**: Use WMI to attempt to uninstall any program listed in this file:
+1. **OEM de-bloat** (by name): Use WMI to attempt to uninstall any program listed in this file:
 
   ```
-  \resources\stage_3_de-bloat\oem\programs_to_target.txt
+  \resources\stage_2_de-bloat\oem\programs_to_target.txt
   ```
 
-2. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
+2. **OEM de-bloat** (by GUID): Use WMI to attempt to remove specific list of GUIDs in this file:
+
+  ```
+  \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+  ```
+
+3. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
 
 
 ## STAGE 3: Disinfect
