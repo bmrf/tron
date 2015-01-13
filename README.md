@@ -69,7 +69,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
     
-     -sb Skip de-bloat (OEM bloatware removal)
+    -sb Skip de-bloat (OEM bloatware removal)
 
     -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
