@@ -91,15 +91,19 @@ Microsoft, in their long-standing tradition of breaking useful, heavily-used fun
 Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
 
 
-# EMAIL REPORTS:
-To have Tron send an email report at completion, you need to edit the file \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml and specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report.
+# EMAIL REPORT:
+To have Tron send an email report at completion, edit this file:
+
+    \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
+    
+Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
 
 # CHANGE DEFAULTS (advanced)
 
-Defaults are always overridden by command-line flags, but if you don't want to use the command-line and don't like Tron's defaults, you can edit the script and change the following default variables:
+If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option.
 
 - To change log location, edit these lines:
 
