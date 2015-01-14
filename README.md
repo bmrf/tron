@@ -5,7 +5,7 @@
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
-# CONTENTS:
+# CONTENTS
 
 1. Usage Summary
 
@@ -91,7 +91,7 @@ Microsoft, in their long-standing tradition of breaking useful, heavily-used fun
 Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
 
 
-# EMAIL REPORT:
+# EMAIL REPORT
 To have Tron send an email report at completion, edit this file:
 
     \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
@@ -222,6 +222,7 @@ If you feel overly charitable:
 
 
 # FULL TRON DESCRIPTION
+The best way to see what Tron does is simply to crack `Tron.bat` open with a text editor (preferably one with syntax highlighting) or here on Github and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
 
 ## tron.bat
 Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
