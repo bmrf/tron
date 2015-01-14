@@ -31,7 +31,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron will refuse to run if you don't run as an Administrator)
 
-3. Wait anywhere from **3-10 hours** (yes, it really does take that long)
+3. Wait anywhere from **3-10 hours** (yes, it takes that long)
 
 4. Reboot
 
