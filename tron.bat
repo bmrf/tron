@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.5.0 + stage_2_de-bloat: Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
+:: Version:       4.5.0 + stage_0_prep:      Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
+::                      + stage_2_de-bloat:  Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
+::                      * stage_3_disinfect: Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -98,7 +100,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=4.5.0
-set SCRIPT_DATE=2015-01-xx
+set SCRIPT_DATE=2015-01-14
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -994,7 +996,7 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: Check for the -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if used
+:: JOB: Check for the -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if it was used
 if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...
@@ -1005,6 +1007,8 @@ if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 :: JOB: Sophos Virus Remover
 echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
+echo %CUR_DATE% %TIME%    Scan in progress. Output reduced by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Scan in progress. Output reduced by default (use -v to show)...
 pushd sophos_virus_remover
 if /i %DRY_RUN%==no (
 	if exist %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log del /f /q %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log 2>NUL
@@ -1021,6 +1025,8 @@ echo %CUR_DATE% %TIME%    Done.
 :: Haven't been able to figure out where Vipre saves its log file to, so we can't grab it like with do with Sophos above
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...
+echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...
 pushd vipre_rescue
 if /i %DRY_RUN%==no ( 
 	if /i %VERBOSE%==no VipreRescueScanner.exe /nolog
