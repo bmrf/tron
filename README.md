@@ -305,9 +305,9 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` flag skips this component
 
-5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (basically like System File Checker on crack). Windows 8 and up only
+5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
+6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
 
 
 ## STAGE 4: Patch
@@ -333,7 +333,7 @@ Tron installs or updates these programs:
 2. **Defraggler**: Command-line defrag tool from Piriform
 
 
-## STAGE 6: Manual tools
+## STAGE 6: Wrap-up
 
 1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
 
