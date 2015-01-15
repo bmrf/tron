@@ -4,9 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.5.0 + stage_0_prep:      Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
-::                      + stage_2_de-bloat:  Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
-::                      * stage_3_disinfect: Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
+:: Version:       4.5.1 ! stage_0_prep:bugfix: Fix critical bug with missing bracket in update checker
+::                4.5.0 + stage_0_prep:        Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
+::                      + stage_2_de-bloat:    Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
+::                      * stage_3_disinfect:   Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -99,8 +100,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.5.0
-set SCRIPT_DATE=2015-01-14
+set SCRIPT_VERSION=4.5.1
+set SCRIPT_DATE=2015-01-15
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -286,6 +287,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo              ^(This copy of Tron will self-destruct afterwards^)
 	echo.
 	set /p CHOICE= Auto-download latest version now? [Y/n]: 
+	if !CHOICE!==y (
 		cls
 		echo.
 		echo  Downloading new version to current users desktop, please wait...
