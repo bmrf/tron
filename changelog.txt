@@ -14,6 +14,14 @@ Version number legend:
   major feature change
 
 
+
+########################
+# v4.5.1 // 2015-01-15 #
+########################
+tron.bat                         v4.5.1
+ ! stage_0_prep:bugfix: Fix critical bug with missing bracket in update checker
+
+
 ########################
 # v4.5.0 // 2015-01-14 #
 ########################
