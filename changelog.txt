@@ -16,6 +16,14 @@ Version number legend:
 
 
 ########################
+# v4.5.2 // 2015-01-xx #
+########################
+tron.bat                         v4.5.2
+ ! stage_0_prep:bugfix:  Fix crash bug where Tron would break when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
+ ! stage_4_patch:bugfix: Fix minor aesthetic bug where an error was tossed if we tried to add the MSI registry key while not in safe mode
+
+
+########################
 # v4.5.1 // 2015-01-15 #
 ########################
 tron.bat                         v4.5.1
