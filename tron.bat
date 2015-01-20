@@ -4,10 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.5.1 ! stage_0_prep:bugfix: Fix critical bug with missing bracket in update checker
-::                4.5.0 + stage_0_prep:        Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
-::                      + stage_2_de-bloat:    Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
-::                      * stage_3_disinfect:   Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
+:: Version:       4.5.2 ! stage_0_prep:bugfix:  Fix bug where Tron would crash when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
+::                      ! stage_4_patch:bugfix: Fix minor aesthetic bug where an error was tossed if we tried to add the MSI registry key while not in safe mode
+::                4.5.1 ! stage_0_prep:bugfix:  Fix critical bug with missing bracket in update checker
+::                4.5.0 + stage_0_prep:         Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
+::                      + stage_2_de-bloat:     Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
+::                      * stage_3_disinfect:    Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -100,8 +102,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.5.1
-set SCRIPT_DATE=2015-01-15
+set SCRIPT_VERSION=4.5.2
+set SCRIPT_DATE=2015-01-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -250,11 +252,11 @@ if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
 
 :: Use wget to fetch md5sums.txt from the repo and parse through it. Extract latest version number and release date from last line of the file (which is always the latest release)
-wget %REPO_URL%/md5sums.txt -O %TEMP%\md5sums.txt 2>NUL
+wget %REPO_URL%/md5sums.txt -O '%TEMP%\md5sums.txt' 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if /i %ERRORLEVEL%==0 (
-	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\md5sums.txt) do set WORKING=%%c
-	for /f "tokens=1,2,3,4 delims= " %%a in (%TEMP%\md5sums.txt) do set WORKING2=%%d
+	for /f "tokens=1,2,3 delims= " %%a in ('%TEMP%\md5sums.txt') do set WORKING=%%c
+	for /f "tokens=1,2,3,4 delims= " %%a in ('%TEMP%\md5sums.txt') do set WORKING2=%%d
 	)
 if /i %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
@@ -262,7 +264,7 @@ if /i %ERRORLEVEL%==0 (
 	)
 
 :: clean up and reset the window title since wget clobbers it
-if exist %TEMP%\md5sum* del %TEMP%\md5sum*
+if exist "%TEMP%\md5sum*" del "%TEMP%\md5sum*"
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Notify if an update was found
@@ -1150,8 +1152,8 @@ echo %CUR_DATE% %TIME%   Launch stage_4_patch jobs...
 
 :: Prep task: enable MSI installer in Safe Mode
 if /i %DRY_RUN%==no (
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f
-	net start msiserver
+	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f
+	net start msiserver 2>NUL
 	)
 
 	
