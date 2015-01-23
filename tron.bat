@@ -4,12 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.5.2 ! stage_0_prep:bugfix:  Fix crash bug where Tron would break when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
+:: Version:       4.6.0 ! stage_0_prep:bugfix:  Fix crash bug where Tron would break when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
 ::                      ! stage_4_patch:bugfix: Fix minor aesthetic bug where an error was tossed if we tried to add the MSI registry key while not in safe mode
-::                4.5.1 ! stage_0_prep:bugfix:  Fix bug with missing bracket in update checker
-::                4.5.0 + stage_0_prep:         Add rudimentary auto-update function. Tron will now ask if you want it to download the latest release for you, then self-destruct the current copy when the download is finished. Downloads to current users desktop
-::                      + stage_2_de-bloat:     Add targeting of some specific GUIDs for removal. Edit the file '\resources\stage_2_de-bloat\programs_to_target_by_GUID.bat' to add or remove entries from the list. Thanks to /u/tuxedo_jack
-::                      * stage_3_disinfect:    Add short message to Vipre and Sophos scans explaning the scan is in progress. Thanks to /u/famouslastwords
+::                      / stage_3_disinfect:    Move MBAM installation to beginning of stage 3 to allow user to click "scan" earlier in the process instead of waiting for Vipre and Sophos to complete. Thanks to /u/Reverent
+::                      * stage_4_patch:        Update links to reflect new versions of 7-Zip and Adobe Flash. Thanks to /u/Reverent
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -102,8 +100,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.5.2
-set SCRIPT_DATE=2015-01-xx
+set SCRIPT_VERSION=4.6.0
+set SCRIPT_DATE=2015-01-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -1000,12 +998,35 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: Check for the -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if it was used
+:: JOB: Check for -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if it was used
 if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...
 	goto skip_antivirus_scans
 	)
+
+
+:: JOB: MBAM (MalwareBytes Anti-Malware)
+echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...
+pushd mbam
+:: Install MBAM & remove the desktop icon
+if /i %DRY_RUN%==no ( 
+	"Malwarebytes Anti-Malware v2.0.4.1028.exe" /verysilent
+	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
+	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+
+	:: Scan for and launch appropriate architecture version
+	if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
+		pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
+	) else (
+		pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
+		)
+	start "" "mbam.exe"
+	popd
+)
 
 
 :: JOB: Sophos Virus Remover
@@ -1041,29 +1062,7 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 
-:: JOB: MBAM (MalwareBytes Anti-Malware)
-echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...
-pushd mbam
-:: Install MBAM & remove the desktop icon
-if /i %DRY_RUN%==no ( 
-	"Malwarebytes Anti-Malware v2.0.4.1028.exe" /verysilent
-	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
-	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
-	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-
-	:: Scan for and launch appropriate architecture version
-	if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
-		pushd "%ProgramFiles(x86)%\Malwarebytes Anti-Malware"
-	) else (
-		pushd "%ProgramFiles%\Malwarebytes Anti-Malware"
-		)
-	start "" "mbam.exe"
-	popd
-)
-
-
+:: AV scans finished
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1172,15 +1171,15 @@ echo %CUR_DATE% %TIME%    Launch job 'Update 7-Zip'...
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	pushd 7-Zip\v9.36\x86
+	pushd 7-Zip\v9.38\x86
 	setlocal
-	call "7-Zip v9.36 x86.bat"
+	call "7-Zip v9.38 x86.bat"
 	endlocal
 	popd
 ) else (
-	pushd 7-Zip\v9.36\x64
+	pushd 7-Zip\v9.38\x64
 	setlocal
-	call "7-Zip v9.36 x64.bat"
+	call "7-Zip v9.38 x64.bat"
 	endlocal
 	popd
 	)
