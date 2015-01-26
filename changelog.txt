@@ -15,13 +15,70 @@ Version number legend:
 
 
 ########################
+# v4.7.0 // 2015-02-xx #
+########################
+tron.bat                         v4.7.0
+ + stage_4_patch:feature: Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
+ ! stage_4_patch:bugfix:  Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.42
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.01.5075
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.0-TRON 
+ . USB Device Cleanup            v0.8.1
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+	
+STAGE 3: Disinfect
+ * RogueKiller                   v10.2.0.0
+ * Sophos Virus Removal Tool     v2.5.4, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ . Malwarebytes Anti-Malware     v2.0.4.1028
+
+STAGE 4: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v16.0.0.287   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u31          (language ignored)
+ . Windows updates               Pulled down live with the command 'wuauclt /detectnow /updatenow'
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.1.0.8
+ . aswMBR                        v1.0.1.2252
+ . autoruns                      v12.03
+ . ComboFix                      v15.1.22.2
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.4.1
+ . Malwarebytes Anti-Rootkit     v1.08.2.1001
+ . Net Adapter Repair            v1.2
+ . ServicesRepair.exe            v1.0.0.3
+ . VirusTotal uploader tool      v2.2
+
+
+########################
 # v4.6.0 // 2015-01-23 #
 ########################
 tron.bat                         v4.6.0
  ! stage_0_prep:bugfix:  Fix crash bug where Tron would break when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
  ! stage_4_patch:bugfix: Fix minor aesthetic bug where an error was tossed if we tried to add the MSI registry key while not in safe mode
  / stage_3_disinfect:    Move MBAM installation to beginning of stage 3 to allow user to click "scan" earlier in the process instead of waiting for Vipre and Sophos to complete. Thanks to /u/Reverent
- * stage_4_patch:        Update links to reflect new version of 7-Zip and Adobe Flash. Thanks to /u/Reverent
+ * stage_4_patch:        Update links to reflect new versions of 7-Zip and Adobe Flash. Thanks to /u/Reverent
 
 STAGE 0: Prep
  . Rkill                         v2.7.0.0
