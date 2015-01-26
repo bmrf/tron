@@ -4,10 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.6.0 ! stage_0_prep:bugfix:  Fix crash bug where Tron would break when wget'ing md5sums.txt from the repo server if local username had an ampersand (&) character in it. Thanks to /u/buggg
-::                      ! stage_4_patch:bugfix: Fix minor aesthetic bug where an error was tossed if we tried to add the MSI registry key while not in safe mode
-::                      / stage_3_disinfect:    Move MBAM installation to beginning of stage 3 to allow user to click "scan" earlier in the process instead of waiting for Vipre and Sophos to complete. Thanks to /u/Reverent
-::                      * stage_4_patch:        Update links to reflect new versions of 7-Zip and Adobe Flash. Thanks to /u/Reverent
+:: Version:       4.7.0 + stage_4_patch:feature: Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
+::                      ! stage_4_patch:bugfix:  Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -27,6 +25,7 @@
 ::                      -sb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
+::                      -sw Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
@@ -66,6 +65,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantined_files
 :: SKIP_DEBLOAT          (-sb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
+:: SKIP_WINDOWS_UPDATES  (-sw) = Set to yes to skip Windows Updates
 :: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)  = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
@@ -80,6 +80,7 @@ set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_PATCHES=no
+set SKIP_WINDOWS_UPDATES=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -100,8 +101,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.6.0
-set SCRIPT_DATE=2015-01-23
+set SCRIPT_VERSION=4.7.0
+set SCRIPT_DATE=2015-02-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -144,6 +145,7 @@ for %%i in (%*) do (
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
+	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
@@ -157,7 +159,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -174,6 +176,7 @@ if /i %HELP%==yes (
 	echo    -sb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sp Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
+	echo    -sw Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
@@ -334,6 +337,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DEBLOAT			%SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
+	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -1156,10 +1160,10 @@ if /i %DRY_RUN%==no (
 	)
 
 	
-:: Check for skip patches (-sp) flag or variable and skip to Windows Update if used
+:: Check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_DEFRAG%". Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_DEFRAG%". Skipping app patches...
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_PATCHES%". Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_PATCHES%". Skipping app patches...
 	goto skip_patches
 	)
 	
@@ -1288,7 +1292,12 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...
 pushd windows_updates
-if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
+if /i %DRY_RUN%==no (
+		if %SKIP_WINDOWS_UPDATES%==no wuauclt /detectnow /updatenow
+	) else (
+		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES set to "%SKIP_WINDOWS_UPDATES%", skipping...>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES set to "%SKIP_WINDOWS_UPDATES%", skipping...
+	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
