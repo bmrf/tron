@@ -43,7 +43,7 @@ Tron will briefly check for a newer version when it starts up and notify you if 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x] | [-h]
 
     -a  Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -74,6 +74,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
     -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
+
+    -sw Skip Windows Updates (do not attempt to run Windows Update)
 
     -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
     
@@ -182,6 +184,12 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_PATCHES=no
   ```
 
+- To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
+  
+  ```
+  set SKIP_WINDOWS_UPDATES=no
+  ```
+  
 - To display as much output as possible (verbose), change this to `yes`:
 
   ```
@@ -360,8 +368,10 @@ Tron does not run these automatically because most of them don't support command
 
 7. **Junkware Removal Tool**: Temp files and random junkware remover
 
-8. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
+8. **Net Adapter Repair**: Utility to repair most aspects of Windows network connections
 
-9. **TempFileCleaner**: OldTimer utility for cleaning temp files
+9. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-10. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
+10. **TempFileCleaner**: OldTimer utility for cleaning temp files
+
+11. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
