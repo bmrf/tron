@@ -4,8 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.7.0 + stage_4_patch:feature: Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
-::                      ! stage_4_patch:bugfix:  Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
+:: Version:       4.7.0 + stage_0_prep:update:    Add automatic SHA256 integrity checking of new version download from the auto-updater. Tron will warn if integrity check fails and delete the failed download
+::                      * stage_0_prep:update:    Replace MD5 with SHA256 for update check hash algorithm. This change removes reliance on MD5 in all components of Tron. We'll keep md5sums.txt updated for a while because old versions still look for it, but eventually it will be removed. Thanks to /u/tr0nnie
+::                      + stage_4_patch:feature:  Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
+::                      ! stage_4_patch:bugfix:   Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
+::                      ! stage_6_wrap-up:bugfix: Fix failure bug where SELF_DESTRUCT would fail if there were spaces in the path to Tron
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -102,7 +105,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=4.7.0
-set SCRIPT_DATE=2015-02-xx
+set SCRIPT_DATE=2015-01-28
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -252,20 +255,19 @@ pushd resources\stage_0_prep\check_update
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
 
-:: Use wget to fetch md5sums.txt from the repo and parse through it. Extract latest version number and release date from last line of the file (which is always the latest release)
-wget %REPO_URL%/md5sums.txt -O '%TEMP%\md5sums.txt' 2>NUL
+:: Use wget to fetch sha256sums.txt from the repo and parse through it. Extract latest version number and release date from last line (which is always the latest release)
+wget %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if /i %ERRORLEVEL%==0 (
-	for /f "tokens=1,2,3 delims= " %%a in ('%TEMP%\md5sums.txt') do set WORKING=%%c
-	for /f "tokens=1,2,3,4 delims= " %%a in ('%TEMP%\md5sums.txt') do set WORKING2=%%d
+	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
+	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%a
 	)
 if /i %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
-	set REPO_SCRIPT_DATE=%WORKING2:~1,10%
+	set REPO_SCRIPT_DATE=%WORKING2%
 	)
 
-:: clean up and reset the window title since wget clobbers it
-if exist "%TEMP%\md5sum*" del "%TEMP%\md5sum*"
+:: Reset window title since wget clobbers it
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Notify if an update was found
@@ -291,23 +293,48 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo.
 	set /p CHOICE= Auto-download latest version now? [Y/n]: 
 	if !CHOICE!==y (
+		color 8B
 		cls
 		echo.
-		echo  Downloading new version to current users desktop, please wait...
+		echo %TIME%   Downloading new version to the desktop, please wait...
+		echo.
 		wget "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 		echo.
-		echo  Done. The latest copy has been placed on the current users desktop.
+		echo %TIME%   Download finished.
 		echo.
-		echo  This copy of Tron will now self-destruct. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
+		echo %TIME%   Verifying SHA256 pack integrity, please wait...
+		echo.
+		hashdeep.exe -s -e -b -a -k %TEMP%\sha256sums.txt "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" >NUL
+		if !ERRORLEVEL!==0 (
+			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
+			echo.
+			echo %TIME%   This copy of Tron will now self-destruct.
+			echo.
+			popd
+			pause
+			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
+		) else (
+			color 0c
+			echo %TIME% ^^! ERROR: Download FAILED the integrity check. Recommend manually
+			echo                      downloading latest version. Will delete failed file and
+			echo                      exit.
+			echo.
+			pause
+			REM Clean up after ourselves
+			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+			del /f /q %TEMP%\sha256sums.txt
+			exit
 		)
-	pause
-	color 0f
 	)
+	color 0f
+)
 ENDLOCAL DISABLEDELAYEDEXPANSION
+
+:: Clean up after ourselves
+if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
 
 :skip_update_check
 popd
-
 
 
 :: PREP JOB: Execute config dump if requested
@@ -1538,7 +1565,8 @@ set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
 	%SystemDrive%
 	cd \
-	rmdir /s /q %CWD%
+	rmdir /s /q "%CWD%"
+	exit
 	)
 
 :end_and_skip_shutdown
