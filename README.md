@@ -246,7 +246,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
 
-5. **Check for update**: Use `wget` to pull down `md5sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version, and then self-destruct the current copy. Downloads to the current users desktop
+5. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
 
 ## STAGE 0: Prep
