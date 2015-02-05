@@ -13,6 +13,22 @@ Version number legend:
   | regular release or feature change
   major feature change
 
+  
+########################
+# v4.7.1 // 2015-02-04 #
+########################
+tron.bat                         v4.7.1
+ ! stage_0_prep:bugfix: Fix spelling error in call to new TDSSK version
+ ! stage_0_prep:bugfix: Fix spelling error in help (-h) menu. Thanks to...someone, can't remember who. If it was you let me know and I'll add you to the change log
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+
+STAGE 7: Manual tools
+ * ComboFix                      v15.2.2.1
+ * Junkware Removal Tool         v6.4.2
+
 
 ########################
 # v4.7.0 // 2015-01-28 #
@@ -22,7 +38,7 @@ tron.bat                         v4.7.0
  * stage_0_prep:update:    Replace MD5 with SHA256 for update check hash algorithm. This change removes reliance on MD5 in all components of Tron. We'll keep md5sums.txt updated for a while because old versions still look for it, but eventually it will be removed. Thanks to /u/tr0nnie
  + stage_4_patch:feature:  Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
  ! stage_4_patch:bugfix:   Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
- ! stage_6_wrap-up:bugfix: Fix failure bug where SELF_DESTRUCT would fail if there were spaces in the path to Tron
+ ! stage_6_wrap-up:bugfix: Fix error condition where SELF_DESTRUCT would fail if there were spaces in the path to Tron
 
 STAGE 0: Prep
  . Rkill                         v2.7.0.0
@@ -42,8 +58,8 @@ STAGE 2: De-bloat
 	
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -101,8 +117,8 @@ STAGE 2: De-bloat
 	
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -168,8 +184,8 @@ STAGE 2: De-bloat
 	
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -226,8 +242,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -281,8 +297,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -353,8 +369,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.0.0
- * Sophos Virus Removal Tool     v2.5.4, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -416,8 +432,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -485,8 +501,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -538,8 +554,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 	
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -611,8 +627,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
  
 STAGE 3: De-bloat
@@ -666,8 +682,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
  
 STAGE 3: De-bloat
@@ -725,8 +741,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -799,8 +815,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  + RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Malwarebytes Anti-Malware     v2.0.3.1025
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -855,8 +871,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -914,8 +930,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -968,8 +984,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs and engine
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1015,8 +1031,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs and engine
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1063,8 +1079,8 @@ STAGE 1: Tempclean
  * TempFileClean                 v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5.3, update defs and engine
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1115,10 +1131,10 @@ STAGE 1: Tempclean
  + TempFileClean                 v3.4.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, updated defs and engine
+ * Sophos Virus Removal Tool     v2.5.3, update defs and engine
     / Disable using the Windows service method to scan in config.xml. Was causing it to stall
 	/ Enable scanning of archives in config.xml
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1178,8 +1194,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1228,8 +1244,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1290,8 +1306,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1339,8 +1355,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  - Emsisoft Commandline Scanner  v9.0.0.4183 -- REMOVED
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
@@ -1390,9 +1406,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1441,9 +1457,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
@@ -1496,9 +1512,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
@@ -1546,9 +1562,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
 STAGE 3: De-bloat
@@ -1607,8 +1623,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
@@ -1727,8 +1743,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, updated defs
- * Vipre Rescue Scanner          v7.0.7.8, updated defs
+ * Sophos Virus Removal Tool     v2.5, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
  + Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  
@@ -1809,8 +1825,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- * Sophos Virus Removal Tool     v2.5, updated defs 2014-07-16
- * Vipre Rescue Scanner          v7.0.7.8, updated defs 2014-07-16
+ * Sophos Virus Removal Tool     v2.5, update defs 2014-07-16
+ * Vipre Rescue Scanner          v7.0.7.8, update defs 2014-07-16
  
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -1890,7 +1906,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-15
+ . Sophos Virus Removal Tool     v2.5, update defs 2014-07-15
  . Vipre Rescue Scanner          v7.0.7.8
  
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
@@ -1969,7 +1985,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-14
+ . Sophos Virus Removal Tool     v2.5, update defs 2014-07-14
  . Vipre Rescue Scanner          v7.0.7.8
  
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
@@ -2043,7 +2059,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Removal Tool     v2.5, updated defs 2014-07-10
+ . Sophos Virus Removal Tool     v2.5, update defs 2014-07-10
  . Vipre Rescue Scanner          v7.0.7.8
  
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
