@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x82A211A2
-:: Version:       4.7.0 + stage_0_prep:update:    Add automatic SHA256 integrity checking of new version download from the auto-updater. Tron will warn if integrity check fails and delete the failed download
+:: Version:       4.7.1 ! stage_0_prep:bugfix:    Fix spelling error in call to new TDSSK version
+::                      ! stage_0_prep:bugfix:    Fix spelling error in help (-h) menu. Thanks to...someone, can't remember who. If it was you let me know and I'll add you to the change log
+::                4.7.0 + stage_0_prep:update:    Add automatic SHA256 integrity checking of new version download from the auto-updater. Tron will warn if integrity check fails and delete the failed download
 ::                      * stage_0_prep:update:    Replace MD5 with SHA256 for update check hash algorithm. This change removes reliance on MD5 in all components of Tron. We'll keep md5sums.txt updated for a while because old versions still look for it, but eventually it will be removed. Thanks to /u/tr0nnie
 ::                      + stage_4_patch:feature:  Add -sw switch and associated SKIP_WINDOWS_UPDATES variable to allow skipping an attempt at doing Windows Updates. Thanks to /u/fatbastard79
 ::                      ! stage_4_patch:bugfix:   Fix minor visual error where message about SKIP_PATCHES being set would incorrectly show value of the SKIP_DEFRAG variable
@@ -104,8 +106,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.7.0
-set SCRIPT_DATE=2015-01-28
+set SCRIPT_VERSION=4.7.1
+set SCRIPT_DATE=2015-02-04
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -162,7 +164,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -657,7 +659,7 @@ echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...
 pushd tdss_killer
 if /i %DRY_RUN%==no (
-	"TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"TDSSKiller v3.0.0.44.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
@@ -723,7 +725,7 @@ if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 	:: Set the "High Performance" scheme active
 	powercfg /SETACTIVE "Always On"
 ) else (
-	:: This version of the command executes if we're not on XP or Server 2003
+	:: All other versions of Windows
 	:: Extract the line containing the current power GUID
 	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
 	:: Parse out just the GUID and stash it in a variable
