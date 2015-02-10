@@ -36,7 +36,7 @@ STAGE 1: Tempclean
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
- . \resources\stage_2_de-bloat\programs_to_target.txt
+ * \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
 	
 STAGE 3: Disinfect
