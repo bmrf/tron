@@ -13,7 +13,66 @@ Version number legend:
   | regular release or feature change
   major feature change
 
-  
+
+
+########################
+# v4.7.2 // 2015-02-10 #
+########################
+tron.bat                         v4.7.2
+ * stage_0_prep:sleep: Add disabling of system sleep when laptop lid closes (Vista and up). Thanks to /u/ComputersByte
+ * stage_0_prep:sleep: Remove redundant code block which tested for Windows XP and Server 2003 separately. Now test for both SKUs in one block
+ / stage_0_prep:wmi:   Move WMI repair four jobs earlier since so much depends on it functioning correctly. May pull it out of Stage 0 at some point and place it in pre-run prep and checks
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.44
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ * CCLeaner                      v5.02.5101
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.0-TRON 
+ . USB Device Cleanup            v0.8.1
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+	
+STAGE 3: Disinfect
+ . RogueKiller                   v10.2.0.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ . Malwarebytes Anti-Malware     v2.0.4.1028
+
+STAGE 4: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ * Adobe Flash Player            v16.0.0.305   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u31          (language ignored)
+ . Windows updates               Pulled down live with the command 'wuauclt /detectnow /updatenow'
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.2 2013-07-26 r3841
+ . Defraggler                    v2.18.0.945
+
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.1.1.0
+ . aswMBR                        v1.0.1.2252
+ . autoruns                      v12.03
+ * ComboFix                      v15.2.9.1
+ . gmer                          v2.1.19357
+ . Junkware Removal Tool         v6.4.2
+ . Malwarebytes Anti-Rootkit     v1.08.3.1004
+ . Net Adapter Repair            v1.2
+ . ServicesRepair.exe            v1.0.0.3
+ . VirusTotal uploader tool      v2.2
+
+
 ########################
 # v4.7.1 // 2015-02-04 #
 ########################
@@ -666,7 +725,7 @@ STAGE 6: Manual tools
 tron.bat                         v3.9.0
  ! tron.bat:bugfix:  Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks to /u/swtester
  ! tron.bat:bugfix:  Fix a registry modification that mistakenly executed even if the script was in dry run mode (-d)
- + tron.bat:feature: Add -m flag and associated PRESERVE_METRO_APPS variable to preserve default Metro apps (don't remove them). Thanks to /u/swtester
+ + tron.bat:feature: Add -m flag and associated PRESERVE_METRO_APPS variable to Preserve OEM Metro apps (don't remove them). Thanks to /u/swtester
  / tron.bat:misc:    Rename all instances of DO_SHUTDOWN to AUTO_SHUTDOWN
 
  STAGE 0: Prep
