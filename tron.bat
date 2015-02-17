@@ -4,9 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.7.2 * stage_0_prep:sleep: Add disabling of system sleep when laptop lid closes (Vista and up). Thanks to /u/ComputersByte
-::                      * stage_0_prep:sleep: Remove redundant code block which tested for Windows XP and Server 2003 separately. Now test for both SKUs in one block
-::                      / stage_0_prep:wmi:   Move WMI repair four jobs earlier since so much depends on it functioning correctly. May pull it out of Stage 0 at some point and place it in pre-run prep and checks
+:: Version:       4.7.4 ! stage_0_prep:tdssk: Revert TDSSK to v3.0.0.42 due to many reports of script stalling at this point
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -58,7 +56,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 :: DRY_RUN               (-d)  = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)  = Accept EULA (suppress display of disclaimer warning screen)
 :: EMAIL_REPORT          (-er) = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
-:: PRESERVE_METRO_APPS   (-m)  = Don't remove stock Metro apps
+:: PRESERVE_METRO_APPS   (-m)  = Don't remove OEM Metro apps
 :: AUTO_SHUTDOWN         (-o)  = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p)  = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
@@ -102,8 +100,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.7.2
-set SCRIPT_DATE=2015-02-10
+set SCRIPT_VERSION=4.7.4
+set SCRIPT_DATE=2015-02-16
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -620,7 +618,7 @@ echo %CUR_DATE% %TIME%    Launch job 'rkill'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
 if /i %DRY_RUN%==no (
-	explore.exe -s -l "%TEMP%\tron_rkill.log"
+	explorer.exe -s -l "%TEMP%\tron_rkill.log"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tron_rkill.log"
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
@@ -699,7 +697,7 @@ echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...
 pushd tdss_killer
 if /i %DRY_RUN%==no (
-	"TDSSKiller v3.0.0.44.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
@@ -1053,6 +1051,7 @@ if /i %DRY_RUN%==no (
 	start "" "mbam.exe"
 	popd
 )
+popd
 
 
 :: JOB: Sophos Virus Remover
