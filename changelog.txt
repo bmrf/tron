@@ -16,10 +16,24 @@ Version number legend:
 
 
 ########################
+# v4.7.4 // 2015-02-16 #
+########################
+STAGE 0: Prep
+ ! TDSS Killer                   v3.0.0.42 // revert to previous version due to many reports of script stalling at this point
+
+
+########################
+# v4.7.3 // 2015-02-11 #
+########################
+STAGE 4: Patch
+ ! Fix missing Flash installers. Thanks to /u/KindOne and /u/techniforus
+
+
+########################
 # v4.7.2 // 2015-02-10 #
 ########################
 tron.bat                         v4.7.2
- * stage_0_prep:sleep: Add disabling of system sleep when laptop lid closes (Vista and up). Thanks to /u/ComputersByte
+ + stage_0_prep:sleep: Add disabling of system sleep when laptop lid closes (Vista and up). Thanks to /u/ComputersByte
  * stage_0_prep:sleep: Remove redundant code block which tested for Windows XP and Server 2003 separately. Now test for both SKUs in one block
  / stage_0_prep:wmi:   Move WMI repair four jobs earlier since so much depends on it functioning correctly. May pull it out of Stage 0 at some point and place it in pre-run prep and checks
 
