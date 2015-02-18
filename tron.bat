@@ -252,7 +252,6 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 
-
 :: PREP JOB: Update check
 pushd resources\stage_0_prep\check_update
 :: Skip this job if we're doing a dry run or if AUTORUN is set
@@ -623,7 +622,7 @@ echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
-pushd stage_0_prep\log_tools
+pushd log_tools
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 echo %CUR_DATE% %TIME%    Summary logs requested, generating pre-run system profile...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Summary logs requested, generating pre-run system profile...
@@ -653,8 +652,8 @@ echo %CUR_DATE% %TIME%    Launch job 'rkill'...
 pushd rkill
 if /i %DRY_RUN%==no (
 	explorer.exe -s -l "%TEMP%\tron_rkill.log"
-	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%"
-	del "%TEMP%\tron_rkill.log"
+	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 	)
 popd
@@ -1059,8 +1058,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: Check for -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if it was used
 if /i %SKIP_ANTIVIRUS_SCANS%==yes (
-	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set. Skipping Sophos, Vipre and MBAM scans...
+	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set ^(-sa^). Skipping Sophos, Vipre and MBAM scans...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   SKIP_ANTIVIRUS_SCANS set ^(-sa^). Skipping Sophos, Vipre and MBAM scans...
 	goto skip_antivirus_scans
 	)
 
@@ -1223,8 +1222,8 @@ if /i %DRY_RUN%==no (
 	
 :: Check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_PATCHES%". Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set to "%SKIP_PATCHES%". Skipping app patches...
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set ^(-sp^). Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES set ^(-sp^). Skipping app patches...
 	goto skip_patches
 	)
 	
@@ -1500,21 +1499,28 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
-pushd stage_0_prep\log_tools
+pushd resources\stage_0_prep\log_tools
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 echo %CUR_DATE% %TIME%    Summary logs requested, calculating post-run results...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Summary logs requested, calculating post-run results...
 	if /i %DRY_RUN%==no (
 		:: Get list of installed programs
 		pushd siv
-		siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-before.txt"
+			siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-after.txt"
 		popd
 		:: Get list of all files on system
 		pushd everything
-		everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-before.txt %SystemDrive%
+			everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-after.txt %SystemDrive%
 		popd
-		:: Call Cygwin to do the log parsing
-		"%cd%\cygwin\bin\bash" --login "%cd%\parse.sh"
+		:: Use GnuWin32 utils comm.exe to do the parsing
+		pushd comm
+			:: Find files that were deleted (second line is to strip everything trailing the first comma from the output)
+			comm.exe -23 %LOGPATH%\tron_raw_logs\filelist-before.txt %LOGPATH%\tron_raw_logs\filelist-after.txt | find /i /v "$RECYCLE" | find /i /v "AppData\" | find /i /v "ntuser.dat" > %TEMP%\temp.txt
+			for /f "tokens=1 delims=," %%a in (temp.txt) do (echo %%a >> %LOGPATH%\tron_summary_logs\tron_removed_files.txt)
+			:: Find programs that were removed
+			comm.exe -23 %LOGPATH%\tron_raw_logs\installed-programs-before.txt %LOGPATH%\tron_raw_logs\installed-programs-after.txt > %LOGPATH%\tron_summary_logs\tron_removed_programs.txt
+			del /f /q %TEMP%\temp.txt
+		popd
 	)
 echo %CUR_DATE% %TIME%    Done. Summary logs are at "%LOGPATH%\tron_summary_logs">> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done. Summary logs are at "%LOGPATH%\tron_summary_logs"
@@ -1593,7 +1599,7 @@ if /i %EMAIL_REPORT%==yes (
 	)
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
-
+popd
 
 
 :: Display and log the job summary
