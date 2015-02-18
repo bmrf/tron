@@ -27,9 +27,9 @@ I got tired of running these utilities manually and decided to just automate eve
 
 # USE
 
-1. Boot into Safe Mode with Network Support (Safe Mode is NOT required but is strongly recommended)
+1. Boot into Safe Mode with Network Support (Safe Mode is not required but is strongly recommended)
 
-2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron will refuse to run if you don't run as an Administrator)
+2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron does not work if you don't it run as an Administrator)
 
 3. Wait anywhere from **3-10 hours** (yes, it takes that long)
 
