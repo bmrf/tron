@@ -43,45 +43,47 @@ Tron will briefly check for a newer version when it starts up and notify you if 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -sp -sw -v -x] | [-h]
 
-    -a  Automatic mode (no welcome screen or prompts; implies -e)
+    -a   Automatic mode (no welcome screen or prompts; implies -e)
 
-    -c  Config dump (display current config. Can be used with other
-        flags to see what WOULD happen, but script will never execute
-        if this flag is used)
+    -c   Config dump (display current config. Can be used with other
+         flags to see what WOULD happen, but script will never execute
+         if this flag is used)
 
-    -d  Dry run (run through script without executing any jobs)
+    -d   Dry run (run through script without executing any jobs)
     
-    -e  Accept EULA (suppress display of disclaimer warning screen)
+    -e   Accept EULA (suppress disclaimer warning screen)
     
-    -er Email a report when finished. Requires you to configure SwithMailSettings.xml
-
-    -h  Display help text
+    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
     
-    -m  Preserve default Metro apps (don't remove them)
+    -gsl Generate summary logs in the LOGPATH that list removed files and programs
 
-    -o  Power off after running (overrides -r if used together)
-
-    -p  Preserve power settings (don't reset power settings to default)
+    -h   Display help text
     
-    -r  Reboot automatically (auto-reboot 30 seconds after completion)
+    -m   Preserve default Metro apps (don't remove them)
 
-    -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
+    -o   Power off after running (overrides -r)
+
+    -p   Preserve power settings (don't reset to Windows default)
     
-    -sb Skip de-bloat (OEM bloatware removal)
+    -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
-    -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
-
-    -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
-
-    -sw Skip Windows Updates (do not attempt to run Windows Update)
-
-    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
+    -sa  Skip anti-virus scans (Sophos, Vipre, MBAM)
     
-    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
+    -sb  Skip de-bloat (OEM bloatware removal; implies -m)
+
+    -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+
+    -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
+
+    -sw  Skip Windows Updates (do not attempt to run Windows Update)
+
+    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
+    
+    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
    
-\* There is no UPM flag
+\* There is no -UPM flag
 
 
 # SAFE MODE
