@@ -4,10 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.8.0 ! stage_3_disinfect: Critical bug fix; script was failing after MBAM after getting out of step with diretory structure due to missing popd statement. Thanks to /u/oromeo
-::                      + wrap-up:feature:   Add -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Use this to generate a separate summary logs in the LOGPATH directory. We'll try to enhance this in the next release to also show # of infected items if possible. Thanks to /u/Reverent and /u/upsurper
-::                      / stage_0_prep:log:  Tron now clears log file at each run instead of appending to it
-::                      / misc:              Reduce default delay when auto-reboot is used from 15 seconds to 15 seconds
+:: Version:       4.8.0 + wrap-up:feature:   Add -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Use this to generate separate summary logs in the LOGPATH directory (can help create an invoice).
+::                                           If EMAIL_REPORT (-er) was used, the summary logs will be attached to the email report. We'll try to enhance this in the next release to also show # of infected items if possible. Thanks to /u/Reverent and /u/upsurper
+::                      ! stage_3_disinfect: Critical bug fix; script was failing after MBAM due to getting out of step with diretory structure from a missing popd statement. Thanks to /u/oromeo
+::                      ! stage_6_wrap-up:   Fix bug where email report was sent even if DRY_RUN was set
+::                      ! misc:bugfix:       Fix many bugs and syntax errors
+::                      / stage_0_prep:log:  Clear log file at each run instead of appending to it
+::                      / misc:              Reduce default AUTO_REBOOT_DELAY from 30 to 15 seconds
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -18,7 +21,7 @@
 ::                      -d   Dry run (run through script without executing any jobs)
 ::                      -e   Accept EULA (suppress disclaimer warning screen)
 ::                      -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-::                      -gsl Generate summary logs in the LOGPATH that list removed files and programs
+::                      -gsl Generate summary logs. These specifically list removed files and programs
 ::                      -h   Display help text
 ::                      -m   Preserve OEM Metro apps (don't remove them)
 ::                      -o   Power off after running (overrides -r)
@@ -60,7 +63,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 :: DRY_RUN               (-d)   = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)   = Accept EULA (suppress disclaimer warning screen)
 :: EMAIL_REPORT          (-er)  = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
-:: GENERATE_SUMMARY_LOGS (-gsl) = Generate summary logs in the LOGPATH that list removed files and programs
+:: GENERATE_SUMMARY_LOGS (-gsl) = Generate summary logs. These specifically list removed files and programs
 :: PRESERVE_METRO_APPS   (-m)   = Don't remove OEM Metro apps
 :: AUTO_SHUTDOWN         (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
@@ -107,7 +110,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=4.8.0
-set SCRIPT_DATE=2015-02-xx
+set SCRIPT_DATE=2015-02-18
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -174,7 +177,7 @@ if /i %HELP%==yes (
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
 	echo    -e   Accept EULA ^(suppress disclaimer warning screen^)
 	echo    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-	echo	-gsl Generate summary logs in the LOGPATH that list removed files and programs
+	echo	-gsl Generate summary logs. These specifically list removed files and programs
 	echo    -m   Preserve OEM Metro apps ^(don't remove them^)
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
@@ -1222,8 +1225,8 @@ if /i %DRY_RUN%==no (
 	
 :: Check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set ^(-sp^). Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_PATCHES set ^(-sp^). Skipping app patches...
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES ^(-sp^) set. Skipping app patches...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_PATCHES ^(-sp^) set. Skipping app patches...
 	goto skip_patches
 	)
 	
@@ -1420,8 +1423,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "%SKIP_DEFRAG%". Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    SKIP_DEFRAG set to "%SKIP_DEFRAG%". Skipping defrag.
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag.
 	popd
 	goto :wrap-up
 	)
@@ -1484,11 +1487,11 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	echo %CUR_DATE% %TIME%    Resetting Windows power settings to defaults...
 	:: Check for Windows XP
 	if "%WIN_VER%"=="Microsoft Windows XP" (
-		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies
+		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies 2>NUL
 	) 
 	:: check for Windows Server 2003
 	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
-		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies
+		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies 2>NUL
 	) else (
 		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if /i %DRY_RUN%==no powercfg -restoredefaultschemes
@@ -1508,18 +1511,36 @@ echo %CUR_DATE% %TIME%    Summary logs requested, calculating post-run results..
 		pushd siv
 			siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-after.txt"
 		popd
-		:: Get list of all files on system
+		:: Get list of all files
 		pushd everything
 			everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-after.txt %SystemDrive%
 		popd
-		:: Use GnuWin32 utils comm.exe to do the parsing
+		:: Parse everything
 		pushd comm
-			:: Find files that were deleted (second line is to strip everything trailing the first comma from the output)
+			REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
 			comm.exe -23 %LOGPATH%\tron_raw_logs\filelist-before.txt %LOGPATH%\tron_raw_logs\filelist-after.txt | find /i /v "$RECYCLE" | find /i /v "AppData\" | find /i /v "ntuser.dat" > %TEMP%\temp.txt
-			for /f "tokens=1 delims=," %%a in (temp.txt) do (echo %%a >> %LOGPATH%\tron_summary_logs\tron_removed_files.txt)
-			:: Find programs that were removed
+			for /f "tokens=1 delims=," %%a in (%TEMP%\temp.txt) do echo %%a >> %LOGPATH%\tron_summary_logs\tron_removed_files.txt
+			
+			REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
+			REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
+			copy /y %LOGPATH%\tron_raw_logs\installed-programs-before.txt %LOGPATH%\tron_raw_logs\before.txt >NUL
+			for /f "delims=" %%a in (%LOGPATH%\tron_raw_logs\before.txt) do echo %%a>> %LOGPATH%\tron_raw_logs\before1.txt
+			more +3 %LOGPATH%\tron_raw_logs\before1.txt >> %LOGPATH%\tron_raw_logs\before2.txt
+			findstr /v /i "[==" %LOGPATH%\tron_raw_logs\before2.txt > %LOGPATH%\tron_raw_logs\installed-programs-before.txt
+
+			REM AFTER: Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
+			copy /y %LOGPATH%\tron_raw_logs\installed-programs-after.txt %LOGPATH%\tron_raw_logs\after.txt >NUL
+			for /f "delims=" %%a in (%LOGPATH%\tron_raw_logs\after.txt) do echo %%a>> %LOGPATH%\tron_raw_logs\after1.txt
+			more +3 %LOGPATH%\tron_raw_logs\after1.txt >> %LOGPATH%\tron_raw_logs\after2.txt
+			findstr /v /i "[==" %LOGPATH%\tron_raw_logs\after2.txt > %LOGPATH%\tron_raw_logs\installed-programs-after.txt
+			
+			REM Calculate the differences, using GnuWin32 coreutil's comm.exe
 			comm.exe -23 %LOGPATH%\tron_raw_logs\installed-programs-before.txt %LOGPATH%\tron_raw_logs\installed-programs-after.txt > %LOGPATH%\tron_summary_logs\tron_removed_programs.txt
-			del /f /q %TEMP%\temp.txt
+			
+			REM Cleanup
+			del /f /q %TEMP%\temp.txt 2>NUL
+			del /f /q %LOGPATH%\tron_raw_logs\before*txt 2>NUL
+			del /f /q %LOGPATH%\tron_raw_logs\after*txt 2>NUL
 		popd
 	)
 echo %CUR_DATE% %TIME%    Done. Summary logs are at "%LOGPATH%\tron_summary_logs">> "%LOGPATH%\%LOGFILE%"
@@ -1538,8 +1559,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
-echo %CUR_DATE% %TIME%   DONE. Use tools in \resources\stage_7_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   DONE. Use tools in \resources\stage_7_manual_tools if further cleaning is required.
+echo %CUR_DATE% %TIME%   DONE. Use \resources\stage_7_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
 
 
 :: JOB: Calculate saved disk space
@@ -1568,38 +1589,23 @@ if /i %AUTO_SHUTDOWN%==yes (
 )
 
 
+:: Pretend to send the email report. We don't actually send the report here since we need the log trailer which is created below,
+:: so we just pretend to send it then actually send it after the log trailer has been created
+if /i %EMAIL_REPORT%==yes (
+	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...
+	ping localhost -n 5 >NUL
+	echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%   Done.
+)
+
+
 :: Check if self-destruct was set
 if /i %SELF_DESTRUCT%==yes (
 	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...
 )
 
-
-:: JOB: Send the email report if it was requested
-:: This line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
-set ARGUMENTS='%*'
-SETLOCAL ENABLEDELAYEDEXPANSION
-if /i %EMAIL_REPORT%==yes (
-	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...
-	pushd resources\stage_6_wrap-up\email_report
-	
-	:: Run this if summary logs weren't requested
-	if /i %GENERATE_SUMMARY_LOGS%==no SwithMail.exe /s /x "SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
-	
-	:: Run this if summary logs were requested
-	if /i %GENERATE_SUMMARY_LOGS%==yes SwithMail.exe /s /x "SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%^|%LOGPATH%\tron_summary_logs\tron_removed_files.txt|%LOGPATH%\tron_summary_logs\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
-
-	if %ERRORLEVEL%==0 (
-		echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
-		echo %CUR_DATE% %TIME%   Done.
-	) else (
-		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.>> "%LOGPATH%\%LOGFILE%"
-		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.
-	)
-)
-ENDLOCAL DISABLEDELAYEDEXPANSION
-popd
 
 
 :: Display and log the job summary
@@ -1625,7 +1631,33 @@ echo ---------------------------------------------------------------------------
 echo -------------------------------------------------------------------------------
 
 
-:: Skip all this if we're doing a dry run
+:: JOB: Actually send the email report if it was requested
+:: This line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
+set ARGUMENTS='%*'
+SETLOCAL ENABLEDELAYEDEXPANSION
+if /i %EMAIL_REPORT%==yes (
+	pushd resources\stage_6_wrap-up\email_report
+	if /i %DRY_RUN%==no (
+		:: Run this if summary logs weren't requested
+		if /i %GENERATE_SUMMARY_LOGS%==no SwithMail.exe /s /x "SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+	
+		:: Run this if summary logs were requested
+		if /i %GENERATE_SUMMARY_LOGS%==yes SwithMail.exe /s /x "SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%LOGPATH%\tron_summary_logs\tron_removed_files.txt|%LOGPATH%\tron_summary_logs\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+
+		if %ERRORLEVEL%==0 (
+			echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
+			echo %CUR_DATE% %TIME%   Done.
+		) else (
+			echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.>> "%LOGPATH%\%LOGFILE%"
+			echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.
+		)
+	)
+)
+ENDLOCAL DISABLEDELAYEDEXPANSION
+popd
+
+
+:: Skip this last bit if we're doing a dry run
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 
 :: Perform reboot if requested
