@@ -4,29 +4,33 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.7.4 ! stage_0_prep:tdssk: Revert TDSSK to v3.0.0.42 due to many reports of script stalling at this point
+:: Version:       4.8.0 ! stage_3_disinfect: Critical bug fix; script was failing after MBAM after getting out of step with diretory structure due to missing popd statement. Thanks to /u/oromeo
+::                      + wrap-up:feature:   Add -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Use this to generate a separate summary logs in the LOGPATH directory. We'll try to enhance this in the next release to also show # of infected items if possible. Thanks to /u/Reverent and /u/upsurper
+::                      / stage_0_prep:log:  Tron now clears log file at each run instead of appending to it
+::                      / misc:              Reduce default delay when auto-reboot is used from 15 seconds to 15 seconds
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
-::                      -a  Automatic mode (no welcome screen or prompts; implies -e)
-::                      -c  Config dump (display config. Can be used with other flags to see what
-::                          WOULD happen, but script will never execute if this flag is used)
-::                      -d  Dry run (run through script without executing any jobs)
-::                      -e  Accept EULA (suppress display of disclaimer warning screen)
-::                      -er Email a report when finished. Requires you to configure SwithMailSettings.xml
-::                      -h  Display help text
-::                      -m  Preserve OEM Metro apps (don't remove them)
-::                      -o  Power off after running (overrides -r)
-::                      -p  Preserve power settings (don't reset to Windows default)
-::                      -r  Reboot (auto-reboot 30 seconds after completion)
-::                      -sa Skip anti-virus scans (Sophos, Vipre, MBAM)
-::                      -sb Skip de-bloat (OEM bloatware removal; implies -m)
-::                      -sd Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
-::                      -sp Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
-::                      -sw Skip Windows Updates (do not attempt to run Windows Update)
-::                      -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
-::                      -x  Self-destruct. Tron deletes itself after running and leaves logs intact
+::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
+::                      -c   Config dump (display config. Can be used with other flags to see what
+::                           WOULD happen, but script will never execute if this flag is used)
+::                      -d   Dry run (run through script without executing any jobs)
+::                      -e   Accept EULA (suppress disclaimer warning screen)
+::                      -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
+::                      -gsl Generate summary logs in the LOGPATH that list removed files and programs
+::                      -h   Display help text
+::                      -m   Preserve OEM Metro apps (don't remove them)
+::                      -o   Power off after running (overrides -r)
+::                      -p   Preserve power settings (don't reset to Windows default)
+::                      -r   Reboot (auto-reboot 15 seconds after completion)
+::                      -sa  Skip anti-virus scans (Sophos, Vipre, MBAM)
+::                      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
+::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
+::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
+::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
+::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
 
@@ -52,25 +56,27 @@ set LOGFILE=tron.log
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 
 :: ! All variables here are overridden if their respective command-line flag is used
-:: AUTORUN               (-a)  = Automatic execution (no welcome screen or prompts), implies -e
-:: DRY_RUN               (-d)  = Run through script but skip all actual actions (test mode)
-:: EULA_ACCEPTED         (-e)  = Accept EULA (suppress display of disclaimer warning screen)
-:: EMAIL_REPORT          (-er) = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
-:: PRESERVE_METRO_APPS   (-m)  = Don't remove OEM Metro apps
-:: AUTO_SHUTDOWN         (-o)  = Shutdown after the finishing. Overrides auto-reboot
-:: PRESERVE_POWER_SCHEME (-p)  = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
-:: AUTO_REBOOT_DELAY     (-r)  = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_ANTIVIRUS_SCANS  (-sa) = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
-:: SKIP_DEBLOAT          (-sb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
-:: SKIP_DEFRAG           (-sd) = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
-:: SKIP_PATCHES          (-sp) = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
-:: SKIP_WINDOWS_UPDATES  (-sw) = Set to yes to skip Windows Updates
-:: VERBOSE               (-v)  = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
-:: SELF_DESTRUCT         (-x)  = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
+:: AUTORUN               (-a)   = Automatic execution (no welcome screen or prompts), implies -e
+:: DRY_RUN               (-d)   = Run through script but skip all actual actions (test mode)
+:: EULA_ACCEPTED         (-e)   = Accept EULA (suppress disclaimer warning screen)
+:: EMAIL_REPORT          (-er)  = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
+:: GENERATE_SUMMARY_LOGS (-gsl) = Generate summary logs in the LOGPATH that list removed files and programs
+:: PRESERVE_METRO_APPS   (-m)   = Don't remove OEM Metro apps
+:: AUTO_SHUTDOWN         (-o)   = Shutdown after the finishing. Overrides auto-reboot
+:: PRESERVE_POWER_SCHEME (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: AUTO_REBOOT_DELAY     (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
+:: SKIP_ANTIVIRUS_SCANS  (-sa)  = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
+:: SKIP_DEBLOAT          (-sb)  = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
+:: SKIP_DEFRAG           (-sd)  = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
+:: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
+:: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
+:: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
+:: SELF_DESTRUCT         (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
 set EULA_ACCEPTED=no
 set EMAIL_REPORT=no
+set GENERATE_SUMMARY_LOGS=no
 set PRESERVE_METRO_APPS=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
@@ -87,9 +93,9 @@ set SELF_DESTRUCT=no
 
 
 
-:: ------------------------------------------------------------------------------------------------- ::
-:: ---------------- Don't edit anything below this line lest you awaken the Balrog ----------------- ::
-:: ------------------------------------------------------------------------------------------------- ::
+:: --------------------------------------------------------------------------------------------------- ::
+:: ----------------- Don't edit anything below this line lest you awaken the Balrog ------------------ ::
+:: --------------------------------------------------------------------------------------------------- ::
 
 
 
@@ -100,8 +106,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.7.4
-set SCRIPT_DATE=2015-02-16
+set SCRIPT_VERSION=4.8.0
+set SCRIPT_DATE=2015-02-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -135,11 +141,12 @@ for %%i in (%*) do (
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-e set EULA_ACCEPTED=yes
 	if /i %%i==-er set EMAIL_REPORT=yes
+	if /i %%i==-gsl set GENERATE_SUMMARY_LOGS=yes
 	if /i %%i==-h set HELP=yes
 	if /i %%i==-m set PRESERVE_METRO_APPS=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
-	if /i %%i==-r set AUTO_REBOOT_DELAY=30
+	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
@@ -158,29 +165,30 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
-	echo    -a  Automatic mode ^(no welcome screen or prompts; implies -e^)
- 	echo    -c  Config dump ^(display config. Can be used with other flags to see what
-	echo        WOULD happen, but script will never execute if this flag is used^)
-	echo    -d  Dry run ^(run through script but don't execute any jobs^)
-	echo    -e  Accept EULA ^(suppress display of disclaimer warning screen^)
-	echo    -er Email a report when finished. Requires you to configure SwithMailSettings.xml
-	echo    -m  Preserve OEM Metro apps ^(don't remove them^)
-	echo    -o  Power off after running ^(overrides -r^)
-	echo    -p  Preserve power settings ^(don't reset to Windows default^)
-	echo    -r  Reboot automatically ^(auto-reboot 30 seconds after completion^)
-	echo    -sa Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
-	echo    -sb Skip de-bloat ^(OEM bloatware removal; implies -m^)
-	echo    -sd Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
-	echo    -sp Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
-	echo    -sw Skip Windows Updates ^(do not attempt to run Windows Update^)
-	echo    -v  Verbose. Show as much output as possible. NOTE: Significantly slower!
-	echo    -x  Self-destruct. Tron deletes itself after running and leaves logs intact
+	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
+ 	echo    -c   Config dump ^(display config. Can be used with other flags to see what
+	echo         WOULD happen, but script will never execute if this flag is used^)
+	echo    -d   Dry run ^(run through script but don't execute any jobs^)
+	echo    -e   Accept EULA ^(suppress disclaimer warning screen^)
+	echo    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
+	echo	-gsl Generate summary logs in the LOGPATH that list removed files and programs
+	echo    -m   Preserve OEM Metro apps ^(don't remove them^)
+	echo    -o   Power off after running ^(overrides -r^)
+	echo    -p   Preserve power settings ^(don't reset to Windows default^)
+	echo    -r   Reboot automatically ^(auto-reboot 15 seconds after completion^)
+	echo    -sa  Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
+	echo    -sb  Skip de-bloat ^(OEM bloatware removal; implies -m^)
+	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
+	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
+	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
+	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
 	echo   Misc flags ^(must be used alone^)
-	echo    -h  Display this help text
+	echo    -h   Display this help text
 	echo.
 	exit /b 0
 	)
@@ -350,6 +358,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
+	echo	GENERATE_SUMMARY_LOGS:  %GENERATE_SUMMARY_LOGS%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
@@ -580,7 +589,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep]
 
 :: Make log directory and file if they don't already exist
 if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
-if /i not exist "%LOGPATH%\%LOGFILE%" echo. > "%LOGPATH%\%LOGFILE%"
+echo. > "%LOGPATH%\%LOGFILE%"
 
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
@@ -611,6 +620,31 @@ echo ---------------------------------------------------------------------------
 pushd resources\stage_0_prep
 echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...
+
+
+:: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
+pushd stage_0_prep\log_tools
+if /i %GENERATE_SUMMARY_LOGS%==yes (
+echo %CUR_DATE% %TIME%    Summary logs requested, generating pre-run system profile...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Summary logs requested, generating pre-run system profile...
+	if /i %DRY_RUN%==no (
+		:: Stage the directories
+		if /i not exist "%LOGPATH%\tron_raw_logs" mkdir "%LOGPATH%\tron_raw_logs"
+		if /i not exist "%LOGPATH%\tron_summary_logs" mkdir "%LOGPATH%\tron_summary_logs"
+		:: Get list of installed programs
+		pushd siv
+		siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-before.txt"
+		popd
+		:: Get list of all files on system
+		pushd everything
+		everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-before.txt %SystemDrive%
+		popd
+	)
+)
+popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+
 
 
 :: JOB: rkill
@@ -881,14 +915,14 @@ pushd backup_and_clear_windows_event_logs
 if /i not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Saving logs to "%LOGPATH%\tron_event_log_backups" first...
-:: Backup all logs first. We redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
+:: Backup all logs first. Redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%LOGPATH%\tron_event_log_backups\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 ENDLOCAL DISABLEDELAYEDEXPANSION
 echo %CUR_DATE% %TIME%    Backups done, now clearing...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Backups done, now clearing...
-:: Now we clear the logs
+:: Clear the logs
 if /i %DRY_RUN%==no %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
 :: Alternate Vista-and-up only method
 :: if /i %DRY_RUN%==no for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
@@ -998,6 +1032,7 @@ echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
 :skip_debloat
 
 
+
 ::::::::::::::::::::::::
 :: STAGE 3: Disinfect ::
 ::::::::::::::::::::::::
@@ -1010,8 +1045,8 @@ echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...
 
 :: JOB: RogueKiller
 :: Thanks to /u/bodkov for suggestion
-echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (slow, be patient)...
+echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (SLOW, be patient)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'RogueKiller' (SLOW, be patient)...
 pushd roguekiller
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo remove| RogueKillerCMD.exe -scan remove
@@ -1031,8 +1066,8 @@ if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
-echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...>>"%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Launch job 'Malwarebytes Anti-Malware', continuing other jobs...
+echo %CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'...>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'...
 pushd mbam
 :: Install MBAM & remove the desktop icon
 if /i %DRY_RUN%==no ( 
@@ -1052,6 +1087,10 @@ if /i %DRY_RUN%==no (
 	popd
 )
 popd
+echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done.
+echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window!>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window!
 
 
 :: JOB: Sophos Virus Remover
@@ -1162,6 +1201,7 @@ echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.
 :: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug.
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
 
 
 ::::::::::::::::::::::
@@ -1346,6 +1386,7 @@ echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
 
 
+
 :::::::::::::::::::::::
 :: STAGE 5: Optimize ::
 :::::::::::::::::::::::
@@ -1410,6 +1451,7 @@ echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.>> "%LOGPATH%\%LOGFILE%
 echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
 
 
+
 :::::::::::::
 :: Wrap-up ::
 :::::::::::::
@@ -1417,7 +1459,7 @@ echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
 echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Wrapping up...
 
-:: If selected, import the original power settings, re-activate them, and delete the backup
+:: JOB: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	echo %CUR_DATE% %TIME%    Restoring power settings to previous values...>> "%LOGPATH%\%LOGFILE%"
@@ -1452,23 +1494,56 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if /i %DRY_RUN%==no powercfg -restoredefaultschemes
 	)
+	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    Done.
 )
 
+
+:: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
+pushd stage_0_prep\log_tools
+if /i %GENERATE_SUMMARY_LOGS%==yes (
+echo %CUR_DATE% %TIME%    Summary logs requested, calculating post-run results...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Summary logs requested, calculating post-run results...
+	if /i %DRY_RUN%==no (
+		:: Get list of installed programs
+		pushd siv
+		siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-before.txt"
+		popd
+		:: Get list of all files on system
+		pushd everything
+		everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-before.txt %SystemDrive%
+		popd
+		:: Call Cygwin to do the log parsing
+		"%cd%\cygwin\bin\bash" --login "%cd%\parse.sh"
+	)
+echo %CUR_DATE% %TIME%    Done. Summary logs are at "%LOGPATH%\tron_summary_logs">> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Done. Summary logs are at "%LOGPATH%\tron_summary_logs"
+)
+popd
+
+
+:: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
+echo %CUR_DATE% %TIME%    Saving misc logs to "%LOGPATH%\tron_raw_logs"...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Saving misc logs to "%LOGPATH%\tron_raw_logs"
+if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%LOGPATH%\tron_raw_logs" >NUL
+if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%LOGPATH%\tron_raw_logs" >NUL
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
-:: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
-echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Collecting misc logs and dumping them in "%LOGPATH%"
-if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%LOGPATH%" >NUL
-if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%LOGPATH%" >NUL
-echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Done.
-	
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
 echo %CUR_DATE% %TIME%   DONE. Use tools in \resources\stage_7_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   DONE. Use tools in \resources\stage_7_manual_tools if further cleaning is required.
+
+
+:: JOB: Calculate saved disk space
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+:: GB version
+::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+:: MB version
+set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
+set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
@@ -1479,11 +1554,13 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	echo %CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds.
 	)
 
+
 :: Check if shutdown was requested
 if /i %AUTO_SHUTDOWN%==yes (
 	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
 )
+
 
 :: Check if self-destruct was set
 if /i %SELF_DESTRUCT%==yes (
@@ -1491,28 +1568,26 @@ if /i %SELF_DESTRUCT%==yes (
 	echo %CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye...
 )
 
-:: Calculate saved disk space
-for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
-:: GB version
-::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
-:: MB version
-set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
-set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
-
-:: Email report if it was requested
-:: This line needed for param5 (/p5)
+:: JOB: Send the email report if it was requested
+:: This line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
 set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%   Email report requested. Sending report now...
 	pushd resources\stage_6_wrap-up\email_report
-	SwithMail.exe /s /x "SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+	
+	:: Run this if summary logs weren't requested
+	if /i %GENERATE_SUMMARY_LOGS%==no SwithMail.exe /s /x "SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+	
+	:: Run this if summary logs were requested
+	if /i %GENERATE_SUMMARY_LOGS%==yes SwithMail.exe /s /x "SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%^|%LOGPATH%\tron_summary_logs\tron_removed_files.txt|%LOGPATH%\tron_summary_logs\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+
 	if %ERRORLEVEL%==0 (
 		echo %CUR_DATE% %TIME%   Done.>> "%LOGPATH%\%LOGFILE%"
 		echo %CUR_DATE% %TIME%   Done.
-		) else (
+	) else (
 		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.>> "%LOGPATH%\%LOGFILE%"
 		echo %CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings.
 	)
