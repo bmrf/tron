@@ -98,7 +98,7 @@ To have Tron send an email report at completion, edit this file:
 
     \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
     
-Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report.
+Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. If you used the -gsl flag (generate summary logs) then `tron_removed_files.txt` and `tron_removed_programs.txt` will be attached as well.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
@@ -108,25 +108,22 @@ Keep in mind the username and password for the email account will be stored in P
 If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option.
 
 - To change log location, edit these lines:
-
   ```
   set LOGPATH=%SystemDrive%\Logs
   set LOGFILE=tron.log
   ```
   
-- To change where Tron stores quarantined files, change this path (note: this is currently unused by Tron, so setting it has no effect):
+- To change where Tron stores quarantined files, change this path (note: this is currently unused by Tron, setting it has no effect):
   ```
   set QUARANTINE_PATH=C:\path\to\your\desired\folder
   ```
 
 - To always run automatically (no welcome screen, implies acceptance of EULA), change this to `yes`:
-
   ```
   set AUTORUN=no
   ```
 
 - To always do a dry run (don't actually execute jobs), change this to `yes`:
-
   ```
   set DRY_RUN=no
   ```
@@ -136,68 +133,67 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set EULA_ACCEPTED=no
   ```
 
-- To preserve default Metro apps (don't remove them), change this to `yes`:
+- To have Tron send an email report when finished, change this to `yes`:
+  ```
+  set EMAIL_REPORT=no
+  ```
+
+- To have Tron generate summary logs (listing deleted files and removed programs), change this to `yes`:
+  ```
+  set GENERATE_SUMMARY_LOGS=no
+  ```
   
+- To preserve default Metro apps (don't remove them), change this to `yes`:
   ```
   set PRESERVE_METRO_APPS=no
   ```
 
 - To shut down the computer when Tron is finished, change this to `yes`:
-
   ```
   set AUTO_SHUTDOWN=no
   ```
 
 - To preserve the power scheme (instead of resetting to Windows defaults), change this to `yes`:
-  
   ```
   set PRESERVE_POWER_SCHEME=no
   ```
 
 - To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
-
   ```
   set AUTO_REBOOT_DELAY=0
   ```
   
 - To skip anti-virus scan engines (Sophos, Vipre, MBAM), change this to `yes`:
-
   ```
   set SKIP_ANTIVIRUS_SCANS=no
   ```
 
 - To skip OEM debloat, change this to `yes`:
-  
   ```     
   set SKIP_DEBLOAT=no
   ```
   
 - To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
-
   ```
   set SKIP_DEFRAG=no
   ```
 
 - To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
-
   ```
   set SKIP_PATCHES=no
   ```
 
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
-  
   ```
   set SKIP_WINDOWS_UPDATES=no
   ```
   
 - To display as much output as possible (verbose), change this to `yes`:
-
   ```
   set VERBOSE=no
   ```
 
 - To have Tron delete itself after running (self-destruct), change this to `yes`:
-
   ```
   set SELF_DESTRUCT=no
   ```
@@ -350,6 +346,7 @@ Tron installs or updates these programs:
 
 1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
 
+2. **generate summary logs**: If selected with -gsr flag or GENERATE_SUMMARY_LOGS variable, Tron will generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`
 
 ## STAGE 7: Manual tools
 Tron does not run these automatically because most of them don't support command-line use.
