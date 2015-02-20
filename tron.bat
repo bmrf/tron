@@ -797,8 +797,8 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	powercfg /EXPORT %LOGPATH%\tron_power_config_backup.pow !POWER_SCHEME!
 	:: Set the "High Performance" scheme active
 	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-	echo %CUR_DATE% %TIME%    %WIN_VER% detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    %WIN_VER% detected, disabling system sleep on laptop lid close...
+	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
 	:: Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
 	:: OK, this line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting here, as follows:
 	::	1st: Master GUID of the "High Performance" power scheme
