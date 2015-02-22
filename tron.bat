@@ -4,13 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.8.0 + wrap-up:feature:   Add -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Use this to generate separate summary logs in the LOGPATH directory (can help create an invoice).
-::                                           If EMAIL_REPORT (-er) was used, the summary logs will be attached to the email report. We'll try to enhance this in the next release to also show # of infected items if possible. Thanks to /u/Reverent and /u/upsurper
-::                      ! stage_3_disinfect: Critical bug fix; script was failing after MBAM due to getting out of step with diretory structure from a missing popd statement. Thanks to /u/oromeo
-::                      ! stage_6_wrap-up:   Fix bug where email report was sent even if DRY_RUN was set
-::                      ! misc:bugfix:       Fix many bugs and syntax errors
-::                      / stage_0_prep:log:  Clear log file at each run instead of appending to it
-::                      / misc:              Reduce default AUTO_REBOOT_DELAY from 30 to 15 seconds
+:: Version:       4.8.1 ! stage_0_prep:power: Fix crash condition on Vista Home Premium if the -p (preserve power settings) flag was used. Thanks to /u/XtraSharp for a) being brave enough to touch a Vista Home Premium system and b) finding this obscure crash condition. Ten points
+::                      / stage_4_patch:dism: Remove tron_dism_base_reset.log and tron_dism.log instead of leaving them around after adding to the main log file
+::                      
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -109,8 +105,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.8.0
-set SCRIPT_DATE=2015-02-18
+set SCRIPT_VERSION=4.8.1
+set SCRIPT_DATE=2015-02-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -771,8 +767,8 @@ echo %CUR_DATE% %TIME%    Disabling Sleep mode...
 pushd disable_sleep
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 
-echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Exporting current power scheme and switching to Always On...
+echo %CUR_DATE% %TIME%    Exporting power scheme and switching to Always On...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Exporting power scheme and switching to Always On...
 
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -791,19 +787,20 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	:: All other versions of Windows
 	:: Extract the line containing the current power GUID
 	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
-	:: Parse out just the GUID and stash it in a variable
+	:: Parse out the GUID and stash it in a variable
 	set POWER_SCHEME=!t:~19,36!
 	:: Export the power scheme based on this GUID
 	powercfg /EXPORT %LOGPATH%\tron_power_config_backup.pow !POWER_SCHEME!
 	:: Set the "High Performance" scheme active
 	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	:: We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh. Thanks to /u/XtraSharp for finding this rare and exclusive crash condition. Five points
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
 	:: Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	:: OK, this line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting here, as follows:
+	:: This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting here, as follows:
 	::	1st: Master GUID of the "High Performance" power scheme
 	::	2nd: Subgroup GUID of the "Power buttons and lid" category
-	::	3rd: Specific "Lid close action" power setting GUID
+	::	3rd: Specific GUID for the "Lid close action" power setting
 	::	4th: Action code for "Do nothing"
 	powercfg -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000
 	)
@@ -960,7 +957,7 @@ echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
 :::::::::::::::::::::::
 :stage_2_de-bloat
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
-if %SKIP_DEBLOAT%==yes (
+if /i %SKIP_DEBLOAT%==yes (
 	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs...
 	goto skip_debloat
@@ -1100,6 +1097,7 @@ echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patie
 echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
 echo %CUR_DATE% %TIME%    Scan in progress. Output reduced by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Scan in progress. Output reduced by default (use -v to show)...
+echo.
 pushd sophos_virus_remover
 if /i %DRY_RUN%==no (
 	if exist %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log del /f /q %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log 2>NUL
@@ -1146,10 +1144,12 @@ if /i %DRY_RUN%==yes goto skip_dism_image_check
 if "%WIN_VER:~0,9%"=="Windows Server 2012" (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
 	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+	del /f /q "%LOGPATH%\tron_dism.log"
 	)
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
 	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
+	del /f /q "%LOGPATH%\tron_dism.log"
 	)
 
 :: If we detect errors, try to repair them
@@ -1376,6 +1376,7 @@ if /i %DRY_RUN%==no (
 		if /i not "%WIN_VER:~0,11%"=="Windows V" (
 			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log"
 			type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+			del /f /q "%LOGPATH%\tron_dism_base_reset.log"
 			)
 		)
 	)
@@ -1475,6 +1476,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
 			if /i %DRY_RUN%==no powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
 			if /i %DRY_RUN%==no powercfg /setactive "%POWER_SCHEME%"
+
 	) else (
 		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if /i %DRY_RUN%==no powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
@@ -1621,6 +1623,7 @@ echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%>> %LOGPAT
 echo                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%
 echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB>> %LOGPATH%\%LOGFILE%
 echo                          Free space before Tron run: %FREE_SPACE_BEFORE% MB
+
 echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB>> %LOGPATH%\%LOGFILE%
 echo                          Free space after Tron run:  %FREE_SPACE_AFTER% MB
 echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB>> %LOGPATH%\%LOGFILE%
@@ -1679,3 +1682,4 @@ if /i %SELF_DESTRUCT%==yes (
 :end_and_skip_shutdown
 pause
 color
+ENDLOCAL
