@@ -43,7 +43,7 @@ Tron will briefly check for a newer version when it starts up and notify you if 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -sp -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -74,6 +74,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 
     -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+    
+    -se  Skip Event Log clear (don't clear Windows Event Logs)
 
     -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 
@@ -175,9 +177,14 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_DEBLOAT=no
   ```
   
-- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this line to read `yes`:
+- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this to `yes`:
   ```
   set SKIP_DEFRAG=no
+  ```
+  
+- To skip Windows Event Log clearing, change this to `yes`:
+  ```
+  set SKIP_EVENT_LOG_CLEAR=no
   ```
 
 - To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
