@@ -4,8 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.8.1 ! stage_0_prep:power: Fix crash condition on Vista Home Premium if the -p (preserve power settings) flag was used. Thanks to /u/XtraSharp for a) being brave enough to touch a Vista Home Premium system and b) finding this obscure crash condition. Ten points
-::                      / stage_4_patch:dism: Remove tron_dism_base_reset.log and tron_dism.log instead of leaving them around after adding to the main log file
+:: Version:       4.9.0 + FEATURE:                Add -se flag and associated SKIP_EVENT_LOG_CLEAR variable. Use these to prevent Tron from backing up and clearing the Windows Event Logs. Thanks to /u/auldnic
+::                      ! stage_0_prep:power:     Fix crash condition on Vista Home Premium if the -p (preserve power settings) flag was used. Thanks to /u/XtraSharp for being brave enough to touch Vista Home Premium and finding this obscure crash condition
+::                      * stage_0_prep:update:    Change update checker to use HTTPS URL. Thanks to /u/SGC-Hosting for providing an SSL certificate!
+::                      ! stage_3_disinfect:dism: Fix bug where Tron would get out of step with directory structure due to extra popd statement
+::                      / stage_4_patch:dism:     Remove tron_dism_base_reset.log and tron_dism.log instead of leaving them around after adding to the main log file
 ::                      
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -26,6 +29,7 @@
 ::                      -sa  Skip anti-virus scans (Sophos, Vipre, MBAM)
 ::                      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -se  Skip Event Log clearing
 ::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -67,6 +71,7 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 :: SKIP_ANTIVIRUS_SCANS  (-sa)  = Set to yes to skip anti-virus scanners (Sophos, Vipre, MBAM)
 :: SKIP_DEBLOAT          (-sb)  = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG           (-sd)  = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
+:: SKIP_EVENT_LOG_CLEAR  (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
 :: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, Vipre, etc). NOTE: This is often much slower
@@ -83,6 +88,7 @@ set AUTO_REBOOT_DELAY=0
 set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
+set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_PATCHES=no
 set SKIP_WINDOWS_UPDATES=no
 set VERBOSE=no
@@ -105,8 +111,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.8.1
-set SCRIPT_DATE=2015-02-xx
+set SCRIPT_VERSION=4.9.0
+set SCRIPT_DATE=2015-02-25
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -115,7 +121,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
 set CONFIG_DUMP=no
-set REPO_URL=http://bmrf.org/repos/tron
+set REPO_URL=https://www.bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_DATE=0
 set REPO_SCRIPT_VERSION=0
@@ -149,6 +155,7 @@ for %%i in (%*) do (
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
+	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-v set VERBOSE=yes
@@ -164,7 +171,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/sysadmin
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -sp -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -173,7 +180,7 @@ if /i %HELP%==yes (
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
 	echo    -e   Accept EULA ^(suppress disclaimer warning screen^)
 	echo    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-	echo	-gsl Generate summary logs. These specifically list removed files and programs
+	echo    -gsl Generate summary logs. These specifically list removed files and programs
 	echo    -m   Preserve OEM Metro apps ^(don't remove them^)
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
@@ -181,6 +188,7 @@ if /i %HELP%==yes (
 	echo    -sa  Skip anti-virus scans ^(Sophos, Vipre, MBAM^)
 	echo    -sb  Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -se  Skip Event Log clearing
 	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -258,7 +266,7 @@ if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
 
 :: Use wget to fetch sha256sums.txt from the repo and parse through it. Extract latest version number and release date from last line (which is always the latest release)
-wget %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
+wget --no-check-certificate %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if /i %ERRORLEVEL%==0 (
 	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
@@ -366,6 +374,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
+	echo	SKIP_EVENT_LOG_CLEAR:	%SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
@@ -474,7 +483,7 @@ if "%SAFE_MODE%"=="no" (
 		if "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
 	)
 if /i not "%SKIP_DEFRAG%"=="no" (
-	echo  ! SKIP_DEFRAG set^; skipping stage_5_optimize ^(defrag^)
+	echo  ! SKIP_DEFRAG set^; skipping stage 5 defrag
 	echo    Runtime estimate:        4-6 hours
 	goto welcome_screen_trailer
 	)
@@ -616,8 +625,8 @@ echo ---------------------------------------------------------------------------
 :::::::::::::::::::
 :stage_0_prep
 pushd resources\stage_0_prep
-echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_0_prep jobs...
+echo %CUR_DATE% %TIME%   stage_0_prep jobs begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_0_prep jobs begin...
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
@@ -831,8 +840,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
+echo %CUR_DATE% %TIME%   stage_0_prep jobs complete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_0_prep jobs complete.
 
 
 ::::::::::::::::::::::::
@@ -841,8 +850,8 @@ echo %CUR_DATE% %TIME%   Completed stage_0_prep jobs.
 :stage_1_tempclean
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 pushd resources\stage_1_tempclean
-echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_1_tempclean jobs...
+echo %CUR_DATE% %TIME%   stage_1_tempclean jobs begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_1_tempclean jobs begin...
 
 
 :: JOB: Clean Internet Explorer; Windows' built-in method
@@ -909,6 +918,11 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Clear Windows event logs
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'...
+if /i %SKIP_EVENT_LOG_CLEAR%==yes (
+	echo %CUR_DATE% %TIME%  ! SKIP_EVENT_LOG_CLEAR set ^(-se^). Skipping Event Log clear...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%  ! SKIP_EVENT_LOG_CLEAR set ^(-se^). Skipping Event Log clear...
+	goto skip_event_log_clear
+	)
 pushd backup_and_clear_windows_event_logs
 :: Make a subdirectory in the logpath for the Windows event log backups
 if /i not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
@@ -927,6 +941,7 @@ if /i %DRY_RUN%==no %WMIC% nteventlog where "filename like '%%'" cleareventlog >
 :: if /i %DRY_RUN%==no for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 
 popd
+:skip_event_log_clear
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
@@ -948,8 +963,8 @@ echo %CUR_DATE% %TIME%    Done.
 	
 	
 popd
-echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_1_tempclean jobs.
+echo %CUR_DATE% %TIME%   stage_1_tempclean jobs commplete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_1_tempclean jobs commplete.
 
 
 :::::::::::::::::::::::
@@ -964,8 +979,8 @@ if /i %SKIP_DEBLOAT%==yes (
 	)
 
 pushd resources\stage_2_de-bloat
-echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_2_de-bloat jobs...
+echo %CUR_DATE% %TIME%   stage_2_de-bloat begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_2_de-bloat begin...
 
 
 :: JOB: Remove crapware programs, phase 1 (by name)
@@ -1026,8 +1041,8 @@ if /i %TARGET_METRO%==yes (
 
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
+echo %CUR_DATE% %TIME%   stage_2_de-bloat jobs complete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_2_de-bloat jobs complete.
 :skip_debloat
 
 
@@ -1038,8 +1053,8 @@ echo %CUR_DATE% %TIME%   Completed stage_2_de-bloat jobs.
 :stage_3_disinfect
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 pushd resources\stage_3_disinfect
-echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_3_disinfect jobs...
+echo %CUR_DATE% %TIME%   stage_3_disinfect jobs begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_3_disinfect jobs begin...
 
 
 :: JOB: RogueKiller
@@ -1127,7 +1142,6 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 :: AV scans finished
-popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 :skip_antivirus_scans
@@ -1195,8 +1209,8 @@ echo %CUR_DATE% %TIME%    Done.
 
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_3_disinfect jobs.
+echo %CUR_DATE% %TIME%   stage_3_disinfect jobs complete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_3_disinfect jobs complete.
 
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans.
@@ -1212,8 +1226,8 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :stage_4_patch
 title TRON v%SCRIPT_VERSION% [stage_4_patch]
 pushd resources\stage_4_patch
-echo %CUR_DATE% %TIME%   Launch stage_4_patch jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_4_patch jobs...
+echo %CUR_DATE% %TIME%   stage_4_patch jobs begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_4_patch jobs begin...
 
 
 :: Prep task: enable MSI installer in Safe Mode
@@ -1356,10 +1370,11 @@ echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...>> "%LOGPATH%\%
 echo %CUR_DATE% %TIME%    Launch job 'Install Windows updates'...
 pushd windows_updates
 if /i %DRY_RUN%==no (
-		if %SKIP_WINDOWS_UPDATES%==no wuauclt /detectnow /updatenow
+	if /i %SKIP_WINDOWS_UPDATES%==no (
+		wuauclt /detectnow /updatenow
 	) else (
-		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES set to "%SKIP_WINDOWS_UPDATES%", skipping...>> "%LOGPATH%\%LOGFILE%"
-		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES set to "%SKIP_WINDOWS_UPDATES%", skipping...
+		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping...>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping...
 	)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -1385,8 +1400,8 @@ echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
+echo %CUR_DATE% %TIME%   stage_4_patch jobs complete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_4_patch jobs complete.
 
 
 
@@ -1396,8 +1411,8 @@ echo %CUR_DATE% %TIME%   Completed stage_4_patch jobs.
 :stage_5_optimize
 title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 pushd resources\stage_5_optimize
-echo %CUR_DATE% %TIME%   Launch stage_5_optimize jobs...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Launch stage_5_optimize jobs...
+echo %CUR_DATE% %TIME%   stage_5_optimize jobs begin...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_5_optimize jobs begin...
 
 :: JOB: chkdsk the system drive
 echo %CUR_DATE% %TIME%    Launch job 'chkdsk'...>> "%LOGPATH%\%LOGFILE%"
@@ -1450,8 +1465,8 @@ if "%SSD_DETECTED%"=="no" (
 	)
 
 popd
-echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%   Completed stage_5_optimize jobs.
+echo %CUR_DATE% %TIME%   stage_5_optimize jobs complete.>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%   stage_5_optimize jobs complete.
 
 
 
