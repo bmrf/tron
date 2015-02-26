@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       4.9.0 + FEATURE:                Add -se flag and associated SKIP_EVENT_LOG_CLEAR variable. Use these to prevent Tron from backing up and clearing the Windows Event Logs. Thanks to /u/auldnic
+:: Version:       4.9.1 ! stage_0_prep:update:    Fix crash bug due to missing closing bracket. Thanks to /u/pushpak359
+::                4.9.0 + FEATURE:                Add -se flag and associated SKIP_EVENT_LOG_CLEAR variable. Use these to prevent Tron from backing up and clearing the Windows Event Logs. Thanks to /u/auldnic
 ::                      ! stage_0_prep:power:     Fix crash condition on Vista Home Premium if the -p (preserve power settings) flag was used. Thanks to /u/XtraSharp for being brave enough to touch Vista Home Premium and finding this obscure crash condition
 ::                      * stage_0_prep:update:    Change update checker to use HTTPS URL. Thanks to /u/SGC-Hosting for providing an SSL certificate!
 ::                      ! stage_3_disinfect:dism: Fix bug where Tron would get out of step with directory structure due to extra popd statement
@@ -111,8 +112,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=4.9.0
-set SCRIPT_DATE=2015-02-25
+set SCRIPT_VERSION=4.9.1
+set SCRIPT_DATE=2015-02-26
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -1376,6 +1377,7 @@ if /i %DRY_RUN%==no (
 		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping...>> "%LOGPATH%\%LOGFILE%"
 		echo %CUR_DATE% %TIME%  ! SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping...
 	)
+)
 popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
