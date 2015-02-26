@@ -572,8 +572,11 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 :: thanks to /u/agent-squirrel
 :: We skip this check if we're in Safe Mode because Safe Mode command prompts always start with Admin rights
 if /i not "%SAFE_MODE%"=="yes" (
-	net session >nul 2>&1
-	if /i not "%ERRORLEVEL%"=="0" (
+	:: Testing new method
+	fsutil dirty query %systemdrive% >NUL
+	:: Previous method
+	::net session >nul 2>&1
+	if /i not %ERRORLEVEL%==0 (
 		color cf
 		cls
 		echo.
@@ -1023,7 +1026,7 @@ if /i %TARGET_METRO%==yes (
 	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f 2>NUL
 		net start AppXSVC
 		:: Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
@@ -1233,7 +1236,7 @@ echo %CUR_DATE% %TIME%   stage_4_patch jobs begin...
 
 :: Prep task: enable MSI installer in Safe Mode
 if /i %DRY_RUN%==no (
-	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f
+	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f 2>NUL
 	net start msiserver 2>NUL
 	)
 
