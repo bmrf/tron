@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
 :: Version:       5.0.0 * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking" in and out the sub-directories in the \resources tree. Now if a file or directory is missing only that section will fail, rather than the entire script
+::                                  A side benefit is it's now easier to drop a replacement Tron.bat on top of an older \resources tree without having to worry about Tron getting "off track" based on the underlying directory structure
 ::                      * tron.bat: Many minor bug fixes and general script cleanup
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
