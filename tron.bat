@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       5.0.0 * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking" in and out the sub-directories in the \resources tree. Now if a file or directory is missing only that section will fail, rather than the entire script
+:: Version:       5.0.0 * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking" 
+::                                  in and out the sub-directories in the \resources tree. Now if a file or directory is missing only that section will fail, rather than the entire script.
 ::                                  A side benefit is it's now easier to drop a replacement Tron.bat on top of an older \resources tree without having to worry about Tron getting "off track" based on the underlying directory structure
 ::                      * tron.bat: Many minor bug fixes and general script cleanup
 ::
@@ -109,7 +110,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=5.0.0
-set SCRIPT_DATE=2015-03-xx
+set SCRIPT_DATE=2015-03-05
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -215,20 +216,20 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 :: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl --scan') do (
-	smartctl %%i -a | find /i "Solid State" >NUL
+for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
+	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "Solid State" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl --scan') do (
-	smartctl %%i -a | find /i "SSD" >NUL
+for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
+	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "SSD" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl --scan') do (
-	smartctl %%i -a | find /i "RAID" >NUL
+for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
+	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "RAID" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl --scan') do (
-	smartctl %%i -a | find /i "SandForce" >NUL
+for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
+	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "SandForce" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto detect_safe_mode
 	)
 ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -718,7 +719,7 @@ echo %CUR_DATE% %TIME%    Done.
 echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'TDSSKiller'...
 if /i %DRY_RUN%==no (
-	"stage_0_prep\TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"stage_0_prep\tdss_killer\TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
@@ -787,7 +788,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	::	2nd: Subgroup GUID of the "Power buttons and lid" category
 	::	3rd: Specific GUID for the "Lid close action" power setting
 	::	4th: Action code for "Do nothing"
-	powercfg -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000
+	powercfg -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
 	)
 
 :: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
@@ -941,8 +942,8 @@ echo %CUR_DATE% %TIME%   stage_2_de-bloat begin...
 :: JOB: Remove crapware programs, phase 1 (by name)
 echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by name)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by name)...
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target.txt
+echo %CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target.txt>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target.txt
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
@@ -952,8 +953,8 @@ echo %CUR_DATE% %TIME%    Done.
 :: JOB: Remove crapware programs, phase 2 (by GUID)
 echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (by GUID)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (by GUID)...
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Customize list here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+echo %CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
 if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1050,15 +1051,15 @@ echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window!
 :: JOB: Sophos Virus Remover
 echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
-echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
-echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...
+echo %CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)...
 echo.
 if /i %DRY_RUN%==no (
-	if exist %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log del /f /q %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log 2>NUL
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" 2>NUL
 	if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
 	if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
-	type %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log >> "%LOGPATH%\%LOGFILE%"
-	del /f /q %ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log 2>NUL
+	type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" 2>NUL
 	)
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1066,14 +1067,17 @@ echo %CUR_DATE% %TIME%    Done.
 
 :: JOB: VIPRE Rescue
 :: Haven't been able to figure out where Vipre saves its log file to, so we can't grab it like with do with Sophos above
+:: We have to pushd and popd here because Vipre tries to stage its definition files in the current directory
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Launch job 'Vipre rescue scanner' (slow, be patient)...
+pushd stage_3_disinfect\vipre_rescue
 echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Scan in progress. Output hidden by default (use -v to show)...
 if /i %DRY_RUN%==no ( 
-	if /i %VERBOSE%==no stage_3_disinfect\vipre_rescue\VipreRescueScanner.exe /nolog
-	if /i %VERBOSE%==yes stage_3_disinfect\vipre_rescue\VipreRescueScanner.exe
+	if /i %VERBOSE%==no VipreRescueScanner.exe /nolog
+	if /i %VERBOSE%==yes VipreRescueScanner.exe
 	)
+popd
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
 
