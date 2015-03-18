@@ -15,6 +15,19 @@ Version number legend:
 
 
 
+
+
+
+########################
+# v5.0.1 // 2015-03-13 #
+########################
+tron.bat                         v5.0.1
+ / stage_3_disinfect:sophos: Update Sophos with current version, old version was failing updates
+
+STAGE 3: Disinfect
+ / Sophos Virus Removal Tool     v2.5.4, Update to latest version, old version was failing updates
+
+
 ########################
 # v5.0.0 // 2015-03-05 #
 ########################
