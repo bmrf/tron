@@ -3,11 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
-:: Author:        vocatus on reddit.com/r/sysadmin ( vocatus.gate@gmail.com ) // PGP key ID: 0x07d1490f82a211a2
-:: Version:       5.0.0 * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking" 
-::                                  in and out the sub-directories in the \resources tree. Now if a file or directory is missing only that section will fail, rather than the entire script.
-::                                  A side benefit is it's now easier to drop a replacement Tron.bat on top of an older \resources tree without having to worry about Tron getting "off track" based on the underlying directory structure
-::                      * tron.bat: Many minor bug fixes and general script cleanup
+:: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
+:: Version:       5.0.1 / stage_3_disinfect:sophos: Update Sophos with current version, old version was failing updates
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -109,8 +106,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=5.0.0
-set SCRIPT_DATE=2015-03-05
+set SCRIPT_VERSION=5.0.1
+set SCRIPT_DATE=2015-03-13
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -1044,7 +1041,7 @@ if /i %DRY_RUN%==no (
 )
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
-echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window!>>"%LOGPATH%\%LOGFILE%"
+echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window! >>"%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%  ! NOTE: You must manually click SCAN in the MBAM window!
 
 
