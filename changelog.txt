@@ -14,8 +14,61 @@ Version number legend:
   major feature change
 
 
+  
+########################
+# v5.0.2 // 2015-03-20 #
+########################
+tron.bat                         v5.0.2
+ . No changes to Tron.bat, only updates to sub-tools
 
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.0
+ . TDSS Killer                   v3.0.0.42
+ . erunt                         v1.1j
 
+STAGE 1: Tempclean
+ * CCLeaner                      v5.03.5128
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.0-TRON
+ . USB Device Cleanup            v0.8.1
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+	
+STAGE 3: Disinfect
+ * RogueKiller                   v10.5.5.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Malwarebytes Anti-Malware     v2.1.4.1018
+
+STAGE 4: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ * Adobe Flash Player            v17.0.0.134   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ * Java Runtime Environment      8u40          (language ignored)
+ . Windows updates               Pulled down live with the command 'wuauclt /detectnow /updatenow'
+ 
+STAGE 5: Optimize
+ * smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.18.0.945
+
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.1.1.2
+ . aswMBR                        v1.0.1.2252
+ * autoruns                      v12.2
+ * ComboFix                      v15.3.14.3
+ . gmer                          v2.1.19357
+ * Junkware Removal Tool         v6.4.5
+ . Malwarebytes Anti-Rootkit     v1.08.3.1004
+ . Net Adapter Repair            v1.2
+ . ServicesRepair.exe            v1.0.0.3
+ . VirusTotal uploader tool      v2.2
 
 
 ########################
