@@ -217,7 +217,7 @@ In every release `checksums.txt` is signed with my PGP key (`0x82A211A2`, includ
 
 # LICENSE
 
-Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses.
+Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses. It's YOUR responsibility to determine if you can use them in your specific situation.
 
 
 # OTHER
