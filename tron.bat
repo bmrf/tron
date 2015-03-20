@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       5.0.1 / stage_3_disinfect:sophos: Update Sophos with current version, old version was failing updates
+:: Version:       5.0.2 . No changes to Tron.bat, only updates to sub-tools
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -106,8 +106,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=5.0.1
-set SCRIPT_DATE=2015-03-13
+set SCRIPT_VERSION=5.0.2
+set SCRIPT_DATE=2015-03-20
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -780,7 +780,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
 	:: Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	:: This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting here, as follows:
+	:: This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
 	::	1st: Master GUID of the "High Performance" power scheme
 	::	2nd: Subgroup GUID of the "Power buttons and lid" category
 	::	3rd: Specific GUID for the "Lid close action" power setting
@@ -966,8 +966,8 @@ if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
 if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
-	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing default Metro apps...
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing OEM Metro apps...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    "%WIN_VER%" detected, removing OEM Metro apps...
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f 2>NUL
@@ -984,7 +984,7 @@ if /i %TARGET_METRO%==yes (
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
 	echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Done.	
-	)
+)
 
 
 echo %CUR_DATE% %TIME%   stage_2_de-bloat jobs complete.>> "%LOGPATH%\%LOGFILE%"
