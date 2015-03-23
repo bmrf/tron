@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       5.0.2 . No changes to Tron.bat, just sub-tool and definition updates
+:: Version:       5.1.0 + tron.bat:           Add resume function. Tron will now attempt to pick up at the last stage it was on if the machine gets rebooted during the scan. Major thanks to /u/cuddlychops06 for assistance with this
+::                      * tron.bat:           Major logging overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Thanks to /u/douglas_swehla
+::                      * stage_4_patch:java: Suppress a few unimportant error messages about old versions not being found during previous versions removal
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -53,7 +55,10 @@ set LOGPATH=%SystemDrive%\Logs
 set LOGFILE=tron.log
 set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 
-:: ! All variables here are overridden if their respective command-line flag is used
+
+:: ! All defaults are overridden if their respective command-line flag is used
+::   Note: If you change the defaults here, those changes will NOT be honored if the script has to auto-resume after a reboot
+::         Only command-line flags (e.g. -gsl) are preserved across a reboot if the script terminates unexpectedly
 :: AUTORUN               (-a)   = Automatic execution (no welcome screen or prompts), implies -e
 :: DRY_RUN               (-d)   = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -106,8 +111,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=5.0.2
-set SCRIPT_DATE=2015-03-20
+set SCRIPT_VERSION=5.1.0
+set SCRIPT_DATE=2015-03-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -127,14 +132,18 @@ set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set UNICORN_POWER_MODE=off
 set SAFE_MODE=no
+set RESUME_STAGE=0
+set RESUME_FLAGS=0
+set RESUME_DETECTED=no
+if /i %1==-resume set RESUME_DETECTED=yes
+
 
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
 :: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
-:: Now get in the resources sub-directory. This is where we'll be for the rest of the script
-pushd resources
+
 
 
 :: PREP JOB: Parse command-line arguments
@@ -167,7 +176,7 @@ if /i %HELP%==yes (
 	::cls
 	echo. 
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo  Author: vocatus on reddit.com/r/sysadmin
+	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sw -v -x^] ^| ^[-h^]
 	echo.
@@ -199,6 +208,46 @@ if /i %HELP%==yes (
 	)
 
 
+:: PREP JOB: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
+if /i %RESUME_DETECTED%==yes (
+	:: Populate flags used in the previous run as well as what stage we were on
+	set /p RESUME_STAGE=<tron_stage.txt
+	set /p RESUME_FLAGS=<tron_flags.txt
+	for %%i in (%RESUME_FLAGS%) do (
+		if /i %%i==-a set AUTORUN=yes
+		if /i %%i==-c set CONFIG_DUMP=yes
+		if /i %%i==-d set DRY_RUN=yes
+		if /i %%i==-e set EULA_ACCEPTED=yes
+		if /i %%i==-er set EMAIL_REPORT=yes
+		if /i %%i==-gsl set GENERATE_SUMMARY_LOGS=yes
+		if /i %%i==-h set HELP=yes
+		if /i %%i==-m set PRESERVE_METRO_APPS=yes
+		if /i %%i==-o set AUTO_SHUTDOWN=yes
+		if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
+		if /i %%i==-r set AUTO_REBOOT_DELAY=15
+		if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+		if /i %%i==-sb set SKIP_DEBLOAT=yes
+		if /i %%i==-sd set SKIP_DEFRAG=yes
+		if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
+		if /i %%i==-sp set SKIP_PATCHES=yes
+		if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
+		if /i %%i==-v set VERBOSE=yes
+		if /i %%i==-x set SELF_DESTRUCT=yes
+		if %%i==-UPM set UNICORN_POWER_MODE=on
+		:: Notify and jump
+		echo %CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"...>> "%LOGPATH%\%LOGFILE%"
+		echo %CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"...
+		goto %RESUME_STAGE%
+	)
+) else (
+	:: Stamp the CLI flags to a file in case we have to resume later
+	echo %*> tron_flags.txt
+)
+	
+:: PREP JOB: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. We delete this entry at the end of the script if nothing went wrong.
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"
+
+
 :: PREP JOB: Force WMIC location in case the system PATH is messed up
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
@@ -206,6 +255,10 @@ set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+
+
+:: PREP JOB: Get in the resources sub-directory. We'll be here for the rest of the script
+pushd resources
 
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
@@ -258,7 +311,6 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 :: Skip this job if we're doing a dry run or if AUTORUN is set
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
-
 :: Use wget to fetch sha256sums.txt from the repo and parse through it. Extract latest version number and release date from last line (which is always the latest release)
 stage_0_prep\check_update\wget.exe --no-check-certificate %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
@@ -336,7 +388,6 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 :: Clean up after ourselves
 if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
-
 :skip_update_check
 
 
@@ -390,9 +441,11 @@ if /i %CONFIG_DUMP%==yes (
 	echo    REPO_URL:               %REPO_URL%
 	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
 	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
+	echo    RESUME_DETECTED:        %RESUME_DETECTED%
+	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
-	:: We need this setlocal/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
+	:: We need this set/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
 	SETLOCAL ENABLEDELAYEDEXPANSION
 	echo    WIN_VER:                !WIN_VER!
 	ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -415,10 +468,10 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * NOTE! By running Tron you accept COMPLETE responsibility for ANYTHING *
 	echo  * that happens. Although the chance of something bad happening due to   *
 	echo  * Tron is pretty remote, it's always a possibility, and Tron has ZERO   *
-	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS and understand you    *
-	echo  * run it AT YOUR OWN RISK.                                              *
+	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS, because you run it   *
+	echo  * AT YOUR OWN RISK.                                                     *
 	echo  *                                                                       *
-	echo  * Tron.bat and all supporting code and scripts I've written are free    *
+	echo  * Tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
 	echo  * ^(MBAM, TDSSK, etc^) are bound by their respective licenses. It is      *
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
@@ -446,6 +499,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 ::::::::::::::::::::
 :: WELCOME SCREEN ::
 ::::::::::::::::::::
+:welcome_screen
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfection tools           *
@@ -586,7 +640,6 @@ if /i not "%SAFE_MODE%"=="yes" (
 ::::::::::::::::::
 :execute_jobs
 cls
-title TRON v%SCRIPT_VERSION% [stage_0_prep]
 
 :: Make log directory and file if they don't already exist
 if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
@@ -618,6 +671,9 @@ echo ---------------------------------------------------------------------------
 :: STAGE 0: PREP ::
 :::::::::::::::::::
 :stage_0_prep
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_0_prep>tron_stage.txt
+title TRON v%SCRIPT_VERSION% [stage_0_prep]
 echo %CUR_DATE% %TIME%   stage_0_prep jobs begin...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_0_prep jobs begin...
 
@@ -814,10 +870,13 @@ echo %CUR_DATE% %TIME%   stage_0_prep jobs complete.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_0_prep jobs complete.
 
 
+
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN ::
 ::::::::::::::::::::::::
 :stage_1_tempclean
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_1_tempclean>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 echo %CUR_DATE% %TIME%   stage_1_tempclean jobs begin...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_1_tempclean jobs begin...
@@ -921,10 +980,13 @@ echo %CUR_DATE% %TIME%   stage_1_tempclean jobs commplete.>> "%LOGPATH%\%LOGFILE
 echo %CUR_DATE% %TIME%   stage_1_tempclean jobs commplete.
 
 
+
 :::::::::::::::::::::::
 :: STAGE 2: De-Bloat ::
 :::::::::::::::::::::::
 :stage_2_de-bloat
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_2_de-bloat>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==yes (
 	echo %CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs...>> "%LOGPATH%\%LOGFILE%"
@@ -997,6 +1059,8 @@ echo %CUR_DATE% %TIME%   stage_2_de-bloat jobs complete.
 :: STAGE 3: Disinfect ::
 ::::::::::::::::::::::::
 :stage_3_disinfect
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_3_disinfect>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 echo %CUR_DATE% %TIME%   stage_3_disinfect jobs begin...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_3_disinfect jobs begin...
@@ -1157,6 +1221,8 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: STAGE 4: Patches ::
 ::::::::::::::::::::::
 :stage_4_patch
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_4_patch>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_4_patch]
 echo %CUR_DATE% %TIME%   stage_4_patch jobs begin...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_4_patch jobs begin...
@@ -1233,25 +1299,25 @@ if /i %DRY_RUN%==yes goto skip_jre_update
 :: JRE 7
 echo %CUR_DATE% %TIME%    JRE 7...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 7...
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: JRE 6
 echo %CUR_DATE% %TIME%    JRE 6...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 6...
 :: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
 :: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
+%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: JRE 5
 echo %CUR_DATE% %TIME%    JRE 5...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 5...
-%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: JRE 4
 echo %CUR_DATE% %TIME%    JRE 4...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    JRE 4...
-%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 echo %CUR_DATE% %TIME%    Done.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%    Done.
@@ -1325,6 +1391,8 @@ echo %CUR_DATE% %TIME%   stage_4_patch jobs complete.
 :: STAGE 5: Optimize ::
 :::::::::::::::::::::::
 :stage_5_optimize
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_5_optimize>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 echo %CUR_DATE% %TIME%   stage_5_optimize jobs begin...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   stage_5_optimize jobs begin...
@@ -1354,14 +1422,14 @@ echo %CUR_DATE% %TIME%    Done.
 if "%SKIP_DEFRAG%"=="yes" (
 	echo %CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag.
-	goto :wrap-up
+	goto stage_6_wrap-up
 	)
 
 :: Check if a Solid State hard drive was detected before doing this section
 if "%SSD_DETECTED%"=="yes" (
 	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
-	goto :wrap-up
+	goto stage_6_wrap-up
 	)
 
 :: JOB: Defrag the system drive
@@ -1378,10 +1446,12 @@ echo %CUR_DATE% %TIME%   stage_5_optimize jobs complete.
 
 
 
-:::::::::::::
-:: Wrap-up ::
-:::::::::::::
-:wrap-up
+::::::::::::::::::::::
+:: STAGE 6: Wrap-up ::
+::::::::::::::::::::::
+:stage_6_wrap-up
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_6_wrap-up>tron_stage.txt
 echo %CUR_DATE% %TIME%   Wrapping up...>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   Wrapping up...
 
@@ -1478,6 +1548,13 @@ title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 
 echo %CUR_DATE% %TIME%   DONE. Use \resources\stage_7_manual_tools if further cleaning is required.>> "%LOGPATH%\%LOGFILE%"
 echo %CUR_DATE% %TIME%   DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
+
+
+:: JOB: Remove resume-related files and registry entries. No need to log this
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume"
+del /f /q tron_flags.txt
+del /f /q tron_stage.txt
+
 
 
 :: JOB: Calculate saved disk space
@@ -1596,3 +1673,5 @@ if /i %SELF_DESTRUCT%==yes (
 pause
 color
 ENDLOCAL
+exit /B
+
