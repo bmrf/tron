@@ -348,7 +348,7 @@ Tron installs or updates these programs:
 
 1. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
-2. **Defraggler**: Command-line defrag tool from Piriform
+2. **Defraggler**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter
 
 
 ## STAGE 6: Wrap-up
