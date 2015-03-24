@@ -263,11 +263,13 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-5. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+5. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations.
 
-6. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
+6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
-7. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+7. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
+
+8. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
 
 ## STAGE 0: Prep
