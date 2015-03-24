@@ -4,11 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       5.1.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it was on if the machine gets rebooted during the scan. You have to log back in as the user that was running Tron, but assuming everything was where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
-::                      + stage_0_prep:stinger: Add McAfee Stinger tool, set to DELETE infected items.  Thanks to /u/upsurper for suggestion
-::                      * tron.bat:logging      Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
-::                      / stage_0_prep:misc:    Switch order of Rkill and ProcessKiller. ProcessKiller now runs first
-::                      * stage_4_patch:java:   Suppress a few error messages about old versions not being found during previous versions removal
+:: Version:       6.0.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming everything's where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
+::                      + stage_0_prep:stinger: Add McAfee Stinger tool, set to delete infected items. Thanks to /u/upsurper for suggestion
+::                      + stage_0_prep:sysrstr: Add creation of a System Restore checkpoint before beginning script operations. Only supported on client OS's (does not work on Server versions)
+::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
+::                      / stage_0_prep:checks:  Move Safe Mode and Administrator rights checks before main menu
+::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
+::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -60,8 +62,8 @@ set QUARANTINE_PATH=%LOGPATH%\tron_quarantine
 
 
 :: ! All defaults are overridden if their respective command-line flag is used
-::   Note: If you change the defaults here, those changes will NOT be honored if the script has to auto-resume after a reboot
-::         Only command-line flags (e.g. -gsl) are preserved across a reboot if the script terminates unexpectedly
+::   Note: Only command-line flags are preserved across a reboot if the script terminates unexpectedly (e.g. -gsl).
+::         This means if you change the defaults here, those changes will NOT be honored if the script has to auto-resume after a reboot or crash
 :: AUTORUN               (-a)   = Automatic execution (no welcome screen or prompts), implies -e
 :: DRY_RUN               (-d)   = Run through script but skip all actual actions (test mode)
 :: EULA_ACCEPTED         (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -114,8 +116,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=5.1.0
-set SCRIPT_DATE=2015-03-xx
+set SCRIPT_VERSION=6.0.0
+set SCRIPT_DATE=2015-03-25
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -137,10 +139,10 @@ set UNICORN_POWER_MODE=off
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+:: Stuff related to resuming from an interrupted run
 set RESUME_STAGE=0
 set RESUME_FLAGS=0
 set RESUME_DETECTED=no
-:: Checks to see if we're resuming from a previous interrupted run
 reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
 if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
 if /i "%1"=="-resume" set RESUME_DETECTED=yes
@@ -215,6 +217,10 @@ if /i %HELP%==yes (
 	)
 
 
+:: PREP JOB: Get in the resources sub-directory. We'll be here for the rest of the script
+pushd resources
+
+
 :: PREP JOB: Force WMIC location in case the system PATH is messed up
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
@@ -222,10 +228,6 @@ set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 :: PREP JOB: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
-
-
-:: PREP JOB: Get in the resources sub-directory. We'll be here for the rest of the script
-pushd resources
 
 
 :: PREP JOB: Detect Solid State hard drives (determines if post-run defrag executes or not)
@@ -262,11 +264,14 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
+
 :: PREP JOB: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
+:: Populate what stage we were on as well as what CLI flags were used
 if /i %RESUME_DETECTED%==yes (
-	:: Populate what stage we were on as well as what CLI flags were used
 	set /p RESUME_STAGE=<tron_stage.txt
 	set /p RESUME_FLAGS=<tron_flags.txt
+)	
+if /i %RESUME_DETECTED%==yes (
 	for %%i in (%RESUME_FLAGS%) do (
 		if /i %%i==-a set AUTORUN=yes
 		if /i %%i==-c set CONFIG_DUMP=yes
@@ -288,20 +293,21 @@ if /i %RESUME_DETECTED%==yes (
 		if /i %%i==-v set VERBOSE=yes
 		if /i %%i==-x set SELF_DESTRUCT=yes
 		if %%i==-UPM set UNICORN_POWER_MODE=on
-		:: Notify and jump
-		call :log_heading_alert Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"...
-		:: Reset the RunOnce flag in case we get interrupted again
-		reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"
-		goto %RESUME_STAGE%
 	)
-) else (
-	:: Stamp the CLI flags to a file in case we have to resume later
-	echo %*> tron_flags.txt
+)
+if /i %RESUME_DETECTED%==yes (
+	:: Notify and jump
+	call :log_heading_alert Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"...
+	:: Reset the RunOnce flag in case we get interrupted again
+	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
+	goto %RESUME_STAGE%
 )
 
+	
 
-:: PREP JOB: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong.
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"
+:: Stamp the CLI flags to a file in case we have to resume later
+echo %*> tron_flags.txt
+
 
 
 :: PREP JOB: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
@@ -412,7 +418,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
-	echo	GENERATE_SUMMARY_LOGS:  %GENERATE_SUMMARY_LOGS%
+	echo    GENERATE_SUMMARY_LOGS:  %GENERATE_SUMMARY_LOGS%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
@@ -422,7 +428,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
-	echo	SKIP_EVENT_LOG_CLEAR:	%SKIP_EVENT_LOG_CLEAR%
+	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
@@ -473,21 +479,21 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * NOTE! By running Tron you accept COMPLETE responsibility for ANYTHING *
 	echo  * that happens. Although the chance of something bad happening due to   *
 	echo  * Tron is pretty remote, it's always a possibility, and Tron has ZERO   *
-	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS, because you run it   *
-	echo  * AT YOUR OWN RISK.                                                     *
+	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS and understand what   *
+	echo  * Tron does, because you run it AT YOUR OWN RISK.                       *
 	echo  *                                                                       *
 	echo  * Tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
 	echo  * ^(MBAM, TDSSK, etc^) are bound by their respective licenses. It is      *
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
-	echo  * tools in whatever environment you use Tron in.                        *
+	echo  * tools in whatever environment you're in.                              *
 	echo  *                                                                       *
-	echo  * The bottom line is there is NO WARRANTY, you are ON YOUR OWN, and     *
-	echo  * anything that happens, good or bad, is YOUR RESPONSIBILITY.           *
+	echo  * BOTTOM LINE: there is NO WARRANTY, you are ON YOUR OWN, and anything  *
+	echo  * that happens, good or bad, is YOUR RESPONSIBILITY.                    *
 	echo  *************************************************************************
 	echo.
-	echo  Type I AGREE ^(all caps^) to accept this agreement and start Tron, or press
-	echo  ctrl^+c to cancel.
+	echo  Type I AGREE ^(all caps^) to accept this agreement and go to the main menu
+	echo  or press ctrl^+c to cancel.
 	echo.
 	:eula_prompt
 	set /p CHOICE= Response: 
@@ -497,87 +503,9 @@ if /i not %EULA_ACCEPTED%==yes (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: PREP JOB: UPM detection circuit #1
-if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
-
-
-::::::::::::::::::::
-:: WELCOME SCREEN ::
-::::::::::::::::::::
-:welcome_screen
-cls
-echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
-echo  * Script to automate a series of cleanup/disinfection tools           *
-echo  * Author: vocatus on reddit.com/r/TronScript                          *
-echo  *                                                                     *
-echo  * Stage:        Tools:                                                *
-echo  * ------------------------------------------------------------------- *
-echo  *  0 Prep:      rkill, PrcsKillr, TDSSK, reg bckup, SysRstr/VSS clean *
-echo  *  1 TempClean: TempFileCleanup, BlchBit, CCleaner,IE ^& EvtLogs clean *
-echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
-echo  *  3 Disinfect: RogueKiller, Sophos, Vipre, MBAM, DISM repair, SFC    *
-echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
-echo  *  5 Optimize:  chkdsk, defrag %SystemDrive% (mechanical disks only, no SSDs)    *
-echo  *  6 Wrap-up:   collect misc logs, send email report (if requested)   *
-echo  *                                                                     *
-echo  * \resources\stage_7_manual_tools contains additional tools which may *
-echo  * be run manually if necessary.                                       *
-echo  ***********************************************************************
-:: So ugly
-echo  Current settings (run tron.bat -c to dump full config):
-echo    Log location:            %LOGPATH%\%LOGFILE%
-if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
-if "%SSD_DETECTED%"=="yes" (echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^) ) else (echo    SSD detected?            %SSD_DETECTED%)
-if "%SAFE_MODE%"=="no" (
-		echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
-	) else (
-		if "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
-		if "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
-	)
-if /i not "%SKIP_DEFRAG%"=="no" (
-	echo  ! SKIP_DEFRAG set^; skipping stage 5 defrag
-	echo    Runtime estimate:        4-6 hours
-	goto welcome_screen_trailer
-	)
-if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        6-8 hours)
-if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
-if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
-echo.
-:welcome_screen_trailer
-pause
-
-
-::::::::::::::::::::::::
-:: EMAIL CONFIG CHECK ::
-::::::::::::::::::::::::
-:: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
-SETLOCAL ENABLEDELAYEDEXPANSION
-if /i %EMAIL_REPORT%==yes (
-	findstr "YOUR-EMAIL-ADDRESS-HERE" stage_6_wrap-up\email_report\SwithMailSettings.xml >NUL
-	if !ERRORLEVEL!==0 (
-		color cf
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  You requested an email report ^(used the -er flag or set
-		echo  the EMAIL_REPORT variable to "yes"^) but didn't configure
-		echo  the settings file with your information. Update the following
-		echo  file with your SMTP username, password, etc:
-		echo.
-		echo  \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
-		echo.
-		echo  Alternatively you can run SwithMail.exe to have the GUI generate
-		echo  a config file for you.
-		pause
-	)
-)
-ENDLOCAL DISABLEDELAYEDEXPANSION
-
-
-:::::::::::::::::::::
-:: SAFE MODE CHECK ::
-:::::::::::::::::::::
+::::::::::::::::::::::
+:: SAFE MODE CHECKS ::
+::::::::::::::::::::::
 :: Check if we're in safe mode
 if /i not "%SAFE_MODE%"=="yes" (
 		color 0c
@@ -614,18 +542,18 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		pause
 		cls
 		)
-		
+
+
 ::::::::::::::::::::::::
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
-:: thanks to /u/agent-squirrel
-:: We skip this check if we're in Safe Mode because Safe Mode command prompts always start with Admin rights
+:: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
-	:: Testing new method
 	fsutil dirty query %systemdrive% >NUL
 	:: Previous method
 	::net session >nul 2>&1
-	if /i not %ERRORLEVEL%==0 (
+	if /i not !ERRORLEVEL!==0 (
 		color cf
 		cls
 		echo.
@@ -635,9 +563,93 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo  Tron MUST be run with full Administrator rights to 
 		echo  function correctly.
 		echo.
+		echo  Close this window and re-run Tron as an Administrator.
+		echo  ^(right-click Tron.bat and click "Run as Administrator^)
+		echo.
+		pause
+		:: UPM detection circuit
+		if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
+	)
+)
+SETLOCAL DISABLEDELAYEDEXPANSION
+
+
+:: PREP JOB: UPM detection circuit
+if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
+
+
+::::::::::::::::::::
+:: WELCOME SCREEN ::
+::::::::::::::::::::
+cls
+echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
+echo  * Script to automate a series of cleanup/disinfection tools           *
+echo  * Author: vocatus on reddit.com/r/TronScript                          *
+echo  *                                                                     *
+echo  * Stage:        Tools:                                                *
+echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
+echo                  TDSSKiller/registry backup/clean oldest VSS set       *
+echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean  *
+echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
+echo  *  3 Disinfect: RogueKiller/Sophos/Vipre/MBAM/DISM repair/SFC scan    *
+echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
+echo  *  5 Optimize:  chkdsk/defrag %SystemDrive% (mechanical only, SSDs skipped)      *
+echo  *  6 Wrap-up:   collect misc logs, send email report (if requested)   *
+echo  *                                                                     *
+echo  * \resources\stage_7_manual_tools contains additional tools which may *
+echo  * be run manually if necessary.                                       *
+echo  ***********************************************************************
+:: So ugly
+echo  Current settings (run tron.bat -c to dump full config):
+echo    Log location:            %LOGPATH%\%LOGFILE%
+if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
+if "%SSD_DETECTED%"=="yes" (echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^) ) else (echo    SSD detected?            %SSD_DETECTED%)
+if "%SAFE_MODE%"=="no" (
+		echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
+	) else (
+		if "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
+		if "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
+	)
+if /i not "%SKIP_DEFRAG%"=="no" (
+	echo  ! SKIP_DEFRAG set^; skipping stage 5 defrag
+	echo    Runtime estimate:        4-6 hours
+	goto welcome_screen_trailer
+	)
+if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        7-9 hours)
+if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
+if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
+echo.
+:welcome_screen_trailer
+pause
+
+
+::::::::::::::::::::::::
+:: EMAIL CONFIG CHECK ::
+::::::::::::::::::::::::
+:: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
+SETLOCAL ENABLEDELAYEDEXPANSION
+if /i %EMAIL_REPORT%==yes (
+	findstr "YOUR-EMAIL-ADDRESS-HERE" stage_6_wrap-up\email_report\SwithMailSettings.xml >NUL
+	if !ERRORLEVEL!==0 (
+		color cf
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  You requested an email report ^(used the -er flag or set
+		echo  the EMAIL_REPORT variable to "yes"^) but didn't configure
+		echo  the settings file with your information. Update the following
+		echo  file with your SMTP username, password, etc:
+		echo.
+		echo  \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
+		echo.
+		echo  Alternatively you can run SwithMail.exe to have the GUI generate
+		echo  a config file for you.
 		pause
 	)
 )
+ENDLOCAL DISABLEDELAYEDEXPANSION
+
 
 
 ::::::::::::::::::
@@ -647,13 +659,22 @@ if /i not "%SAFE_MODE%"=="yes" (
 cls
 
 :: Make log directory and file if they don't already exist
-if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
-echo. > "%LOGPATH%\%LOGFILE%"
+:: If we're resuming from a script interruption we don't want to wipe the log, so check for that here
+if /i %RESUME_DETECTED%==no (
+	if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
+	echo. > "%LOGPATH%\%LOGFILE%"
+	)
+
+
+:: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong.
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"
+
 
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
-:: Create log header for this job
+
+:: Create log header
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 call :log_heading TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture
@@ -671,6 +692,7 @@ echo ---------------------------------------------------------------------------
 echo -------------------------------------------------------------------------------
 
 
+
 :::::::::::::::::::
 :: STAGE 0: PREP ::
 :::::::::::::::::::
@@ -679,6 +701,21 @@ echo ---------------------------------------------------------------------------
 echo stage_0_prep>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
 call :log_heading stage_0_prep jobs begin...
+
+
+:: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
+:: Note, there is a (stupid) limitation in Windows 8 and up that will only let you create
+:: one restore point every 24 hours. If you create another one, it deletes the previous one.
+:: So unfortunately we can't take a before/after restore point pair. 
+if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
+		call :log Attempting to create pre-run Restore Point ^(Vista and up only^)...
+		if /i %DRY_RUN%==no (
+			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' 2>&1 | Out-Null"
+		)
+	)
+)
+call :log Done.
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
@@ -697,12 +734,6 @@ call :log Summary logs requested, generating pre-run system profile...
 call :log Done.
 
 
-:: JOB: ProcessKiller
-call :log Launch Job 'ProcessKiller'...
-if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller.exe
-call :log Done.
-
-
 :: JOB: rkill
 call :log Launch job 'rkill'...
 if /i %DRY_RUN%==no (
@@ -711,6 +742,12 @@ if /i %DRY_RUN%==no (
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 	)
+call :log Done.
+
+
+:: JOB: ProcessKiller
+call :log Launch Job 'ProcessKiller'...
+if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller.exe
 call :log Done.
 
 
@@ -1442,9 +1479,9 @@ call :log_heading DONE. Use \resources\stage_7_manual_tools if further cleaning 
 
 :: JOB: Remove resume-related files and registry entries
 call :log No crash or reboot detected. Removing resume-support files...
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume"
-del /f /q tron_flags.txt
-del /f /q tron_stage.txt
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
+del /f /q tron_flags.txt >nul 2>&1
+del /f /q tron_stage.txt >nul 2>&1
 call :log Done.
 
 
