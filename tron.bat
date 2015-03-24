@@ -4,10 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       5.1.0 + tron.bat:           Add resume function. Tron will now attempt to pick up at the last stage it was on if the machine gets rebooted during the scan. You will still have to log back in as the user that was running Tron, but assuming everything was where you left it (e.g. Tron folder didn't move) it should automatically re-launch Tron at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
-::                      * tron.bat:           Major logging overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Thanks to /u/douglas_swehla
-::                      * stage_4_patch:java: Suppress a few unimportant error messages about old versions not being found during previous versions removal
-::                      * stage_6_wrap-up:    Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
+:: Version:       5.1.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it was on if the machine gets rebooted during the scan. You have to log back in as the user that was running Tron, but assuming everything was where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
+::                      + stage_0_prep:stinger: Add McAfee Stinger tool, set to DELETE infected items.  Thanks to /u/upsurper for suggestion
+::                      * tron.bat:logging      Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
+::                      / stage_0_prep:misc:    Switch order of Rkill and ProcessKiller. ProcessKiller now runs first
+::                      * stage_4_patch:java:   Suppress a few error messages about old versions not being found during previous versions removal
+::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -138,8 +140,10 @@ if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 set RESUME_STAGE=0
 set RESUME_FLAGS=0
 set RESUME_DETECTED=no
-if /i %1==-resume set RESUME_DETECTED=yes
-
+:: Checks to see if we're resuming from a previous interrupted run
+reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
+if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
+if /i "%1"=="-resume" set RESUME_DETECTED=yes
 
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
@@ -693,6 +697,11 @@ call :log Summary logs requested, generating pre-run system profile...
 call :log Done.
 
 
+:: JOB: ProcessKiller
+call :log Launch Job 'ProcessKiller'...
+if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller.exe
+call :log Done.
+
 
 :: JOB: rkill
 call :log Launch job 'rkill'...
@@ -702,12 +711,6 @@ if /i %DRY_RUN%==no (
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 	)
-call :log Done.
-
-
-:: JOB: ProcessKiller
-call :log Launch Job 'ProcessKiller'...
-if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller.exe
 call :log Done.
 
 
@@ -756,8 +759,17 @@ if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_regis
 call :log Done.
 
 
+:: JOB: McAfee Stinger
+call :log Launch job 'McAfee Stinger'...
+call :log Stinger doesn't support text logs, saving HTML log to logpath
+if /i %DRY_RUN%==no (
+	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
+	)
+call :log Done.
+
+
 :: JOB: TDSS Killer
-call :log  Launch job 'TDSSKiller'...
+call :log Launch job 'TDSSKiller'...
 if /i %DRY_RUN%==no (
 	"stage_0_prep\tdss_killer\TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
@@ -768,7 +780,7 @@ call :log Done.
 
 
 :: JOB: Purge oldest shadow copies
-call :log Purging oldest Shadow Copy set (7 and up)...
+call :log Purging oldest Shadow Copy set (Win7 and up)...
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
@@ -776,9 +788,9 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
-			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f 2>NUL
-			net start VSS >NUL
-			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet 2>NUL
+			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
+			net start VSS >nul 2>&1
+			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
 			)
 		)
 	)
@@ -980,7 +992,7 @@ if /i %TARGET_METRO%==yes (
 	call :log "%WIN_VER%" detected, removing OEM Metro apps...
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f 2>NUL
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start AppXSVC
 		:: Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
@@ -1053,11 +1065,11 @@ call :log Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
 call :log Scanning. Output REDUCED by default (use -v to show)...
 echo.
 if /i %DRY_RUN%==no (
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" 2>NUL
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
 	if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
 	if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
 	type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" 2>NUL
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
 	)
 call :log Done.
 
@@ -1150,8 +1162,8 @@ call :log_heading stage_4_patch jobs begin...
 
 :: Prep task: enable MSI installer in Safe Mode
 if /i %DRY_RUN%==no (
-	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f 2>NUL
-	net start msiserver 2>NUL
+	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
+	net start msiserver >nul 2>&1
 	)
 	
 :: Check for skip patches (-sp) flag or variable and skip if used
@@ -1274,7 +1286,7 @@ call :log Launch job 'DISM base reset'...
 if /i %DRY_RUN%==no (
 	if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 		if /i not "%WIN_VER:~0,11%"=="Windows V" (
-			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log" >NUL
+			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log" >nul 2>&1
 			type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
 			del /f /q "%LOGPATH%\tron_dism_base_reset.log"
 			)
