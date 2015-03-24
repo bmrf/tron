@@ -268,8 +268,8 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 :: PREP JOB: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used
 if /i %RESUME_DETECTED%==yes (
-	set /p RESUME_STAGE=<tron_stage.txt
-	set /p RESUME_FLAGS=<tron_flags.txt
+	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
+	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
 )	
 if /i %RESUME_DETECTED%==yes (
 	for %%i in (%RESUME_FLAGS%) do (
