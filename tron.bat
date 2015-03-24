@@ -304,12 +304,6 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 	
-
-:: Stamp the CLI flags to a file in case we have to resume later
-echo %*> tron_flags.txt
-
-
-
 :: PREP JOB: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
 :: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
 if "%WIN_VER:~0,9%"=="Windows 8" (
@@ -476,7 +470,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
-	echo  * NOTE! By running Tron you accept COMPLETE responsibility for ANYTHING *
+	echo  * NOTE^^! By running Tron you accept COMPLETE responsibility for ANYTHING *
 	echo  * that happens. Although the chance of something bad happening due to   *
 	echo  * Tron is pretty remote, it's always a possibility, and Tron has ZERO   *
 	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS and understand what   *
@@ -589,7 +583,7 @@ echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo                  TDSSKiller/registry backup/clean oldest VSS set       *
-echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean  *
+echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: RogueKiller/Sophos/Vipre/MBAM/DISM repair/SFC scan    *
 echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
@@ -697,8 +691,9 @@ echo ---------------------------------------------------------------------------
 :: STAGE 0: PREP ::
 :::::::::::::::::::
 :stage_0_prep
-:: Stamp current stage so we can resume if we get interrupted by a reboot
+:: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
 echo stage_0_prep>tron_stage.txt
+echo %*> tron_flags.txt
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
 call :log_heading stage_0_prep jobs begin...
 
