@@ -725,8 +725,9 @@ call :log Summary logs requested, generating pre-run system profile...
 		:: Get list of all files on system
 		stage_0_prep\log_tools\everything\everything.exe -create-filelist %LOGPATH%\tron_raw_logs\filelist-before.txt %SystemDrive%
 	)
-)
 call :log Done.
+)
+
 
 
 :: JOB: rkill
