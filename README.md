@@ -263,7 +263,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-5. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations.
+5. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
 
 6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
