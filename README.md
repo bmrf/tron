@@ -11,19 +11,21 @@ I got tired of running these utilities manually and decided to just automate eve
 
 2. Command-Line Use
 
-3. Notes on Safe Mode
+3. Script Interruption
 
-4. Sending a Post-Run Email Report
+4. Notes on Safe Mode
 
-5. Changing Defaults
+5. Sending a Post-Run Email Report
 
-6. Pack Integrity
+6. Changing Defaults
 
-7. License
+7. Pack Integrity
 
-8. Contact Info
+8. License
 
-9. Full details of ALL steps
+9. Contact Info
+
+10. Full details of ALL steps
 
 # USE
 
@@ -87,6 +89,16 @@ Command-line use is fully supported. All flags are optional and can be combined.
    
 \* There is no -UPM flag
 
+
+# SCRIPT INTERRUPTION
+
+If Tron is interrupted, either from a crash or a forced reboot (most often encountered during stage_3_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when the script starts working), and deleting it at the end of the script if everything finished without interruption.
+
+There are two limitations on the resume feature:
+1. You must log back in as the original user that ran the script in the first place
+2. ONLY command-line flags are preserved across a restart! Changes to the script defaults (accomplished by manually changing the variables in the script) are NOT preserved. 
+ 
+More details about this function are in the list of all Tron steps at the bottom of this document.
 
 # SAFE MODE
 
@@ -241,17 +253,21 @@ The best way to see what Tron does is simply to crack `Tron.bat` open with a tex
 Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
 
 
-## Tron prep jobs
+## Tron-internal prep jobs
 
 1. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
 
 2. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
 
-3. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+3. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-4. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
+4. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-5. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+5. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+
+6. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
+
+7. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
 
 ## STAGE 0: Prep
@@ -260,19 +276,25 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
-3. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron calls TDSSKiller with the following flags:
+3. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
+
+  ```
+  stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE`
+  ```
+
+4. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-4. **erunt**: Used to backup the registry before beginning a Tron run
+5. **erunt**: Used to backup the registry before beginning a Tron run
 
-5. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+6. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-6. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+7. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-7. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+8. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
 
 ## STAGE 1: Tempclean
@@ -310,7 +332,7 @@ Master script that launches all the other tools. It performs a lot of actions on
   \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
   ```
 
-3. **Metro de-bloat**: Remove the built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
+3. **Metro de-bloat**: Remove built-in Metro apps that no one uses (programs like Calculator, Paint etc are NOT removed). Purges them from the cache (can always fetch from Windows Update later)
 
 
 ## STAGE 3: Disinfect
