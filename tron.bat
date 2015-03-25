@@ -14,6 +14,7 @@
 ::                      - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
 ::                      ! tron.bat:update:      Fix error with update checker. Was failing cert check over HTTPS. Thanks to /u/upsurper
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
+::                      / stage_4_patch:7-zip:  Send output from assoc and open-with commands to logfile instead of console
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
 ::                      ! stage_4_patch:reader: Fix a few lines that were displaying messages instead of sending them to the log as intended
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
@@ -1392,37 +1393,25 @@ call :log_heading stage_6_wrap-up jobs begin...
 :: Otherwise, just reset power settings back to their defaults
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	call :log Restoring power settings to previous values...
-	:: Check for Windows XP
-	if "%WIN_VER%"=="Microsoft Windows XP" (
-		if /i %DRY_RUN%==no powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
-		if /i %DRY_RUN%==no powercfg /setactive "%POWER_SCHEME%"
-	) 
-	:: Check for Windows Server 2003
-	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
-			if /i %DRY_RUN%==no powercfg /import "%POWER_SCHEME%" /file %LOGPATH%\tron_power_config_backup.pow
-			if /i %DRY_RUN%==no powercfg /setactive "%POWER_SCHEME%"
-
+	REM Check for Windows XP/2k3
+	if /i "%WIN_VER:~0,9%"=="Microsoft" (
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%POWER_SCHEME%" /file "%LOGPATH%\tron_power_config_backup.pow"
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive "%POWER_SCHEME%"
 	) else (
-		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
-		if /i %DRY_RUN%==no powercfg /import %LOGPATH%\tron_power_config_backup.pow %POWER_SCHEME% 2>NUL
-		if /i %DRY_RUN%==no powercfg /setactive %POWER_SCHEME% 
+	REM If we made it this far we're not on XP or 2k3 and we can run the standard commands
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%LOGPATH%\tron_power_config_backup.pow" %POWER_SCHEME% 2>NUL
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive %POWER_SCHEME%
 	)
-	:: cleanup
 	del %LOGPATH%\tron_power_config_backup.pow 2>NUL
 ) else (
 	call :log Resetting Windows power settings to defaults...
-	:: Check for Windows XP
-	if "%WIN_VER%"=="Microsoft Windows XP" (
-		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies 2>NUL
-	) 
-	:: check for Windows Server 2003
-	if "%WIN_VER%"=="Microsoft Windows Server 2003" (
-		if /i %DRY_RUN%==no powercfg /RestoreDefaultPolicies 2>NUL
+	REM Check for Windows XP/2k3
+	if /i "%WIN_VER:~0,9%"=="Microsoft" (
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies 2>NUL
 	) else (
-		REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
-		if /i %DRY_RUN%==no powercfg -restoredefaultschemes
+	REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe -restoredefaultschemes
 	)
-	
 	call :log Done.
 )
 
