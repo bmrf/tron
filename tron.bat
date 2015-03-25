@@ -10,6 +10,7 @@
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
+::                      ! stage_0_prep:power:   Fix minor errors in power scheme export (Vista and up)
 ::                      - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
 ::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
@@ -47,12 +48,6 @@
 SETLOCAL
 @echo off
 
-
-:: TODO:
-::	stinger is broke (doesn't scan)										
-::	power scheme export is broke (Windows 7)							
-:: 	Adobe flash is broke (launches new Tron window)						FIXED
-::	email report config check is broke (doesn't catch unconfigured)		
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -844,45 +839,43 @@ call :log Disabling Sleep mode...
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
-call :log Exporting power scheme and switching to Always On...
+call :log Backing up power scheme and switching to Always On...
 SETLOCAL ENABLEDELAYEDEXPANSION
-
 :: Windows XP/2003 version
 if /i "%WIN_VER:~0,9%"=="Microsoft" (
-	:: Extract the line containing the current power GUID
+	REM Extract the line containing the current power GUID
 	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
-	:: Parse out just the name and stash it in a variable
+	REM Parse out just the name and stash it in a variable
 	set POWER_SCHEME=!t:~27!
-	:: Export the power scheme based on this GUID
-	powercfg /EXPORT "!POWER_SCHEME!" /FILE %LOGPATH%\tron_power_config_backup.pow
-	:: Set the "High Performance" scheme active
+	REM Export the power scheme based on this GUID
+	powercfg /EXPORT "!POWER_SCHEME!" /FILE "%LOGPATH%\tron_power_config_backup.pow"
+	REM Set the "High Performance" scheme active
 	powercfg /SETACTIVE "Always On"
 ) else (
-	:: All other versions of Windows
-	:: Extract the line containing the current power GUID
+	REM All other versions of Windows
+	REM Extract the line containing the current power GUID
 	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
-	:: Parse out the GUID and stash it in a variable
+	REM Parse out the GUID and stash it in a variable
 	set POWER_SCHEME=!t:~19,36!
-	:: Export the power scheme based on this GUID
-	powercfg /EXPORT %LOGPATH%\tron_power_config_backup.pow !POWER_SCHEME!
-	:: Set the "High Performance" scheme active
-	powercfg /SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-	:: We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh. Thanks to /u/XtraSharp for finding this rare and exclusive crash condition. Five points
+	REM Export the power scheme based on this GUID
+	powercfg.exe -EXPORT "%LOGPATH%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
+	REM Set the "High Performance" scheme active
+	powercfg -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	REM We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
-	:: Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	:: This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
-	::	1st: Master GUID of the "High Performance" power scheme
-	::	2nd: Subgroup GUID of the "Power buttons and lid" category
-	::	3rd: Specific GUID for the "Lid close action" power setting
-	::	4th: Action code for "Do nothing"
+	REM Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
+	REM This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
+	REM	1st: Master GUID of the "High Performance" power scheme
+	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
+	REM	3rd: Specific GUID for the "Lid close action" power setting
+	REM	4th: Action code for "Do nothing"
 	powercfg -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
 	)
 
 :: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
 :: We need the POWER_SCHEME GUID for later when we re-import everything
 ENDLOCAL DISABLEDELAYEDEXPANSION && set POWER_SCHEME=%POWER_SCHEME%
-call :log Done.
 
 :skip_disable_sleep
 call :log Done.
