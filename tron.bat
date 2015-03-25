@@ -8,7 +8,8 @@
 ::                      + stage_0_prep:stinger: Add McAfee Stinger tool, set to delete infected items. Thanks to /u/upsurper for suggestion
 ::                      + stage_0_prep:sysrstr: Add creation of a System Restore checkpoint before beginning script operations. Only supported on client OS's (does not work on Server versions)
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
-::                      / stage_0_prep:checks:  Move Safe Mode and Administrator rights checks before main menu
+::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
+::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
 ::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper for finding
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
@@ -47,6 +48,7 @@ SETLOCAL
 
 :: TODO: - stinger is broke (doesn't scan)
 ::       - power scheme export is broke (Windows 7)
+::       - Adobe flash is broke (launches new Tron window)
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -466,6 +468,35 @@ if /i %CONFIG_DUMP%==yes (
 if /i %AUTORUN%==yes goto execute_jobs
 
 
+::::::::::::::::::::::::
+:: ADMIN RIGHTS CHECK ::
+::::::::::::::::::::::::
+:: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
+SETLOCAL ENABLEDELAYEDEXPANSION
+if /i not "%SAFE_MODE%"=="yes" (
+	fsutil dirty query %systemdrive% >NUL
+	:: Previous method
+	::net session >nul 2>&1
+	if /i not !ERRORLEVEL!==0 (
+		color cf
+		cls
+		echo.
+		echo  ERROR
+		echo.
+		echo  Tron doesn't think it is running as an Administrator.
+		echo  Tron MUST be run with full Administrator rights to 
+		echo  function correctly.
+		echo.
+		echo  Close this window and re-run Tron as an Administrator.
+		echo  ^(right-click Tron.bat and click "Run as Administrator"^)
+		echo.
+		pause
+		exit /b 1
+	)
+)
+SETLOCAL DISABLEDELAYEDEXPANSION
+
+
 :: PREP JOB: Display the annoying disclaimer screen. Sigh
 cls
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -538,36 +569,6 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		pause
 		cls
 		)
-
-
-::::::::::::::::::::::::
-:: ADMIN RIGHTS CHECK ::
-::::::::::::::::::::::::
-:: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
-SETLOCAL ENABLEDELAYEDEXPANSION
-if /i not "%SAFE_MODE%"=="yes" (
-	fsutil dirty query %systemdrive% >NUL
-	:: Previous method
-	::net session >nul 2>&1
-	if /i not !ERRORLEVEL!==0 (
-		color cf
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  Tron doesn't think it is running as an Administrator.
-		echo  Tron MUST be run with full Administrator rights to 
-		echo  function correctly.
-		echo.
-		echo  Close this window and re-run Tron as an Administrator.
-		echo  ^(right-click Tron.bat and click "Run as Administrator^)
-		echo.
-		pause
-		:: UPM detection circuit
-		if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
-	)
-)
-SETLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: PREP JOB: UPM detection circuit
@@ -1171,7 +1172,7 @@ if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
 if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
 :: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
-%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%"
+%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 :skip_sfc
 call :log Done.
 
