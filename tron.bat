@@ -10,10 +10,10 @@
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
-::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper for finding
+::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
-::                      ! stage_4_patch:reader: Fix a few lines where we were displaying messages instead of sending them to the log file as intended
+::                      ! stage_4_patch:reader: Fix a few lines that were displaying messages instead of sending them to the log as intended
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -47,9 +47,11 @@ SETLOCAL
 @echo off
 
 
-:: TODO: - stinger is broke (doesn't scan)					
-::       - power scheme export is broke (Windows 7)			
-::       - Adobe flash is broke (launches new Tron window)	FIXED?
+:: TODO:
+::	stinger is broke (doesn't scan)										
+::	power scheme export is broke (Windows 7)							
+:: 	Adobe flash is broke (launches new Tron window)						FIXED
+::	email report config check is broke (doesn't catch unconfigured)		
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -645,6 +647,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo.
 		echo  Alternatively you can run SwithMail.exe to have the GUI generate
 		echo  a config file for you.
+		echo.
 		pause
 	)
 )
@@ -657,12 +660,14 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 ::::::::::::::::::
 :execute_jobs
 
-:: Make log directory and file if they don't already exist
+:: Make log file and directories if they don't already exist
+if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
+if /i not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
+if /i not exist "%LOGPATH%\tron_raw_logs" mkdir "%LOGPATH%\tron_raw_logs"
+if /i not exist "%LOGPATH%\tron_summary_logs" mkdir "%LOGPATH%\tron_summary_logs"
+
 :: If we're resuming from a script interruption we don't want to wipe the log, so check for that here
-if /i %RESUME_DETECTED%==no (
-	if /i not exist "%LOGPATH%" mkdir "%LOGPATH%"
-	echo. > "%LOGPATH%\%LOGFILE%"
-	)
+if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
 
 
 :: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong.
@@ -723,9 +728,6 @@ call :log Done.
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 call :log Summary logs requested, generating pre-run system profile...
 	if /i %DRY_RUN%==no (
-		:: Stage the directories
-		if /i not exist "%LOGPATH%\tron_raw_logs" mkdir "%LOGPATH%\tron_raw_logs"
-		if /i not exist "%LOGPATH%\tron_summary_logs" mkdir "%LOGPATH%\tron_summary_logs"
 		:: Get list of installed programs
 		stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%LOGPATH%\tron_raw_logs\installed-programs-before.txt"
 		:: Get list of all files on system
@@ -800,7 +802,7 @@ call :log Done.
 
 :: JOB: McAfee Stinger
 call :log Launch job 'McAfee Stinger'...
-call :log Stinger doesn't support text logs, saving HTML log to logpath
+call :log Stinger doesn't support text logs, saving HTML log to "%LOGPATH%\tron_raw_logs\"
 if /i %DRY_RUN%==no (
 	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
 	)
@@ -953,8 +955,6 @@ if /i %SKIP_EVENT_LOG_CLEAR%==yes (
 	call :log_alert SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear.
 	goto skip_event_log_clear
 	)
-:: Make a subdirectory in the logpath for the Windows event log backups
-if /i not exist "%LOGPATH%\tron_event_log_backups" mkdir "%LOGPATH%\tron_event_log_backups"
 call :log Saving logs to "%LOGPATH%\tron_event_log_backups" first...
 :: Backup all logs first. Redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
@@ -984,7 +984,7 @@ if /i %DRY_RUN%==no (
 call :log Done.
 
 
-call :log_header stage_1_tempclean jobs complete.
+call :log_heading stage_1_tempclean jobs complete.
 
 
 
@@ -1466,18 +1466,15 @@ call :log Summary logs requested, calculating post-run results...
 			del /f /q %LOGPATH%\tron_raw_logs\before*txt 2>NUL
 			del /f /q %LOGPATH%\tron_raw_logs\after*txt 2>NUL
 	)
-call :log Done. Summary logs are at "%LOGPATH%\tron_summary_logs"
+call :log Done. Summary logs are at "%LOGPATH%\tron_summary_logs\"
 )
 
 
 :: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
-call :log Saving misc logs to "%LOGPATH%\tron_raw_logs"
+call :log Saving misc logs to "%LOGPATH%\tron_raw_logs\"
 if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%LOGPATH%\tron_raw_logs" >NUL
 if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%LOGPATH%\tron_raw_logs" >NUL
 call :log Done.
-
-title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call :log_heading DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
 
 
 :: JOB: Remove resume-related files and registry entries
@@ -1488,7 +1485,6 @@ del /f /q tron_stage.txt >nul 2>&1
 call :log Done.
 
 
-
 :: JOB: Calculate saved disk space
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
@@ -1496,6 +1492,11 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 :: MB version
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+
+
+:: Notify of Tron completion
+title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
+call :log_heading DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
 
 
 :: Check if auto-reboot was requested
@@ -1546,9 +1547,9 @@ echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB 
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo.
-echo                     * Don't panic if you see negative disk space. Due to how some of 
-echo                       Tron's functions work, actual disk space reclaimed will not be
-echo                       visible until after a reboot.
+echo   * Don't panic if you see negative disk space. Due to how some of Tron's
+echo     functions work, actual disk space reclaimed will not be visible until after
+echo     a reboot.
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
