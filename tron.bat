@@ -1368,7 +1368,7 @@ call :log Done.
 if "%SKIP_DEFRAG%"=="yes" (
 	call :log SKIP_DEFRAG ^(-sd^) set. Skipping defrag.
 	call :log_heading stage_5_optimize jobs complete.
-	goto stage_5_optimize_complete
+	goto stage_6_wrap-up
 	)
 
 :: Check if a Solid State hard drive was detected before doing this section
