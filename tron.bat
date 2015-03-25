@@ -13,6 +13,7 @@
 ::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper for finding
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
+::                      ! stage_4_patch:reader: Fix a few lines where we were displaying messages instead of sending them to the log file as intended
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -315,7 +316,9 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 
-:: PREP JOB: Update check
+::::::::::::::::::
+:: UPDATE CHECK ::
+::::::::::::::::::
 :: Skip this job if we're doing a dry run or if AUTORUN is set
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
@@ -393,10 +396,10 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	color 0f
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
-
 :: Clean up after ourselves
 if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
 :skip_update_check
+
 
 
 :: PREP JOB: Execute config dump if requested
@@ -1228,10 +1231,12 @@ call :log Done.
 
 
 :: JOB: Adobe Flash Player
-call :log Launch job 'Update Adobe Flash Player'...
+call :log Launch job 'Update Adobe Flash Player (Firefox)'...
 setlocal
 if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\firefox\Adobe Flash Player (Firefox).bat"
 endlocal
+call :log Done.
+call :log Launch job 'Update Adobe Flash Player (IE)'...
 setlocal
 if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\internet explorer\Adobe Flash Player (IE).bat"
 endlocal
@@ -1255,7 +1260,7 @@ if /i %DRY_RUN%==yes goto skip_jre_update
 :: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
-:: we skip JRE 8 because the JRE 8 updater automatically removes older versions, no need to do it twice
+:: we skip JRE 8 because the JRE 8 update script automatically removes older versions, no need to do it twice
 
 :: JRE 7
 call :log JRE 7...
@@ -1296,7 +1301,6 @@ if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	)
 
 :skip_jre_update
-
 call :log Done.
 
 
