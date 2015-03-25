@@ -5,14 +5,14 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.0.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming everything's where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
-::                      + stage_0_prep:stinger: Add McAfee Stinger tool, set to delete infected items. Thanks to /u/upsurper for suggestion
+::                      + stage_0_prep:stinger: Add McAfee Stinger tool, configured to delete infected items. Thanks to /u/upsurper
 ::                      + stage_0_prep:sysrstr: Add creation of a System Restore checkpoint before beginning script operations. Only supported on client OS's (does not work on Server versions)
-::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
+::                      ! stage_0_prep:admin:   Fix broken Administrator rights check due to minor syntax error. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
 ::                      ! stage_0_prep:power:   Fix minor errors in power scheme export (Vista and up)
 ::                      - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
-::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper
+::                      ! tron.bat:update:      Fix error with update checker. Was failing cert check over HTTPS. Thanks to /u/upsurper
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
 ::                      ! stage_4_patch:reader: Fix a few lines that were displaying messages instead of sending them to the log as intended
@@ -48,6 +48,8 @@
 SETLOCAL
 @echo off
 
+
+:: TODO: move remaining random logs into tron_raw_logs
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -120,7 +122,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.0.0
-set SCRIPT_DATE=2015-03-25
+set SCRIPT_DATE=2015-03-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -586,7 +588,7 @@ echo  * Author: vocatus on reddit.com/r/TronScript                          *
 echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
-echo                  TDSSKiller/registry backup/clean oldest VSS set       *
+echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: RogueKiller/Sophos/Vipre/MBAM/DISM repair/SFC scan    *
@@ -713,11 +715,11 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
 		call :log Attempting to create pre-run Restore Point ^(Vista and up only^)...
 		if /i %DRY_RUN%==no (
-			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' >nul 2>&1 | Out-Null"
+			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
 )
-call :log Done.
+call :log OK.
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
@@ -910,7 +912,7 @@ call :log Done.
 
 :: JOB: TempFileCleanup.bat
 call :log Launch job 'TempFileCleanup'...
-if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat>> "%LOGPATH%\%LOGFILE%" 2>NUL
+if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: Reset window title since TempFileCleanup clobbers it
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 call :log Done.
@@ -970,10 +972,10 @@ call :log Done.
 call :log Launch job 'Clear Windows Update cache'...
 if /i %DRY_RUN%==no (
 	:: Allow us to start the service in Safe Mode. Thanks to /u/GrizzlyWinter
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\WUAUSERV" /ve /t reg_sz /d Service /f 2>NUL
-	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%"
-	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%"
-	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%"
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\WUAUSERV" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%" 2>&1
+	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 call :log Done.
 
@@ -1008,7 +1010,7 @@ call :log Done.
 :: JOB: Remove crapware programs, phase 2 (by GUID)
 call :log Attempt junkware removal: Phase 2 (by GUID)...
 call :log Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
-if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log Done.
 
 
@@ -1107,7 +1109,6 @@ call :log Done.
 
 
 :: JOB: VIPRE Rescue
-:: Haven't been able to figure out where Vipre saves its log file to, so we can't grab it like with do with Sophos above
 :: We have to pushd and popd here because Vipre tries to stage its definition files in the current directory
 call :log Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd stage_3_disinfect\vipre_rescue
@@ -1468,6 +1469,10 @@ call :log Done. Summary logs are at "%LOGPATH%\tron_summary_logs\"
 call :log Saving misc logs to "%LOGPATH%\tron_raw_logs\"
 if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%LOGPATH%\tron_raw_logs" >NUL
 if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%LOGPATH%\tron_raw_logs" >NUL
+if exist "%LOGPATH%\mbam-log*" move /y "%LOGPATH%\mbam-log*" "%LOGPATH%\tron_raw_logs\"
+if exist "%LOGPATH%\Sophos*" move /y "%LOGPATH%\Sophos*" "%LOGPATH%\tron_raw_logs\"
+if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%LOGPATH%\tron_raw_logs\"
+if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%LOGPATH%\tron_raw_logs\"
 call :log Done.
 
 
