@@ -4,20 +4,23 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.0.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming everything's where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
+:: Version:       6.0.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming the Tron folder didn't move it should automatically re-launch at the last stage. Major thanks to /u/cuddlychops06 for assistance with this
+::                      + stage_0_prep:sysrstr: Create System Restore checkpoint before beginning script operations. Windows client versions only, Vista and up (no Server versions)
 ::                      + stage_0_prep:stinger: Add McAfee Stinger tool, configured to delete infected items. Thanks to /u/upsurper
-::                      + stage_0_prep:sysrstr: Create System Restore checkpoint before beginning script operations. Only works on client versions of Vista and up (does not work on Server versions)
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check due to minor syntax error. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
 ::                      ! stage_0_prep:power:   Fix minor errors in power scheme export (Vista and up)
+::                      * stage_1_tempclean:bb: Add support for -v flag to BleachBit; BleachBit now dumps list of actions if -v flag is used
 ::                      - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
 ::                      ! tron.bat:update:      Fix error with update checker. Was failing cert check over HTTPS. Thanks to /u/upsurper
-::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
+::                      * tron.bat:logging:     Major upgrade. Now use logging functions instead of two lines per event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      / stage_4_patch:7-zip:  Send output from assoc and open-with commands to logfile instead of console
-::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
+::                      * stage_4_patch:java:   Suppress unnecessary error messages about old versions not being found during previous version removal
 ::                      ! stage_4_patch:reader: Fix a few lines that were displaying messages instead of sending them to the log as intended
+::                      * stage_5_optimize:dfg: Defrag now only runs (assuming it wasn't skipped) if the system drive is at least 5% or more fragmented
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
+::                      * stage_6_wrap-up:      Sweep misc logs in LOGPATH left from the various sub-tools into %LOGPATH%\tron_raw_logs
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -49,8 +52,6 @@
 SETLOCAL
 @echo off
 
-
-:: TODO: move remaining random logs into tron_raw_logs
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -123,7 +124,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.0.0
-set SCRIPT_DATE=2015-03-xx
+set SCRIPT_DATE=2015-03-25
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -931,7 +932,8 @@ call :log Done.
 :: JOB: BleachBit
 call :log Launch job 'BleachBit'...
 if /i %DRY_RUN%==no (
-	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -c>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if %VERBOSE%==yes stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -p
+	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -c >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 	)
 call :log Done.
@@ -940,9 +942,13 @@ call :log Done.
 :: JOB: USB Device Cleanup
 call :log Launch job 'USB Device Cleanup'...
 if /i %DRY_RUN%==no (
-	if %VERBOSE%==yes stage_1_tempclean\usb_cleanup\DriveCleanup.exe -t -n
-	stage_1_tempclean\usb_cleanup\DriveCleanup.exe -n>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
+if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
+	if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -t -n
+	"stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
+) else (
+	if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -t -n
+	"stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
+)
 call :log Done.
 
 
@@ -1375,7 +1381,7 @@ if "%SSD_DETECTED%"=="yes" (
 :: JOB: Defrag the system drive
 if "%SSD_DETECTED%"=="no" (
 	call :log Launch job 'Defrag %SystemDrive%'...
-	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive%
+	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call :log Done.
 	call :log_heading stage_5_optimize jobs complete.
 	)
