@@ -1535,7 +1535,7 @@ echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB 
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo.
-echo   * Don't panic if you see negative disk space. Due to how some of Tron's
+echo   * If you see negative disk space don't panic. Due to how some of Tron's
 echo     functions work, actual disk space reclaimed will not be visible until after
 echo     a reboot.
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
