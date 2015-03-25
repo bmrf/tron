@@ -9,6 +9,7 @@
 ::                      + stage_0_prep:sysrstr: Add creation of a System Restore checkpoint before beginning script operations. Only supported on client OS's (does not work on Server versions)
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Safe Mode and Administrator rights checks before main menu
+::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper for finding
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
 ::                      * stage_6_wrap-up:      Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
@@ -44,7 +45,8 @@ SETLOCAL
 @echo off
 
 
-
+:: TODO: - stinger is broke (doesn't scan)
+::       - power scheme export is broke (Windows 7)
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -358,7 +360,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Downloading new version to the desktop, please wait...
 		echo.
-		stage_0_prep\check_update\wget.exe "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+		stage_0_prep\check_update\wget.exe --no-check-certificate "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 		echo.
 		echo %TIME%   Download finished.
 		echo.
@@ -650,7 +652,6 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 :: EXECUTE JOBS ::
 ::::::::::::::::::
 :execute_jobs
-cls
 
 :: Make log directory and file if they don't already exist
 :: If we're resuming from a script interruption we don't want to wipe the log, so check for that here
@@ -661,7 +662,7 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong.
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
 
 
 :: UPM detection circuit #2
@@ -669,6 +670,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
 :: Create log header
+cls
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 call :log_heading TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture
@@ -706,7 +708,7 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
 		call :log Attempting to create pre-run Restore Point ^(Vista and up only^)...
 		if /i %DRY_RUN%==no (
-			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' 2>&1 | Out-Null"
+			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' >nul 2>&1 | Out-Null"
 		)
 	)
 )
@@ -834,9 +836,8 @@ call :log Done.
 call :log Disabling Sleep mode...
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 
-call :log Exporting power scheme and switching to Always On...
-
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
+call :log Exporting power scheme and switching to Always On...
 SETLOCAL ENABLEDELAYEDEXPANSION
 
 :: Windows XP/2003 version
@@ -1114,7 +1115,7 @@ call :log Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd stage_3_disinfect\vipre_rescue
 call :log Scan in progress. Output hidden by default (use -v to show)...
 if /i %DRY_RUN%==no ( 
-	if /i %VERBOSE%==no VipreRescueScanner.exe /nolog
+	if /i %VERBOSE%==no VipreRescueScanner.exe /nolog >> "%LOGPATH%\%LOGFILE%"
 	if /i %VERBOSE%==yes VipreRescueScanner.exe
 	)
 popd
@@ -1235,13 +1236,14 @@ if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\internet explorer\Ado
 endlocal
 call :log Done.
 
+
 :: JOB: Adobe Reader
 call :log Launch job 'Update Adobe Reader'...
 setlocal
 if /i %DRY_RUN%==no call "stage_4_patch\adobe\reader\x86\Adobe Reader.bat"
 endlocal
-
 call :log Done.
+
 
 :: JOB: Remove outdated JRE runtimes (security risk)
 call :log Checking and removing outdated JRE installations...
@@ -1523,7 +1525,7 @@ if /i %SELF_DESTRUCT%==yes (
 :: Display and log the job summary
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
-echo call :log_heading TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
+call :log_heading TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
 echo                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%>> %LOGPATH%\%LOGFILE%
 echo                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%
 echo                          Command-line flags: %*>> %LOGPATH%\%LOGFILE%
@@ -1539,9 +1541,9 @@ echo                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB 
 echo                          Logfile: %LOGPATH%\%LOGFILE%>> %LOGPATH%\%LOGFILE%
 echo                          Logfile: %LOGPATH%\%LOGFILE%
 echo.
-echo                       * Don't panic if you see negative disk space. Due to how some of 
-echo                         Tron's functions work, actual disk space reclaimed will not be
-echo                         visible until after a reboot.
+echo                     * Don't panic if you see negative disk space. Due to how some of 
+echo                       Tron's functions work, actual disk space reclaimed will not be
+echo                       visible until after a reboot.
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 
