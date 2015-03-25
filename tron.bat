@@ -47,9 +47,9 @@ SETLOCAL
 @echo off
 
 
-:: TODO: - stinger is broke (doesn't scan)
-::       - power scheme export is broke (Windows 7)
-::       - Adobe flash is broke (launches new Tron window)
+:: TODO: - stinger is broke (doesn't scan)					
+::       - power scheme export is broke (Windows 7)			
+::       - Adobe flash is broke (launches new Tron window)	FIXED?
 
 :::::::::::::::
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
@@ -629,7 +629,7 @@ pause
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
-	findstr "YOUR-EMAIL-ADDRESS-HERE" stage_6_wrap-up\email_report\SwithMailSettings.xml >NUL
+	findstr /i "YOUR-EMAIL-ADDRESS" stage_6_wrap-up\email_report\SwithMailSettings.xml >NUL
 	if !ERRORLEVEL!==0 (
 		color cf
 		cls
@@ -950,7 +950,7 @@ call :log Done.
 :: JOB: Clear Windows event logs
 call :log Launch job 'Clear Windows event logs'...
 if /i %SKIP_EVENT_LOG_CLEAR%==yes (
-	call :log_alert SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear...
+	call :log_alert SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear.
 	goto skip_event_log_clear
 	)
 :: Make a subdirectory in the logpath for the Windows event log backups
@@ -967,9 +967,9 @@ if /i %DRY_RUN%==no %WMIC% nteventlog where "filename like '%%'" cleareventlog >
 :: Alternate Vista-and-up only method
 :: if /i %DRY_RUN%==no for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 
+call :log Done.
 :skip_event_log_clear
 
-call :log Done.
 
 
 :: JOB: Clear Windows Update cache
@@ -984,7 +984,7 @@ if /i %DRY_RUN%==no (
 call :log Done.
 
 
-call :log stage_1_tempclean jobs commplete.
+call :log_header stage_1_tempclean jobs complete.
 
 
 
@@ -1071,7 +1071,7 @@ call :log Done.
 
 :: JOB: Check for -sa flag (skip antivirus scans) and skip Sophos, Vipre and MBAM if it was used
 if /i %SKIP_ANTIVIRUS_SCANS%==yes (
-	call :log_heading_alert SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, Vipre and MBAM scans...
+	call :log_heading_alert SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, Vipre and MBAM scans.
 	goto skip_antivirus_scans
 	)
 
@@ -1206,7 +1206,7 @@ if /i %DRY_RUN%==no (
 	
 :: Check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	call :log_alert SKIP_PATCHES ^(-sp^) set. Skipping app patches...
+	call :log_alert SKIP_PATCHES ^(-sp^) set. Skipping app patches.
 	goto skip_patches
 	)
 	
@@ -1251,8 +1251,9 @@ endlocal
 call :log Done.
 
 
-:: JOB: Remove outdated JRE runtimes (security risk)
-call :log Checking and removing outdated JRE installations...
+:: JOB: Java Runtime update
+call :log Launch job 'Update Java Runtime Environment'...
+call :log Checking for and removing outdated installations first...
 if /i %DRY_RUN%==yes goto skip_jre_update
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
@@ -1284,9 +1285,7 @@ call :log JRE 4...
 call :log Done.
 
 
-:: JOB: Java Runtime 8
-call :log Launch job 'Update Java Runtime Environment'...
-
+call :log Installing latest JRE...
 :: Check if we're on 32-bit Windows and run the appropriate installer
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	call :log x86 architecture detected, installing x86 version...
@@ -1313,11 +1312,11 @@ call :log Launch job 'Install Windows updates'...
 if /i %DRY_RUN%==no (
 	if /i %SKIP_WINDOWS_UPDATES%==no (
 		wuauclt /detectnow /updatenow
+		call :log Done.
 	) else (
-		call :log_alert SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping...
+		call :log_alert SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping Windows Updates.
 	)
 )
-call :log Done.
 
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
@@ -1366,12 +1365,14 @@ call :log Done.
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
 	call :log SKIP_DEFRAG ^(-sd^) set. Skipping defrag.
-	goto stage_6_wrap-up
+	call :log_heading stage_5_optimize jobs complete.
+	goto stage_5_optimize_complete
 	)
 
 :: Check if a Solid State hard drive was detected before doing this section
 if "%SSD_DETECTED%"=="yes" (
 	call :log Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
+	call :log_heading stage_5_optimize jobs complete.
 	goto stage_6_wrap-up
 	)
 
@@ -1380,9 +1381,8 @@ if "%SSD_DETECTED%"=="no" (
 	call :log Launch job 'Defrag %SystemDrive%'...
 	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive%
 	call :log Done.
+	call :log_heading stage_5_optimize jobs complete.
 	)
-
-call :log_heading stage_5_optimize jobs complete.
 
 
 ::::::::::::::::::::::
@@ -1391,7 +1391,7 @@ call :log_heading stage_5_optimize jobs complete.
 :stage_6_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_6_wrap-up>tron_stage.txt
-call :log_heading Wrapping up...
+call :log_heading stage_6_wrap-up jobs begin...
 
 :: JOB: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
