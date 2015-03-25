@@ -10,6 +10,7 @@
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
+::                      - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
 ::                      ! tron.bat:update:      Fix error with update checker. Would fail when downloading most recent update and using HTTPS link. Thanks to /u/upsurper
 ::                      * tron.bat:logging:     Major overhaul. Tron now uses a logging function instead of two lines per log event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
 ::                      * stage_4_patch:java:   Suppress a few unnecessary error messages about old versions not being found during previous version removal
@@ -804,7 +805,7 @@ call :log Done.
 call :log Launch job 'McAfee Stinger'...
 call :log Stinger doesn't support text logs, saving HTML log to "%LOGPATH%\tron_raw_logs\"
 if /i %DRY_RUN%==no (
-	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
+	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%\tron_raw_logs" --DELETE
 	)
 call :log Done.
 
