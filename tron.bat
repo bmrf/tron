@@ -6,7 +6,7 @@
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.0.0 + tron.bat:             Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming everything's where you left it (e.g. Tron folder didn't move) it should automatically re-launch at login and resume from the last stage. Major thanks to /u/cuddlychops06 for assistance with this
 ::                      + stage_0_prep:stinger: Add McAfee Stinger tool, configured to delete infected items. Thanks to /u/upsurper
-::                      + stage_0_prep:sysrstr: Add creation of a System Restore checkpoint before beginning script operations. Only supported on client OS's (does not work on Server versions)
+::                      + stage_0_prep:sysrstr: Create System Restore checkpoint before beginning script operations. Only works on client versions of Vista and up (does not work on Server versions)
 ::                      ! stage_0_prep:admin:   Fix broken Administrator rights check due to minor syntax error. This has been broken since at least v2.2.1 (2014-08-21)
 ::                      / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
 ::                      / stage_0_prep:checks:  Move Safe Mode checks before main menu
@@ -847,23 +847,23 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 :: Windows XP/2003 version
 if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	REM Extract the line containing the current power GUID
-	for /f "delims=^T" %%i in ('powercfg -query ^| find /i "Name"') do (set t=%%i)
+	for /f "delims=^T" %%i in ('%WINDIR%\system32\powercfg.exe -query ^| find /i "Name"') do (set t=%%i)
 	REM Parse out just the name and stash it in a variable
 	set POWER_SCHEME=!t:~27!
 	REM Export the power scheme based on this GUID
-	powercfg /EXPORT "!POWER_SCHEME!" /FILE "%LOGPATH%\tron_power_config_backup.pow"
+	%WINDIR%\system32\powercfg.exe /EXPORT "!POWER_SCHEME!" /FILE "%LOGPATH%\tron_power_config_backup.pow"
 	REM Set the "High Performance" scheme active
-	powercfg /SETACTIVE "Always On"
+	%WINDIR%\system32\powercfg.exe /SETACTIVE "Always On"
 ) else (
 	REM All other versions of Windows
 	REM Extract the line containing the current power GUID
-	for /f "delims=" %%i in ('powercfg -list ^| find "*"') do (set t=%%i)
+	for /f "delims=" %%i in ('%WINDIR%\system32\powercfg.exe -list ^| find "*"') do (set t=%%i)
 	REM Parse out the GUID and stash it in a variable
 	set POWER_SCHEME=!t:~19,36!
 	REM Export the power scheme based on this GUID
-	powercfg.exe -EXPORT "%LOGPATH%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
+	%WINDIR%\system32\powercfg.exe -EXPORT "%LOGPATH%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
 	REM Set the "High Performance" scheme active
-	powercfg -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	%WINDIR%\system32\powercfg.exe -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 	REM We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
@@ -873,7 +873,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
 	REM	3rd: Specific GUID for the "Lid close action" power setting
 	REM	4th: Action code for "Do nothing"
-	powercfg -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
+	%WINDIR%\system32\powercfg.exe -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
 	)
 
 :: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
@@ -1407,7 +1407,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	call :log Resetting Windows power settings to defaults...
 	REM Check for Windows XP/2k3
 	if /i "%WIN_VER:~0,9%"=="Microsoft" (
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies 2>NUL
+		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 	) else (
 	REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe -restoredefaultschemes
