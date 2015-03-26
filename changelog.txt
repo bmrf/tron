@@ -14,6 +14,13 @@ Version number legend:
   major feature change
 
 
+
+########################
+# v6.0.1 // 2015-03-26 #
+########################
+tron.bat                         v6.0.1
+ ! stage_1_tempclean:usb: Fix crash error in USB device cleanup due to missing closing bracket. Thanks to /u/Satiex for reporting
+
   
 
 ########################
