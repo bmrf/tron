@@ -95,7 +95,9 @@ Command-line use is fully supported. All flags are optional and can be combined.
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_3_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
 There are two limitations on the resume feature:
+
 1. You must log back in as the original user that ran the script in the first place
+
 2. ONLY command-line flags are preserved across a restart! Changes to the script defaults (accomplished by manually changing the variables in the script) are NOT preserved. 
  
 More details about this function are in the list of all Tron steps at the bottom of this document.
