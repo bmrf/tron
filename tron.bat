@@ -4,25 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.0.1 ! stage_1_tempclean:usb: Fix crash error in USB device cleanup due to missing closing bracket. Thanks to /u/Satiex for reporting
-::                6.0.0 + tron.bat:              Add resume function. Tron will now attempt to pick up at the last stage it successfully started if there is an interruption. You do have to log back in as the user that originally ran Tron, but assuming the Tron folder didn't move it should automatically re-launch at the last stage. Major thanks to /u/cuddlychops06 for assistance with this
-::                      + stage_0_prep:sysrstr:  Create System Restore checkpoint before beginning script operations. Windows client versions only, Vista and up (no Server versions)
-::                      + stage_0_prep:stinger:  Add McAfee Stinger tool, configured to delete infected items. Thanks to /u/upsurper
-::                      ! stage_0_prep:admin:    Fix broken Administrator rights check due to minor syntax error. This has been broken since at least v2.2.1 (2014-08-21)
-::                      / stage_0_prep:checks:   Move Administrator rights check before main menu and EULA screen
-::                      / stage_0_prep:checks:   Move Safe Mode checks before main menu
-::                      ! stage_0_prep:power:    Fix minor errors in power scheme export (Vista and up)
-::                      * stage_1_tempclean:bb:  Add support for -v flag to BleachBit; BleachBit now dumps list of actions if -v flag is used
-::                      - stage_1_tempclean:ie:  Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
-::                      ! tron.bat:update:       Fix error with update checker. Was failing cert check over HTTPS. Thanks to /u/upsurper
-::                      * tron.bat:logging:      Major upgrade. Now use logging functions instead of two lines per event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major thanks to /u/douglas_swehla
-::                      / stage_4_patch:7-zip:   Send output from assoc and open-with commands to logfile instead of console
-::                      * stage_4_patch:java:    Suppress unnecessary error messages about old versions not being found during previous version removal
-::                      ! stage_4_patch:reader:  Fix a few lines that were displaying messages instead of sending them to the log as intended
-::                      * stage_5_optimize:dfg:  Defrag now only runs (assuming it wasn't skipped) if the system drive is at least 5% or more fragmented
-::                      * stage_6_wrap-up:       Add message explaning disk space calculations to dissuade panic about seemingly negative disk space reclaimed
-::                      * stage_6_wrap-up:       Sweep misc logs in LOGPATH left from the various sub-tools into %LOGPATH%\tron_raw_logs
-::
+:: Version:       6.1.0 + stage_0_prep:kvrt:  Add Kaspersky Virus Removal Tool to replace TDSSKiller. Thanks to /u/kamakaze_chickn
+::                      - stage_0_prep:tdssk: Remove TDSSKiller due to many issues with it stalling or crashing the script
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -124,8 +107,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.0.1
-set SCRIPT_DATE=2015-03-26
+set SCRIPT_VERSION=6.1.0
+set SCRIPT_DATE=2015-03-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -517,7 +500,7 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  *                                                                       *
 	echo  * Tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
-	echo  * ^(MBAM, TDSSK, etc^) are bound by their respective licenses. It is      *
+	echo  * ^(MBAM, KVRT, etc^) are bound by their respective licenses. It is        *
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
 	echo  * tools in whatever environment you're in.                              *
 	echo  *                                                                       *
@@ -591,7 +574,7 @@ echo  * Author: vocatus on reddit.com/r/TronScript                          *
 echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
-echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
+echo  *               KVRT/registry backup/clean oldest VSS set             *
 echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: RogueKiller/Sophos/Vipre/MBAM/DISM repair/SFC scan    *
@@ -810,33 +793,32 @@ if /i %DRY_RUN%==no (
 call :log Done.
 
 
-:: JOB: TDSS Killer
-call :log Launch job 'TDSSKiller'...
+:: JOB: Kaspersky Virus Removal Tool (KVRT). Replaced TDSSKiller
+call :log Launch job 'Kaspersky Virus Removal Tool'...
+call :log Tool-specific log saved to "%LOGPATH%\tron_raw_logs\Reports"
 if /i %DRY_RUN%==no (
-	"stage_0_prep\tdss_killer\TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
-	:: Copy TDSSKiller log into the main Tron log
-	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
-	del "%TEMP%\tdsskiller.log" 2>NUL
+	start /wait stage_0_prep\kaspersky_virus_removal_tool\KVRT.exe -d "%LOGPATH%\tron_raw_logs" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo -fupdate
+	if exist "%LOGPATH%\tron_raw_logs\Legal notices" rmdir /s /q "%LOGPATH%\tron_raw_logs\Legal notices"
 	)
 call :log Done.
 
 
 :: JOB: Purge oldest shadow copies
-call :log Purging oldest Shadow Copy set (Win7 and up)...
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
+		call :log Purging oldest Shadow Copy set (Win7 and up)...
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
 			net start VSS >nul 2>&1
 			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
-			)
 		)
+		call :log Done.
 	)
-call :log Done.
+)
 
 
 :: JOB: Disable sleep mode
