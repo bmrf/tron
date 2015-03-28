@@ -37,7 +37,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 4. Reboot
 
-By default the log file is at `C:\Logs\tron.log`
+By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
 Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
@@ -59,7 +59,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
     
     -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
     
-    -gsl Generate summary logs in the LOGPATH that list removed files and programs
+    -gsl Generate summary logs. These list exactly what files and programs were removed
 
     -h   Display help text
     
@@ -121,19 +121,38 @@ Keep in mind the username and password for the email account will be stored in P
 
 # CHANGE DEFAULTS (advanced)
 
-If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option.
+If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option when used.
 
-- To change log location, edit these lines:
+- To change the master directory where all of Tron's output goes, edit this line:
   ```
-  set LOGPATH=%SystemDrive%\Logs
+  set LOGPATH=%SystemDrive%\Logs\tron
+  ```
+
+- To change the name of Tron's master log file, edit this line:
+  ```
   set LOGFILE=tron.log
   ```
   
 - To change where Tron stores quarantined files, change this path (note: this is currently unused by Tron, setting it has no effect):
   ```
-  set QUARANTINE_PATH=C:\path\to\your\desired\folder
+  set QUARANTINE=%LOGPATH%\quarantine
   ```
 
+- To change the location of the backups Tron makes (Registry, Event Logs, power scheme, etc), edit this line:
+  ```
+  set BACKUPS=%LOGPATH%\backups
+  ```
+  
+- To change where Tron saves raw unprocessed logs from the various sub-tools, edit this line:
+  ```
+  set RAW_LOGS=%LOGPATH%\raw_logs
+  ```
+  
+- To change where Tron saves summary logs (generated if the -gsl flag is used), edit this line:
+  ```
+  set SUMMARY_LOGS=%LOGPATH%\summary_logs
+  ```
+  
 - To always run automatically (no welcome screen, implies acceptance of EULA), change this to `yes`:
   ```
   set AUTORUN=no
@@ -189,7 +208,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_DEBLOAT=no
   ```
   
-- To **ALWAYS** skip defrag, regardless whether `C:\` is an SSD or not, change this to `yes`:
+- To always skip defrag, regardless whether `C:\` is an SSD or not, change this to `yes`:
   ```
   set SKIP_DEFRAG=no
   ```
@@ -267,7 +286,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
-7. **Make log and quarantine dirs**: Create the `LOGPATH` and `QUARANTINE_PATH` directories if they don't already exist
+7. **Make log directories**: Create the master log directory and sub-directories if they don't exist
 
 8. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
@@ -284,7 +303,7 @@ Master script that launches all the other tools. It performs a lot of actions on
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE`
   ```
 
-4. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+4. **KVRT**: Kaspersky Virus Removal Tool, replaces TDSSKiller
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
@@ -394,7 +413,7 @@ Tron does not run these automatically because most of them don't support command
 
 5. **ComboFix**: The "scorched-earth policy" of malware removal
 
-6. **gmer**: Rootkit/ADS scanner
+6. **PCHunter**: Tool to scan for rootkits and other malicious items. Replaces gmer
 
 7. **Junkware Removal Tool**: Temp files and random junkware remover
 
