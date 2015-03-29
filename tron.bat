@@ -52,8 +52,8 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 ::  * Spaces are okay               (okay:  c:\my folder\with spaces )
 ::  * Network paths are okay        (okay:  \\server\share name      )
 
-:: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). If you want, you can change this by tweaking the paths below to your liking
-:: If a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
+:: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
+:: If you want a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
 ::   set LOGPATH=%SystemDrive%\Logs\tron\%computername%_%DTS%
 set LOGPATH=%SystemDrive%\Logs\tron
 
@@ -64,7 +64,7 @@ set LOGFILE=tron.log
 :: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here)
 set QUARANTINE=%LOGPATH%\quarantine
 
-:: Registry backup, Event Log backups, and power scheme backup are all saved here
+:: Registry, Event Logs, and power scheme backups are all saved here
 set BACKUPS=%LOGPATH%\backups
 
 :: Where to save raw unprocessed logs from the various sub-tools
@@ -1493,7 +1493,6 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-color 20
 call :log_heading DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
 
 
@@ -1527,6 +1526,8 @@ if /i %SELF_DESTRUCT%==yes (
 
 
 :: Display and log the job summary
+:: Turn the window green so we can quickly see at a glance if it's done
+color 20
 echo ------------------------------------------------------------------------------->> %LOGPATH%\%LOGFILE%
 echo -------------------------------------------------------------------------------
 call :log_heading TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete
