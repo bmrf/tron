@@ -742,7 +742,6 @@ call :log Done.
 )
 
 
-
 :: JOB: rkill
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log Launch job 'rkill'...
@@ -820,7 +819,7 @@ call :log Done.
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT). Replaced TDSSKiller
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT (TDSSKiller)]
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT]
 call :log Launch job 'Kaspersky Virus Removal Tool'...
 call :log Tool-specific log saved to "%RAW_LOGS%\Reports"
 if /i %DRY_RUN%==no (
@@ -834,7 +833,7 @@ call :log Done.
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
-:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
+:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
 		call :log Purging oldest Shadow Copy set (Win7 and up)...
@@ -850,8 +849,8 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 
 
 :: JOB: Disable sleep mode
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Power scheme modifications]
 call :log Disabling Sleep mode...
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Power scheme modifications]
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
@@ -1045,10 +1044,10 @@ call :log Done.
 
 
 :: JOB: Remove default Metro apps (Windows 8/8.1/2012/2012-R2 only). Thanks to https://keybase.io/exabrial
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
 :: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
 :: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
 if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
@@ -1143,8 +1142,8 @@ call :log Done.
 
 
 :: JOB: VIPRE Rescue
-:: We have to pushd and popd here because Vipre tries to stage its definition files in the current directory
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [VIPRE Rescue]
+:: We have to pushd and popd here because Vipre tries to stage its definition files in the current directory
 call :log Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd stage_3_disinfect\vipre_rescue
 call :log Scan in progress. Output hidden by default (use -v to show)...
@@ -1179,8 +1178,8 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 :: If we detect errors try to repair them
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
 if /i not %ERRORLEVEL%==0 (
+	title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
 	if "%WIN_VER:~0,9%"=="Windows Server 2012" (
 		call :log_alert DISM: Image corruption detected. Attempting repair...
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
@@ -1248,7 +1247,6 @@ if /i %SKIP_PATCHES%==yes (
 :: JOB: 7-Zip
 title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update 7-Zip]
 call :log Launch job 'Update 7-Zip'...
-
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
@@ -1418,8 +1416,8 @@ if "%SSD_DETECTED%"=="yes" (
 	)
 
 :: JOB: Defrag the system drive
-title TRON v%SCRIPT_VERSION% [stage_5_optimize] [Defrag]
 if "%SSD_DETECTED%"=="no" (
+	title TRON v%SCRIPT_VERSION% [stage_5_optimize] [Defrag]
 	call :log Launch job 'Defrag %SystemDrive%'...
 	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call :log Done.
@@ -1437,8 +1435,8 @@ call :log_heading stage_6_wrap-up jobs begin...
 
 :: JOB: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Restore power scheme]
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
+	title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Restore power scheme]
 	call :log Restoring power settings to previous values...
 	REM Check for Windows XP/2k3
 	if /i "%WIN_VER:~0,9%"=="Microsoft" (
@@ -1464,8 +1462,8 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Generate Summary Logs]
 if /i %GENERATE_SUMMARY_LOGS%==yes (
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Generate Summary Logs]
 call :log Summary logs requested, calculating post-run results...
 	if /i %DRY_RUN%==no (
 		:: Get list of installed programs
