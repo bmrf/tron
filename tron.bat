@@ -716,6 +716,7 @@ call :log_heading stage_0_prep jobs begin...
 :: Note, there is a (stupid) limitation in Windows 8 and up that will only let you create
 :: one restore point every 24 hours. If you create another one, it deletes the previous one.
 :: So unfortunately we can't take a before/after restore point pair. 
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
 		call :log Attempting to create pre-run Restore Point ^(Vista and up only^)...
@@ -728,6 +729,7 @@ call :log OK.
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 call :log Summary logs requested, generating pre-run system profile...
 	if /i %DRY_RUN%==no (
@@ -742,6 +744,7 @@ call :log Done.
 
 
 :: JOB: rkill
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log Launch job 'rkill'...
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log"
@@ -753,12 +756,14 @@ call :log Done.
 
 
 :: JOB: ProcessKiller
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log Launch Job 'ProcessKiller'...
 if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller.exe
 call :log Done.
 
 
 :: JOB: Check WMI and repair if necessary
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
 call :log Checking WMI...
 if /i %DRY_RUN%==yes goto skip_repair_wmi
 
@@ -798,12 +803,14 @@ call :log Done.
 
 
 :: JOB: Backup registry
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
 call :log Backing up registry to "%LOGPATH%"...
 if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
 call :log Done.
 
 
 :: JOB: McAfee Stinger
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
 call :log Launch job 'McAfee Stinger'...
 call :log Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\"
 if /i %DRY_RUN%==no (
@@ -813,6 +820,7 @@ call :log Done.
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT). Replaced TDSSKiller
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT (TDSSKiller)]
 call :log Launch job 'Kaspersky Virus Removal Tool'...
 call :log Tool-specific log saved to "%RAW_LOGS%\Reports"
 if /i %DRY_RUN%==no (
@@ -823,6 +831,7 @@ call :log Done.
 
 
 :: JOB: Purge oldest shadow copies
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh. 
@@ -841,6 +850,7 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 
 
 :: JOB: Disable sleep mode
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Power scheme modifications]
 call :log Disabling Sleep mode...
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 
@@ -888,6 +898,7 @@ call :log Done.
 
 
 :: JOB: Reduce SysRestore space
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [System Restore Modifications]
 call :log Reducing max allowed System Restore space to 7%% of disk...
 if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
@@ -909,12 +920,14 @@ call :log_heading stage_1_tempclean jobs begin...
 
 
 :: JOB: Clean Internet Explorer; Windows' built-in method
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
 call :log Launch job 'Clean Internet Explorer'...
 if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 call :log Done.
 
 
 :: JOB: TempFileCleanup.bat
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [TempFileCleanup]
 call :log Launch job 'TempFileCleanup'...
 if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: Reset window title since TempFileCleanup clobbers it
@@ -923,6 +936,7 @@ call :log Done.
 
 
 :: JOB: CCLeaner
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call :log Launch job 'CCleaner'...
 if /i %DRY_RUN%==no (
 	stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -932,6 +946,7 @@ call :log Done.
 
 
 :: JOB: BleachBit
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [BleachBit]
 call :log Launch job 'BleachBit'...
 if /i %DRY_RUN%==no (
 	if %VERBOSE%==yes stage_1_tempclean\bleachbit\bleachbit_console.exe -p --preset
@@ -942,6 +957,7 @@ call :log Done.
 
 
 :: JOB: USB Device Cleanup
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [USB Device Cleanup]
 call :log Launch job 'USB Device Cleanup'...
 if /i %DRY_RUN%==no (
 if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
@@ -956,6 +972,7 @@ call :log Done.
 
 
 :: JOB: Clear Windows event logs
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clear Windows Event Logs]
 call :log Launch job 'Clear Windows event logs'...
 if /i %SKIP_EVENT_LOG_CLEAR%==yes (
 	call :log_alert SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear.
@@ -979,6 +996,7 @@ call :log Done.
 
 
 :: JOB: Clear Windows Update cache
+title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
 call :log Launch job 'Clear Windows Update cache'...
 if /i %DRY_RUN%==no (
 	:: Allow us to start the service in Safe Mode. Thanks to /u/GrizzlyWinter
@@ -1010,6 +1028,7 @@ call :log_heading stage_2_de-bloat begin...
 
 
 :: JOB: Remove crapware programs, phase 1 (by name)
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call :log Attempt junkware removal: Phase 1 (by name)...
 call :log Customize here: \resources\stage_2_de-bloat\oem\programs_to_target.txt
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
@@ -1018,6 +1037,7 @@ call :log Done.
 
 
 :: JOB: Remove crapware programs, phase 2 (by GUID)
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call :log Attempt junkware removal: Phase 2 (by GUID)...
 call :log Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
 if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -1028,6 +1048,7 @@ call :log Done.
 :: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
 :: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on. 
 :: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
 if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
@@ -1067,6 +1088,7 @@ call :log_heading stage_3_disinfect jobs begin...
 
 
 :: JOB: RogueKiller
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [RogueKiller]
 call :log  Launch job 'RogueKiller' (SLOW, be patient)...
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo remove| stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan remove
@@ -1083,6 +1105,7 @@ if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 call :log Launch job 'Install Malwarebytes Anti-Malware'...
 :: Install MBAM & remove the desktop icon
 if /i %DRY_RUN%==no ( 
@@ -1105,6 +1128,7 @@ call :log_alert NOTE: You must manually click SCAN in the MBAM window!
 
 
 :: JOB: Sophos Virus Remover
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
 call :log Launch job 'Sophos Virus Removal Tool' (slow, be patient)...
 call :log Scanning. Output REDUCED by default (use -v to show)...
 echo.
@@ -1120,6 +1144,7 @@ call :log Done.
 
 :: JOB: VIPRE Rescue
 :: We have to pushd and popd here because Vipre tries to stage its definition files in the current directory
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [VIPRE Rescue]
 call :log Launch job 'Vipre rescue scanner' (slow, be patient)...
 pushd stage_3_disinfect\vipre_rescue
 call :log Scan in progress. Output hidden by default (use -v to show)...
@@ -1137,6 +1162,7 @@ call :log Done.
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
 :: Thanks to /u/nomaddave
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Check]
 call :log Launch job 'Dism Windows image check (Win8/2012 only)'...
 if /i %DRY_RUN%==yes goto skip_dism_image_check
 
@@ -1153,6 +1179,7 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 :: If we detect errors try to repair them
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
 if /i not %ERRORLEVEL%==0 (
 	if "%WIN_VER:~0,9%"=="Windows Server 2012" (
 		call :log_alert DISM: Image corruption detected. Attempting repair...
@@ -1175,6 +1202,7 @@ call :log Done.
 
 
 :: JOB: System File Checker (SFC) scan
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [SFC Scan]
 call :log Launch job 'System File Checker'...
 if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
@@ -1204,6 +1232,7 @@ call :log_heading stage_4_patch jobs begin...
 
 
 :: Prep task: enable MSI installer in Safe Mode
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Prep]
 if /i %DRY_RUN%==no (
 	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 	net start msiserver >nul 2>&1
@@ -1217,6 +1246,7 @@ if /i %SKIP_PATCHES%==yes (
 	
 
 :: JOB: 7-Zip
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update 7-Zip]
 call :log Launch job 'Update 7-Zip'...
 
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
@@ -1236,6 +1266,7 @@ call :log Done.
 
 
 :: JOB: Adobe Flash Player
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Adobe Flash Player]
 call :log Launch job 'Update Adobe Flash Player (Firefox)'...
 setlocal
 if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\firefox\Adobe Flash Player (Firefox).bat"
@@ -1249,6 +1280,7 @@ call :log Done.
 
 
 :: JOB: Adobe Reader
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Adobe Reader]
 call :log Launch job 'Update Adobe Reader'...
 setlocal
 if /i %DRY_RUN%==no call "stage_4_patch\adobe\reader\x86\Adobe Reader.bat"
@@ -1257,6 +1289,7 @@ call :log Done.
 
 
 :: JOB: Java Runtime update
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Java Runtime Environment]
 call :log Launch job 'Update Java Runtime Environment'...
 call :log Checking for and removing outdated installations first...
 if /i %DRY_RUN%==yes goto skip_jre_update
@@ -1313,6 +1346,7 @@ call :log Done.
 
 
 :: JOB: Windows updates
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Windows Updates]
 call :log Launch job 'Install Windows updates'...
 if /i %DRY_RUN%==no (
 	if /i %SKIP_WINDOWS_UPDATES%==no (
@@ -1326,6 +1360,7 @@ if /i %DRY_RUN%==no (
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
 :: Windows 8/2012 and up only
+title TRON v%SCRIPT_VERSION% [stage_4_patch] [Rebuild Windows Update base]
 call :log Launch job 'DISM base reset'...
 if /i %DRY_RUN%==no (
 	if /i not "%WIN_VER:~0,9%"=="Microsoft" (
@@ -1352,6 +1387,7 @@ title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 call :log_heading stage_5_optimize jobs begin...
 
 :: JOB: chkdsk the system drive
+title TRON v%SCRIPT_VERSION% [stage_5_optimize] [chkdsk]
 call :log Launch job 'chkdsk'...
 call :log Checking %SystemDrive% for errors...
 
@@ -1382,6 +1418,7 @@ if "%SSD_DETECTED%"=="yes" (
 	)
 
 :: JOB: Defrag the system drive
+title TRON v%SCRIPT_VERSION% [stage_5_optimize] [Defrag]
 if "%SSD_DETECTED%"=="no" (
 	call :log Launch job 'Defrag %SystemDrive%'...
 	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
@@ -1400,6 +1437,7 @@ call :log_heading stage_6_wrap-up jobs begin...
 
 :: JOB: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Restore power scheme]
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	call :log Restoring power settings to previous values...
 	REM Check for Windows XP/2k3
@@ -1426,6 +1464,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Generate Summary Logs]
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 call :log Summary logs requested, calculating post-run results...
 	if /i %DRY_RUN%==no (
@@ -1464,6 +1503,7 @@ call :log Done. Summary logs are at "%SUMMARY_LOGS%\"
 
 
 :: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Collect logs]
 call :log Saving misc logs to "%RAW_LOGS%\"
 if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
 if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%RAW_LOGS%" >NUL
@@ -1475,6 +1515,7 @@ call :log Done.
 
 
 :: JOB: Remove resume-related files and registry entries
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Remove resume files]
 call :log No crash or reboot detected. Removing resume-support files...
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 del /f /q tron_flags.txt >nul 2>&1
@@ -1483,6 +1524,7 @@ call :log Done.
 
 
 :: JOB: Calculate saved disk space
+title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Calculate saved disk space]
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
