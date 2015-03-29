@@ -1493,6 +1493,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
+color 20
 call :log_heading DONE. Use \resources\stage_7_manual_tools if further cleaning is required.
 
 
