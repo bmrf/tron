@@ -758,7 +758,6 @@ if /i %DRY_RUN%==yes goto skip_repair_wmi
 %WMIC% timezone >NUL
 if /i not %ERRORLEVEL%==0 (
     call :log "%CUR_DATE% %TIME% !  WMI appears to be broken. Running WMI repair. This might take a minute, please be patient..."
-	%CUR_DATE% %TIME% !  %*
     net stop winmgmt
     pushd %SystemRoot%\system32\wbem
     for %%i in (*.dll) do RegSvr32 -s %%i
