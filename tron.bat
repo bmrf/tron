@@ -52,7 +52,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 ::  * Spaces are okay               (okay:  c:\my folder\with spaces )
 ::  * Network paths are okay        (okay:  \\server\share name      )
 
-:: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). If you want, you can change this by tweaking the paths below to your liking.
+:: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). If you want, you can change this by tweaking the paths below to your liking
 :: If a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
 ::   set LOGPATH=%SystemDrive%\Logs\tron\%computername%_%DTS%
 set LOGPATH=%SystemDrive%\Logs\tron
@@ -61,10 +61,10 @@ set LOGPATH=%SystemDrive%\Logs\tron
 ::  set LOGFILE=tron_%COMPUTERNAME%_%DTS%.log
 set LOGFILE=tron.log
 
-:: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here).
+:: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here)
 set QUARANTINE=%LOGPATH%\quarantine
 
-:: Registry backup, Event Log backups, and power scheme backup are all saved here.
+:: Registry backup, Event Log backups, and power scheme backup are all saved here
 set BACKUPS=%LOGPATH%\backups
 
 :: Where to save raw unprocessed logs from the various sub-tools
@@ -309,7 +309,6 @@ if /i %RESUME_DETECTED%==yes (
 if /i %RESUME_DETECTED%==yes (
 	:: Notify and jump
 	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"..."
-	%CUR_DATE% %TIME% ! %*
 	:: Reset the RunOnce flag in case we get interrupted again
 	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
 	goto %RESUME_STAGE%
@@ -317,7 +316,7 @@ if /i %RESUME_DETECTED%==yes (
 
 	
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
-:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default
+:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	bcdedit /set {default} bootmenupolicy legacy
 	)
@@ -1258,7 +1257,7 @@ if /i %DRY_RUN%==yes goto skip_jre_update
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
-:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number
+:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 :: JRE 8
 :: We skip JRE 8 because the JRE 8 update script automatically removes older versions, no need to do it twice
