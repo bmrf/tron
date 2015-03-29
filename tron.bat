@@ -385,7 +385,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo %TIME%   This copy of Tron will now self-destruct.
 			echo.
 			popd
-			pause
+			
 			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
 		) else (
 			color 0c
@@ -393,7 +393,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo                      downloading latest version. Will delete failed file and
 			echo                      exit.
 			echo.
-			pause
+			
 			REM Clean up after ourselves
 			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 			del /f /q %TEMP%\sha256sums.txt
@@ -500,7 +500,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo  Close this window and re-run Tron as an Administrator.
 		echo  ^(right-click Tron.bat and click "Run as Administrator"^)
 		echo.
-		pause
+		
 		exit /b 1
 	)
 )
@@ -558,7 +558,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo  or problems after running, recommend booting to
 		echo  "Safe Mode with Networking" and re-running.
 		echo.
-		pause
+		
 		cls
 		)
 
@@ -576,7 +576,7 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		echo  Tron will still function, but rebooting to "Safe Mode
 		echo  with Networking" is recommended.
 		echo.
-		pause
+		
 		cls
 		)
 
@@ -627,7 +627,7 @@ if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
 if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
-pause
+
 
 
 ::::::::::::::::::::::::
@@ -653,7 +653,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo  Alternatively you can run SwithMail.exe to have the GUI generate
 		echo  a config file for you.
 		echo.
-		pause
+		
 	)
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -685,7 +685,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 :: Create log header
 cls
 call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
+call :log " %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
 call :log "                         Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
 call :log "                         Logfile:   %LOGPATH%\%LOGFILE%"
 call :log "                         Command-line flags: %*"
@@ -1522,7 +1522,7 @@ if /i %SELF_DESTRUCT%==yes (
 
 :: Display and log the job summary
 call :log "-------------------------------------------------------------------------------"
-call :log " %CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call :log " %CUR_DATE% %TIME%  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
 call :log "                         Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
 call :log "                         Command-line flags: %*"
 call :log "                         Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
@@ -1530,10 +1530,10 @@ call :log "                         Free space before Tron run: %FREE_SPACE_BEFO
 call :log "                         Free space after Tron run:  %FREE_SPACE_AFTER% MB"
 call :log "                         Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
 call :log "                         Logfile: %LOGPATH%\%LOGFILE%"
-echo.
-echo   * If you see negative disk space don't panic. Due to how some of Tron's
-echo     functions work, actual disk space reclaimed will not be visible until after
-echo     a reboot.
+call :log ""
+call :log "  * If you see negative disk space don't panic. Due to how some of Tron's"
+call :log "    functions work, actual disk space reclaimed will not be visible until"
+call :log "    after a reboot."
 call :log "-------------------------------------------------------------------------------"
 
 
@@ -1579,7 +1579,7 @@ if /i %SELF_DESTRUCT%==yes (
 	)
 
 :end_and_skip_shutdown
-pause
+
 ENDLOCAL
 exit /B
 :: That's all, folks
@@ -1591,12 +1591,13 @@ exit /B
 :: FUNCTIONS ::
 :::::::::::::::
 :: Thanks to /u/douglas_swehla for helping me learn about faking functions in batch.
+
 :log
 :: Since no new variable names are defined, there's no need for SETLOCAL.
 :: The %1 reference contains the first argument passed to the function. When the
 :: whole argument string is wrapped in double quotes, it is sent as on argument.
 :: The tilde syntax (%~1) removes the double quotes around the argument.
-    echo %~1 >> "%log%"
-    echo %~1
+    echo:%~1 >> "%LOGPATH%\%LOGFILE%"
+    echo:%~1
 goto :eof
 
