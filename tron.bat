@@ -317,7 +317,7 @@ if /i %RESUME_DETECTED%==yes (
 
 	
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
-:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
+:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	bcdedit /set {default} bootmenupolicy legacy
 	)
@@ -385,7 +385,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo %TIME%   This copy of Tron will now self-destruct.
 			echo.
 			popd
-			
+			pause
 			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
 		) else (
 			color 0c
@@ -393,7 +393,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo                      downloading latest version. Will delete failed file and
 			echo                      exit.
 			echo.
-			
+			pause
 			REM Clean up after ourselves
 			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 			del /f /q %TEMP%\sha256sums.txt
@@ -500,7 +500,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo  Close this window and re-run Tron as an Administrator.
 		echo  ^(right-click Tron.bat and click "Run as Administrator"^)
 		echo.
-		
+		pause
 		exit /b 1
 	)
 )
@@ -558,7 +558,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo  or problems after running, recommend booting to
 		echo  "Safe Mode with Networking" and re-running.
 		echo.
-		
+		pause
 		cls
 		)
 
@@ -576,7 +576,7 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 		echo  Tron will still function, but rebooting to "Safe Mode
 		echo  with Networking" is recommended.
 		echo.
-		
+		pause
 		cls
 		)
 
@@ -627,7 +627,7 @@ if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
 if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
-
+pause
 
 
 ::::::::::::::::::::::::
@@ -653,7 +653,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo  Alternatively you can run SwithMail.exe to have the GUI generate
 		echo  a config file for you.
 		echo.
-		
+		pause
 	)
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -1258,10 +1258,10 @@ if /i %DRY_RUN%==yes goto skip_jre_update
 :: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
 :: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
 :: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture 
-:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number
 
 :: JRE 8
-:: we skip JRE 8 because the JRE 8 update script automatically removes older versions, no need to do it twice
+:: We skip JRE 8 because the JRE 8 update script automatically removes older versions, no need to do it twice
 
 :: JRE 7
 call :log "%CUR_DATE% %TIME%    JRE 7..."
@@ -1269,7 +1269,7 @@ call :log "%CUR_DATE% %TIME%    JRE 7..."
 
 :: JRE 6
 call :log "%CUR_DATE% %TIME%    JRE 6..."
-:: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
+:: 1st line is for updates 23-xx, after 64-bit runtimes were introduced
 :: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
 %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
 %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -1579,7 +1579,7 @@ if /i %SELF_DESTRUCT%==yes (
 	)
 
 :end_and_skip_shutdown
-
+pause
 ENDLOCAL
 exit /B
 :: That's all, folks
@@ -1590,7 +1590,7 @@ exit /B
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-:: Thanks to /u/douglas_swehla for helping me learn about faking functions in batch.
+:: Thanks to /u/douglas_swehla for helping me learn about faking functions in batch
 
 :log
 :: Since no new variable names are defined, there's no need for SETLOCAL.
