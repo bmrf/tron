@@ -134,7 +134,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.1.0
-set SCRIPT_DATE=2015-03-xx
+set SCRIPT_DATE=2015-04-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -643,15 +643,14 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 :: Create log header
 cls
 call :log "-------------------------------------------------------------------------------"
-call :log " %CUR_DATE% %TIME% TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
-call :log " Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
-call :log " Logfile: %LOGPATH%\%LOGFILE%"
-call :log " Command-line flags: %*"
-call :log " Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log " Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
+call :log "                          Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
+call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
+call :log "                          Command-line flags: %*"
+call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call :log "-------------------------------------------------------------------------------"
-
-
+                         
 
 :::::::::::::::::::
 :: STAGE 0: PREP ::
@@ -1094,8 +1093,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
 call :log "%CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
 call :log "%CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)..."
-echo.
 if /i %DRY_RUN%==no (
+	echo.
 	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
 	if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
 	if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
@@ -1354,14 +1353,14 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: Check if we are supposed to run a defrag before doing this section
 if "%SKIP_DEFRAG%"=="yes" (
-	call :log "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
+	call :log "%CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag."
 	call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs complete."
 	goto stage_6_wrap-up
 	)
 
 :: Check if a Solid State hard drive was detected before doing this section
 if "%SSD_DETECTED%"=="yes" (
-	call :log Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'.
+	call :log "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
 	call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs complete."
 	goto stage_6_wrap-up
 	)
@@ -1382,7 +1381,7 @@ if "%SSD_DETECTED%"=="no" (
 :stage_6_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_6_wrap-up>tron_stage.txt
-all :log "%CUR_DATE% %TIME%   stage_6_wrap-up jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_6_wrap-up jobs begin..."
 
 :: JOB: If selected, import the original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
@@ -1469,7 +1468,7 @@ call :log "%CUR_DATE% %TIME%    No crash or reboot detected. Removing resume-sup
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 del /f /q tron_flags.txt >nul 2>&1
 del /f /q tron_stage.txt >nul 2>&1
-call :log    Done.
+call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Calculate saved disk space
@@ -1518,20 +1517,20 @@ if /i %SELF_DESTRUCT%==yes (
 
 :: Display and log the job summary
 :: Turn the window green so we can quickly see at a glance if it's done
-color 20
+color 2F
 call :log "-------------------------------------------------------------------------------"
-call :log " %CUR_DATE% %TIME% TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
-call :log " Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
-call :log " Command-line flags: %*"
-call :log " Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log " Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-call :log " Free space after Tron run: %FREE_SPACE_AFTER% MB"
-call :log " Disk space reclaimed: %FREE_SPACE_SAVED% MB *"
-call :log " Logfile: %LOGPATH%\%LOGFILE%"
+call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call :log "                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
+call :log "                          Command-line flags: %*"
+call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+call :log "                          Free space after Tron run: %FREE_SPACE_AFTER% MB"
+call :log "                          Disk space reclaimed: %FREE_SPACE_SAVED% MB *"
+call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
 call :log ""
-call :log " * If you see negative disk space don't panic. Due to how some of Tron's"
-call :log " functions work, actual disk space reclaimed will not be visible until"
-call :log " after a reboot."
+call :log "     * If you see negative disk space don't panic. Due to how some of Tron's"
+call :log "       functions work, actual disk space reclaimed will not be visible until"
+call :log "       after a reboot."
 call :log "-------------------------------------------------------------------------------"
 
 
@@ -1579,6 +1578,7 @@ if /i %SELF_DESTRUCT%==yes (
 :end_and_skip_shutdown
 pause
 ENDLOCAL
+color
 exit /B
 :: That's all, folks
 
