@@ -7,6 +7,7 @@
 :: Version:       6.1.0 * tron.bat:logging:        Simplify from four logging functions to one. Add additional variables to support storing Tron logs, backups, etc in different locations vs. a hard-coded sub-directory of LOGPATH. Thanks to /u/douglas_swehla
 ::                      / tron.bat:date:           Move code that gets the date into ISO 8601 format to top of script so it can be used in log paths
 ::                      * tron.bat:cli_args:       Convert CLI argument parsing to a function to eliminate duplicate code block. Thanks to /u/douglas_swehla
+::                      * tron.bat:logging:        Add current step and tool to window title while scanning. Thanks to /u/ziffzuh
 ::                      + stage_3_disinfect:kvrt:  Add Kaspersky Virus Removal Tool. Should grant significant speed increase over Vipre. Thanks to /u/kamakaze_chickn and /u/cuddlychops06
 ::                      - stage_3_disinfect:vipre: Remove Vipre Rescue Scanner. Just wasn't effective enough for the significant time it cost us
 ::
