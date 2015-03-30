@@ -17,18 +17,23 @@ Version number legend:
 
 
 ########################
-# v6.1.0 // 2015-04-xx #
+# v6.1.0 // 2015-03-29 #
 ########################
 tron.bat                         v6.1.0
- + stage_0_prep:kvrt:  Add Kaspersky Virus Removal Tool to replace TDSSKiller. Thanks to /u/kamakaze_chickn
- - stage_0_prep:tdssk: Remove TDSSKiller due to many issues with it stalling or crashing the script
- / tron.bat:logging:   Add additional variables to support storing Tron logs, backups, etc in different locations vs. in a hard-coded sub-directory of LOGPATH. Thanks to /u/douglas_swehla
- / tron.bat:date:      Move code that gets the date into ISO 8601 format to top of script so it can be used in log paths
+ * tron.bat:logging:        Simplify from four logging functions to one. Add additional variables to support storing Tron logs, backups, etc in different locations vs. a hard-coded sub-directory of LOGPATH. Thanks to /u/douglas_swehla
+ / tron.bat:date:           Move code that gets the date into ISO 8601 format to top of script so it can be used in log paths
+ * tron.bat:cli_args:       Convert CLI argument parsing to a function to eliminate duplicate code block. Thanks to /u/douglas_swehla
+ + stage_3_disinfect:kvrt:  Add Kaspersky Virus Removal Tool. Should grant significant speed increase over Vipre. Thanks to /u/kamakaze_chickn and /u/cuddlychops06
+ - stage_3_disinfect:vipre: Remove Vipre Rescue Scanner. Just wasn't effective enough for the significant time it cost us
 
 STAGE 0: Prep
  . Rkill                         v2.7.0.0
- . ProcessKiller                 v1.0
- . TDSS Killer                   v3.0.0.42
+ * ProcessKiller                 v1.1.0-TRON     // Thanks to /u/cuddlychops06
+   - Remove VTTimer.exe exclusion (Seen only on old XP machines)
+   + Add conhost.exe exclusion    (Prevent killing console apps)
+   + Add vmtoolsd.exe exclusion   (Prevent killing VMWare Tools)
+
+ * TDSS Killer                   v3.0.0.44
  + McAfee Stinger                v12.1.0.1427
  . erunt                         v1.1j
 
@@ -45,7 +50,8 @@ STAGE 2: De-bloat
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.7.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ + Kaspersky Virus Removal Tool  v15.0.19.0
+ - Vipre Rescue Scanner          REMOVED
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
 STAGE 4: Patch
