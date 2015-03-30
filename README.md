@@ -71,7 +71,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
     
     -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
-    -sa  Skip anti-virus scans (Sophos, Vipre, MBAM)
+    -sa  Skip anti-virus scans (MBAM, KVRT, Sophos)
     
     -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 
@@ -194,7 +194,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTO_REBOOT_DELAY=0
   ```
   
-- To skip anti-virus scan engines (Sophos, Vipre, MBAM), change this to `yes`:
+- To skip anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
   ```
   set SKIP_ANTIVIRUS_SCANS=no
   ```
