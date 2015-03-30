@@ -1,7 +1,7 @@
 | NAME       | Tron, an automated PC cleanup script                                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
 | AUTHOR     | vocatus on reddit.com/r/TronScript (`vocatus d0t gate@gmail.com`) // PGP key: `0x07d1490f82a211a2` |
-| BACKGROUND | Why the name? Because Tron "Fights for the User"                                               |
+| BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
