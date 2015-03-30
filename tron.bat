@@ -134,7 +134,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.1.0
-set SCRIPT_DATE=2015-04-xx
+set SCRIPT_DATE=2015-03-29
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -670,7 +670,7 @@ call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
-		call :log "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point ^(Vista and up only^)..."
+		call :log "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
 		if /i %DRY_RUN%==no (
 			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
@@ -901,7 +901,7 @@ title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [BleachBit]
 call :log "%CUR_DATE% %TIME%    Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
 	if %VERBOSE%==yes stage_1_tempclean\bleachbit\bleachbit_console.exe -p --preset
-	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -c >> "%LOGPATH%\%LOGFILE%"
+	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -c >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done."
@@ -1005,7 +1005,7 @@ if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
 if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
-	call :log "%CUR_DATE% %TIME%    "%WIN_VER%" detected, removing OEM Metro apps..."
+	call :log "%CUR_DATE% %TIME%    "Windows 8/2012" detected, removing OEM Metro apps..."
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
@@ -1623,3 +1623,4 @@ for %%i in (%*) do (
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
 	)
+goto :eof
