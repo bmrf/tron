@@ -32,6 +32,7 @@ STAGE 0: Prep
    - Remove VTTimer.exe exclusion (Seen only on old XP machines)
    + Add conhost.exe exclusion    (Prevent killing console apps)
    + Add vmtoolsd.exe exclusion   (Prevent killing VMWare Tools)
+   + Add LogMeIn.exe exclusion    (Prevent killing LogMeIn support tool) 
 
  * TDSS Killer                   v3.0.0.44
  + McAfee Stinger                v12.1.0.1427
@@ -70,12 +71,12 @@ STAGE 6: Wrap-up
  
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v4.1.1.3
+ * AdwCleaner                    v4.2.0.0
  . aswMBR                        v1.0.1.2252
  . autoruns                      v13.2
- . ComboFix                      v15.3.25.1
+ . ComboFix                      v15.3.29.1
  . Junkware Removal Tool         v6.4.6
- . Malwarebytes Anti-Rootkit     v1.08.3.1004
+ * Malwarebytes Anti-Rootkit     v1.09.1.1004
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.0.0.2
  . ServicesRepair.exe            v1.0.0.3
