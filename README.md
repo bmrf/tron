@@ -299,10 +299,10 @@ Master script that launches all the other tools. It performs a lot of actions on
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE`
   ```
 
-4. **KVRT**: Kaspersky Virus Removal Tool, replaces TDSSKiller
+4. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
-  -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+  tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
 5. **erunt**: Used to backup the registry before beginning a Tron run
@@ -356,11 +356,15 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
 
-2. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
+2. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` flag skips this component
 
-3. **Vipre Rescue Scanner**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
+3. **KVRT**: Kaspersky Virus Removal Tool. Using Tron's -sa flag skips this component
 
-4. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` flag skips this component
+  ```
+  -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+  ```
+
+3. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
 
 5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
