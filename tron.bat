@@ -1383,7 +1383,7 @@ if "%SSD_DETECTED%"=="no" (
 echo stage_6_wrap-up>tron_stage.txt
 call :log "%CUR_DATE% %TIME%   stage_6_wrap-up jobs begin..."
 
-:: JOB: If selected, import the original power settings, re-activate them, and delete the backup
+:: JOB: If selected, import original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
 	title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Restore power scheme]
@@ -1393,18 +1393,18 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%POWER_SCHEME%" /file "%BACKUPS%\tron_power_config_backup.pow"
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive "%POWER_SCHEME%"
 	) else (
-	REM If we made it this far we're not on XP or 2k3 and we can run the standard commands
+	REM Run commands for all other versions of Windows
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%BACKUPS%\tron_power_config_backup.pow" %POWER_SCHEME% 2>NUL
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive %POWER_SCHEME%
 	)
-	del %BACKUPS%\tron_power_config_backup.pow 2>NUL
+	del /f /q %BACKUPS%\tron_power_config_backup.pow 2>NUL
 ) else (
 	call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults..."
 	REM Check for Windows XP/2k3
 	if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 	) else (
-	REM if we made it this far we're not on XP or 2k3 and we can run the standard commands
+	REM Run commands for all other versions of Windows
 		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe -restoredefaultschemes
 	)
 	call :log "%CUR_DATE% %TIME%    Done."
