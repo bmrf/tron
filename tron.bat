@@ -4,8 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.1.2 / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
-::                      + tron.bat:flags:          Add -np flag and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks to /u/geeklogan
+:: Version:       6.1.2 + tron.bat:flags:          Add -np flag and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks to /u/geeklogan
+::                      / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
 ::                6.1.1 ! stage_0_prep:tdssk:      Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -35,6 +35,12 @@
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
 
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
+
+
+:: TODO:  
+::   - GSL: Fix list of removed programs not being empty if no programs were removed:   https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/
+::   - 
+
 SETLOCAL
 @echo off
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
