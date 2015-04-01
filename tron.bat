@@ -5,7 +5,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.1.2 / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
-::                6.1.1 ! stage_0_prep:tdssk: Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
+::                      + tron.bat:flags:          Add -np flag and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks to /u/geeklogan
+::                6.1.1 ! stage_0_prep:tdssk:      Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
