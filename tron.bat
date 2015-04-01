@@ -4,13 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.1.1 ! stage_0_prep:tdssk:      Revert to v3.0.0.42 due to crash bug where TDSSK was flagging tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
-::                6.1.0 * tron.bat:logging:        Simplify from four logging functions to one. Add additional variables to support storing Tron logs, backups, etc in different locations vs. a hard-coded sub-directory of LOGPATH. Thanks to /u/douglas_swehla
-::                      / tron.bat:date:           Move code that gets the date into ISO 8601 format to top of script so it can be used in log paths
-::                      * tron.bat:cli_args:       Convert CLI argument parsing to a function to eliminate duplicate code block. Thanks to /u/douglas_swehla
-::                      * tron.bat:logging:        Add current step and tool to window title while scanning. Thanks to /u/ziffzuh
-::                      + stage_3_disinfect:kvrt:  Add Kaspersky Virus Removal Tool. Should grant significant speed increase over Vipre. Thanks to /u/kamakaze_chickn and /u/cuddlychops06
-::                      - stage_3_disinfect:vipre: Remove Vipre Rescue Scanner. Just wasn't effective enough for the significant time it cost us
+:: Version:       6.1.2 / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
+::                6.1.1 ! stage_0_prep:tdssk: Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -135,8 +130,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.1.1
-set SCRIPT_DATE=2015-04-01
+set SCRIPT_VERSION=6.1.2
+set SCRIPT_DATE=2015-04-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -983,9 +978,9 @@ call :log "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
 :: JOB: Remove crapware programs, phase 1 (by name)
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by name)..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target.txt"
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 call :log "%CUR_DATE% %TIME%    Done."
 
 
