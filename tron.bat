@@ -20,6 +20,7 @@
 ::                      -gsl Generate summary logs. These list exactly what files and programs were removed
 ::                      -h   Display help text
 ::                      -m   Preserve OEM Metro apps (don't remove them)
+::                      -np  Skip the pause at the end of script
 ::                      -o   Power off after running (overrides -r)
 ::                      -p   Preserve power settings (don't reset to Windows default)
 ::                      -r   Reboot (auto-reboot 15 seconds after completion)
@@ -91,6 +92,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: EMAIL_REPORT          (-er)  = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
 :: GENERATE_SUMMARY_LOGS (-gsl) = Generate summary logs. These list exactly what files and programs were removed
 :: PRESERVE_METRO_APPS   (-m)   = Don't remove OEM Metro apps
+:: NO_PAUSE              (-np)  = Set to yes to skip pause at the end of the script
 :: AUTO_SHUTDOWN         (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
@@ -108,6 +110,7 @@ set EULA_ACCEPTED=no
 set EMAIL_REPORT=no
 set GENERATE_SUMMARY_LOGS=no
 set PRESERVE_METRO_APPS=no
+set NO_PAUSE=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_REBOOT_DELAY=0
@@ -193,6 +196,7 @@ if /i %HELP%==yes (
 	echo    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
 	echo    -gsl Generate summary logs. These list exactly what files and programs were removed
 	echo    -m   Preserve OEM Metro apps ^(don't remove them^)
+	echo    -np  Skip pause at the end of the script
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically ^(auto-reboot 15 seconds after completion^)
@@ -389,6 +393,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
 	echo    GENERATE_SUMMARY_LOGS:  %GENERATE_SUMMARY_LOGS%
+	echo    NO_PAUSE:               %NO_PAUSE%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
@@ -1580,7 +1585,7 @@ if /i %SELF_DESTRUCT%==yes (
 	)
 
 :end_and_skip_shutdown
-pause
+if /i %NO_PAUSE%==no pause
 ENDLOCAL
 color
 exit /B
@@ -1614,6 +1619,7 @@ for %%i in (%*) do (
 	if /i %%i==-gsl set GENERATE_SUMMARY_LOGS=yes
 	if /i %%i==-h set HELP=yes
 	if /i %%i==-m set PRESERVE_METRO_APPS=yes
+	if /i %%i==-np set NO_PAUSE=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
