@@ -15,7 +15,14 @@ Version number legend:
 
 
 
+  
+########################
+# v6.1.1 // 2015-04-01 #
+########################
+tron.bat                         v6.1.0
+ ! stage_0_prep:tdssk:      Revert to v3.0.0.42 due to crash bug where TDSSK was flagging tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
 
+ 
 ########################
 # v6.1.0 // 2015-03-29 #
 ########################
