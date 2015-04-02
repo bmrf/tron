@@ -393,9 +393,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
 	echo    GENERATE_SUMMARY_LOGS:  %GENERATE_SUMMARY_LOGS%
-	echo    NO_PAUSE:               %NO_PAUSE%
 	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
+	echo    NO_PAUSE:               %NO_PAUSE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
