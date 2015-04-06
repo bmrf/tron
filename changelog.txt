@@ -28,7 +28,7 @@ STAGE 0: Prep
  . Rkill                         v2.7.0.0
  . ProcessKiller                 v1.1.0-TRON
  . TDSS Killer                   v3.0.0.42
- * McAfee Stinger                v12.1.0.1442
+ * McAfee Stinger                v12.1.0.1443
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
