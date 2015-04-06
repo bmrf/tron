@@ -4,9 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.1.2 + tron.bat:flags:          Add -np flag and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks to /u/geeklogan
-::                      / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
-::                6.1.1 ! stage_0_prep:tdssk:      Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
+:: Version:       6.1.3 ! tron.bat:updater: Fix updater bug where download failed integrity check even when file was correct. Thanks to /u/aheath1992
+::                      ! tron.bat:resume:  Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry 
+::                                          if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent 
+::                                          getting stuck in a resume-loop over and over
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -34,13 +35,15 @@
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
-
+::
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
 
 
 :: TODO:  
-::   - GSL: Fix list of removed programs not being empty if no programs were removed:   https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/
-::   - 
+::  -gsl   Fix list of removed programs not being empty if no programs were removed: ( https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/ )
+::         Currently stuck, can't figure out why ERRORLEVEL isn't getting set correctly, even when using enabledelayedexpansion and !ERRORLEVEL! in testing.
+::         If anyone can point me in the right direction it'd be great. Boilerplate code is in and currently commented out.
+::  7-zip  Look at v1.2.0-TRON x86 install script, /u/swtester reported it throwing out "file could not be found" errors ( http://www.reddit.com/r/TronScript/comments/31axc6/tron_v612_20150403_add_np_flag_def_updates/cq208ly )
 
 SETLOCAL
 @echo off
@@ -140,8 +143,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.1.2
-set SCRIPT_DATE=2015-04-xx
+set SCRIPT_VERSION=6.1.3
+set SCRIPT_DATE=2015-04-06
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -275,8 +278,9 @@ if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
 	:: Notify and jump
 	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"..."
-	:: Reset the RunOnce flag in case we get interrupted again
-	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
+	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to resume-looping where we keep trying to resume
+	:: even if a reboot didn't happen
+	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
 	goto %RESUME_STAGE%
 )
 
@@ -344,7 +348,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -a -k %TEMP%\sha256sums.txt "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" >NUL
+		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k %TEMP%\sha256sums.txt "%USERPROFILE%\Desktop\Tron*.exe" | find /i "Files matched: 1"
 		if !ERRORLEVEL!==0 (
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
 			echo.
@@ -1424,36 +1428,41 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Generate Summary Logs]
 call :log "%CUR_DATE% %TIME%    Summary logs requested, calculating post-run results..."
-	if /i %DRY_RUN%==no (
-		:: Get list of installed programs
-		stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
-		:: Get list of all files
-		stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
-		:: Parse everything
-			REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
-			stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | find /i /v "$RECYCLE" | find /i /v "AppData\" | find /i /v "ntuser.dat" > %TEMP%\temp.txt
-			for /f "tokens=1 delims=," %%a in (%TEMP%\temp.txt) do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
-			
-			REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
-			REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
-			copy /y %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\before.txt >NUL
-			for /f "delims=" %%a in (%RAW_LOGS%\before.txt) do echo %%a>> %RAW_LOGS%\before1.txt
-			more +3 %RAW_LOGS%\before1.txt >> %RAW_LOGS%\before2.txt
-			findstr /v /i "[==" %RAW_LOGS%\before2.txt > %RAW_LOGS%\installed-programs-before.txt
+if /i %DRY_RUN%==no (
+	:: Get list of installed programs
+	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
+	:: Get list of all files
+	stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
+	:: Parse everything
+		REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
+		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | find /i /v "$RECYCLE" | find /i /v "AppData\" | find /i /v "ntuser.dat" > %TEMP%\temp.txt
+		for /f "tokens=1 delims=," %%a in (%TEMP%\temp.txt) do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
 
-			REM AFTER: Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
-			copy /y %RAW_LOGS%\installed-programs-after.txt %RAW_LOGS%\after.txt >NUL
-			for /f "delims=" %%a in (%RAW_LOGS%\after.txt) do echo %%a>> %RAW_LOGS%\after1.txt
-			more +3 %RAW_LOGS%\after1.txt >> %RAW_LOGS%\after2.txt
-			findstr /v /i "[==" %RAW_LOGS%\after2.txt > %RAW_LOGS%\installed-programs-after.txt
-			
-			REM Calculate the differences, using GnuWin32 coreutil's comm.exe
-			stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt > %SUMMARY_LOGS%\tron_removed_programs.txt
-			
-			REM Cleanup
-			del /f /q %TEMP%\temp.txt 2>NUL
-			del /f /q %RAW_LOGS%\before*txt 2>NUL
-			del /f /q %RAW_LOGS%\after*txt 2>NUL
+		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
+		REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
+		copy /y %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\before.txt >NUL
+		for /f "delims=" %%a in (%RAW_LOGS%\before.txt) do echo %%a>> %RAW_LOGS%\before1.txt
+		more +3 %RAW_LOGS%\before1.txt >> %RAW_LOGS%\before2.txt
+		findstr /v /i "[==" %RAW_LOGS%\before2.txt > %RAW_LOGS%\installed-programs-before.txt
+
+		REM AFTER: Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
+		copy /y %RAW_LOGS%\installed-programs-after.txt %RAW_LOGS%\after.txt >NUL
+		for /f "delims=" %%a in (%RAW_LOGS%\after.txt) do echo %%a>> %RAW_LOGS%\after1.txt
+		more +3 %RAW_LOGS%\after1.txt >> %RAW_LOGS%\after2.txt
+		findstr /v /i "[==" %RAW_LOGS%\after2.txt > %RAW_LOGS%\installed-programs-after.txt
+
+		REM Calculate differences, using GnuWin32 coreutil's comm.exe
+		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt > %SUMMARY_LOGS%\tron_removed_programs.txt
+
+		REM This currently doesn't work - if anyone knows how to fix it, please let me know. Errorlevel doesn't get set correctly, and using SETLOCAL ENABLEDELAYEDEXPANSION doesn't seem to help
+		REM If the parsed file is the same size as the original, we can assume it's the same size and nothing was removed, so just echo that into the file
+		REM echo n|COMP %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
+		REM if !ERRORLEVEL!==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
+		
+		REM Cleanup
+		del /f /q %TEMP%\temp.txt 2>NUL
+		del /f /q %RAW_LOGS%\before*txt 2>NUL
+		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\"
 )
