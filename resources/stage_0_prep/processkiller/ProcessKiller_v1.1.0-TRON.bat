@@ -1,5 +1,5 @@
 @echo off
-REM This is the source code for ProcessKiller v1.1.0-TRON 
+REM This is the source code for ProcessKiller-v1.1.0-TRON.exe
 REM Kills all unnecessary processes in Windows XP and up.
 REM Made for the Tron project by /u/cuddlychops06
 REM Updated Sunday, March 9th, 2015 8:05pm
