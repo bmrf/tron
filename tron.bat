@@ -4,10 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.1.3 ! tron.bat:updater: Fix updater bug where download failed integrity check even when file was correct. Thanks to /u/aheath1992
-::                      ! tron.bat:resume:  Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry 
-::                                          if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent 
-::                                          getting stuck in a resume-loop over and over
+:: Version:       6.1.4 + stage_0_prep:rkill: Add process whitelist to rkill, populated with various user-suggested remote support tools (TeamViewer, etc). Should prevent them from getting nuked when Tron is being run remotely
+::                6.1.3 ! tron.bat:updater:   Fix updater bug where download failed integrity check even when file was correct. Thanks to /u/aheath1992
+::                      ! tron.bat:resume:    Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry 
+::                                            if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent 
+::                                            getting stuck in a resume-loop over and over
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -143,8 +144,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.1.3
-set SCRIPT_DATE=2015-04-06
+set SCRIPT_VERSION=6.1.4
+set SCRIPT_DATE=2015-04-09
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -710,7 +711,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log"
+	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w rkill_process_whitelist.txt
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
