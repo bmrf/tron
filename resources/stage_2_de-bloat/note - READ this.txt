@@ -1,0 +1,33 @@
+There are two files in this directory that determine what Tron targets for bloatware removal:
+
+1. programs_to_target_by_name.txt
+2. programs_to_target_by_GUID.bat
+
+Insert program names, one per line, into the text file 'programs_to_target_by_name.txt'
+Tron will TRY to uninstall any program whose name matches one of the names in this file.
+Don't put any special characters around the name (quotes, commas, etc). Spaces are fine.
+Tron uses WMI queries inside a batch file, so the wildcard character is double-percent (%%).
+
+Example:
+
+    Cyberlink%%
+    Dell Getting Started Guide%%
+    Dell Video%%
+    %%Toolbar%%
+
+The scanner will iterate through the list of programs, one by one, and try to uninstall any program matching that entry. 
+
+In this example:
+	
+	Dell%%
+
+...would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
+
+Secondly, you can list specific GUIDs to target in "programs_to_target_by_GUID.bat." This file is a batch file (not flat text) and gets called by Tron. The reason I made it a batch instead of plain text was so you can put comments over each GUID describing what it is.
+
+
+ !! NOTE !!
+
+Many programs do not register with WMI and so can't be targeted with this method. For those programs, you'll have to manually remove them. This stage is just a "best-effort" attempt to automate some of the tedium.
+
+Godspeed
