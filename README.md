@@ -289,7 +289,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 0: Prep
 
-1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools
+1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
 
 2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
@@ -389,9 +389,13 @@ Tron installs or updates these programs:
 
 ## STAGE 5: Optimize
 
-1. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
+1. **Page file reset**: Reset the system page file settings to "let Windows manage the page file." Accomplished via this command:
+    
+    `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-2. **Defraggler**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter
+2. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
+
+3. **Defraggler**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter
 
 
 ## STAGE 6: Wrap-up
