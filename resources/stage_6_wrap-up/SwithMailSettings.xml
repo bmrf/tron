@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<SwithMailSettings>
+  <ServerSettings>
+    <FromName>TRON</FromName>
+    <FromAddress>YOUR.EMAIL.ADDRESS@example.com</FromAddress>
+    <Username />
+    <Password>YOUR-PASSWORD-HERE</Password>
+    <ObscurePassword>False</ObscurePassword>
+    <MailServer>smtp.gmail.com</MailServer>
+    <MailServerPort>587</MailServerPort>
+    <SSL>True</SSL>
+    <Encoding />
+    <RequestReceipt>False</RequestReceipt>
+  </ServerSettings>
+  <EmailAddresses>
+    <To>YOUR-EMAIL-ADDRESS-HERE@example.com</To>
+    <CC />
+    <BCC />
+    <ReplyTo />
+  </EmailAddresses>
+  <Attachments>
+    <AttachmentPath />
+  </Attachments>
+  <EmailContent>
+    <HTML>True</HTML>
+    <DontReplaceNewLine>False</DontReplaceNewLine>
+    <Subject>TRON: Run complete on %COMPUTERNAME%</Subject>
+	
+	<!-- 
+	For "Body" section, Tron passes in the following variables as parameters (%Param1%, etc):
+	Param1: Tron version, domain name, and username (from Tron's %SCRIPT_VERSION %SCRIPT_DATE% %USERDOMAIN%\%USERNAME%)
+	Param2: Logpath\logfile (from Tron's %LOGPATH%\%LOGFILE%)
+	Param3: Safe Mode info (from Tron's %SAFE_MODE% %SAFEBOOT_OPTION%)
+	Param4: Disk space info (from Tron's %FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%)
+	Param5: CLI flags (from Window's %*)
+	-->
+	
+	
+	<Body>&lt;p style="font-family:'Courier New', monospace"&gt;&lt;b&gt;%Param1% on %COMPUTERNAME%&lt;/b&gt;
+Finished %NOW%
+----------------------------------------------------------------------
+Logfile:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%Param2%
+Command-line flags:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%Param5%
+Safe Mode:&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;%Param3%
+Free space before/after/reclaimed:&amp;nbsp;&amp;nbsp;%Param4%&amp;nbsp;MB *
+
+Logs are attached.
+
+&lt;i&gt;* Don't panic if you see negative disk space. Due to how some of Tron's functions work, actual disk space reclaimed will not be visible until after a system reboot.&lt;/i&gt;</Body>
+    <BodyTxtFile />
+  </EmailContent>
+</SwithMailSettings>
