@@ -45,7 +45,7 @@ Tron will briefly check for a newer version when it starts up and notify you if 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -spr -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -80,6 +80,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -se  Skip Event Log clear (don't clear Windows Event Logs)
 
     -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
+    
+    -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
     -sw  Skip Windows Updates (do not attempt to run Windows Update)
 
