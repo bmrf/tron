@@ -4,11 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.1.4 + stage_0_prep:rkill: Add process whitelist to rkill, populated with various user-suggested remote support tools (TeamViewer, etc). Should prevent them from getting nuked when Tron is being run remotely
-::                6.1.3 ! tron.bat:updater:   Fix updater bug where download failed integrity check even when file was correct. Thanks to /u/aheath1992
-::                      ! tron.bat:resume:    Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry 
-::                                            if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent 
-::                                            getting stuck in a resume-loop over and over
+:: Version:       6.2.0 + stage_0_prep:safemode:     Set system to boot into Safe Mode w/ Networking via bcdedit command, and revert back to Normal boot at end of the script. This should help prevent a reboot going back into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
+::                      + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks to /u/radialmonster
+::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file"
+::                      / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -44,7 +43,7 @@
 ::  -gsl   Fix list of removed programs not being empty if no programs were removed: ( https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/ )
 ::         Currently stuck, can't figure out why ERRORLEVEL isn't getting set correctly, even when using enabledelayedexpansion and !ERRORLEVEL! in testing.
 ::         If anyone can point me in the right direction it'd be great. Boilerplate code is in and currently commented out.
-::  7-zip  Look at v1.2.0-TRON x86 install script, /u/swtester reported it throwing out "file could not be found" errors ( http://www.reddit.com/r/TronScript/comments/31axc6/tron_v612_20150403_add_np_flag_def_updates/cq208ly )
+
 
 SETLOCAL
 @echo off
@@ -144,8 +143,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.1.4
-set SCRIPT_DATE=2015-04-09
+set SCRIPT_VERSION=6.2.0
+set SCRIPT_DATE=2015-04-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -664,7 +663,7 @@ call :log "                          Command-line flags: %*"
 call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call :log "-------------------------------------------------------------------------------"
-                         
+
 
 :::::::::::::::::::
 :: STAGE 0: PREP ::
@@ -673,6 +672,16 @@ call :log "---------------------------------------------------------------------
 :: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
 echo stage_0_prep>tron_stage.txt
 echo %*> tron_flags.txt
+:: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
+:: We undo this at the end of the script. Only works on Vista and up
+if /i not "%WIN_VER:~0,9%"=="Microsoft"
+	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
+	call :log "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
+	call :log "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
+	if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
+	call :log "%CUR_DATE% %TIME%    Done."
+)
+
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
 call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
 
@@ -693,6 +702,18 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 call :log "%CUR_DATE% %TIME%    OK."
 
 
+:: JOB: rkill
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
+call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
+if /i %DRY_RUN%==no (
+	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w rkill_process_whitelist.txt
+	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	del "%TEMP%\tron_rkill.log" 2>NUL
+	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
+	)
+call :log "%CUR_DATE% %TIME%    Done."
+
+
 :: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
 if /i %GENERATE_SUMMARY_LOGS%==yes (
@@ -707,18 +728,6 @@ call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
-:: JOB: rkill
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
-call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w rkill_process_whitelist.txt
-	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	del "%TEMP%\tron_rkill.log" 2>NUL
-	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
-	)
-call :log "%CUR_DATE% %TIME%    Done."
-
-
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
@@ -726,11 +735,24 @@ if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v1.1.0-TRON.exe
 call :log "%CUR_DATE% %TIME%    Done."
 
 
+:: JOB: Set system time
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemTime]
+call :log "%CUR_DATE% %TIME%    Launch Job 'Set system time'..."
+if /i %DRY_RUN%==no (
+	:: Make sure time service is started
+	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
+	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /config /syncfromflags:manual /manualpeerlist:"time.nist.gov 3.pool.ntp.org time.windows.com" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+call :log "%CUR_DATE% %TIME%    Done."
+
+
 :: JOB: Check WMI and repair if necessary
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
 call :log "%CUR_DATE% %TIME%    Checking WMI..."
 if /i %DRY_RUN%==yes goto skip_repair_wmi
-
 %WMIC% timezone >NUL
 if /i not %ERRORLEVEL%==0 (
     call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient..."
@@ -1236,7 +1258,7 @@ endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player (IE)'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\internet explorer\Adobe Flash Player (IE).bat"
+if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\ie\Adobe Flash Player (IE).bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 
@@ -1347,6 +1369,14 @@ call :log "%CUR_DATE% %TIME%   stage_4_patch jobs complete."
 echo stage_5_optimize>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_5_optimize]
 call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs begin..."
+
+
+:: JOB: Reset the system page file settings
+title TRON v%SCRIPT_VERSION% [stage_5_optimize] [pageReset]
+call :log "%CUR_DATE% %TIME%    Resetting page file..."
+if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Done."
+
 
 :: JOB: chkdsk the system drive
 title TRON v%SCRIPT_VERSION% [stage_5_optimize] [chkdsk]
@@ -1481,12 +1511,13 @@ if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%RAW_LOGS%\"
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove resume-related files and registry entries
+:: JOB: Remove resume-related files, registry entry, and boot flag
 title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Remove resume files]
-call :log "%CUR_DATE% %TIME%    No crash or reboot detected. Removing resume-support files..."
+call :log "%CUR_DATE% %TIME%    No reboot detected. Removing resume-support files and Safeboot flag..."
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 del /f /q tron_flags.txt >nul 2>&1
 del /f /q tron_stage.txt >nul 2>&1
+bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 call :log "%CUR_DATE% %TIME%    Done."
 
 
