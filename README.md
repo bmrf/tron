@@ -219,6 +219,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_PATCHES=no
   ```
 
+- To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
+  ```
+  set SKIP_PAGEFILE_RESET=no
+  ```
+
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
   ```
   set SKIP_WINDOWS_UPDATES=no
@@ -239,7 +244,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 
 # INTEGRITY
 
-In every release `checksums.txt` is signed with my PGP key (`0x82A211A2`, included). You can use it to verify package integrity.
+In every release `checksums.txt` is signed with my PGP key (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
 
 
 # LICENSE
@@ -269,49 +274,56 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 
 ## Tron-internal prep jobs
+(These are all executed even if Tron is canceled before running)
 
 1. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
 
-2. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+2. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
-3. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
+3. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
 
-4. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
+4. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-5. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
+7. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
-6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+8. **Make log directories**: Create the master log directory and sub-directories if they don't exist
 
-7. **Make log directories**: Create the master log directory and sub-directories if they don't exist
-
-8. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+9. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
 
 ## STAGE 0: Prep
 
-1. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-2. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+2. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
 
-3. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
+3. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+
+4. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+
+5. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command: `bcdedit /set {default} safeboot network`
+
+6. **Set system time via NTP**: Sync the system clock to time.nist.gov, 3.pool.ntp.org and time.windows.com
+
+7. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE`
   ```
 
-4. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+8. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-5. **erunt**: Used to backup the registry before beginning a Tron run
+9. **erunt**: Used to backup the registry before beginning a Tron run
 
-6. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+10. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-7. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+11. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
-8. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+12. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
 
 ## STAGE 1: Tempclean
@@ -392,6 +404,8 @@ Tron installs or updates these programs:
 1. **Page file reset**: Reset the system page file settings to "let Windows manage the page file." Accomplished via this command:
     
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
+
+Using the -spr flag skips this action
 
 2. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
