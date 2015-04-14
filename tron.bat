@@ -4,9 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.2.0 + stage_0_prep:safemode:     Set system to boot into Safe Mode w/ Networking via bcdedit command, and revert back to Normal boot at end of the script. This should help prevent a reboot going back into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
+:: Version:       6.2.0 + stage_0_prep:safemode:     Set system to boot into Safe Mode w/ Networking via bcdedit command, then revert back to Normal boot at script end. This should help prevent a reboot into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
 ::                      + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks to /u/radialmonster
-::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file"
+::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file" and associated -spr flag and SKIP_PAGEFILE_RESET variable to prevent this behavior
 ::                      / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -30,6 +30,7 @@
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -se  Skip Event Log clearing
 ::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
+::                      -spr Skip page file reset (don't set to "Let Windows manage the page file")
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -104,6 +105,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DEFRAG           (-sd)  = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_EVENT_LOG_CLEAR  (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
+:: SKIP_PAGEFILE_RESET   (-spr) = Skip page file reset (don't set to "Let Windows manage the page file")
 :: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
 :: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
@@ -122,6 +124,7 @@ set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_PATCHES=no
+set SKIP_PAGEFILE_RESET=no
 set SKIP_WINDOWS_UPDATES=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
@@ -188,7 +191,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -spr -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -208,6 +211,7 @@ if /i %HELP%==yes (
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -se  Skip Event Log clearing
 	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
+	echo    -spr Skip page file reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -283,7 +287,6 @@ if /i %RESUME_DETECTED%==yes (
 	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
 	goto %RESUME_STAGE%
 )
-
 
 	
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
@@ -409,6 +412,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
+	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
@@ -1373,9 +1377,13 @@ call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs begin..."
 
 :: JOB: Reset the system page file settings
 title TRON v%SCRIPT_VERSION% [stage_5_optimize] [pageReset]
-call :log "%CUR_DATE% %TIME%    Resetting page file..."
-if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
-call :log "%CUR_DATE% %TIME%    Done."
+if /i not %SKIP_PAGEFILE_RESET%==yes (
+	call :log "%CUR_DATE% %TIME%    Resetting page file settings to Windows defaults..."
+	if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
+	call :log "%CUR_DATE% %TIME%    Done."
+) else (
+	call :log "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET ^(-spr^) set. Skipping page file reset"
+)
 
 
 :: JOB: chkdsk the system drive
@@ -1605,7 +1613,6 @@ if /i %EMAIL_REPORT%==yes (
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
-
 :: Skip this last bit if we're doing a dry run
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 
@@ -1631,7 +1638,6 @@ ENDLOCAL
 color
 exit /B
 :: That's all, folks
-
 
 
 
@@ -1669,6 +1675,7 @@ for %%i in (%*) do (
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
+	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
