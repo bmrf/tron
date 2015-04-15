@@ -1,12 +1,12 @@
-:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a PC
+:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC (all Windows versions XP and up are supported)
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.2.0 + stage_0_prep:safemode:     Set system to boot into Safe Mode w/ Networking via bcdedit command, then revert back to Normal boot at script end. This should help prevent a reboot into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
+:: Version:       6.2.0 + stage_0_prep:safemode:     Automatically set system to boot into Safe Mode w/ Networking if a reboot occurs, then revert back to Normal boot at script end. This should help prevent reboots into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
 ::                      + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks to /u/radialmonster
-::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file" and associated -spr flag and SKIP_PAGEFILE_RESET variable to prevent this behavior
+::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file." Use associated -spr flag or SKIP_PAGEFILE_RESET variable to prevent this behavior
 ::                      / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
@@ -147,7 +147,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.2.0
-set SCRIPT_DATE=2015-04-xx
+set SCRIPT_DATE=2015-04-15
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -676,9 +676,10 @@ call :log "---------------------------------------------------------------------
 :: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
 echo stage_0_prep>tron_stage.txt
 echo %*> tron_flags.txt
+
 :: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
-if /i not "%WIN_VER:~0,9%"=="Microsoft"
+if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
 	call :log "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
 	call :log "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
