@@ -13,7 +13,68 @@ Version number legend:
   | regular release or feature change
   major feature change
 
-  
+
+########################
+# v6.2.0 // 2015-04-15 #
+########################
+tron.bat                         v6.2.0
+ + stage_0_prep:safemode:     Automatically set system to boot into Safe Mode w/ Networking if a reboot occurs, then revert back to Normal boot at script end. This should help prevent reboots into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
+ + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks to /u/radialmonster
+ + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file." Use associated -spr flag or SKIP_PAGEFILE_RESET variable to prevent this behavior
+ / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.1.0-TRON
+ . TDSS Killer                   v3.0.0.42
+ . McAfee Stinger                v12.1.0.1443
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.04.5151
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.1-TRON
+ * USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    * More updates from /u/tuxedo_jack, this time related to Toshiba bloatware
+	
+STAGE 3: Disinfect
+ * RogueKiller                   v10.5.10.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ . Kaspersky Virus Removal Tool  v15.0.19.0
+ . Malwarebytes Anti-Malware     v2.1.4.1018
+
+STAGE 4: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ * Adobe Flash Player            v17.0.0.169   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ * Java Runtime Environment      8u45          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ 
+STAGE 5: Optimize
+ . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.19.0.982
+
+STAGE 6: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+ 
+STAGE 7: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.2.0.1
+ . autoruns                      v13.2
+ * ComboFix                      v15.4.14.1
+ . Junkware Removal Tool         v6.5.2
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . ServicesRepair.exe            v1.0.0.3
+ + UserBenchMark                 v2.6.0.0   // A quick system benchmark tool. Thanks to /u/cuddlychops06
+ . VirusTotal uploader tool      v2.2
+
+
 ########################
 # v6.1.4 // 2015-04-09 #
 ########################
