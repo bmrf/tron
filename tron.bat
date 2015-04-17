@@ -4,10 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.2.0 + stage_0_prep:safemode:     Automatically set system to boot into Safe Mode w/ Networking if a reboot occurs, then revert back to Normal boot at script end. This should help prevent reboots into normal mode and not having an elevated command prompt. Thanks to /u/Aarinfel
-::                      + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks to /u/radialmonster
-::                      + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file." Use associated -spr flag or SKIP_PAGEFILE_RESET variable to prevent this behavior
-::                      / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
+:: Version:       6.3.0 + creation of stage 4 repair, reg perm reset, filesystem perm reset, move chkdsk and sfc to stage 4
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -30,7 +27,9 @@
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -se  Skip Event Log clearing
 ::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
-::                      -spr Skip page file reset (don't set to "Let Windows manage the page file")
+::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
+::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
+::                      -srr Skip registry permissions reset (saves time if you're in a hurry)
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -44,7 +43,6 @@
 ::  -gsl   Fix list of removed programs not being empty if no programs were removed: ( https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/ )
 ::         Currently stuck, can't figure out why ERRORLEVEL isn't getting set correctly, even when using enabledelayedexpansion and !ERRORLEVEL! in testing.
 ::         If anyone can point me in the right direction it'd be great. Boilerplate code is in and currently commented out.
-
 
 SETLOCAL
 @echo off
@@ -105,7 +103,9 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DEFRAG           (-sd)  = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_EVENT_LOG_CLEAR  (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
-:: SKIP_PAGEFILE_RESET   (-spr) = Skip page file reset (don't set to "Let Windows manage the page file")
+:: SKIP_FILEPERMS_RESET  (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
+:: SKIP_PAGEFILE_RESET   (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
+:: SKIP_REGPERMS_RESET   (-srr) = Set to yes to skip registry permissions reset. Can save a lot of time if you're in a hurry
 :: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
 :: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
@@ -124,7 +124,9 @@ set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_PATCHES=no
+set SKIP_FILEPERMS_RESET=no
 set SKIP_PAGEFILE_RESET=no
+set SKIP_REGPERMS_RESET=no
 set SKIP_WINDOWS_UPDATES=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
@@ -146,8 +148,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.2.0
-set SCRIPT_DATE=2015-04-15
+set SCRIPT_VERSION=6.3.0
+set SCRIPT_DATE=2015-04-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -191,7 +193,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -spr -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -211,7 +213,9 @@ if /i %HELP%==yes (
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -se  Skip Event Log clearing
 	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
-	echo    -spr Skip page file reset ^(don't set to "Let Windows manage the page file"^)
+	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
+	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
+	echo    -srr Skip registry permissions reset ^(saves time if you're in a hurry^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -241,20 +245,20 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 :: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
-	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "Solid State" >NUL
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "Solid State" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
-	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "SSD" >NUL
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "SSD" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
-	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "RAID" >NUL
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "RAID" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
-for /f "tokens=1" %%i in ('stage_5_optimize\defrag\smartctl.exe --scan') do (
-	stage_5_optimize\defrag\smartctl.exe %%i -a | find /i "SandForce" >NUL
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "SandForce" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -412,7 +416,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
+	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
+	echo    SKIP_REGPERMS_RESET:    %SKIP_REGPERMS_RESET%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
@@ -573,12 +579,13 @@ echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
-echo  *  3 Disinfect: RogueKiller/Sophos/KVRT/MBAM/DISM repair/SFC scan    *
-echo  *  4 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
-echo  *  5 Optimize:  chkdsk/defrag %SystemDrive% (mechanical only, SSDs skipped)      *
-echo  *  6 Wrap-up:   collect misc logs, send email report (if requested)   *
+echo  *  3 Disinfect: RogueKiller/Sophos/KVRT/MBAM/DISM repair/             *
+echo  *  4 Repair:    RegPerms reset/Fileperms reset/chkdsk/SFC scan
+echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
+echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
+echo  *  7 Wrap-up:   collect misc logs, send email report (if requested)   *
 echo  *                                                                     *
-echo  * \resources\stage_7_manual_tools contains additional tools which may *
+echo  * \resources\stage_8_manual_tools contains additional tools which may *
 echo  * be run manually if necessary.                                       *
 echo  ***********************************************************************
 :: So ugly
@@ -611,7 +618,7 @@ pause
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
-	findstr /i "YOUR-EMAIL-ADDRESS" stage_6_wrap-up\email_report\SwithMailSettings.xml >NUL
+	findstr /i "YOUR-EMAIL-ADDRESS" stage_7_wrap-up\email_report\SwithMailSettings.xml >NUL
 	if !ERRORLEVEL!==0 (
 		color cf
 		cls
@@ -623,7 +630,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo  the settings file with your information. Update the following
 		echo  file with your SMTP username, password, etc:
 		echo.
-		echo  \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
+		echo  \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
 		echo.
 		echo  Alternatively you can run SwithMail.exe to have the GUI generate
 		echo  a config file for you.
@@ -1150,7 +1157,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 :skip_antivirus_scans
 
 
-:: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
+:: JOB: Check Windows Image for corruptions before running SFC in Stage 4 (Windows 8/2012 only)
 :: Thanks to /u/nomaddave
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Check]
 call :log "%CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8/2012 only)'..."
@@ -1191,17 +1198,6 @@ if /i not %ERRORLEVEL%==0 (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: System File Checker (SFC) scan
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [SFC Scan]
-call :log "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
-if /i %DRY_RUN%==yes goto skip_sfc
-:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
-if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
-:: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
-%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
-:skip_sfc
-call :log "%CUR_DATE% %TIME%    Done."
-
 call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -1211,18 +1207,85 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 
 
-::::::::::::::::::::::
-:: STAGE 4: Patches ::
-::::::::::::::::::::::
-:stage_4_patch
+:::::::::::::::::::::
+:: STAGE 4: Repair ::
+:::::::::::::::::::::
+:stage_4_repair
 :: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_4_patch>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_4_patch]
-call :log "%CUR_DATE% %TIME%   stage_4_patch jobs begin..."
+echo stage_4_repair>tron_stage.txt
+title TRON v%SCRIPT_VERSION% [stage_4_repair]
+call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
+
+
+:: JOB: Reset registry permissions
+title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
+if /i %SKIP_REGPERMS_RESET%==no (
+	call :log "%CUR_DATE% %TIME%    Resetting registry permissions..."
+	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
+	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to %RAW_LOGS%\"
+	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
+	call :log "%CUR_DATE% %TIME%    Done."
+) else (
+	call :log "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET ^(-srr^) set. Skipping registry and file permissions reset"
+)
+
+
+:: JOB: Reset filesystem permissions
+title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
+if /i %SKIP_FILEPERMS_RESET%==no (
+	call :log "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
+	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
+	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to %RAW_LOGS%\"
+	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_file_permissions.bat"
+	call :log "%CUR_DATE% %TIME%    Done."
+) else (
+	call :log "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET ^(-sfr^) set. Skipping registry and file permissions reset"
+)
+
+
+:: JOB: System File Checker (SFC) scan
+title TRON v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
+call :log "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
+if /i %DRY_RUN%==yes goto skip_sfc
+:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
+if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
+:: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
+%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
+:skip_sfc
+call :log "%CUR_DATE% %TIME%    Done."
+
+
+:: JOB: chkdsk the system drive
+title TRON v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
+call :log "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
+call :log "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
+:: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
+if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
+if /i not %ERRORLEVEL%==0 ( 
+	call :log "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
+	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
+) else (
+	call :log "%CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
+	)
+call :log "%CUR_DATE% %TIME%    Done."
+
+
+call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
+
+
+
+::::::::::::::::::::::
+:: STAGE 5: Patches ::
+::::::::::::::::::::::
+:stage_5_patch
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_5_patch>tron_stage.txt
+title TRON v%SCRIPT_VERSION% [stage_5_patch]
+call :log "%CUR_DATE% %TIME%   stage_5_patch jobs begin..."
 
 
 :: Prep task: enable MSI installer in Safe Mode
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Prep]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Prep]
 if /i %DRY_RUN%==no (
 	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 	net start msiserver >nul 2>&1
@@ -1236,17 +1299,17 @@ if /i %SKIP_PATCHES%==yes (
 	
 
 :: JOB: 7-Zip
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update 7-Zip]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
 :: Check if we're on 32-bit Windows and run the appropriate architecture installer
 if /i %DRY_RUN%==yes goto skip_7-Zip
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	setlocal
-	call "stage_4_patch\7-Zip\v9.38\x86\7-Zip v9.38 x86.bat"
+	call "stage_5_patch\7-Zip\v9.38\x86\7-Zip v9.38 x86.bat"
 	endlocal
 ) else (
 	setlocal
-	call "stage_4_patch\7-Zip\v9.38\x64\7-Zip v9.38 x64.bat"
+	call "stage_5_patch\7-Zip\v9.38\x64\7-Zip v9.38 x64.bat"
 	endlocal
 	)
 :skip_7-Zip
@@ -1255,30 +1318,30 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Adobe Flash Player
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Adobe Flash Player]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player (Firefox)'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\firefox\Adobe Flash Player (Firefox).bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\firefox\Adobe Flash Player (Firefox).bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player (IE)'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_4_patch\adobe\flash_player\ie\Adobe Flash Player (IE).bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\ie\Adobe Flash Player (IE).bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Adobe Reader
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Adobe Reader]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_4_patch\adobe\reader\x86\Adobe Reader.bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\x86\Adobe Reader.bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Java Runtime update
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Update Java Runtime Environment]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
 call :log "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
 if /i %DRY_RUN%==yes goto skip_jre_update
@@ -1317,12 +1380,12 @@ call :log "%CUR_DATE% %TIME%    Installing latest JRE..."
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	call :log "%CUR_DATE% %TIME%    x86 architecture detected, installing x86 version..."
 	setlocal
-	call "stage_4_patch\java\jre\8\x86\jre-8-i586.bat"
+	call "stage_5_patch\java\jre\8\x86\jre-8-i586.bat"
 	endlocal
 ) else (
 	call :log "%CUR_DATE% %TIME%    x64 architecture detected, installing x64 version..."
 	setlocal
-	call "stage_4_patch\java\jre\8\x64\jre-8-x64.bat"
+	call "stage_5_patch\java\jre\8\x64\jre-8-x64.bat"
 	endlocal
 	)
 
@@ -1335,7 +1398,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Windows updates
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Windows Updates]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call :log "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %DRY_RUN%==no (
 	if /i %SKIP_WINDOWS_UPDATES%==no (
@@ -1349,7 +1412,7 @@ if /i %DRY_RUN%==no (
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
 :: Windows 8/2012 and up only
-title TRON v%SCRIPT_VERSION% [stage_4_patch] [Rebuild Windows Update base]
+title TRON v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 call :log "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 if /i %DRY_RUN%==no (
 	if /i not "%WIN_VER:~0,9%"=="Microsoft" (
@@ -1362,22 +1425,22 @@ if /i %DRY_RUN%==no (
 	)
 call :log "%CUR_DATE% %TIME%    Done."
 
-call :log "%CUR_DATE% %TIME%   stage_4_patch jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
 
 
 
 :::::::::::::::::::::::
-:: STAGE 5: Optimize ::
+:: STAGE 6: Optimize ::
 :::::::::::::::::::::::
-:stage_5_optimize
+:stage_6_optimize
 :: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_5_optimize>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_5_optimize]
-call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs begin..."
+echo stage_6_optimize>tron_stage.txt
+title TRON v%SCRIPT_VERSION% [stage_6_optimize]
+call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs begin..."
 
 
 :: JOB: Reset the system page file settings
-title TRON v%SCRIPT_VERSION% [stage_5_optimize] [pageReset]
+title TRON v%SCRIPT_VERSION% [stage_6_optimize] [pageReset]
 if /i not %SKIP_PAGEFILE_RESET%==yes (
 	call :log "%CUR_DATE% %TIME%    Resetting page file settings to Windows defaults..."
 	if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -1387,59 +1450,42 @@ if /i not %SKIP_PAGEFILE_RESET%==yes (
 )
 
 
-:: JOB: chkdsk the system drive
-title TRON v%SCRIPT_VERSION% [stage_5_optimize] [chkdsk]
-call :log "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
-call :log "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
-
-:: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
-if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
-if /i not %ERRORLEVEL%==0 ( 
-	call :log "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
-	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
-) else (
-	call :log "%CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
-	)
-	
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: Check if we are supposed to run a defrag before doing this section
+:: Check if we are supposed to run a defrag before doing the section below
 if "%SKIP_DEFRAG%"=="yes" (
 	call :log "%CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag."
-	call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs complete."
-	goto stage_6_wrap-up
+	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
+	goto stage_7_wrap-up
 	)
 
-:: Check if a Solid State hard drive was detected before doing this section
+:: Check if a Solid State hard drive was detected before doing the section below
 if "%SSD_DETECTED%"=="yes" (
 	call :log "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
-	call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs complete."
-	goto stage_6_wrap-up
+	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
+	goto stage_7_wrap-up
 	)
 
 :: JOB: Defrag the system drive
 if "%SSD_DETECTED%"=="no" (
-	title TRON v%SCRIPT_VERSION% [stage_5_optimize] [Defrag]
+	title TRON v%SCRIPT_VERSION% [stage_6_optimize] [Defrag]
 	call :log "%CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'..."
-	if /i %DRY_RUN%==no stage_5_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
+	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call :log "%CUR_DATE% %TIME%    Done."
-	call :log "%CUR_DATE% %TIME%   stage_5_optimize jobs complete."
+	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
 	)
 
 
 ::::::::::::::::::::::
-:: STAGE 6: Wrap-up ::
+:: STAGE 7: Wrap-up ::
 ::::::::::::::::::::::
-:stage_6_wrap-up
+:stage_7_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_6_wrap-up>tron_stage.txt
-call :log "%CUR_DATE% %TIME%   stage_6_wrap-up jobs begin..."
+echo stage_7_wrap-up>tron_stage.txt
+call :log "%CUR_DATE% %TIME%   stage_7_wrap-up jobs begin..."
 
 :: JOB: If selected, import original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
 if "%PRESERVE_POWER_SCHEME%"=="yes" (
-	title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Restore power scheme]
+	title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Restore power scheme]
 	call :log "%CUR_DATE% %TIME%    Restoring power settings to previous values..."
 	REM Check for Windows XP/2k3
 	if /i "%WIN_VER:~0,9%"=="Microsoft" (
@@ -1466,7 +1512,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
 if /i %GENERATE_SUMMARY_LOGS%==yes (
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Generate Summary Logs]
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
 call :log "%CUR_DATE% %TIME%    Summary logs requested, calculating post-run results..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
@@ -1509,7 +1555,7 @@ call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\"
 
 
 :: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Collect logs]
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Collect logs]
 call :log "%CUR_DATE% %TIME%    Saving misc logs to "%RAW_LOGS%\"..."
 if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
 if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%RAW_LOGS%" >NUL
@@ -1521,7 +1567,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove resume-related files, registry entry, and boot flag
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Remove resume files]
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
 call :log "%CUR_DATE% %TIME%    No reboot detected. Removing resume-support files and Safeboot flag..."
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 del /f /q tron_flags.txt >nul 2>&1
@@ -1531,7 +1577,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Calculate saved disk space
-title TRON v%SCRIPT_VERSION% [stage_6_wrap-up] [Calculate saved disk space]
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
@@ -1542,7 +1588,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call :log "%CUR_DATE% %TIME%   DONE. Use \resources\stage_7_manual_tools if further cleaning is required."
+call :log "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
 
 
 :: Check if auto-reboot was requested
@@ -1600,10 +1646,10 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	if /i %DRY_RUN%==no (
 		:: Run this if summary logs weren't requested
-		if /i %GENERATE_SUMMARY_LOGS%==no stage_6_wrap-up\email_report\SwithMail.exe /s /x "stage_6_wrap-up\email_report\SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+		if /i %GENERATE_SUMMARY_LOGS%==no stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a %LOGPATH%\%LOGFILE% /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
 	
 		:: Run this if summary logs were requested
-		if /i %GENERATE_SUMMARY_LOGS%==yes stage_6_wrap-up\email_report\SwithMail.exe /s /x "stage_6_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+		if /i %GENERATE_SUMMARY_LOGS%==yes stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
 
 		if %ERRORLEVEL%==0 (
 			call :log "%CUR_DATE% %TIME%   Done."
@@ -1676,7 +1722,9 @@ for %%i in (%*) do (
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
+	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
+	if /i %%i==-srr set SKIP_REGPERMS_RESET=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
