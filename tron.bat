@@ -152,7 +152,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.3.0
-set SCRIPT_DATE=2015-04-xx
+set SCRIPT_DATE=2015-04-20
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -586,8 +586,7 @@ echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect misc logs, send email report (if requested)   *
 echo  *                                                                     *
-echo  * \resources\stage_8_manual_tools contains additional tools which may *
-echo  * be run manually if necessary.                                       *
+echo  * \resources\stage_8_manual_tools contains additional manual tools    *
 echo  ***********************************************************************
 :: So ugly
 echo  Current settings (run tron.bat -c to dump full config):
@@ -748,9 +747,9 @@ if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v1.1.0-TRON.exe
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Set system time
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemTime]
-call :log "%CUR_DATE% %TIME%    Launch Job 'Set system time'..."
+:: JOB: Set system clock
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
+call :log "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
 	:: Make sure time service is started
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
