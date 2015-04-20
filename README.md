@@ -25,7 +25,7 @@ I got tired of running these utilities manually and decided to just automate eve
 
 9. Contact Info
 
-10. Full details of ALL steps
+10. Full description of ALL actions
 
 # USE
 
@@ -39,13 +39,15 @@ I got tired of running these utilities manually and decided to just automate eve
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
-Tron will briefly check for a newer version when it starts up and notify you if one is found. Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
+Tron will briefly check for a newer version when it starts up and notify you if one is found. 
+
+Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
 # COMMAND-LINE USE
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -spr -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -81,7 +83,11 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
     
+    -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
+    
     -spr Skip page file reset (don't set to "Let Windows manage the page file")
+
+    -srr Skip registry permissions reset (saves time if you're in a hurry)
 
     -sw  Skip Windows Updates (do not attempt to run Windows Update)
 
@@ -96,7 +102,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_3_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
-More details about this function are in the list of all Tron steps at the bottom of this document.
+More details about this function are in the list of all Tron actions at the bottom of this document.
 
 # SAFE MODE
 
@@ -110,7 +116,7 @@ Reboot and you should now be able to use F8 to select Safe Mode. Note that this 
 # EMAIL REPORT
 To have Tron send an email report at completion, edit this file:
 
-    \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml
+    \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
     
 Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. If you used the -gsl flag (generate summary logs) then `tron_removed_files.txt` and `tron_removed_programs.txt` will be attached as well.
 
@@ -220,10 +226,20 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   ```
   set SKIP_PATCHES=no
   ```
+  
+- To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to everything under the `%WinDir%` directory structure, change this to `yes`:
+  ```
+  set SKIP_FILEPERMS_RESET=no
+  ```
 
 - To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
   ```
   set SKIP_PAGEFILE_RESET=no
+  ```
+
+- To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to the HKLM, HKCU, and HKCR hives, change this to `yes`:
+  ```
+  set SKIP_REGPERMS_RESET=no
   ```
 
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
@@ -251,7 +267,7 @@ In every release `checksums.txt` is signed with my PGP key (`0x07d1490f82a211a2`
 
 # LICENSE
 
-Tron and any associated bootstrapper scripts and `.reg` files that I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses. It's YOUR responsibility to determine if you can use them in your specific situation.
+Tron and any included subscripts and `.reg` files I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses. It is YOUR responsibility to determine if you can use them in your specific situation.
 
 
 # OTHER
@@ -264,12 +280,12 @@ Hope this is helpful to other PC techs,
 
 If you feel overly charitable:
 ```
-1JWMVs5hQ5SnHxMu5QbRffQWkMy8k4SmLV
+1LSJ9qDzuHyRx6FfbUmHVSii4sLU3sx2TF
 ```
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply to crack `Tron.bat` open with a text editor (preferably one with syntax highlighting) or here on Github and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply to crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or on Github and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
 
 ## tron.bat
 Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
@@ -278,19 +294,23 @@ Master script that launches all the other tools. It performs a lot of actions on
 ## Tron-internal prep jobs
 (These are all executed even if Tron is canceled before running)
 
-1. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
+1. **Detect Windows version**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
+2. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
 
-3. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+3. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
-4. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
+4. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
 
-7. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+5. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
-8. **Make log directories**: Create the master log directory and sub-directories if they don't exist
+6. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
-9. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+7. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
+
+8. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+
+9. **Make log directories**: Create the master log directory and sub-directories if they don't exist
 
 
 ## STAGE 0: Prep
@@ -323,9 +343,11 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 10. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-11. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+11. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-12. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+12. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+
+13. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
 
 ## STAGE 1: Tempclean
@@ -340,7 +362,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 3. **BleachBit**: BleachBit utility. Used to clean temp files before running AV scanners
 
-4. **TempFileClean**: Script I wrote to clean some areas that other tools seem to miss
+4. **TempFileCleanup.bat**: Script I wrote to clean some areas that other tools seem to miss
 
 5. **DriveCleanup.exe**: Cleans unused/not present USB device drivers. Utility from Uwe Sieber ( www.uwe-sieber.de )
 
@@ -354,7 +376,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 1. **OEM de-bloat** (by name): Use WMI to attempt to uninstall any program listed in this file:
 
   ```
-  \resources\stage_2_de-bloat\oem\programs_to_target.txt
+  \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt
   ```
 
 2. **OEM de-bloat** (by GUID): Use WMI to attempt to remove specific list of GUIDs in this file:
@@ -385,7 +407,17 @@ Master script that launches all the other tools. It performs a lot of actions on
 6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
 
 
-## STAGE 4: Patch
+## STAGE 4: Repair
+
+1. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's -srr flag skips this operation
+2. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's -sfr flag skips this operation
+ 
+3. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot) 
+
+4. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
+
+
+## STAGE 5: Patch
 Tron installs or updates these programs:
 
 1. **7-zip**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using Tron's `-sp` flag skips this component
@@ -398,10 +430,10 @@ Tron installs or updates these programs:
 
 5. **Windows updates**: Self-explanatory
 
-6. **DISM base reset**: Recompiles the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
+6. **DISM base reset**: Recompile the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
 
 
-## STAGE 5: Optimize
+## STAGE 6: Optimize
 
 1. **Page file reset**: Reset the system page file settings to "let Windows manage the page file." Accomplished via this command:
     
@@ -414,14 +446,14 @@ Using the -spr flag skips this action
 3. **Defraggler**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter
 
 
-## STAGE 6: Wrap-up
+## STAGE 7: Wrap-up
 
 1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
 
 2. **generate summary logs**: If selected with -gsr flag or GENERATE_SUMMARY_LOGS variable, Tron will generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if -er flag was used or EMAIL_REPORT variable was set, these logs will be attached to the email that is sent out
 
-## STAGE 7: Manual tools
-Tron does not run these automatically because most of them don't support command-line use.
+## STAGE 8: Manual tools
+Tron does not run these automatically because most of them don't support command-line use, or are only useful in special cases.
 
 1. **ADSSpy**: Scans for hidden NTFS Alternate Data Streams
 
