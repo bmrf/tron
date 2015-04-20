@@ -4,7 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.0 + creation of stage 4 repair, reg perm reset, filesystem perm reset, move chkdsk and sfc to stage 4
+:: Version:       6.3.0 * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
+::                      + stage_4_repair:add:      Create new Stage 4: Repair and right-shift all subsequent stages
+::                      + stage_4_repair:regperm:  Add registry permissions reset and associated -srr flag and SKIP_REGPERMS_RESET variable
+::                      + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr flag and SKIP_FILEPERMS_RESET variable
+::                      / stage_3_disinfect:sfc:   Move SFC to Stage 4: Repair 
+::                      / stage_5_optimize:chkdsk: Move chkdsk Stage 4: Repair
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -43,12 +48,10 @@
 ::  -gsl   Fix list of removed programs not being empty if no programs were removed: ( https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/ )
 ::         Currently stuck, can't figure out why ERRORLEVEL isn't getting set correctly, even when using enabledelayedexpansion and !ERRORLEVEL! in testing.
 ::         If anyone can point me in the right direction it'd be great. Boilerplate code is in and currently commented out.
-
 SETLOCAL
 @echo off
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
-for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+call :set_cur_date
 
 
 
@@ -182,7 +185,7 @@ if /i "%1"=="-resume" set RESUME_DETECTED=yes
 pushd %~dp0 2>NUL
 
 
-:: PREP: Parse command-line arguments (function is at bottom of script)
+:: PREP: Parse command-line arguments (functions are at bottom of script)
 call :parse_cmdline_args %*
 
 
@@ -227,7 +230,7 @@ if /i %HELP%==yes (
 	)
 
 
-:: PREP: Get in the resources sub-directory. We'll be here for the rest of the script
+:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
 pushd resources
 
 
@@ -281,7 +284,7 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 if /i %RESUME_DETECTED%==yes (
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
 	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
-)	
+)
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
 	:: Notify and jump
@@ -300,9 +303,7 @@ if "%WIN_VER:~0,9%"=="Windows 8" (
 	)
 
 
-::::::::::::::::::
-:: UPDATE CHECK ::
-::::::::::::::::::
+:: PREP: Update check
 :: Skip this job if we're doing a dry run or if AUTORUN is set
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
@@ -579,7 +580,7 @@ echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
-echo  *  3 Disinfect: RogueKiller/Sophos/KVRT/MBAM/DISM repair/             *
+echo  *  3 Disinfect: RogueKiller/Sophos/KVRT/MBAM/DISM repair              *
 echo  *  4 Repair:    RegPerms reset/Fileperms reset/chkdsk/SFC scan
 echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
@@ -918,7 +919,7 @@ title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
 
 
-:: JOB: Clean Internet Explorer; Windows' built-in method
+:: JOB: Clean Internet Explorer; Windows built-in method
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
 call :log "%CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'..."
 if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
@@ -1202,8 +1203,7 @@ call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
 :: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+call :set_cur_date
 
 
 
@@ -1278,6 +1278,8 @@ call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
 :: STAGE 5: Patches ::
 ::::::::::::::::::::::
 :stage_5_patch
+:: Set current date again, since Stage 4 can take quite a while to run
+call :set_cur_date
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_5_patch>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_5_patch]
@@ -1691,7 +1693,7 @@ exit /B
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-:: Thanks to /u/douglas_swehla for helping me learn about faking functions in batch
+:: Thanks to /u/douglas_swehla for helping here
 :: Since no new variable names are defined, there's no need for SETLOCAL.
 :: The %1 reference contains the first argument passed to the function. When the
 :: whole argument string is wrapped in double quotes, it is sent as on argument.
@@ -1699,6 +1701,13 @@ exit /B
 :log
 echo:%~1 >> "%LOGPATH%\%LOGFILE%"
 echo:%~1
+goto :eof
+
+
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
+:set_cur_date
+for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
 
