@@ -15,7 +15,7 @@ Version number legend:
 
 
 ########################
-# v6.3.0 // 2015-04-xx #
+# v6.3.0 // 2015-04-20 #
 ########################
 tron.bat                         v6.3.0
  * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
@@ -69,7 +69,7 @@ STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.2.0.1
  . autoruns                      v13.2
- . ComboFix                      v15.4.14.1
+ * ComboFix                      v15.4.19.1
  . Junkware Removal Tool         v6.5.2
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
