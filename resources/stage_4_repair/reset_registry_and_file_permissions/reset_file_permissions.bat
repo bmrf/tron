@@ -1,6 +1,7 @@
 :: Purpose:       Restores full rights to Administrator and SYSTEM accounts on everything in the Windows system directory
 :: Requirements:  subinacl in the system path or system32 folder
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+::                1.0.1-TRON ! Add missing pushd statement
 ::                1.0.0-TRON / Modifications for Tron. Remove logging, CUR_DATE, and various other unnecessary code
 ::                1.0.0        Initial write
 SETLOCAL
@@ -17,8 +18,11 @@ SETLOCAL
 ::::::::::
 @echo off
 SETLOCAL
-set SCRIPT_VERSION=1.0.0-TRON
+set SCRIPT_VERSION=1.0.1-TRON
 set SCRIPT_UPDATED=2015-04-16
+
+:: We need this for Tron because subinacl.exe is in the same directory as this script
+pushd %~dp0
 
 
 :::::::::::::
