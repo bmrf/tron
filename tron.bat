@@ -4,7 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.0 * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
+:: Version:       6.3.3 ! stage_0_prep:resume:     Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
+::                6.3.2 + stage_0_prep:            Add disabling of screensaver; gets re-enabled at script end. Thanks to /u/staticextasy
+::                      / stage_0_prep:            Move power scheme export and switch to near beginning of Stage 0
+::                      ! stage_7_wrap-up:gsl:     Fix bug where summary logs (generated with -gsl) would list ALL programs on the computer if none were removed. Thanks to /u/staticextasy
+::                6.3.1 ! stage_4_repair:bugfix:   Add missing pushd statement that was preventing subscript from finding subinacl.exe
+::                6.3.0 * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
 ::                      + stage_4_repair:add:      Create new Stage 4: Repair and right-shift all subsequent stages
 ::                      + stage_4_repair:regperm:  Add registry permissions reset and associated -srr flag and SKIP_REGPERMS_RESET variable
 ::                      + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr flag and SKIP_FILEPERMS_RESET variable
@@ -42,12 +47,6 @@
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
 ::
 ::                U.S. Army Warrant Officer Corps - Quiet Professionals
-
-
-:: TODO:  
-::  -gsl   Fix list of removed programs not being empty if no programs were removed: ( https://www.reddit.com/r/TronScript/comments/312i81/tron_removed_programstxt_contains_a_list_of_all/ )
-::         Currently stuck, can't figure out why ERRORLEVEL isn't getting set correctly, even when using enabledelayedexpansion and !ERRORLEVEL! in testing.
-::         If anyone can point me in the right direction it'd be great. Boilerplate code is in and currently commented out.
 SETLOCAL
 @echo off
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -151,8 +150,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.0
-set SCRIPT_DATE=2015-04-20
+set SCRIPT_VERSION=6.3.3
+set SCRIPT_DATE=2015-04-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -282,6 +281,14 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if /i %RESUME_DETECTED%==yes (
+	:: Quick check for a faulty resume detection
+	if not exist tron_stage.txt (
+		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
+		REM Bail out
+		goto detect_win_ver
+		)
+	
+	:: Otherwise read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
 	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
 )
@@ -298,6 +305,7 @@ if /i %RESUME_DETECTED%==yes (
 	
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
 :: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
+:detect_win_ver
 if "%WIN_VER:~0,9%"=="Windows 8" (
 	bcdedit /set {default} bootmenupolicy legacy
 	)
@@ -511,8 +519,8 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * that happens, good or bad, is YOUR RESPONSIBILITY.                    *
 	echo  *************************************************************************
 	echo.
-	echo  Type I AGREE ^(all caps^) to accept this agreement and go to the main menu
-	echo  or press ctrl^+c to cancel.
+	echo  Type I AGREE ^(all caps^) to accept this and go to the main menu, or
+	echo  press ctrl^+c to cancel.
 	echo.
 	:eula_prompt
 	set /p CHOICE= Response: 
@@ -740,6 +748,57 @@ call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
+:: JOB: Disable sleep mode and disable screen saver
+call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
+if /i %DRY_RUN%==yes goto skip_disable_sleep
+:: Disable the screen saver
+call :log "%CUR_DATE% %TIME%    Disabling screensaver..."
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f > "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Done."
+:: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
+call :log "%CUR_DATE% %TIME%    Backing up power scheme and switching to Always On..."
+SETLOCAL ENABLEDELAYEDEXPANSION
+:: Windows XP/2003 version
+if /i "%WIN_VER:~0,9%"=="Microsoft" (
+	REM Extract the line containing the current power GUID
+	for /f "delims=^T" %%i in ('%WINDIR%\system32\powercfg.exe -query ^| find /i "Name"') do (set t=%%i)
+	REM Parse out just the name and stash it in a variable
+	set POWER_SCHEME=!t:~27!
+	REM Export the power scheme based on this GUID
+	%WINDIR%\system32\powercfg.exe /EXPORT "!POWER_SCHEME!" /FILE "%BACKUPS%\tron_power_config_backup.pow"
+	REM Set the "High Performance" scheme active
+	%WINDIR%\system32\powercfg.exe /SETACTIVE "Always On"
+) else (
+	REM All other versions of Windows
+	REM Extract the line containing the current power GUID
+	for /f "delims=" %%i in ('%WINDIR%\system32\powercfg.exe -list ^| find "*"') do (set t=%%i)
+	REM Parse out the GUID and stash it in a variable
+	set POWER_SCHEME=!t:~19,36!
+	REM Export the power scheme based on this GUID
+	%WINDIR%\system32\powercfg.exe -EXPORT "%BACKUPS%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
+	REM Set the "High Performance" scheme active
+	%WINDIR%\system32\powercfg.exe -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	REM We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh
+	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
+	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
+	REM Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
+	REM This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
+	REM	1st: Master GUID of the "High Performance" power scheme
+	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
+	REM	3rd: Specific GUID for the "Lid close action" power setting
+	REM	4th: Action code for "Do nothing"
+	%WINDIR%\system32\powercfg.exe -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
+	)
+
+:: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
+:: We need the POWER_SCHEME GUID for later when we re-import everything
+ENDLOCAL DISABLEDELAYEDEXPANSION && set POWER_SCHEME=%POWER_SCHEME%
+
+:skip_disable_sleep
+call :log "%CUR_DATE% %TIME%    Done."
+
+
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
@@ -846,54 +905,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 		call :log "%CUR_DATE% %TIME%    Done."
 	)
 )
-
-
-:: JOB: Disable sleep mode
-call :log "%CUR_DATE% %TIME%    Disabling Sleep mode..."
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Power scheme modifications]
-if /i %DRY_RUN%==yes goto skip_disable_sleep
-
-:: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
-call :log "%CUR_DATE% %TIME%    Backing up power scheme and switching to Always On..."
-SETLOCAL ENABLEDELAYEDEXPANSION
-:: Windows XP/2003 version
-if /i "%WIN_VER:~0,9%"=="Microsoft" (
-	REM Extract the line containing the current power GUID
-	for /f "delims=^T" %%i in ('%WINDIR%\system32\powercfg.exe -query ^| find /i "Name"') do (set t=%%i)
-	REM Parse out just the name and stash it in a variable
-	set POWER_SCHEME=!t:~27!
-	REM Export the power scheme based on this GUID
-	%WINDIR%\system32\powercfg.exe /EXPORT "!POWER_SCHEME!" /FILE "%BACKUPS%\tron_power_config_backup.pow"
-	REM Set the "High Performance" scheme active
-	%WINDIR%\system32\powercfg.exe /SETACTIVE "Always On"
-) else (
-	REM All other versions of Windows
-	REM Extract the line containing the current power GUID
-	for /f "delims=" %%i in ('%WINDIR%\system32\powercfg.exe -list ^| find "*"') do (set t=%%i)
-	REM Parse out the GUID and stash it in a variable
-	set POWER_SCHEME=!t:~19,36!
-	REM Export the power scheme based on this GUID
-	%WINDIR%\system32\powercfg.exe -EXPORT "%BACKUPS%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
-	REM Set the "High Performance" scheme active
-	%WINDIR%\system32\powercfg.exe -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-	REM We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh
-	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
-	REM Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	REM This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
-	REM	1st: Master GUID of the "High Performance" power scheme
-	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
-	REM	3rd: Specific GUID for the "Lid close action" power setting
-	REM	4th: Action code for "Do nothing"
-	%WINDIR%\system32\powercfg.exe -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
-	)
-
-:: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
-:: We need the POWER_SCHEME GUID for later when we re-import everything
-ENDLOCAL DISABLEDELAYEDEXPANSION && set POWER_SCHEME=%POWER_SCHEME%
-
-:skip_disable_sleep
-call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Reduce SysRestore space
@@ -1511,6 +1522,12 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 )
 
 
+:: JOB: Re-enable the screen saver
+call :log "%CUR_DATE% %TIME%    Re-enabling screensaver..."
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 1 /f > "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Done."
+
+
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
 if /i %GENERATE_SUMMARY_LOGS%==yes (
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
@@ -1541,10 +1558,9 @@ if /i %DRY_RUN%==no (
 		REM Calculate differences, using GnuWin32 coreutil's comm.exe
 		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt > %SUMMARY_LOGS%\tron_removed_programs.txt
 
-		REM This currently doesn't work - if anyone knows how to fix it, please let me know. Errorlevel doesn't get set correctly, and using SETLOCAL ENABLEDELAYEDEXPANSION doesn't seem to help
-		REM If the parsed file is the same size as the original, we can assume it's the same size and nothing was removed, so just echo that into the file
-		REM echo n|COMP %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
-		REM if !ERRORLEVEL!==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
+		REM If the parsed file is the same as the original, we can assume nothing was removed, so just echo that into the file
+		fc /b %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
+		if !ERRORLEVEL!==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
 		
 		REM Cleanup
 		del /f /q %TEMP%\temp.txt 2>NUL
