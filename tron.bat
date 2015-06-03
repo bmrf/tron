@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.3 ! stage_0_prep:resume:     Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
+:: Version:       6.3.4 . No changes (subtool refresh only)
+::                6.3.3 ! stage_0_prep:resume:     Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
 ::                6.3.2 + stage_0_prep:            Add disabling of screensaver; gets re-enabled at script end. Thanks to /u/staticextasy
 ::                      / stage_0_prep:            Move power scheme export and switch to near beginning of Stage 0
 ::                      ! stage_7_wrap-up:gsl:     Fix bug where summary logs (generated with -gsl) would list ALL programs on the computer if none were removed. Thanks to /u/staticextasy
@@ -46,7 +47,7 @@
 ::
 ::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
 ::
-::                U.S. Army Warrant Officer Corps - Quiet Professionals
+::                You have one life - make it count.
 SETLOCAL
 @echo off
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it 
@@ -150,8 +151,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.3
-set SCRIPT_DATE=2015-04-xx
+set SCRIPT_VERSION=6.3.4
+set SCRIPT_DATE=2015-06-03
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1119,7 +1120,7 @@ title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 call :log "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
 :: Install MBAM & remove the desktop icon
 if /i %DRY_RUN%==no ( 
-	"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.4.1018.exe" /verysilent
+	"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.6.1022.exe" /verysilent
 	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
