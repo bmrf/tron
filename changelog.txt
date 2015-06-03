@@ -2,16 +2,154 @@
 # CHANGELOG #
 #############
 Legend:
- + Addition    - Removal   
+ + Addition    - Removal
  ! Bug fix     * Update/improvement
  . No change   / Change (non bug-fix)
 
 Version number legend:
   x.x.x
   | | |
-  | | program/definition update, minor change, or bugfix (critical or regular)
+  | | program/definition update, minor change or bugfix (critical or regular)
   | regular release or feature change
-  major feature change
+  major release or feature change
+
+
+  
+########################
+# v6.3.4 // 2015-06-03 #
+########################
+tron.bat                         v6.3.4
+ . No changes to tron.bat in this release; subtool updates only
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.1.0-TRON
+ . TDSS Killer                   v3.0.0.42
+ . McAfee Stinger                v12.1.0.1556
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ * CCLeaner                      v5.06.5219
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.1-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+
+STAGE 3: Disinfect
+ * RogueKiller                   v10.8.0.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.6.1022
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ * Adobe Flash Player            v17.0.0.188   (language ignored)
+ * Adobe Reader                  v11.0.11      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u45          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.2.0.6
+ * Autoruns                      v13.4
+ * ComboFix                      v15.5.31.1
+ * Junkware Removal Tool         v6.8.7
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . ServicesRepair.exe            v1.0.0.3
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+ 
+
+########################
+# v6.3.3 // 2015-04-28 #
+########################
+tron.bat                         v6.3.3
+ ! stage_0_prep:resume: Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v1.1.0-TRON
+ . TDSS Killer                   v3.0.0.42
+ * McAfee Stinger                v12.1.0.1491
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ * CCLeaner                      v5.05.5176
+ . BleachBit                     v1.6
+ . TempFileCleanup               v1.0.1-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+
+STAGE 3: Disinfect
+ * RogueKiller                   v10.6.10.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Malwarebytes Anti-Malware     v2.1.6.1022
+
+STAGE 4: Repair
+ + subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v17.0.0.169   (language ignored)
+ . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u45          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v4.2.0.2
+ * Autoruns                      v13.3
+ * ComboFix                      v15.4.28.1
+ * Junkware Removal Tool         v6.6.6
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . ServicesRepair.exe            v1.0.0.3
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+########################
+# v6.3.2 // 2015-04-24 #
+########################
+tron.bat                         v6.3.2
+ + stage_0_prep:         Add disabling of screensaver; gets re-enabled at script end. Thanks to /u/staticextasy
+ / stage_0_prep:         Move power scheme export and switch to near beginning of Stage 0
+ ! stage_7_wrap-up:gsl:  Fix bug where summary logs (generated with -gsl) would list ALL programs on the computer if none were removed. Thanks to /u/staticextasy
+
+
+########################
+# v6.3.1 // 2015-04-22 #
+########################
+tron.bat                         v6.3.1
+ ! stage_4_repair:bugfix: Add missing pushd statement that was preventing subscript from finding subinacl.exe
+
 
 
 ########################
@@ -22,7 +160,7 @@ tron.bat                         v6.3.0
  + stage_4_repair:add:      Create new Stage 4: Repair and right-shift all subsequent stages
  + stage_4_repair:regperm:  Add registry permissions reset and associated -srr flag and SKIP_REGPERMS_RESET variable
  + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr flag and SKIP_FILEPERMS_RESET variable
- / stage_3_disinfect:sfc:   Move SFC to Stage 4: Repair 
+ / stage_3_disinfect:sfc:   Move SFC to Stage 4: Repair
  / stage_5_optimize:chkdsk: Move chkdsk Stage 4: Repair
 
 STAGE 0: Prep
@@ -41,7 +179,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.10.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -50,21 +188,21 @@ STAGE 3: Disinfect
 
 STAGE 4: Repair
  + subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- 
+
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
  . Adobe Flash Player            v17.0.0.169   (language ignored)
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u45          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 6: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 7: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.2.0.1
@@ -77,8 +215,8 @@ STAGE 8: Manual tools
  . ServicesRepair.exe            v1.0.0.3
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
-  
-  
+
+
 ########################
 # v6.2.0 // 2015-04-15 #
 ########################
@@ -105,7 +243,7 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     * More updates from /u/tuxedo_jack, this time related to Toshiba bloatware
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.10.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -118,14 +256,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u45          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.2.0.1
@@ -165,7 +303,7 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     * Add a few more HP-related entries. Thanks to /u/tuxedo_jack
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.8.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -178,14 +316,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.2.0.0
@@ -206,8 +344,8 @@ STAGE 7: Manual tools
 ########################
 tron.bat                         v6.1.3
  ! tron.bat:updater: Fix updater bug where download failed integrity check even when file was correct. Thanks to /u/aheath1992
- ! tron.bat:resume:  Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry 
-                     if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent 
+ ! tron.bat:resume:  Tune resume feature, should hopefully reduce incorrectly-detected interrupted runs. Don't re-create tron_resume RunOnce entry
+                     if we detect we're resuming from a previous interruption. Although we may get interrupted again, this should help prevent
                      getting stuck in a resume-loop over and over
 
 STAGE 0: Prep
@@ -226,7 +364,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.8.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -240,14 +378,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.2.0.0
@@ -288,7 +426,7 @@ STAGE 2: De-bloat
 	* Remove all specific HP sub-entries (HP Advisor, HP Setup, etc) and collapse into simply "HP%%"
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     + Add quite a few entries, thanks to /u/tuxedo_jack
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.7.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -301,14 +439,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.2.0.0
@@ -323,14 +461,14 @@ STAGE 7: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
-  
+
 ########################
 # v6.1.1 // 2015-04-01 #
 ########################
 tron.bat                         v6.1.0
   - \! stage_0_prep:tdssk: Revert TDSSK to v3.0.0.42 due to crash bug where it was deleting tron.bat as suspicious due to the RunOnce registry entry we create. Currently searching for a better solution
 
- 
+
 ########################
 # v6.1.0 // 2015-03-29 #
 ########################
@@ -363,7 +501,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.7.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -377,14 +515,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.2.0.0
@@ -447,7 +585,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.7.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -460,14 +598,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.3.0.3976 2014-07-26 r3976
  * Defraggler                    v2.19.0.982
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.1.3
@@ -504,7 +642,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.5.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -517,14 +655,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  * smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.1.2
@@ -553,7 +691,7 @@ STAGE 3: Disinfect
 # v5.0.0 // 2015-03-05 #
 ########################
 tron.bat                         v5.0.0
- * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking" 
+ * tron.bat: Significant robustness improvement against missing files or directories. Tron now does relative path calls directly to each sub-utility rather than "walking"
              in and out the sub-directories in the \resources tree. Now if a file or directory is missing only that section will fail, rather than the entire script.
              A side benefit is it's now easier to drop a replacement Tron.bat on top of an older \resources tree without having to worry about Tron getting "off track" based on the underlying directory structure
  * tron.bat: Many minor bug fixes and general script cleanup
@@ -575,7 +713,7 @@ STAGE 2: De-bloat
     - Remove many specific entries targeting a program with "Savings" in the name and replace with single wild-card %%Savings%%. Should grant small speed increase.
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     - Add four additional MSI codes for Lenovo OEM bloatware apps. Thanks to /u/tuxedo_jack
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.1.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -588,14 +726,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u40          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  * smartctl                      v6.3.0.3976 2014-07-26 r3976
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.1.1.1
@@ -636,13 +774,13 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.02.5101
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.4.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -655,14 +793,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u31          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.1.1.1
@@ -698,13 +836,13 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.02.5101
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.4.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -717,14 +855,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u31          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.1.1
@@ -770,13 +908,13 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  * CCLeaner                      v5.02.5101
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.2.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -789,14 +927,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u31          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.1.0
@@ -846,13 +984,13 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -865,14 +1003,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u31          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.9
@@ -905,13 +1043,13 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -924,14 +1062,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u31          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.8
@@ -970,7 +1108,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
- . TempFileCleanup               v1.0.0-TRON 
+ . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
 
 STAGE 2: De-bloat
@@ -978,7 +1116,7 @@ STAGE 2: De-bloat
     * Removal of some redundant entries, should grant small speed increase
  + \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     ` This file contains specific GUIDs to target. Initial list thanks to /u/tuxedo_jack
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -991,14 +1129,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u25          (language ignored)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.1.0.6
@@ -1028,7 +1166,7 @@ STAGE 0: Prep
 STAGE 1: Tempclean
  . CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
- * TempFileCleanup               v1.0.0-TRON 
+ * TempFileCleanup               v1.0.0-TRON
    - Remove many unnecessary sections which aren't applicable to Tron
    - Disable deletion of C:\temp since a lot of people seem to run Tron from there
  + USB Device Cleanup            v0.8.1      // thanks to Uwe Sieber (www.uwe-sieber.de). Cleans out unused USB devices
@@ -1036,7 +1174,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -1049,14 +1187,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u25          (language ignored)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
 
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.6
@@ -1082,7 +1220,7 @@ STAGE 0: Prep
  . ProcessKiller                 v1.0
  . TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  * CCLeaner                      v5.01.5075
  . BleachBit                     v1.6
@@ -1091,7 +1229,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  * Remove and combine some redundant entries. Should grant small speed increase.
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.1.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -1104,14 +1242,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u25          (language ignored)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.6
@@ -1154,7 +1292,7 @@ STAGE 0: Prep
  . ProcessKiller                 v1.0
  . TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v5.00.5050
  . BleachBit                     v1.6
@@ -1163,7 +1301,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
-	
+
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.0.0
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -1176,14 +1314,14 @@ STAGE 4: Patch
  * Adobe Reader                  v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u25          (language ignored)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Wrap-up
  . SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.1.0.5
@@ -1202,8 +1340,8 @@ STAGE 7: Manual tools
 ########################
 tron.bat                         v4.2.1
  ! bugfix:  Fix broken -x (self-destruct) functionality due to uninitialized variable. Thanks to /u/HittingSmoke
- 
-  
+
+
 ########################
 # v4.2.0 // 2014-11-26 #
 ########################
@@ -1217,7 +1355,7 @@ STAGE 0: Prep
  . ProcessKiller                 v1.0
  . TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  * CCLeaner                      v5.00.5050
  * BleachBit                     v1.6
@@ -1226,7 +1364,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
  * Sophos Virus Removal Tool     v2.5.3, update defs
@@ -1239,14 +1377,14 @@ STAGE 4: Patch
  . Adobe Reader                  v11.0.09      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u25          (language ignored)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Wrap-up
  + SwithMail.exe                 v2.1.5.0
- 
+
 STAGE 7: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.2
@@ -1258,11 +1396,11 @@ STAGE 7: Manual tools
  . ServicesRepair.exe            v1.0.0.3
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 ########################
 # v4.1.1 // 2014-11-19 #
-########################  
+########################
 tron.bat                         v4.1.1
  - feature: Remove Notepad++ installation. While it's a great text editor not everyone wants it on their PC, so we just stick to updating common vulnerable apps (Java,Reader,Flash). Thanks to /u/SubtleContradiction
 
@@ -1286,7 +1424,7 @@ STAGE 0: Prep
  . TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
  - nircmd                        v2.75
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
@@ -1295,7 +1433,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
  * Sophos Virus Removal Tool     v2.5.3, update defs
@@ -1309,11 +1447,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.1.0.1
@@ -1325,7 +1463,7 @@ STAGE 6: Manual tools
  . ServicesRepair.exe            v1.0.0.3
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
-  
+
 
 ########################
 # v4.0.2 // 2014-11-17 #
@@ -1339,7 +1477,7 @@ STAGE 0: Prep
  . TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
  . nircmd                        v2.75
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
@@ -1348,7 +1486,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
 Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_target.txt
  . No changes
-	
+
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
  * Sophos Virus Removal Tool     v2.5.3, update defs
@@ -1362,11 +1500,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.0.0.2
@@ -1385,8 +1523,8 @@ STAGE 6: Manual tools
 ########################
 tron.bat                         v4.0.1
  ! stage_0_prep:bugfix:      Fix bug with speak feature where we weren't starting the Windows audio service in Safe Mode. Now force it to start. Thanks to EnrichedFetus
-  
-  
+
+
 ########################
 # v4.0.0 // 2014-11-06 #
 ########################
@@ -1415,7 +1553,7 @@ STAGE 0: Prep
  * TDSS Killer                   v3.0.0.41
  . erunt                         v1.1j
  + nircmd                        v2.75
-  
+
 STAGE 1: Tempclean
  * CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
@@ -1427,7 +1565,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
- 
+
 STAGE 3: De-bloat
 Try to remove programs listed here: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
@@ -1439,11 +1577,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v4.0.0.2
@@ -1455,7 +1593,7 @@ STAGE 6: Manual tools
  . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 ########################
 # v3.9.0 // 2014-11-03 #
@@ -1470,7 +1608,7 @@ tron.bat                         v3.9.0
  . Rkill                         v2.6.8.0
  . TDSS Killer                   v3.0.0.40
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  * CCLeaner                      v4.19.4867
  . BleachBit                     v1.4
@@ -1482,7 +1620,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
- 
+
 STAGE 3: De-bloat
 Try to remove programs listed here: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
@@ -1494,11 +1632,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.0.0.2
@@ -1510,7 +1648,7 @@ STAGE 6: Manual tools
  . ServicesRepair.exe            v1.0.0.3      (ESET utility for fixing broken Windows services)
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 ########################
 # v3.8.0 // 2014-10-29 #
@@ -1530,7 +1668,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
  . TDSS Killer                   v3.0.0.40
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
@@ -1541,7 +1679,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.3.1025
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1552,11 +1690,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.0.0.2
@@ -1572,7 +1710,7 @@ STAGE 6: Manual tools
 
 ########################
 # v3.7.2 // 2014-10-22 #
-########################  
+########################
 tron.bat                         v3.7.2
  ! tron.bat:diskhealthcheck:      Make Disk Health Check warning dialogue case-insensitive. Thanks to /u/Astrimedes
 
@@ -1583,7 +1721,7 @@ tron.bat                         v3.7.2
 tron.bat                         v3.7.1
  ! tron.bat:prep:                 Remove two pause statements mistakenly left over from testing
 
- 
+
 ########################
 # v3.7.0 // 2014-10-22 #
 ########################
@@ -1604,7 +1742,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
  . TDSS Killer                   v3.0.0.40
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
@@ -1615,7 +1753,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Malwarebytes Anti-Malware     v2.0.3.1025
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  * A few redundant entries removed
 
@@ -1626,11 +1764,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u25          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v4.0.0.1
@@ -1661,7 +1799,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
  . TDSS Killer                   v3.0.0.40
  . erunt                         v1.1j
-  
+
 STAGE 1: Tempclean
  * CCLeaner                      v4.18.4844
  . BleachBit                     v1.4
@@ -1671,7 +1809,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1682,11 +1820,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.1.1
@@ -1720,7 +1858,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
  . TDSS Killer                   v3.0.0.40
  + erunt                         v1.1j         (added for registry backup job)
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
@@ -1730,7 +1868,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1741,11 +1879,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.1.1
@@ -1774,7 +1912,7 @@ STAGE 0: Prep
  + TDSS Killer                   v3.0.0.40
 	` Add to Tron; remove from manual tools. Thanks to /u/cuddlychops06
 	` Quarantines %LOGPATH%\tron_quarantined_files by default
-  
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
@@ -1784,7 +1922,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs and engine
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1795,11 +1933,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.1.0
@@ -1821,7 +1959,7 @@ tron.bat                         v3.3.2
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
@@ -1831,7 +1969,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs and engine
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1842,11 +1980,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.1.0
@@ -1858,9 +1996,9 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
-  
-  
-  
+
+
+
 ########################
 # v3.3.1 // 2014-09-17 #
 ########################
@@ -1869,7 +2007,7 @@ tron.bat                         v3.3.1
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  . BleachBit                     v1.4
@@ -1879,7 +2017,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs and engine
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1890,11 +2028,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.1.0
@@ -1907,7 +2045,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
-  
+
 
 ########################
 # v3.3.0 // 2014-09-11 #
@@ -1921,7 +2059,7 @@ tron.bat                         v3.3.0
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
  * BleachBit                     v1.4
@@ -1933,7 +2071,7 @@ STAGE 2: Disinfect
 	/ Enable scanning of archives in config.xml
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . No changes
 
@@ -1944,11 +2082,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  * Notepad++                     v6.6.9        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.0.9
@@ -1985,7 +2123,7 @@ tron.bat                         v3.2.0
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  * CCLeaner                      v4.17.4808
  . BleachBit                     v1.2
@@ -1994,7 +2132,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  - some redundant entries removed
 
@@ -2005,11 +2143,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.0.9
@@ -2021,7 +2159,7 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 
 ########################
@@ -2031,11 +2169,11 @@ tron.bat                         v3.1.0
  * stage_0_prep:  Improve Event Log clearing routine; now save all Event Logs to %LOGPATH%\event_log_backups before clearing.
                   Thanks to /u/meandertothehorizon, /u/-pANIC- and /u/tethercat
                   I'm open to code block improvements on this section, the current method feels clumsy somehow.
- / stage_4_patch: Update Java installer links to reflect new paths				 
+ / stage_4_patch: Update Java installer links to reflect new paths
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2044,7 +2182,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . no changes
 
@@ -2055,11 +2193,11 @@ STAGE 4: Patch
  * Java Runtime Environment      8u20          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.0.8
@@ -2073,7 +2211,7 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
- 
+
 ########################
 # v3.0.1 // 2014-08-23 #
 ########################
@@ -2082,7 +2220,7 @@ STAGE 0: Prep
  * check_update: Replaced wget binary with standalone version. Thanks to /u/Olonzac
 
 
- 
+
 ########################
 # v3.0.0 // 2014-08-23 #
 ########################
@@ -2097,7 +2235,7 @@ tron.bat                         v3.0.0
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2106,7 +2244,7 @@ STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5, update defs
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
 
 STAGE 4: Patch
@@ -2116,11 +2254,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.0.8
@@ -2132,9 +2270,9 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
- 
+
+
+
 ########################
 # v2.2.1 // 2014-08-21 #
 ########################
@@ -2146,7 +2284,7 @@ tron.bat                         v2.2.1
 
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2156,7 +2294,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  - Emsisoft Commandline Scanner  v9.0.0.4183 -- REMOVED
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + Add a couple new entries
 
@@ -2167,11 +2305,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11          (language ignored)
  . Notepad++                     v6.6.8        (multi-language)
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.0.8
@@ -2183,8 +2321,8 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
+
+
 
 ########################
 # v2.1.0 // 2014-08-13 #
@@ -2194,10 +2332,10 @@ tron.bat                         v2.1.0
  / prep and checks:  Admin check color change. Will now be more alarming and hopefully reduce number of people who try to run as non-Admin
  * stage_4_patch:    Updated links to reflect new Flash and Reader installers
  * tron.bat:         Misc snarky comments about MS products removed
- 
+
 STAGE 0: Prep
  * Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2207,7 +2345,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
 
 STAGE 4: Patch
@@ -2217,11 +2355,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11
  . Notepad++                     v6.6.8
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.0.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.3.0.4
@@ -2234,7 +2372,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 
 ########################
 # v2.0.0 // 2014-08-11 #
@@ -2248,7 +2386,7 @@ tron.bat                         v2.0.0
 
 STAGE 0: Prep
  * Rkill                         v2.6.8.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2258,7 +2396,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
 
 STAGE 4: Patch
@@ -2268,11 +2406,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11
  . Notepad++                     v6.6.8
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.0.4
@@ -2285,7 +2423,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 
 ########################
 # v1.9.0 // 2014-08-04 #
@@ -2298,12 +2436,12 @@ tron.bat                         v1.9.0
     -h  Spit out help on using Tron via command-line
     -r  Reboot (auto-reboot 30 seconds after completion)
  * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks to /u/Undeadlord for suggestion
- - tron.bat: Removed support for --auto flag (use -a instead) 
+ - tron.bat: Removed support for --auto flag (use -a instead)
  ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
- 
+
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  * CCLeaner                      v4.16.4763
  . BleachBit                     v1.2
@@ -2313,7 +2451,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
 
 STAGE 4: Patch
@@ -2323,11 +2461,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11
  * Notepad++                     v6.6.8
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.0.2
@@ -2339,9 +2477,9 @@ STAGE 6: Manual tools
  . TDSSKiller                    v3.0.0.40
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
- 
+
+
+
 ########################
 # v1.8.2 // 2014-07-31 #
 ########################
@@ -2353,7 +2491,7 @@ tron.bat                         v1.8.2
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . BleachBit                     v1.2
@@ -2363,10 +2501,10 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
- * Greatly expanded list of programs to target (too long to list here). 
+ * Greatly expanded list of programs to target (too long to list here).
    Thanks to /u/3xist and /u/Gaxor
 
 STAGE 4: Patch
@@ -2376,11 +2514,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u11
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.3.0.1
@@ -2394,15 +2532,15 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
- 
+
 ########################
 # v1.8.1 // 2014-07-29 #
 ########################
 tron.bat                         v1.8.1
  ! tron.bat: Fix incorrect "pushd" entry (was wmi_repair; supposed to be repair_rmi); thanks to /u/3xist
- 
 
- 
+
+
 ########################
 # v1.8.0 // 2014-07-25 #
 ########################
@@ -2414,7 +2552,7 @@ tron.bat                         v1.8.0
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . BleachBit                     v1.2
@@ -2424,7 +2562,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . 3vix%%
@@ -2468,11 +2606,11 @@ STAGE 4: Patch
  * Java Runtime Environment      8u11
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.2.1.6
@@ -2486,24 +2624,24 @@ STAGE 6: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
- 
+
 ########################
 # v1.7.4 // 2014-07-23 #
 ########################
 tron.bat                         v1.7.4
  ! prep and checks: Fix incorrectly-placed popd statement at beginning of :detect_safe_mode block. Thanks to /u/Eschmacher
- 
 
- 
+
+
 ########################
 # v1.7.3 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.3
  ! prep and checks: Fix SSD detection (possibly). Please test and report if it fails on your drive
 
- * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY 
+ * prep and checks: Rename all instances of REBOOT_DELAY to AUTO_REBOOT_DELAY
 
- 
+
 
 ########################
 # v1.7.2 // 2014-07-22 #
@@ -2514,15 +2652,15 @@ tron.bat                         v1.7.2
  + prep and checks: Re-add check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
  * prep and checks: Revert SSD check to something more reliable
 
- 
- 
+
+
 ########################
 # v1.7.1 // 2014-07-22 #
 ########################
 tron.bat                         v1.7.1
  - prep and checks: Remove check for Administrator rights since it was failing too often.
 
- 
+
 
 ########################
 # v1.7.0 // 2014-07-21 #
@@ -2530,11 +2668,11 @@ tron.bat                         v1.7.1
 tron.bat                         v1.7
  + prep and checks:   Add check for Administrator rights. Thanks to /u/apcomputerworks
  + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
- / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section	 
+ / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section
 
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . BleachBit                     v1.2
@@ -2544,7 +2682,7 @@ STAGE 2: Disinfect
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  + Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- 
+
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . 3vix%%
@@ -2588,11 +2726,11 @@ STAGE 4: Patch
 
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.2.1.6
@@ -2605,17 +2743,17 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 ######################
 # v1.6 // 2014-07-16 #
 ######################
 tron.bat                         v1.6
  + stage_2_disinfect: Add System File Checker scan to repair broken Windows core files. Skipped on XP and Server 2003 since these require an original install disk to function. Thanks to /u/cyr4n0
  + stage_0_prep:      Add code to detect and repair broken WMI configurations
-	
+
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . BleachBit                     v1.2
@@ -2624,7 +2762,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  * Sophos Virus Removal Tool     v2.5, update defs 2014-07-16
  * Vipre Rescue Scanner          v7.0.7.8, update defs 2014-07-16
- 
+
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + 3vix%%
@@ -2667,11 +2805,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.2.1.5
@@ -2682,9 +2820,9 @@ STAGE 6: Manual tools
  . Junkware Removal Tool         v6.1.4
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
- 
+
+
+
 ######################
 # v1.5 // 2014-07-15 #
 ######################
@@ -2693,10 +2831,10 @@ tron.bat                         v1.5
  * tron.bat:      Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
  * tron.bat:      General cleanup of many conditional tests; should slightly speed script up
  * stage_4_patch: Remove all existing JRE versions prior to installing latest JRE
-	 
+
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  . BleachBit                     v1.2
@@ -2705,7 +2843,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
  . Sophos Virus Removal Tool     v2.5, update defs 2014-07-15
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
@@ -2744,11 +2882,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  * AdwCleaner                    v3.2.1.5
@@ -2759,22 +2897,22 @@ STAGE 6: Manual tools
  + Junkware Removal Tool         v6.1.4
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
- 
+
+
+
 ######################
 # v1.4 // 2014-07-14 #
 ######################
 tron.bat                         v1.4
  + tron.bat:          Add SKIP_DEFRAG variable to force defrag to always skip
- * tron.bat:          Improve SSD detection. Thanks to /u/bdm800 
- * tron.bat:          Clean up welcome screen and various comments 
- * tron.bat:          Reduce time spent waiting for rkill from 110 seconds to 90 seconds 
- * stage_2_disinfect: Switch Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled. 
- 
+ * tron.bat:          Improve SSD detection. Thanks to /u/bdm800
+ * tron.bat:          Clean up welcome screen and various comments
+ * tron.bat:          Reduce time spent waiting for rkill from 110 seconds to 90 seconds
+ * stage_2_disinfect: Switch Sophos and Vipre to log to console instead of log file. This way you can see which file they're on, and prevents people from thinking the scanner is stalled.
+
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  * BleachBit                     v1.2
@@ -2784,7 +2922,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012.exe
  . Sophos Virus Removal Tool     v2.5, update defs 2014-07-14
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
@@ -2822,11 +2960,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . smartctl                      v6.2 2013-07-26 r3841
  . Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . AdwCleaner                    v3.2.1.4
@@ -2837,8 +2975,8 @@ STAGE 6: Manual tools
  + Junkware Removal Tool         v6.1.4
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
+
+
 
 ######################
 # v1.3 // 2014-07-10 #
@@ -2846,10 +2984,10 @@ STAGE 6: Manual tools
 tron.bat                         v1.3
  + tron.bat:      Add additional checks for SSD drives on /dev/sdb and /dev/sdc
  * stage_4_patch: Update links for Adobe Flash and Notepad++ to reflect new versions
-	 
+
 STAGE 0: Prep
  . Rkill                         v2.6.7.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v4.15.4725
  - BleachBit                     v1.2
@@ -2858,7 +2996,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5, update defs 2014-07-10
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
@@ -2888,7 +3026,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + %%Toolbar%%
  + UserGuide%%
  + Yahoo! Browser%%
- 
+
 STAGE 4: Patch
  . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.145
@@ -2896,11 +3034,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.7
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  + smartctl                      v6.2 2013-07-26 r3841
  * Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
@@ -2912,9 +3050,9 @@ STAGE 6: Manual tools
  - Panda Cloud Security Scanner  -- REMOVED
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
- 
- 
- 
+
+
+
 ######################
 # v1.2 // 2014-07-07 #
 ######################
@@ -2930,7 +3068,7 @@ tron.bat                         v1.2
 
 STAGE 0: Prep
  . Rkill                         v2.6.7
- 
+
 STAGE 1: Tempclean
  - TempFileCleanup               REMOVED
  . CCLeaner                      v4.15.4725
@@ -2940,7 +3078,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5 (2014-07-06)
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
@@ -2970,7 +3108,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + %%Toolbar%%
  + UserGuide%%
  + Yahoo! Browser%%
- 
+
 STAGE 4: Patch
  . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
@@ -2978,11 +3116,11 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  + smartctl                      v6.2 2013-07-26 r3841
  * Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
@@ -2994,7 +3132,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 
 ######################
 # v1.1 // 2014-07-06 #
@@ -3010,7 +3148,7 @@ tron.bat                         v1.1
 
 STAGE 0: Prep
  . Rkill                         v2.6.7
- 
+
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
@@ -3020,7 +3158,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Removal Tool     v2.5 (2014-07-06)
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
 These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  . Acer%%
@@ -3050,7 +3188,7 @@ These are specified in: \resources\stage_3_de-bloat\programs_to_target.txt
  + %%Toolbar%%
  + UserGuide%%
  + Yahoo! Browser%%
- 
+
 STAGE 4: Patch
  . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
@@ -3059,10 +3197,10 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  * Defraggler                    v2.18.945
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  + AdwCleaner                    v3.2.1.4
@@ -3074,7 +3212,7 @@ STAGE 6: Manual tools
  . TempFileCleaner               v3.1.9.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 
 ######################
 # v1.0 // 2014-07-04 #
@@ -3083,7 +3221,7 @@ tron.bat                         v1.0
 
 STAGE 0: Prep
  . Rkill                         v2.6.7
- 
+
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
  . CCLeaner                      v4.15.4725
@@ -3093,7 +3231,7 @@ STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
  . Sophos Virus Remval Tool      v2.5 (2014-07-02)
  . Vipre Rescue Scanner          v7.0.7.8
- 
+
 STAGE 3: De-bloat target keywords
  . Acer*
  . My HP*
@@ -3103,7 +3241,7 @@ STAGE 3: De-bloat target keywords
  . Bing*
  . eBay*
  . Launch Manager*
- 
+
 STAGE 4: Patch
  . 7-Zip                         v9.20
  . Adobe Flash Player            v14.0.0.125
@@ -3112,10 +3250,10 @@ STAGE 4: Patch
  . Java Runtime Environment      8u5
  . Notepad++                     v6.6.4
  . Windows updates               <pulled down live>
- 
+
 STAGE 5: Optimize
  . defraggler                    v2.16.0.809
- 
+
 STAGE 6: Manual tools
  . ADSSpy                        v1.11.0.0
  . autoruns                      v11.70
