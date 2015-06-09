@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.4 . No changes (subtool refresh only)
+:: Version:       6.3.5 ! tron.bat:bugfix:         Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
+::                6.3.4 . No changes (subtool refresh only)
 ::                6.3.3 ! stage_0_prep:resume:     Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
 ::                6.3.2 + stage_0_prep:            Add disabling of screensaver; gets re-enabled at script end. Thanks to /u/staticextasy
 ::                      / stage_0_prep:            Move power scheme export and switch to near beginning of Stage 0
@@ -151,8 +152,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.4
-set SCRIPT_DATE=2015-06-03
+set SCRIPT_VERSION=6.3.5
+set SCRIPT_DATE=2015-06-09
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -755,7 +756,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 if /i %DRY_RUN%==yes goto skip_disable_sleep
 :: Disable the screen saver
 call :log "%CUR_DATE% %TIME%    Disabling screensaver..."
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f > "%LOGPATH%\%LOGFILE%" 2>&1
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 :: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
 call :log "%CUR_DATE% %TIME%    Backing up power scheme and switching to Always On..."
@@ -1525,7 +1526,7 @@ if "%PRESERVE_POWER_SCHEME%"=="yes" (
 
 :: JOB: Re-enable the screen saver
 call :log "%CUR_DATE% %TIME%    Re-enabling screensaver..."
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 1 /f > "%LOGPATH%\%LOGFILE%" 2>&1
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 
 
