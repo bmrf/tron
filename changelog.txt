@@ -13,6 +13,13 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
+  
+
+########################
+# v6.3.5 // 2015-06-09 #
+########################
+tron.bat                         v6.3.5
+ ! tron.bat:bugfix: Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
 
   
 ########################
