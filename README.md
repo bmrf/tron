@@ -330,27 +330,27 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 6. **Set system time via NTP**: Sync the system clock to time.nist.gov, 3.pool.ntp.org and time.windows.com
 
-7. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
+7. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+
+8. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
   ```
 
-8. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+9. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-9. **erunt**: Used to backup the registry before beginning a Tron run
+10. **erunt**: Used to backup the registry before beginning a Tron run
 
-10. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+11. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-11. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
+12. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-12. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
-
-13. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+13. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
 
 
 ## STAGE 1: Tempclean
