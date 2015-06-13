@@ -43,6 +43,7 @@
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
 ::                      -srr Skip registry permissions reset (saves time if you're in a hurry)
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
+::                      -slb  Skip Legacy Boot Menu Policy (do not change boot menu policy to legacy on win8/svr2012)
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
@@ -111,6 +112,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_PAGEFILE_RESET   (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_REGPERMS_RESET   (-srr) = Set to yes to skip registry permissions reset. Can save a lot of time if you're in a hurry
 :: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
+:: SKIP_LEGACY_BOOTMENUPOLICY  (-slb)  = Set to yes to skip changing the boot menu policy to legacy on Windows 8 and Server 2012 computers
 :: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
@@ -132,6 +134,7 @@ set SKIP_FILEPERMS_RESET=no
 set SKIP_PAGEFILE_RESET=no
 set SKIP_REGPERMS_RESET=no
 set SKIP_WINDOWS_UPDATES=no
+set SKIP_LEGACY_BOOTMENUPOLICY=no
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -197,7 +200,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -slb -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -221,6 +224,7 @@ if /i %HELP%==yes (
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -srr Skip registry permissions reset ^(saves time if you're in a hurry^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
+	echo    -slb  Skip Legacy Boot Menu Policy ^(do not change boot menu policy to legacy on win8 or svr2012^)
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
@@ -307,10 +311,14 @@ if /i %RESUME_DETECTED%==yes (
 	
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
 :: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
-:detect_win_ver
-if "%WIN_VER:~0,9%"=="Windows 8" (
-	bcdedit /set {default} bootmenupolicy legacy
-	)
+if /i %SKIP_LEGACY_BOOTMENUPOLICY%==no (
+	:detect_win_ver
+	if "%WIN_VER:~0,9%"=="Windows 8" (
+		bcdedit /set {default} bootmenupolicy legacy
+		)
+) else (
+	call :log "%CUR_DATE% %TIME% !  SKIP_LEGACY_BOOTMENUPOLICY ^(-slb^) set. Skipping legacy boot menu policy"
+)
 
 
 :: PREP: Update check
@@ -431,6 +439,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_REGPERMS_RESET:    %SKIP_REGPERMS_RESET%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
+	echo    SKIP_LEGACY_BOOTMENUPOLICY:   %SKIP_LEGACY_BOOTMENUPOLICY%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -1752,6 +1761,7 @@ for %%i in (%*) do (
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-srr set SKIP_REGPERMS_RESET=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
+	if /i %%i==-slb set SKIP_LEGACY_BOOTMENUPOLICY=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
