@@ -4,19 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.5 ! tron.bat:bugfix:         Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
+:: Version:       6.3.6 ! stage_0_prep:ntp:        Fix bug with NTP service start, was missing code to allow starting in Safe Mode. Thanks to /u/BroPaterno
+::                6.3.5 ! tron.bat:bugfix:         Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
 ::                6.3.4 . No changes (subtool refresh only)
-::                6.3.3 ! stage_0_prep:resume:     Minor fix to resume detection code; if RUNONCE key exists but tron_stage.txt doesn't exist, assume faulty resume and delete the runonce key. Thanks to /u/cuddlychops06
-::                6.3.2 + stage_0_prep:            Add disabling of screensaver; gets re-enabled at script end. Thanks to /u/staticextasy
-::                      / stage_0_prep:            Move power scheme export and switch to near beginning of Stage 0
-::                      ! stage_7_wrap-up:gsl:     Fix bug where summary logs (generated with -gsl) would list ALL programs on the computer if none were removed. Thanks to /u/staticextasy
-::                6.3.1 ! stage_4_repair:bugfix:   Add missing pushd statement that was preventing subscript from finding subinacl.exe
-::                6.3.0 * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
-::                      + stage_4_repair:add:      Create new Stage 4: Repair and right-shift all subsequent stages
-::                      + stage_4_repair:regperm:  Add registry permissions reset and associated -srr flag and SKIP_REGPERMS_RESET variable
-::                      + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr flag and SKIP_FILEPERMS_RESET variable
-::                      / stage_3_disinfect:sfc:   Move SFC to Stage 4: Repair 
-::                      / stage_5_optimize:chkdsk: Move chkdsk Stage 4: Repair
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -152,8 +142,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.5
-set SCRIPT_DATE=2015-06-09
+set SCRIPT_VERSION=6.3.6
+set SCRIPT_DATE=2015-06-16
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -808,11 +798,12 @@ if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v1.1.0-TRON.exe
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Set system clock
+:: JOB: Set system clock via NTP
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
 call :log "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
-	:: Make sure time service is started
+	:: Make sure time service is started, also force us to allow starting it in Safe Mode
+	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /config /syncfromflags:manual /manualpeerlist:"time.nist.gov 3.pool.ntp.org time.windows.com" >> "%LOGPATH%\%LOGFILE%" 2>&1
