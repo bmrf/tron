@@ -63,6 +63,7 @@ CutePDF Editor Toolbar Updater
 CWA Reminder by We-Care.com%%
 Cyberlink%%
 ClickForSale
+CloudScout%%
 DealPly (remove only)
 DealScout for Internet Explorer
 Dell Getting Started Guide%%
