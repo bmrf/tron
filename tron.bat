@@ -793,7 +793,9 @@ call :log "%CUR_DATE% %TIME%    Done."
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
-if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v2.0.0-TRON.exe
+pushd stage_0_prep\processkiller
+if /i %DRY_RUN%==no ProcessKiller_v2.0.0-TRON.exe
+popd
 call :log "%CUR_DATE% %TIME%    Done."
 
 
