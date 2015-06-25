@@ -4,9 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.6 ! stage_0_prep:ntp:        Fix bug with NTP service start, was missing code to allow starting in Safe Mode. Thanks to /u/BroPaterno
-::                6.3.5 ! tron.bat:bugfix:         Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
-::                6.3.4 . No changes (subtool refresh only)
+:: Version:       6.3.7 * stage_0_prep:processkiller: Update ProcessKiller references to reflect new 2.0.0-TRON version. Thanks to /u/cuddlychops06
+::                      ! stage_0_prep:rkill:         Fix rkill not finding the process whitelist by replacing relative path with absolute path. Thanks to /u/shayaknyc
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -142,8 +141,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.6
-set SCRIPT_DATE=2015-06-16
+set SCRIPT_VERSION=6.3.7
+set SCRIPT_DATE=2015-06-25
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -718,7 +717,7 @@ call :log "%CUR_DATE% %TIME%    OK."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w rkill_process_whitelist.txt
+	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w %~dp0rkill_process_whitelist.txt
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
@@ -794,7 +793,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
-if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v1.1.0-TRON.exe
+if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v2.0.0-TRON.exe
 call :log "%CUR_DATE% %TIME%    Done."
 
 
