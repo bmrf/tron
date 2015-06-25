@@ -474,8 +474,10 @@ Tron does not run these automatically because most of them don't support command
 
 8. **Net Adapter Repair**: Utility to repair most aspects of Windows network connections
 
-9. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
+9. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to /u/cuddlychops06
 
-10. **TempFileCleaner**: OldTimer utility for cleaning temp files
+10. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-11. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
+11. **TempFileCleaner**: OldTimer utility for cleaning temp files
+
+12. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
