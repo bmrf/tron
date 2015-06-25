@@ -1,0 +1,17 @@
+;This is your whitelist.txt file for ProcessKiller 2.0.
+;Lines that start with a semi-colon are commented out.
+;
+;It is a good idea to add all your remote control tool
+;executables to this list. Be sure you add all of them.
+;
+;Add your exclusions by the process name in all lower-case.
+;DO NOT add file extensions to the process name.
+;
+;EXAMPLES:
+;iexplore
+;logmein
+;adwcleaner
+;
+;Enjoy! /u/cuddlychops06
+;
+;ADD EXCLUSIONS BELOW:
