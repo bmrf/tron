@@ -350,7 +350,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 12. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-13. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the -p flag
+13. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the `-p` flag
 
 
 ## STAGE 1: Tempclean
@@ -397,27 +397,29 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 2. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` flag skips this component
 
-3. **KVRT**: Kaspersky Virus Removal Tool. Using Tron's -sa flag skips this component
+3. **KVRT**: Kaspersky Virus Removal Tool. Using Tron's `-sa` flag skips this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
+4. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` flag skips this component
 
-5. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-6. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
+5. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
 
 
 ## STAGE 4: Repair
 
-1. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's -srr flag skips this operation
-2. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's -sfr flag skips this operation
- 
-3. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot) 
+1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-4. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
+2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's -srr flag skips this operation
+
+3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's -sfr flag skips this operation
+
+4. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot) 
+
+5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
 
 ## STAGE 5: Patch
