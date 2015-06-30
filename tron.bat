@@ -4,9 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.7 * stage_0_prep:processkiller: Update ProcessKiller references to reflect new 2.0.0-TRON version. Thanks to /u/cuddlychops06
-::                      ! stage_0_prep:rkill:         Fix rkill not finding the process whitelist by replacing relative path with absolute path. Thanks to /u/shayaknyc
-::
+:: Version:       6.3.8 / stage_0_prep:rkill:  Add note explaining to kill rkill.exe if the script hangs
+::                      / stage_4_repair:dism: Move DISM check and repair from Stage 3 disinfect to Stage 4 repair
+::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -141,8 +141,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.7
-set SCRIPT_DATE=2015-06-25
+set SCRIPT_VERSION=6.3.8
+set SCRIPT_DATE=2015-06-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -716,6 +716,7 @@ call :log "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
+call :log "%CUR_DATE% %TIME% !  If script stalls here, stop rkill.exe with Task Manager
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w %~dp0rkill_process_whitelist.txt
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -1130,7 +1131,7 @@ call :log "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM w
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
+title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT]
 call :log "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
 call :log "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
 if /i %DRY_RUN%==no (
@@ -1159,8 +1160,25 @@ call :log "%CUR_DATE% %TIME%    Done."
 call :log "%CUR_DATE% %TIME%    Done."
 :skip_antivirus_scans
 
+call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
 
-:: JOB: Check Windows Image for corruptions before running SFC in Stage 4 (Windows 8/2012 only)
+:: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
+:: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug
+call :set_cur_date
+
+
+
+:::::::::::::::::::::
+:: STAGE 4: Repair ::
+:::::::::::::::::::::
+:stage_4_repair
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_4_repair>tron_stage.txt
+title TRON v%SCRIPT_VERSION% [stage_4_repair]
+call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
+
+
+:: JOB: Check Windows Image for corruptions before running SFC (Windows 8/2012 only)
 :: Thanks to /u/nomaddave
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Check]
 call :log "%CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8/2012 only)'..."
@@ -1199,24 +1217,6 @@ if /i not %ERRORLEVEL%==0 (
 
 :skip_dism_image_check
 call :log "%CUR_DATE% %TIME%    Done."
-
-
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
-
-:: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
-:: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug
-call :set_cur_date
-
-
-
-:::::::::::::::::::::
-:: STAGE 4: Repair ::
-:::::::::::::::::::::
-:stage_4_repair
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_4_repair>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_4_repair]
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
 
 
 :: JOB: Reset registry permissions
