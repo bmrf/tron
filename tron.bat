@@ -1130,7 +1130,7 @@ call :log "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM w
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT]
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
 call :log "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
 call :log "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
 if /i %DRY_RUN%==no (
