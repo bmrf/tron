@@ -13,8 +13,76 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
-
   
+
+
+########################
+# v6.3.8 // 2015-07-01 #
+########################
+tron.bat                         v6.3.8
+ / stage_0_prep:rkill:       Add note explaining to kill rkill.exe if the script hangs
+ / stage_4_repair:dism:      Move DISM check and repair from Stage 3 disinfect to Stage 4 repair
+ * stage_7_wrap-up:safeboot: Minor improvements to safe mode boot removal
+
+STAGE 0: Prep
+ . Rkill                         v2.7.0.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.0.0.42
+ . McAfee Stinger                v12.1.0.1578
+ . erunt                         v1.1j
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.07.5261
+ . BleachBit                     v1.8
+ . TempFileCleanup               v1.0.1-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+
+STAGE 3: Disinfect
+ * RogueKiller                   v10.8.7.0
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v18.0.0.194   (language ignored)
+ . Adobe Reader                  v11.0.11      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u45          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v4.2.0.7
+ . Autoruns                      v13.4
+ * ComboFix                      v15.6.30.1
+ * Junkware Removal Tool         v7.2.5.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ + Remote Support Reboot Config  v1.0.0    // sets auto-logon in case the system reboots. Thanks to /u/cuddlychops06
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . TempFileCleaner               v7.1.4.0
+ + Tron Reset Tool               v1.0.0    // resets changes done by Tron related to resume-detection and boot loops
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+
 ########################
 # v6.3.7 // 2015-06-25 #
 ########################
