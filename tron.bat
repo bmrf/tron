@@ -4,8 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.8 / stage_0_prep:rkill:  Add note explaining to kill rkill.exe if the script hangs
-::                      / stage_4_repair:dism: Move DISM check and repair from Stage 3 disinfect to Stage 4 repair
+:: Version:       6.3.8 / stage_0_prep:rkill:       Add note explaining to kill rkill.exe if the script hangs
+::                      / stage_4_repair:dism:      Move DISM check and repair from Stage 3 disinfect to Stage 4 repair
+::                      * stage_7_wrap-up:safeboot: Minor improvements to safe mode boot removal
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -142,7 +143,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.3.8
-set SCRIPT_DATE=2015-06-xx
+set SCRIPT_DATE=2015-07-01
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -775,7 +776,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
 	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
 	REM Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	REM This line looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
+	REM This looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
 	REM	1st: Master GUID of the "High Performance" power scheme
 	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
 	REM	3rd: Specific GUID for the "Lid close action" power setting
@@ -794,7 +795,9 @@ call :log "%CUR_DATE% %TIME%    Done."
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
 call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
-if /i %DRY_RUN%==no stage_0_prep\processkiller\ProcessKiller_v2.0.0-TRON.exe /silent
+pushd stage_0_prep\processkiller
+if /i %DRY_RUN%==no start "" /wait ProcessKiller.exe /silent
+popd
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -1112,7 +1115,7 @@ title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 call :log "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
 :: Install MBAM & remove the desktop icon
 if /i %DRY_RUN%==no ( 
-	"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.6.1022.exe" /verysilent
+	"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.8.1057.exe" /verysilent
 	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
@@ -1577,11 +1580,13 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Remove resume-related files, registry entry, and boot flag
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
-call :log "%CUR_DATE% %TIME%    No reboot detected. Removing resume-support files and Safeboot flag..."
+call :log "%CUR_DATE% %TIME%    Removing resume-support files and Safeboot flag..."
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 del /f /q tron_flags.txt >nul 2>&1
 del /f /q tron_stage.txt >nul 2>&1
 bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -1630,7 +1635,7 @@ if /i %SELF_DESTRUCT%==yes (
 
 
 :: Display and log the job summary
-:: Turn the window green so we can quickly see at a glance if it's done
+:: Turn the window green so we can see at a glance if it's done
 color 2F
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
