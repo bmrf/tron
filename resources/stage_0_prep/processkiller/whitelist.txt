@@ -15,4 +15,3 @@
 ;Enjoy! /u/cuddlychops06
 ;
 ;ADD EXCLUSIONS BELOW:
-ProcessKiller_v2.0.0-TRON
