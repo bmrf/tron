@@ -4,9 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.8 / stage_0_prep:rkill:       Add note explaining to kill rkill.exe if the script hangs
-::                      / stage_4_repair:dism:      Move DISM check and repair from Stage 3 disinfect to Stage 4 repair
-::                      * stage_7_wrap-up:safeboot: Minor improvements to safe mode boot removal
+:: Version:       6.3.9 - No changes, subtool refresh release only
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -142,8 +140,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.8
-set SCRIPT_DATE=2015-07-01
+set SCRIPT_VERSION=6.3.9
+set SCRIPT_DATE=2015-07-09
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
