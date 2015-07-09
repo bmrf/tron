@@ -476,10 +476,14 @@ Tron does not run these automatically because most of them don't support command
 
 8. **Net Adapter Repair**: Utility to repair most aspects of Windows network connections
 
-9. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to /u/cuddlychops06
+9. **Remote Support Reboot Config**: Tool to quickly configure auto-login and other parameters for running Tron via a remote connection. Thanks to reddit.com/user/cuddlychops06
 
-10. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
+10. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to reddit.com/user/cuddlychops06
 
-11. **TempFileCleaner**: OldTimer utility for cleaning temp files
+11. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-12. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
+12. **TempFileCleaner**: OldTimer utility for cleaning temp files
+
+13. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
+
+14. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
