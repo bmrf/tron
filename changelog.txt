@@ -21,7 +21,7 @@ tron.bat                         v6.4.0
  + tron.bat:cliflags:      Add -sm flag and associated SKIP_MBAM_INSTALL variable
  + tron.bat:cliflags:      Add -ss flag and associated SKIP_SOPHOS_SCAN variable
  + stage_0_prep:smart:     Add a quick SMART check and notification if errors are found on a drive
- * stage_3_disinfect:mbam: Malwarebytes now checks to see if it's already installed and skips installation if found
+ * stage_3_disinfect:mbam: MBAM now checks for prior installations and skips installation if found
  ! stage_3_disinfect:      Fix minor display error which showed Kaspersky as belonging to Stage 0 instead of Stage 3
  / tron.bat:prep:          UPM trigger relocate
 
