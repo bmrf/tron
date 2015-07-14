@@ -4,7 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.3.9 - No changes, subtool refresh release only
+:: Version:       6.4.0 + tron.bat:cliflags:      Add -sk flag and associated SKIP_KASPERSKY_SCAN variable
+::                      + tron.bat:cliflags:      Add -sm flag and associated SKIP_MBAM_INSTALL variable
+::                      + tron.bat:cliflags:      Add -ss flag and associated SKIP_SOPHOS_SCAN variable
+::                      + stage_0_prep:smart:     Add a quick SMART check and notification if errors are found on a drive
+::                      * stage_3_disinfect:mbam: Malwarebytes now checks to see if it's already installed and skips installation if found
+::                      ! stage_3_disinfect:      Fix minor display error which showed Kaspersky as belonging to Stage 0 instead of Stage 3
+::                      / tron.bat:prep:          UPM trigger relocate
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -22,14 +28,17 @@
 ::                      -o   Power off after running (overrides -r)
 ::                      -p   Preserve power settings (don't reset to Windows default)
 ::                      -r   Reboot (auto-reboot 15 seconds after completion)
-::                      -sa  Skip anti-virus scans (MBAM, KVRT, Sophos)
+::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
 ::                      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -se  Skip Event Log clearing
-::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash and Reader)
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
+::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan 
+::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
+::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
 ::                      -srr Skip registry permissions reset (saves time if you're in a hurry)
+::                      -ss  Skip Sophos Anti-Virus (SAV) scan
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -90,14 +99,17 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: AUTO_SHUTDOWN         (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY     (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_ANTIVIRUS_SCANS  (-sa)  = Set to yes to skip anti-virus scanners (MBAM, KVRT, Sophos)
+:: SKIP_ANTIVIRUS_SCANS  (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
 :: SKIP_DEBLOAT          (-sb)  = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG           (-sd)  = Set to yes to skip defrag regardless whether the system drive is an SSD or not. When set to "no" the script will auto-detect SSDs and skip defrag if one is detected
 :: SKIP_EVENT_LOG_CLEAR  (-se)  = Set to yes to skip Event Log clearing
-:: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_FILEPERMS_RESET  (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
+:: SKIP_KASKPERSKY_SCAN  (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
+:: SKIP_MBAM_INSTALL     (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
+:: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_PAGEFILE_RESET   (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_REGPERMS_RESET   (-srr) = Set to yes to skip registry permissions reset. Can save a lot of time if you're in a hurry
+:: SKIP_SOPHOS_SCAN      (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_WINDOWS_UPDATES  (-sw)  = Set to yes to skip Windows Updates
 :: VERBOSE               (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT         (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
@@ -115,11 +127,15 @@ set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_EVENT_LOG_CLEAR=no
-set SKIP_PATCHES=no
 set SKIP_FILEPERMS_RESET=no
+set SKIP_KASPERSKY_SCAN=no
+set SKIP_MBAM_INSTALL=no
+set SKIP_PATCHES=no
 set SKIP_PAGEFILE_RESET=no
 set SKIP_REGPERMS_RESET=no
+set SKIP_SOPHOS_SCAN=no
 set SKIP_WINDOWS_UPDATES=no
+set UNICORN_POWER_MODE=off
 set VERBOSE=no
 set SELF_DESTRUCT=no
 
@@ -140,8 +156,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.3.9
-set SCRIPT_DATE=2015-07-09
+set SCRIPT_VERSION=6.4.0
+set SCRIPT_DATE=2015-07-14
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -155,7 +171,6 @@ set TARGET_METRO=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
-set UNICORN_POWER_MODE=off
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
@@ -185,7 +200,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk -sm -sp -spr -srr -ss -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -200,14 +215,17 @@ if /i %HELP%==yes (
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically ^(auto-reboot 15 seconds after completion^)
-	echo    -sa  Skip anti-virus scans ^(MBAM, KVRT, Sophos^)
+	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
 	echo    -sb  Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -se  Skip Event Log clearing
-	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
+	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan 
+	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
+	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -srr Skip registry permissions reset ^(saves time if you're in a hurry^)
+	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -266,7 +284,6 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
-
 :: PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
@@ -285,7 +302,7 @@ if /i %RESUME_DETECTED%==yes (
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
 	:: Notify and jump
-	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags "%RESUME_FLAGS%"..."
+	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
 	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to resume-looping where we keep trying to resume
 	:: even if a reboot didn't happen
 	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
@@ -414,10 +431,13 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
-	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
+	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
+	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
+	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_REGPERMS_RESET:    %SKIP_REGPERMS_RESET%
+	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
@@ -682,7 +702,22 @@ call :log "---------------------------------------------------------------------
 echo stage_0_prep>tron_stage.txt
 echo %*> tron_flags.txt
 
-:: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
+
+:: JOB: Run a quick SMART check and notify if there are any drives with problems
+setlocal enabledelayedexpansion
+%WMIC% diskdrive get status > %TEMP%\tron_smart_results.txt
+for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
+	findstr /C:"%%i" %TEMP%\tron_smart_results.txt
+	if !ERRORLEVEL!==0 ( 
+		call :log "%CUR_DATE% %TIME% ! WARNING! SMART check indicates at least one drive with %%i status" 
+		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure, be careful"
+		call :log "%CUR_DATE% %TIME%   running disk-intensive operations like defrag."
+		)
+)
+endlocal
+
+
+:: JOB: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
@@ -889,7 +924,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
-		call :log "%CUR_DATE% %TIME%    Purging oldest Shadow Copy set ^(Win7 and up^)..."
+		call :log "%CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Win7 and up)..."
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
@@ -1101,7 +1136,7 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Check for -sa flag (skip antivirus scans) and skip Sophos, KVRT and MBAM if it was used
+:: JOB: Check for -sa flag (skip ALL antivirus scans) and skip Sophos, KVRT and MBAM if it was used
 if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 	call :log "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."
 	goto skip_antivirus_scans
@@ -1110,52 +1145,67 @@ if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
-call :log "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
-:: Install MBAM & remove the desktop icon
-if /i %DRY_RUN%==no ( 
-	"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.8.1057.exe" /verysilent
-	::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
-	if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
-	if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-
-	:: Scan for and launch appropriate architecture version
-	if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
-		start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
-	) else (
-		start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
-		)
+if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
+	call :log "%CUR_DATE% %TIME% ! Malwarebytes installation detected. Skipping MBAM installation."
+	goto skip_mbam
 )
+if /i %SKIP_MBAM_INSTALL%==yes (
+	call :log "%CUR_DATE% %TIME% ! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
+) else (
+	call :log "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
+	:: Install MBAM & remove the desktop icon
+	if /i %DRY_RUN%==no (
+		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.1.8.1057.exe" /verysilent
+		::"Malwarebytes Anti-Malware v1.75.0.1300.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
+		if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
+		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 
-call :log "%CUR_DATE% %TIME%    Done."
-call :log "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM window!"
+		:: Scan for and launch appropriate architecture version
+		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
+			start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
+		) else (
+			start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
+			)
+	)
+	call :log "%CUR_DATE% %TIME%    Done."
+	call :log "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM window!"
+)
+:skip_mbam
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Kaspersky VRT]
-call :log "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
-call :log "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
-if /i %DRY_RUN%==no (
-	start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo
-	if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices"
-	)
-call :log "%CUR_DATE% %TIME%    Done."
+title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
+if /i %SKIP_KASPERSKY_SCAN%==yes (
+	call :log "%CUR_DATE% %TIME% ! SKIP_KASPERSKY_SCAN (-sk) set. Skipping KVRT scan."
+) else (
+	call :log "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
+	call :log "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
+	if /i %DRY_RUN%==no (
+		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo
+		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices"
+		)
+	call :log "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: Sophos Virus Remover
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
-call :log "%CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
-call :log "%CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)..."
-if /i %DRY_RUN%==no (
-	echo.
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
-	if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
-	if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
-	type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
-	)
-call :log "%CUR_DATE% %TIME%    Done."
-
+if /i %SKIP_SOPHOS_SCAN%==yes (
+	call :log "%CUR_DATE% %TIME% ! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
+) else (
+	call :log "%CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
+	call :log "%CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)..."
+	if /i %DRY_RUN%==no (
+		echo.
+		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
+		if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
+		if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
+		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
+		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
+		)
+	call :log "%CUR_DATE% %TIME%    Done."
+)
 
 :: AV scans finished
 call :log "%CUR_DATE% %TIME%    Done."
@@ -1721,7 +1771,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
 
-:: Parse all CLI arguments and flip the appropriate variables. Thanks to /u/douglas_swehla for conversion to function
+:: Parse CLI arguments and flip the appropriate variables. Thanks to /u/douglas_swehla for conversion to function
 :parse_cmdline_args
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
@@ -1740,10 +1790,13 @@ for %%i in (%*) do (
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
-	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
+	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
+	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
+	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-srr set SKIP_REGPERMS_RESET=yes
+	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
