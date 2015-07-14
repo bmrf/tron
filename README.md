@@ -47,7 +47,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sp -sfr -spr -srr -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk -sm -sp -spr -srr -ss -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -73,22 +73,28 @@ Command-line use is fully supported. All flags are optional and can be combined.
     
     -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
-    -sa  Skip anti-virus scans (MBAM, KVRT, Sophos)
+    -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
     
     -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 
     -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
     
     -se  Skip Event Log clear (don't clear Windows Event Logs)
-
-    -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
     
     -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
+
+    -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
+    
+    -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
+
+    -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
     
     -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
     -srr Skip registry permissions reset (saves time if you're in a hurry)
 
+    -ss  Skip Sophos Anti-Virus (SAV) scan
+    
     -sw  Skip Windows Updates (do not attempt to run Windows Update)
 
     -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -162,7 +168,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTORUN=no
   ```
 
-- To always do a dry run (don't actually execute jobs), change this to `yes`:
+- To do a dry run (don't actually execute jobs), change this to `yes`:
   ```
   set DRY_RUN=no
   ```
@@ -222,14 +228,24 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_EVENT_LOG_CLEAR=no
   ```
 
-- To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
-  ```
-  set SKIP_PATCHES=no
-  ```
-  
 - To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to everything under the `%WinDir%` directory structure, change this to `yes`:
   ```
   set SKIP_FILEPERMS_RESET=no
+  ```
+
+- To skip scanning with Kaspersky Virus Rescue Tool (KVRT), change this to `yes`:
+  ``` 
+  set SKIP_KASPERSKY_SCAN=no
+  ```
+  
+- To skip installation of Malwarebytes Anti-Malware (MBAM), change this to `yes`:
+  ```
+  set SKIP_MBAM_INSTALL=no
+  ```
+
+- To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
+  ```
+  set SKIP_PATCHES=no
   ```
 
 - To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
@@ -240,6 +256,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to the HKLM, HKCU, and HKCR hives, change this to `yes`:
   ```
   set SKIP_REGPERMS_RESET=no
+  ```
+
+- To skip scanning with Sophos Anti-Virus (SAV), change this to `yes`:
+  ```
+  set SKIP_SOPHOS_SCAN=no
   ```
 
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
@@ -317,38 +338,40 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-2. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
+2. **SMART check**: Run a quick SMART disk health check and notify if any drives don't report "OK" for their status
 
-3. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+3. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
 
-4. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+4. **Rkill**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
 
-5. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command: 
+5. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+
+6. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command: 
    ```
    bcdedit /set {default} safeboot network
    ```
 
-6. **Set system time via NTP**: Sync the system clock to time.nist.gov, 3.pool.ntp.org and time.windows.com
+7. **Set system time via NTP**: Sync the system clock to time.nist.gov, 3.pool.ntp.org and time.windows.com
 
-7. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+8. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-8. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
+9. **McAfee Stinger**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows: 
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
   ```
 
-9. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+10. **TDSS Killer**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-10. **erunt**: Used to backup the registry before beginning a Tron run
+11. **erunt**: Used to backup the registry before beginning a Tron run
 
-11. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+12. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-12. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
+13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
 13. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the `-p` flag
 
