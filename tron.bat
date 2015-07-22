@@ -4,13 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.4.0 + tron.bat:cliflags:      Add -sk flag and associated SKIP_KASPERSKY_SCAN variable
-::                      + tron.bat:cliflags:      Add -sm flag and associated SKIP_MBAM_INSTALL variable
-::                      + tron.bat:cliflags:      Add -ss flag and associated SKIP_SOPHOS_SCAN variable
-::                      + stage_0_prep:smart:     Add a quick SMART check and notification if errors are found on a drive
-::                      * stage_3_disinfect:mbam: Malwarebytes now checks to see if it's already installed and skips installation if found
-::                      ! stage_3_disinfect:      Fix minor display error which showed Kaspersky as belonging to Stage 0 instead of Stage 3
-::                      / tron.bat:prep:          UPM trigger relocate
+:: Version:       6.4.1 ! stage_0_prep:rkill: Fix incorrect line telling rkill where to find whitelist.txt. Thanks to /u/shayaknyc
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -156,8 +150,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.4.0
-set SCRIPT_DATE=2015-07-14
+set SCRIPT_VERSION=6.4.1
+set SCRIPT_DATE=2015-07-22
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -670,6 +664,7 @@ for %%D in ("%LOGPATH%","%QUARANTINE%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%"
     if not exist %%D mkdir %%D
 )
 
+
 :: If we're resuming from a script interruption we don't want to wipe the log, so check for that here before creating the new log
 if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
 
@@ -752,7 +747,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
 call :log "%CUR_DATE% %TIME% !  If script stalls here, stop rkill.exe with Task Manager
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w %~dp0rkill_process_whitelist.txt
+	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w %~dp0stage_0_prep\rkill\rkill_process_whitelist.txt
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
