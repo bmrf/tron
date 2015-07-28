@@ -747,7 +747,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
 call :log "%CUR_DATE% %TIME% !  If script stalls here, stop rkill.exe with Task Manager
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w %~dp0rkill_process_whitelist.txt
+	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "%~dp0rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
