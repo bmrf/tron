@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.4.2 ! stage_0_prep:rkill: Fix incorrect line telling rkill where to find whitelist.txt. Thanks to /u/Rumble_Humble
+:: Version:       6.4.2 ! stage_0_prep:rkill: Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -151,7 +151,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.4.2
-set SCRIPT_DATE=2015-07-xx
+set SCRIPT_DATE=2015-08-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
