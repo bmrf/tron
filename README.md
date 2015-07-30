@@ -467,7 +467,7 @@ Tron installs or updates these programs:
     
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-    Using the -spr flag skips this action
+    Using the `-spr` flag skips this action
 
 2. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
