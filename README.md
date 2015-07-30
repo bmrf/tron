@@ -124,7 +124,7 @@ To have Tron send an email report at completion, edit this file:
 
     \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
     
-Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. If you used the -gsl flag (generate summary logs) then `tron_removed_files.txt` and `tron_removed_programs.txt` will be attached as well.
+Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. If you used the `-gsl` flag (generate summary logs) then `tron_removed_files.txt` and `tron_removed_programs.txt` will be attached as well.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
