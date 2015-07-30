@@ -491,7 +491,7 @@ Tron does not run these automatically because most of them don't support command
 
 4. **autoruns**: Examine and remove programs that run at startup
 
-5. **ComboFix**: The "scorched-earth policy" of malware removal
+5. **ComboFix**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 7 (no Win8 or above)
 
 6. **PCHunter**: Tool to scan for rootkits and other malicious items. Replaces gmer
 
