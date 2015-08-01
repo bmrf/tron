@@ -5,8 +5,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.4.2 ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
-::                      ! stage_3_disinfect:roguekiller: Fix RogueKiller (upgrade to latest version) which should hopefully fix this annoying log issue. In testing
-::                                                       it works fine for me, so maybe this is the magic formula
+::                      ! stage_3_disinfect:roguekiller: Fix RogueKiller (upgrade to latest version) which should hopefully fix this annoying log issue
+::                                                       In testing it works fine for me, so maybe this is the magic formula
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -731,7 +731,7 @@ call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
 :: Note, there is a (stupid) limitation in Windows 8 and up that will only let you create
 :: one restore point every 24 hours. If you create another one, it deletes the previous one.
-:: So unfortunately we can't take a before/after restore point pair. 
+:: So unfortunately we can't take a before/after pair. 
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
