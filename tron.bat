@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.4.2 ! stage_0_prep:rkill: Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
+:: Version:       6.4.2 ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
+::                      ! stage_3_disinfect:roguekiller: Fix RogueKiller (upgrade to latest version) which should hopefully fix this annoying log issue. In testing
+::                                                       it works fine for me, so maybe this is the magic formula
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -151,7 +153,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.4.2
-set SCRIPT_DATE=2015-08-xx
+set SCRIPT_DATE=2015-08-01
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -904,7 +906,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
 call :log "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
 if /i %DRY_RUN%==no (
-	"stage_0_prep\tdss_killer\TDSSKiller v3.0.0.42.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"stage_0_prep\tdss_killer\TDSSKiller v3.1.0.5.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Copy TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
