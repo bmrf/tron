@@ -4,9 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.4.2 ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
-::                      ! stage_3_disinfect:roguekiller: Fix RogueKiller (upgrade to latest version) which should hopefully fix this annoying log issue
-::                                                       In testing it works fine for me, so maybe this is the magic formula
+:: Version:       6.5.0 ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
+::                      ! stage_3_disinfect:roguekiller: Fix for RogueKiller, removed unecessary trailing "remove" word on the command. BIG thanks to /u/khaosnmt
+::                      + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl flag or associated SKIP_LOKI_SCAN variable to skip this
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -30,6 +30,7 @@
 ::                      -se  Skip Event Log clearing
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan 
+::                      -sl  Skip LOKI analysis scan in Stage 7: Wrap-up
 ::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 ::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
@@ -101,6 +102,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_EVENT_LOG_CLEAR  (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_FILEPERMS_RESET  (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN  (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
+:: SKIP_LOKI_SCAN        (-sl)  = Set to yes to skip LOKI post-run analysis scan
 :: SKIP_MBAM_INSTALL     (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
 :: SKIP_PATCHES          (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_PAGEFILE_RESET   (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
@@ -152,8 +154,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.4.2
-set SCRIPT_DATE=2015-08-01
+set SCRIPT_VERSION=6.5.0
+set SCRIPT_DATE=2015-08-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -196,7 +198,8 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk -sm -sp -spr -srr -ss -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk 
+	echo                -sl -sm -sp -spr -srr -ss -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -217,6 +220,7 @@ if /i %HELP%==yes (
 	echo    -se  Skip Event Log clearing
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan 
+	echo    -sl  Skip LOKI analysis scan in Stage 7: Wrap-up
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
@@ -429,6 +433,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
+	echo    SKIP_LOKI_SCAN:         %SKIP_LOKI_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
@@ -598,7 +603,7 @@ echo  *  3 Disinfect: RogueKiller/Sophos/KVRT/MBAM/DISM repair              *
 echo  *  4 Repair:    RegPerms reset/Fileperms reset/chkdsk/SFC scan
 echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
-echo  *  7 Wrap-up:   collect misc logs, send email report (if requested)   *
+echo  *  7 Wrap-up:   LOKI analysis scan, send email report (if requested)  *
 echo  *                                                                     *
 echo  * \resources\stage_8_manual_tools contains additional manual tools    *
 echo  ***********************************************************************
@@ -1125,10 +1130,10 @@ call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs begin..."
 
 :: JOB: RogueKiller
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [RogueKiller]
-call :log "%CUR_DATE% %TIME%    Launch job 'RogueKiller' (SLOW, be patient)..."
+call :log "%CUR_DATE% %TIME%    Launch job 'RogueKiller' (IT IS SLOW, be patient)..."
 if /i %DRY_RUN%==no (
-	if /i %VERBOSE%==yes echo remove| stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan remove
-	if /i %VERBOSE%==no echo remove| stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan remove >> "%LOGPATH%\%LOGFILE%"
+	if /i %VERBOSE%==yes echo remove| stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan
+	if /i %VERBOSE%==no echo remove| stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan>> "%LOGPATH%\%LOGFILE%"
 	)
 call :log "%CUR_DATE% %TIME%    Done."
 
@@ -1389,6 +1394,7 @@ call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
 setlocal
 if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\x86\Adobe Reader.bat"
 endlocal
+
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -1533,6 +1539,20 @@ if "%SSD_DETECTED%"=="no" (
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_7_wrap-up>tron_stage.txt
 call :log "%CUR_DATE% %TIME%   stage_7_wrap-up jobs begin..."
+
+
+:: JOB: LOKI post-run analysis scan
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [LOKI]
+call :log "%CUR_DATE% %TIME%    Launch job 'LOKI post-run scan'..."
+if /i %DRY_RUN%==no (
+	if /i %SKIP_LOKI_SCAN%==no (
+		stage_7_wrap-up\loki\loki.exe --scan
+		call :log "%CUR_DATE% %TIME%    Done."
+	) else (
+		call :log "%CUR_DATE% %TIME% !  SKIP_LOKI_SCAN ^(-sl^) set to "%SKIP_LOKI_SCAN%", skipping LOKI post-run scan."
+	)
+)
+
 
 :: JOB: If selected, import original power settings, re-activate them, and delete the backup
 :: Otherwise, just reset power settings back to their defaults
@@ -1789,6 +1809,7 @@ for %%i in (%*) do (
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
+	if /i %%i==-sl set SKIP_LOKI_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
