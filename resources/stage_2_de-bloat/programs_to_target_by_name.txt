@@ -54,7 +54,6 @@ Big Fish: Game Manager
 Bing%%
 BitTorrentBar Toolbar
 BlueStack%%
-Bonjour%%
 Bonzi Buddy%%
 BrowserSafeguard%%
 Buzzdock%%
