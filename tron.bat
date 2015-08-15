@@ -4,9 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.5.0 ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
+:: Version:       6.5.0 * stage_0_prep:caffeine:         Replace "keep system awake" code with caffeine.exe. Cuts out quite a few lines of code. Thanks to /u/rodgersayshi
+::                      ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
 ::                      ! stage_3_disinfect:roguekiller: Fix for RogueKiller, removed unecessary trailing "remove" word on the command. BIG thanks to /u/khaosnmt
 ::                      + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl flag or associated SKIP_LOKI_SCAN variable to skip this
+::                      - stage_7_wrap-up:screensaver:   Remove JOB: Re-enable screensaver since this is replaced by Caffeine
 ::                      
 :: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
 ::
@@ -288,6 +290,7 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if /i %RESUME_DETECTED%==yes (
+
 	:: Quick check for a faulty resume detection
 	if not exist tron_stage.txt (
 		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
@@ -309,7 +312,7 @@ if /i %RESUME_DETECTED%==yes (
 	goto %RESUME_STAGE%
 )
 
-	
+
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
 :: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
 :detect_win_ver
@@ -776,55 +779,13 @@ call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
-:: JOB: Disable sleep mode and disable screen saver
-call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
-if /i %DRY_RUN%==yes goto skip_disable_sleep
-:: Disable the screen saver
-call :log "%CUR_DATE% %TIME%    Disabling screensaver..."
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-call :log "%CUR_DATE% %TIME%    Done."
-:: Export the current power scheme to a file. Thanks to reddit.com/user/GetOnMyAmazingHorse
-call :log "%CUR_DATE% %TIME%    Backing up power scheme and switching to Always On..."
-SETLOCAL ENABLEDELAYEDEXPANSION
-:: Windows XP/2003 version
-if /i "%WIN_VER:~0,9%"=="Microsoft" (
-	REM Extract the line containing the current power GUID
-	for /f "delims=^T" %%i in ('%WINDIR%\system32\powercfg.exe -query ^| find /i "Name"') do (set t=%%i)
-	REM Parse out just the name and stash it in a variable
-	set POWER_SCHEME=!t:~27!
-	REM Export the power scheme based on this GUID
-	%WINDIR%\system32\powercfg.exe /EXPORT "!POWER_SCHEME!" /FILE "%BACKUPS%\tron_power_config_backup.pow"
-	REM Set the "High Performance" scheme active
-	%WINDIR%\system32\powercfg.exe /SETACTIVE "Always On"
-) else (
-	REM All other versions of Windows
-	REM Extract the line containing the current power GUID
-	for /f "delims=" %%i in ('%WINDIR%\system32\powercfg.exe -list ^| find "*"') do (set t=%%i)
-	REM Parse out the GUID and stash it in a variable
-	set POWER_SCHEME=!t:~19,36!
-	REM Export the power scheme based on this GUID
-	%WINDIR%\system32\powercfg.exe -EXPORT "%BACKUPS%\tron_power_config_backup.pow" !POWER_SCHEME! 2>NUL
-	REM Set the "High Performance" scheme active
-	%WINDIR%\system32\powercfg.exe -SETACTIVE 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
-	REM We use exclamation points around WIN_VER here because "Vista (TM) Home Premium" has parenthesis in the name which breaks the script. Sigh
-	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...>> "%LOGPATH%\%LOGFILE%"
-	echo %CUR_DATE% %TIME%    !WIN_VER! detected, disabling system sleep on laptop lid close...
-	REM Disable system sleep when laptop lid closes. Thanks to /u/ComputersByte for the suggestion
-	REM This looks bonkers, but it's fairly straight-forward. There are three GUIDs and a setting, as follows:
-	REM	1st: Master GUID of the "High Performance" power scheme
-	REM	2nd: Subgroup GUID of the "Power buttons and lid" category
-	REM	3rd: Specific GUID for the "Lid close action" power setting
-	REM	4th: Action code for "Do nothing"
-	%WINDIR%\system32\powercfg.exe -SETACVALUEINDEX 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c936 000 2>NUL
-	)
-
-:: This cheats a little bit by stacking the set command on the same line as the endlocal so it executes immediately after ENDLOCAL but before the variable gets wiped out by the endlocal. Kind of a little trick to get a SETLOCAL-internal variable exported to a global script-wide variable.
-:: We need the POWER_SCHEME GUID for later when we re-import everything
-ENDLOCAL DISABLEDELAYEDEXPANSION && set POWER_SCHEME=%POWER_SCHEME%
-
-:skip_disable_sleep
-call :log "%CUR_DATE% %TIME%    Done."
+:: JOB: Disable mode and disable screen saver
+if /i %DRY_RUN%==no (
+		call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
+		title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
+		stage_0_prep\caffeine\caffeine.exe -noicon
+		call :log "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: ProcessKiller
@@ -1554,38 +1515,22 @@ if /i %DRY_RUN%==no (
 )
 
 
-:: JOB: If selected, import original power settings, re-activate them, and delete the backup
-:: Otherwise, just reset power settings back to their defaults
-if "%PRESERVE_POWER_SCHEME%"=="yes" (
-	title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Restore power scheme]
-	call :log "%CUR_DATE% %TIME%    Restoring power settings to previous values..."
-	REM Check for Windows XP/2k3
-	if /i "%WIN_VER:~0,9%"=="Microsoft" (
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%POWER_SCHEME%" /file "%BACKUPS%\tron_power_config_backup.pow"
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive "%POWER_SCHEME%"
+:: JOB: Reset power settings to Windows defaults
+if %DRY_RUN%==no (
+title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
+	if "%PRESERVE_POWER_SCHEME%"=="yes" (
+		call :log "%CUR_DATE% %TIME%    PRESERVE_POWER_SCHEME ^(-p^) set to "%PRESERVE_POWER_SCHEME%", not resetting Windows power settings to default."
 	) else (
-	REM Run commands for all other versions of Windows
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /import "%BACKUPS%\tron_power_config_backup.pow" %POWER_SCHEME% 2>NUL
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /setactive %POWER_SCHEME%
-	)
-	del /f /q %BACKUPS%\tron_power_config_backup.pow 2>NUL
-) else (
-	call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults..."
-	REM Check for Windows XP/2k3
-	if /i "%WIN_VER:~0,9%"=="Microsoft" (
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
-	) else (
-	REM Run commands for all other versions of Windows
-		if /i %DRY_RUN%==no %WINDIR%\system32\powercfg.exe -restoredefaultschemes
+		call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
+		REM Check for Windows XP/2k3
+		if /i "%WIN_VER:~0,9%"=="Microsoft" %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
+		REM Run commands for all other versions of Windows
+		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
+		REM Shut down Caffeine which has kept the system awake during the Tron run
+		stage_0_prep\caffeine\caffeine.exe -appexit
 	)
 	call :log "%CUR_DATE% %TIME%    Done."
 )
-
-
-:: JOB: Re-enable the screen saver
-call :log "%CUR_DATE% %TIME%    Re-enabling screensaver..."
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v ScreenSaveActive /t REG_SZ /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: If selected, get post-Tron system state (installed programs, complete file list) and generate the summary logs
