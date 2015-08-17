@@ -4,13 +4,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.5.0 * stage_0_prep:caffeine:         Replace "keep system awake" code with caffeine.exe. Cuts out quite a few lines of code. Thanks to /u/rodgersayshi
+:: Version:       6.5.0 ! script-wide:bugfixes:          Many misc bug fixes (mostly missing quotes or syntax errors) throughout script
 ::                      ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
-::                      ! stage_3_disinfect:roguekiller: Fix for RogueKiller, removed unecessary trailing "remove" word on the command. BIG thanks to /u/khaosnmt
-::                      + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl flag or associated SKIP_LOKI_SCAN variable to skip this
-::                      - stage_7_wrap-up:screensaver:   Remove JOB: Re-enable screensaver since this is replaced by Caffeine
+::                      ! stage_3_disinfect:roguekiller: Minor fix for RogueKiller, removed unecessary trailing "remove" word on the command. Thanks to /u/khaosnmt
+::                      * stage_0_prep:caffeine:         Replace "keep system awake" code with caffeine.exe. Cuts out quite a few lines of code. Thanks to /u/rodgersayshi
+::                      + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl flag or associated SKIP_LOKI_SCAN variable to skip this tool
+::                      - stage_7_wrap-up:screensaver:   Remove job "Re-enable screensaver" since this is replaced by Caffeine
 ::                      
-:: Usage:         Run this script in Safe Mode as an Administrator and reboot when finished. That's it.
+:: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
 ::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
@@ -129,6 +130,7 @@ set SKIP_DEFRAG=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_FILEPERMS_RESET=no
 set SKIP_KASPERSKY_SCAN=no
+set SKIP_LOKI_SCAN=no
 set SKIP_MBAM_INSTALL=no
 set SKIP_PATCHES=no
 set SKIP_PAGEFILE_RESET=no
@@ -157,7 +159,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.5.0
-set SCRIPT_DATE=2015-08-xx
+set SCRIPT_DATE=2015-08-17
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -201,7 +203,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk 
-	echo                -sl -sm -sp -spr -srr -ss -sw -v -x^] ^| ^[-h^]
+	echo                    -sl -sm -sp -spr -srr -ss -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -691,7 +693,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 cls
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
-call :log "                          Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
+call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
 call :log "                          Command-line flags: %*"
 call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
@@ -773,7 +775,7 @@ call :log "%CUR_DATE% %TIME%    Summary logs requested, generating pre-run syste
 		:: Get list of installed programs
 		stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
 		:: Get list of all files on system
-		stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-before.txt %SystemDrive%
+		stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
 	)
 call :log "%CUR_DATE% %TIME%    Done."
 )
@@ -901,7 +903,7 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 
 :: JOB: Reduce SysRestore space
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [System Restore Modifications]
-call :log "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%% of disk..."
+call :log "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%%% of disk..."
 if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
@@ -1022,7 +1024,7 @@ call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
 echo stage_2_de-bloat>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==yes (
-	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT ^(-sb^) set, skipping Stage 2 jobs..."
+	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs..."
 	goto skip_debloat
 	)
 
@@ -1056,7 +1058,7 @@ if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
 :: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
 if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
-	call :log "%CUR_DATE% %TIME%    "Windows 8/2012" detected, removing OEM Metro apps..."
+	call :log "%CUR_DATE% %TIME%    Windows 8/2012 detected, removing OEM Metro apps..."
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
@@ -1109,7 +1111,7 @@ if /i %SKIP_ANTIVIRUS_SCANS%==yes (
 :: JOB: MBAM (MalwareBytes Anti-Malware)
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
-	call :log "%CUR_DATE% %TIME% ! Malwarebytes installation detected. Skipping MBAM installation."
+	call :log "%CUR_DATE% %TIME% !  Malwarebytes installation detected. Skipping MBAM installation."
 	goto skip_mbam
 )
 if /i %SKIP_MBAM_INSTALL%==yes (
@@ -1171,9 +1173,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 )
 
 :: AV scans finished
-call :log "%CUR_DATE% %TIME%    Done."
 :skip_antivirus_scans
-
 call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -1238,11 +1238,11 @@ title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
 	call :log "%CUR_DATE% %TIME%    Resetting registry permissions..."
 	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
-	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to %RAW_LOGS%\"
+	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
 	call :log "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET ^(-srr^) set. Skipping registry and file permissions reset"
+	call :log "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET (-srr) set. Skipping registry and file permissions reset"
 )
 
 
@@ -1251,11 +1251,11 @@ title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
 	call :log "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
 	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
-	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to %RAW_LOGS%\"
+	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_file_permissions.bat"
 	call :log "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET ^(-sfr^) set. Skipping registry and file permissions reset"
+	call :log "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET (-sfr) set. Skipping registry and file permissions reset"
 )
 
 
@@ -1311,7 +1311,7 @@ if /i %DRY_RUN%==no (
 	
 :: Check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	call :log "%CUR_DATE% %TIME% ! SKIP_PATCHES ^(-sp^) set. Skipping app patches."
+	call :log "%CUR_DATE% %TIME% ! SKIP_PATCHES (-sp) set. Skipping app patches."
 	goto skip_patches
 	)
 	
@@ -1419,14 +1419,12 @@ call :log "%CUR_DATE% %TIME%    Done."
 :: JOB: Windows updates
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call :log "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
-if /i %DRY_RUN%==no (
-	if /i %SKIP_WINDOWS_UPDATES%==no (
-		wuauclt /detectnow /updatenow
+if /i %SKIP_WINDOWS_UPDATES%==no (
+		if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
 		call :log "%CUR_DATE% %TIME%    Done."
 	) else (
-		call :log "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES ^(-sw^) set to "%SKIP_WINDOWS_UPDATES%", skipping Windows Updates."
+		call :log "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set to "%SKIP_WINDOWS_UPDATES%", skipping Windows Updates."
 	)
-)
 
 
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
@@ -1465,13 +1463,13 @@ if /i not %SKIP_PAGEFILE_RESET%==yes (
 	if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
 	call :log "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET ^(-spr^) set. Skipping page file reset"
+	call :log "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset"
 )
 
 
 :: Check if we are supposed to run a defrag before doing the section below
 if "%SKIP_DEFRAG%"=="yes" (
-	call :log "%CUR_DATE% %TIME%    SKIP_DEFRAG ^(-sd^) set. Skipping defrag."
+	call :log "%CUR_DATE% %TIME%    SKIP_DEFRAG (-sd) set. Skipping defrag."
 	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
 	goto stage_7_wrap-up
 	)
@@ -1505,23 +1503,21 @@ call :log "%CUR_DATE% %TIME%   stage_7_wrap-up jobs begin..."
 :: JOB: LOKI post-run analysis scan
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [LOKI]
 call :log "%CUR_DATE% %TIME%    Launch job 'LOKI post-run scan'..."
-if /i %DRY_RUN%==no (
-	if /i %SKIP_LOKI_SCAN%==no (
-		stage_7_wrap-up\loki\loki.exe --scan
-		call :log "%CUR_DATE% %TIME%    Done."
-	) else (
-		call :log "%CUR_DATE% %TIME% !  SKIP_LOKI_SCAN ^(-sl^) set to "%SKIP_LOKI_SCAN%", skipping LOKI post-run scan."
-	)
+if /i %SKIP_LOKI_SCAN%==yes (
+	call :log "%CUR_DATE% %TIME% !  SKIP_LOKI_SCAN (-sl) set to "%SKIP_LOKI_SCAN%", skipping LOKI post-run scan."
+) else (	
+	if /i %DRY_RUN%==no stage_7_wrap-up\loki\loki.exe --scan
+	call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
 :: JOB: Reset power settings to Windows defaults
-if %DRY_RUN%==no (
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
-	if "%PRESERVE_POWER_SCHEME%"=="yes" (
-		call :log "%CUR_DATE% %TIME%    PRESERVE_POWER_SCHEME ^(-p^) set to "%PRESERVE_POWER_SCHEME%", not resetting Windows power settings to default."
-	) else (
-		call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
+if %PRESERVE_POWER_SCHEME%==yes (
+	call :log "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping Windows power settings reset."
+) else (
+	call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
+	if %DRY_RUN%==no (
 		REM Check for Windows XP/2k3
 		if /i "%WIN_VER:~0,9%"=="Microsoft" %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
@@ -1529,7 +1525,7 @@ title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
 		REM Shut down Caffeine which has kept the system awake during the Tron run
 		stage_0_prep\caffeine\caffeine.exe -appexit
 	)
-	call :log "%CUR_DATE% %TIME%    Done."
+call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
@@ -1624,12 +1620,10 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 
 
 :: Check if shutdown was requested
-if /i %AUTO_SHUTDOWN%==yes (
-	call :log "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds."
-)
+if /i %AUTO_SHUTDOWN%==yes call :log "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
 
 
-:: Pretend to send the email report. We don't actually send the report here since we need the log trailer which is created below,
+:: Pretend to send the email report. We don't actually send the report since we need the log trailer which is created below,
 :: so we just pretend to send it then actually send it after the log trailer has been created
 if /i %EMAIL_REPORT%==yes (
 	call :log "%CUR_DATE% %TIME%   Email report requested. Sending report now..."
@@ -1649,7 +1643,7 @@ if /i %SELF_DESTRUCT%==yes (
 color 2F
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
-call :log "                          Executed as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
+call :log "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Command-line flags: %*"
 call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
