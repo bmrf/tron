@@ -47,7 +47,8 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk -sm -sp -spr -srr -ss -sw -v -x] | [-h]
+    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk 
+              -sl -sm -sp -spr -srr -ss -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -84,6 +85,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 
     -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
+    
+    -sl  Skip LOKI analysis scan in Stage 7: Wrap-up
     
     -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 
@@ -373,7 +376,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-13. **Disable sleep mode**: Tron disables sleep mode when the script starts to prevent going to sleep. At the end of the script it resets power settings to Windows defaults, unless you run with the `-p` flag
+13. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Using Tron's `-p` flag prevents resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
