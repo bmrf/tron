@@ -785,7 +785,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 if /i %DRY_RUN%==no (
 		call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
 		title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
-		stage_0_prep\caffeine\caffeine.exe -noicon
+		start "" stage_0_prep\caffeine\caffeine.exe -noicon
 		call :log "%CUR_DATE% %TIME%    Done."
 )
 
