@@ -1,7 +1,9 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1-TRON - Remove OS version calculation, since we inherit this from Tron
+:: Version:       1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
+::                1.0.2-TRON * Add removal of C:\HP folder
+::                1.0.1-TRON - Remove OS version calculation, since we inherit this from Tron
 ::                1.0.0-TRON * Stripped out many things not necessary for Tron
 ::                           - Removed logging (Tron handles logging)
 SETLOCAL
@@ -21,8 +23,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2015-03-25
+set SCRIPT_VERSION=1.0.2-TRON
+set SCRIPT_UPDATED=2015-04-22
 
 
 ::::::::::::::::::::::::::
@@ -107,8 +109,8 @@ for %%i in (bat,txt,log,jpg,jpeg,tmp,bak,backup,exe) do (
 			del /F /Q "%SystemDrive%\*.%%i" 2>NUL
 		)
 
-:: JOB: Remove files left over from installing Nvidia/ATI/AMD/Dell/Intel drivers
-for %%i in (NVIDIA,ATI,AMD,Dell,Intel) do (
+:: JOB: Remove files left over from installing Nvidia/ATI/AMD/Dell/Intel/HP drivers
+for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 			rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
 		)
 
@@ -121,6 +123,9 @@ if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386
 :: JOB: Empty all recycle bins on Windows 5.1 (XP/2k3) and 6.x (Vista and up) systems
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
+
+:: JOB: Clear MUI cache
+reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Windows update logs & built-in backgrounds (space waste)
 del /F /Q %WINDIR%\*.log 2>NUL
