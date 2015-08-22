@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.5.0 ! script-wide:bugfixes:          Many misc bug fixes (mostly missing quotes or syntax errors) throughout script
+:: Version:       6.5.1 ! stage_7_wrap-up:loki:          Fix incorrect command calling LOKI
+::                6.5.0 ! script-wide:bugfixes:          Many misc bug fixes (mostly missing quotes or syntax errors) throughout script
 ::                      ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks to /u/Rumble_Humble
 ::                      ! stage_3_disinfect:roguekiller: Minor fix for RogueKiller, removed unecessary trailing "remove" word on the command. Thanks to /u/khaosnmt
 ::                      * stage_0_prep:caffeine:         Replace "keep system awake" code with caffeine.exe. Cuts out quite a few lines of code. Thanks to /u/rodgersayshi
@@ -158,8 +159,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.5.0
-set SCRIPT_DATE=2015-08-17
+set SCRIPT_VERSION=6.5.1
+set SCRIPT_DATE=2015-08-21
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1506,7 +1507,7 @@ call :log "%CUR_DATE% %TIME%    Launch job 'LOKI post-run scan'..."
 if /i %SKIP_LOKI_SCAN%==yes (
 	call :log "%CUR_DATE% %TIME% !  SKIP_LOKI_SCAN (-sl) set to "%SKIP_LOKI_SCAN%", skipping LOKI post-run scan."
 ) else (	
-	if /i %DRY_RUN%==no stage_7_wrap-up\loki\loki.exe --scan
+	if /i %DRY_RUN%==no stage_7_wrap-up\loki\loki.exe
 	call :log "%CUR_DATE% %TIME%    Done."
 )
 
