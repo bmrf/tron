@@ -311,7 +311,7 @@ If you feel overly charitable:
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply to crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or on Github and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply to crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or [on GitHub and just read the code](https://github.com/bmrf/tron/blob/master/tron.bat). Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
 
 ## tron.bat
 Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
