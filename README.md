@@ -115,7 +115,9 @@ More details about this function are in the list of all Tron actions at the bott
 
 # SAFE MODE
 
-Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode for Windows 8, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
+You can [follow these instructions](http://windows.microsoft.com/en-us/windows/start-computer-safe-mode), but basically it involves pressing F8 after restaring your computer.
+
+Unless you are running Windows 8... Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode for Windows 8, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
 
     bcdedit /set {default} bootmenupolicy legacy
 
