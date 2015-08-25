@@ -48,7 +48,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
     tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk 
-              -sl -sm -sp -spr -srr -ss -sw -v -x] | [-h]
+              -sm -sp -spr -srr -ss -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -85,8 +85,6 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 
     -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
-    
-    -sl  Skip LOKI analysis scan in Stage 7: Wrap-up
     
     -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 
@@ -419,20 +417,18 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 3: Disinfect
 
-1. **RogueKiller**: anti-rootkit utility and anti-malware prep tool. Similar to rkill
+1. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` or `-sm` flags skip this component
 
-2. **Malwarebytes Anti-Malware**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` or `-sm` flags skip this component
-
-3. **KVRT**: Kaspersky Virus Removal Tool. Using Tron's `-sa` or `-sk` flags skip this component
+2. **KVRT**: Kaspersky Virus Removal Tool. Using Tron's `-sa` or `-sk` flags skip this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-4. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` or `-ss` flags skip this component
+3. **Sophos Virus Removal Tool**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` or `-ss` flags skip this component
 
 
-5. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
+4. **System File Checker**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Only run on Windows Vista and up (XP and below require a reboot)
 
 
 ## STAGE 4: Repair
