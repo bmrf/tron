@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
+:: Version:       1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
+::                1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
 ::                1.0.2-TRON * Add removal of C:\HP folder
 ::                1.0.1-TRON - Remove OS version calculation, since we inherit this from Tron
 ::                1.0.0-TRON * Stripped out many things not necessary for Tron
@@ -23,8 +24,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.2-TRON
-set SCRIPT_UPDATED=2015-04-22
+set SCRIPT_VERSION=1.0.4-TRON
+set SCRIPT_UPDATED=2015-08-31
 
 
 ::::::::::::::::::::::::::
@@ -100,8 +101,7 @@ echo   Cleaning SYSTEM temp files...  && echo.
 :: Version-agnostic :: (these jobs run regardless of OS version)
 ::::::::::::::::::::::
 :: JOB: System temp files
-:: Disabled for Tron since a lot of people seem to run it from C:\temp
-:: del /F /S /Q "%WINDIR%\TEMP\*" 2>NUL
+del /F /S /Q "%WINDIR%\TEMP\*" 2>NUL
 
 :: JOB: Root drive garbage (usually C drive)
 rmdir /S /Q %SystemDrive%\Temp 2>NUL
