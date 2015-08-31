@@ -5,22 +5,9 @@
 @echo off
 
 
-::::::::::::::::::::::::::
-:: Interactive Removals ::
-::::::::::::::::::::::::::
-:: If you uncomment these, they will STOP Tron while waiting for user input! Only left here for reference.
-
-:: Dell Backup and Restore
-::"%ProgramFiles(x86)%\InstallShield Installation Information\{0ED7EE95-6A97-47AA-AD73-152C08A15B04}\setup.exe" -runfromtemp -l0x0409  -removeonly
-
-:: McAfee Security Scan
-::"%ProgramFiles%\McAfee Security Scan\uninstall.exe" /S
-::"%ProgramFiles(x86)%\McAfee Security Scan\uninstall.exe" /S
-
-
-:::::::::::::::::::::
-:: Silent Removals ::
-:::::::::::::::::::::
+:::::::::::::::
+:: GUID LIST ::
+:::::::::::::::
 
 :: Ask Toolbar
 start /wait msiexec /x {4F524A2D-5637-006A-76A7-A758B70C0300} /qn /norestart
@@ -37,6 +24,21 @@ start /wait msiexec /x {77F8A71E-3515-4832-B8B2-2F1EDBD2E0F1} /qn /norestart
 
 :: Bing Desktop
 start /wait msiexec /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A} /qn /norestart
+
+:: CyberLink Power2Go 8
+start /wait msiexec /x {2A87D48D-3FDF-41fd-97CD-A1E370EFFFE2} /qn /norestart
+
+:: CyberLink PhotoDirector 5
+start /wait msiexec /x {5A454EC5-217A-42a5-8CE1-2DDEC4E70E01} /qn /norestart
+
+:: CyberLink PowerDVD 12
+start /wait msiexec /x {B46BEA36-0B71-4A4E-AE41-87241643FA0A} /qn /norestart
+
+:: CyberLink PowerDirector 12
+start /wait msiexec /x {E1646825-D391-42A0-93AA-27FA810DA093} /qn /norestart
+
+:: CyberLink LabelPrint
+start /wait msiexec /x {C59C179C-668D-49A9-B6EA-0121CCFC1243} /qn /norestart
 
 :: Dell Access
 start /wait msiexec /x {F839C6BD-E92E-48FA-9CE6-7BFAF94F7096} /qn /norestart
@@ -88,6 +90,12 @@ WMIC product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: Dell Support Center
 start /wait msiexec /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A} /qn /norestart
 
+:: DisableMSDefender
+start /wait msiexec /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2} /qn /norestart
+
+:: DTS Sound
+start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
+
 :: Embassy Suite
 start /wait msiexec /x {20A4AA32-B3FF-4A0B-853C-ACDDCD6CB344} /qn /norestart
 
@@ -97,17 +105,29 @@ start /wait msiexec /x {814FA673-A085-403C-9545-747FC1495069} /qn /norestart
 :: ESC Home Page Plugin
 start /wait msiexec /x {E738A392-F690-4A9D-808E-7BAF80E0B398} /qn /norestart
 
+:: Get Dropbox
+start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
+
+:: Hewlett-Packard ACLM.NET v1.2.2.3
+start /wait msiexec /x {6F340107-F9AA-47C6-B54C-C3A19F11553F} /qn /norestart
+
 :: HP Customer Experience Enhancements
 start /wait msiexec /x {07FA4960-B038-49EB-891B-9F95930AA544} /qn /norestart
 
 :: HP Connected Music
 start /wait msiexec /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5} /qn /norestart
 
+:: HP Documentation
+start /wait msiexec /x {C8D60CF4-BE7A-487E-BD36-535111BDB0FE} /qn /norestart
+
 :: HP PostScript Converter
 start /wait msiexec /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD} /qn /norestart
 
 :: HP Registration Service
 start /wait msiexec /x {D1E8F2D7-7794-4245-B286-87ED86C1893C} /qn /norestart
+
+:: HP Setup
+start /wait msiexec /x {438363A8-F486-4C37-834C-4955773CB3D3} /qn /norestart
 
 :: HP SimplePass
 start /wait msiexec /x {314FAD12-F785-4471-BCE8-AB506642B9A1} /qn /norestart
@@ -117,6 +137,7 @@ start /wait msiexec /x {9D1DE902-8058-4555-A16A-FBFAA49587DB} /qn /norestart
 
 :: HP Support Assistant
 start /wait msiexec /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE} /qn /norestart
+start /wait msiexec /x {904822F1-6C7D-4B91-B936-6A1C0810544C} /qn /norestart
 
 :: HP Update
 start /wait msiexec /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2} /qn /norestart
@@ -127,15 +148,30 @@ start /wait msiexec /x {B7B82520-8ECE-4743-BFD7-93B16C64B277} /qn /norestart
 :: Intel Trusted Connect Client
 start /wait msiexec /x {44B72151-611E-429D-9765-9BA093D7E48A} /qn /norestart
 
+:: Intel (R) Trusted Connect Service Client
+start /wait msiexec /x {1B444AF9-1DBE-4884-8F35-969BEFCF69A8} /qn /norestart
+start /wait msiexec /x {7D84E343-A23D-451C-B123-0195B2D903A6} /qn /norestart
+
+:: Intel(R) ME UninstallLegacy
+start /wait msiexec /x {FD37351B-3074-4652-8188-1B3FB784EC4E} /qn /norestart
+start /wait msiexec /x {C9A90201-B2DE-44D0-A618-EF8C9060D318} /qn /norestart
+
 :: Intel Update
 start /wait msiexec /x {78091D68-706D-4893-B287-9F1DFB24F7AF} /qn /norestart
 
 :: Intel Update Manager
 start /wait msiexec /x {608E1B9B-A2E8-4A1F-8BAB-874EB0DD25E3} /qn /norestart
 
+:: Intel(R) Rapid Storage Technology
+start /wait msiexec /x {205AE40D-8AD7-4F29-A430-DD2168DA562D} /qn /norestart
+start /wait msiexec /x {409CB30E-E457-4008-9B1A-ED1B9EA21140} /qn /norestart
+
 :: Java Auto Updater
 start /wait msiexec /x {4A03706F-666A-4037-7777-5F2748764D10} /qn /norestart
 start /wait msiexec /x {CCB6114E-9DB9-BD54-5AA0-BC5123329C9D} /qn /norestart
+
+:: Kaspersky Internet Security
+start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
 
 :: Lenovo Message Center Plus
 start /wait msiexec /x {3849486C-FF09-4F5D-B491-3E179D58EE15} /qn /norestart
@@ -178,9 +214,21 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 :: Microsoft Search Enhancement Pack
 start /wait msiexec /x {4CBA3D4C-8F51-4D60-B27E-F6B641C571E7} /qn /norestart
 
+:: Microsoft DVD App Installation for Microsoft.WindowsDVDPlayer_2019.6.11761.0_neutral_~_8wekyb3d8bbwe (x64)
+start /wait msiexec /x {986E003C-E56D-5A47-110E-D3C81F0E8535} /qn /norestart
+
 :: Office 2013 C2R Suite
 start /wait msiexec /x {90150000-0138-0409-0000-0000000FF1CE} /qn /norestart
 start /wait msiexec /x "C:\ProgramData\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" /qn /norestart
+
+:: opensource
+start /wait msiexec /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE} /qn /norestart
+
+:: Recovery Manager
+start /wait msiexec /x {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5} /qn /norestart
+
+:: PlayReady PC Runtime amd64
+start /wait msiexec /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04} /qn /norestart
 
 :: Roxio File Backup
 start /wait msiexec /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB} /qn /norestart
@@ -188,8 +236,38 @@ start /wait msiexec /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB} /qn /norestart
 :: Roxio BackOnTrack
 start /wait msiexec /x {5A06423A-210C-49FB-950E-CB0EB8C5CEC7} /qn /norestart
 
+:: Samsung SW Update (disables Windows Update; very bad)
+start /wait msiexec /x {AAFEFB05-CF98-48FC-985E-F04CD8AD620D} /qn /norestart
+
 :: Skype Click 2 Call
 start /wait msiexec /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701} /qn /norestart
+
+:: Toshiba Display Utility
+start /wait msiexec /x {0B39C39A-3ECE-4582-9C91-842D22819A24} /qn /norestart
+
+:: Toshiba Service Station
+start /wait msiexec /x {0DFA8761-7735-4DE8-A0EB-2286578DCFC6} /qn /norestart
+
+:: Toshiba Audio Enhancement
+start /wait msiexec /x {1515F5E3-29EA-4CD1-A981-032D88880F09} /qn /norestart
+
+:: Toshiba System Driver
+start /wait msiexec /x {1E6A96A1-2BAB-43EF-8087-30437593C66C} /qn /norestart
+
+:: Toshiba Application Installer
+start /wait msiexec /x {21A63CA3-75C0-4E56-B602-B7CD2EF6B621} /qn /norestart
+
+:: Toshiba Password Utility
+start /wait msiexec /x {26BB68BB-CF93-4A12-BC6D-A3B6F53AC8D9} /qn /norestart
+
+:: Toshiba User's Guide
+start /wait msiexec /x {3384E1D9-3F18-4A98-8655-180FEF0DFC02} /qn /norestart
+
+:: TOSHIBARegistration
+start /wait msiexec /x {5AF550B4-BB67-4E7E-82F1-2C4300279050} /qn /norestart
+
+:: TOSHIBA Eco Utility
+start /wait msiexec /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1} /qn /norestart
 
 :: Toshiba ReelTime
 start /wait msiexec /x {24811C12-F4A9-4D0F-8494-A7B8FE46123C} /qn /norestart
@@ -199,6 +277,9 @@ start /wait msiexec /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331} /qn /norestart
 
 :: Toshiba Value Added Package
 start /wait msiexec /x {066CFFF8-12BF-4390-A673-75F95EFF188E} /qn /norestart
+
+:: Toshiba System Settings
+start /wait msiexec /x {B040D5C9-C9AA-430A-A44E-696656012E61} /qn /norestart
 
 :: Toshiba Wireless LAN Indicator
 start /wait msiexec /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9} /qn /norestart
@@ -233,3 +314,6 @@ start /wait msiexec /x {03D562B5-C4E2-4846-A920-33178788BE00} /qn /norestart
 
 :: Windows Live Toolbar
 start /wait msiexec /x {995F1E2E-F542-4310-8E1D-9926F5A279B3} /qn /norestart
+
+:: WinZip
+start /wait msiexec /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240ED} /qn /norestart
