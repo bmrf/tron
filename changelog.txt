@@ -19,6 +19,8 @@ Version number legend:
 ########################
 tron.bat                         v6.6.0
  + add auto-re-login functionality
+ + add "would you like to reboot into safe mode?" prompt screen in non-auto mode
+ 
 
 STAGE 0: Prep
  . rkill                         v2.8.1.0
@@ -37,9 +39,9 @@ STAGE 1: Tempclean
 
 STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
-     + Add "SocialSafe"
+    + Add "SocialSafe"
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-     + Add many additional entries, based on this thread:
+    + Add many additional entries, based on this thread:
 	    https://www.reddit.com/r/TronScript/comments/3iw0qx/guid_dump/cuksslt
 	  Full change list:
 	    https://github.com/bmrf/tron/commit/11cea132dc24d0bd8f4f2fff2cf718c7d71ffe53
