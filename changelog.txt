@@ -12,8 +12,78 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
-  
-  
+
+
+########################
+# v6.6.0 // 2015-09-01 #
+########################
+tron.bat                         v6.6.0
+ + add auto-re-login functionality
+
+STAGE 0: Prep
+ . rkill                         v2.8.1.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.5
+ . McAfee Stinger                v12.1.0.1684
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.08.5308
+ . BleachBit                     v1.8
+ * TempFileCleanup               v1.0.4-TRON
+    * Re-enable purging of "%WINDIR%\TEMP\*"
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+     + Add "SocialSafe"
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+     + Add many additional entries, based on this thread:
+	    https://www.reddit.com/r/TronScript/comments/3iw0qx/guid_dump/cuksslt
+	  Full change list:
+	    https://github.com/bmrf/tron/commit/11cea132dc24d0bd8f4f2fff2cf718c7d71ffe53
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v18.0.0.232   (language ignored)
+ . Adobe Reader                  v11.0.11      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u60          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.0.3
+ . Autoruns                      v13.4
+ . ComboFix                      v15.8.24.1
+ . Junkware Removal Tool         v7.5.7.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . TempFileCleaner               v7.1.4.0
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
 ########################
 # v6.5.2 // 2015-08-24 #
 ########################
@@ -29,7 +99,7 @@ STAGE 0: Prep
  . McAfee Stinger                v12.1.0.1684
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v5.08.5308
  . BleachBit                     v1.8
@@ -57,7 +127,8 @@ STAGE 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
- . smartctl                      v6.3.0.3976 2014-07-26 r3976
+ * smartctl                      v6.4.0.4109 2015-06-04 r4109
+    * Also update drivedb.h (drive database) to 2015-08-27 16:12:21Z
  . Defraggler                    v2.19.0.982
 
 STAGE 7: Wrap-up
@@ -79,7 +150,7 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
-  
+
 
 
 ########################
@@ -95,7 +166,7 @@ STAGE 0: Prep
  * McAfee Stinger                v12.1.0.1684
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v5.08.5308
  . BleachBit                     v1.8
@@ -145,8 +216,8 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
- 
-  
+
+
 
 ########################
 # v6.5.0 // 2015-08-17 #
@@ -166,7 +237,7 @@ STAGE 0: Prep
  . McAfee Stinger                v12.1.0.1616
  . erunt                         v1.1j
  + caffeine                      v1.6.0.0 // utility to keep the system awake
- 
+
 STAGE 1: Tempclean
  . CCLeaner                      v5.08.5308
  . BleachBit                     v1.8
@@ -219,7 +290,7 @@ STAGE 8: Manual tools
  . VirusTotal uploader tool      v2.2
 
 
-  
+
 ########################
 # v6.4.2 // 2015-08-01 #
 ########################
@@ -246,7 +317,7 @@ STAGE 2: De-bloat
 STAGE 3: Disinfect
  * RogueKiller                   v10.9.4.0
    RogueKiller version update should hopefully fix the insane log size issue. Thanks to /u/penfifteenth, /u/Whtnoiz, /u/rodgersayshi, /u/CycloStorm, /u/afr33sl4ve, /u/cuddlychops06 and /u/ComputersByte for helping with the issue
- 
+
  * Sophos Virus Removal Tool     v2.5.4, update defs
  * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
  . Malwarebytes Anti-Malware     v2.1.8.1057
@@ -284,8 +355,8 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
- 
- 
+
+
 
 ########################
 # v6.4.1 // 2015-07-22 #
@@ -313,7 +384,7 @@ STAGE 2: De-bloat
 STAGE 3: Disinfect
  * RogueKiller                   v10.9.3.0
    RogueKiller version update should hopefully fix the insane log size issue. Thanks to /u/penfifteenth, /u/Whtnoiz, /u/rodgersayshi, /u/CycloStorm, /u/afr33sl4ve, /u/cuddlychops06 and /u/ComputersByte for helping with the issue
- 
+
  * Sophos Virus Removal Tool     v2.5.4, update defs
  * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
  . Malwarebytes Anti-Malware     v2.1.8.1057
@@ -351,8 +422,8 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
-  
-  
+
+
 ########################
 # v6.4.0 // 2015-07-14 #
 ########################
@@ -486,7 +557,7 @@ STAGE 8: Manual tools
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
 
-  
+
 
 ########################
 # v6.3.8 // 2015-07-01 #
@@ -615,9 +686,9 @@ STAGE 8: Manual tools
  + Safe Mode Boot Selector.bat   v1.0.0    // courtesy of /u/cuddlychops06
  . ServicesRepair.exe            v1.0.0.3
  . UserBenchMark                 v2.6.0.0
- . VirusTotal uploader tool      v2.2  
-  
-  
+ . VirusTotal uploader tool      v2.2
+
+
 
 ########################
 # v6.3.6 // 2015-06-16 #
@@ -678,14 +749,14 @@ STAGE 8: Manual tools
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
 
- 
+
 ########################
 # v6.3.5 // 2015-06-09 #
 ########################
 tron.bat                         v6.3.5
  ! tron.bat:bugfix: Minor fix for a couple operations that incorrectly blanked the logfile instead of appending to it. Thanks to /u/JTsince1980
 
-  
+
 ########################
 # v6.3.4 // 2015-06-03 #
 ########################
@@ -744,7 +815,7 @@ STAGE 8: Manual tools
  . ServicesRepair.exe            v1.0.0.3
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 ########################
 # v6.3.3 // 2015-04-28 #
