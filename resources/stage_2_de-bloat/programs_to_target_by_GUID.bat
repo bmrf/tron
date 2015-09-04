@@ -93,6 +93,9 @@ start /wait msiexec /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A} /qn /norestart
 :: DisableMSDefender
 start /wait msiexec /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2} /qn /norestart
 
+:: Dropbox 15 GB (advertisement)
+start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
+
 :: DTS Sound
 start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
 
@@ -152,6 +155,12 @@ start /wait msiexec /x {44B72151-611E-429D-9765-9BA093D7E48A} /qn /norestart
 start /wait msiexec /x {1B444AF9-1DBE-4884-8F35-969BEFCF69A8} /qn /norestart
 start /wait msiexec /x {7D84E343-A23D-451C-B123-0195B2D903A6} /qn /norestart
 
+:: Intel(R) Trusted Execution Engine
+start /wait msiexec /x {E14B99BA-3282-4990-8BD7-20FD584A217F} /qn /norestart
+
+:: Intel(R) Trusted Execution Engine Driver
+start /wait msiexec /x {4021582A-4C27-4482-A287-5D49B80DB48F} /qn /norestart
+
 :: Intel(R) ME UninstallLegacy
 start /wait msiexec /x {FD37351B-3074-4652-8188-1B3FB784EC4E} /qn /norestart
 start /wait msiexec /x {C9A90201-B2DE-44D0-A618-EF8C9060D318} /qn /norestart
@@ -178,13 +187,15 @@ start /wait msiexec /x {3849486C-FF09-4F5D-B491-3E179D58EE15} /qn /norestart
 
 :: Lenovo Metrics Collector SDK
 start /wait msiexec /x {DDAA788F-52E6-44EA-ADB8-92837B11BF26} /qn /norestart
+start /wait msiexec /x {C2B5B5B0-2545-4E94-B4BA-548D4BF0B196} /qn /norestart
 
 :: Lenovo Patch Utility
 start /wait MsiExec /X {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43} /qn /norestart
 
-:: Lenovo Reach
+:: Lenovo Reach and REACHit
 start /wait msiexec /x {3245D8C8-7FE0-4FD4-B04B-2720A333D592} /qn /norestart
 start /wait msiexec /x {0B5E0E89-4BCA-4035-BBA1-D1439724B6E2} /qn /norestart
+start /wait msiexec /x {4532E4C5-C84D-4040-A044-ECFCC5C6995B} /qn /norestart
 
 :: Lenovo Registration
 start /wait msiexec /x {6707C034-ED6B-4B6A-B21F-969B3606FBDE} /qn /norestart
@@ -196,6 +207,7 @@ start /wait msiexec /x {AFD7B869-3B70-40C7-8983-769256BA3BD2} /qn /norestart
 start /wait msiexec /x {63942F7E-3646-45EC-B8A9-EAC40FEB66DB} /qn /norestart
 start /wait msiexec /x {13BD494D-9ACD-420B-A291-E145DED92EF6} /qn /norestart
 start /wait msiexec /x {4C2B6F96-3AED-4E3F-8DCE-917863D1E6B1} /qn /norestart
+start /wait msiexec /x {1CA74803-5CB2-4C03-BDBE-061EDC81CC7F} /qn /norestart
 
 :: Lenovo System Update
 start /wait msiexec /x {25C64847-B900-48AD-A164-1B4F9B774650} /qn /norestart
