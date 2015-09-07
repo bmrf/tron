@@ -447,7 +447,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
-6. **Remove telemetry updates**: Remove telemetry-related updates from Windows Update. These are the updates Microsoft rolled out to Windows 7 and 8 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10. Tron removes these specific KB updates: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374. Using Tron's `-str` flag skips this component
+6. **Remove telemetry updates**: Remove telemetry-related updates from Windows Update. These are the updates Microsoft rolled out to Windows 7 and 8 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10. Tron removes these specific KB updates: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `Diagtrack` service ("Diagnostics Tracking Service"). Using Tron's `-str` flag skips this component
 
 
 ## STAGE 5: Patch
