@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
+:: Version:       1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
+::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
 ::                1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
 ::                1.0.2-TRON * Add removal of C:\HP folder
 ::                1.0.1-TRON - Remove OS version calculation, since we inherit this from Tron
@@ -24,8 +25,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.4-TRON
-set SCRIPT_UPDATED=2015-08-31
+set SCRIPT_VERSION=1.0.5-TRON
+set SCRIPT_UPDATED=2015-09-07
 
 
 ::::::::::::::::::::::::::
@@ -126,6 +127,13 @@ if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
 
 :: JOB: Clear MUI cache
 reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
+
+:: JOB: Clear queued and archived Windows Error Reporting (WER) reports
+echo. >> %LOGPATH%\%LOGFILE%
+if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive"
+if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue"
 
 :: JOB: Windows update logs & built-in backgrounds (space waste)
 del /F /Q %WINDIR%\*.log 2>NUL
