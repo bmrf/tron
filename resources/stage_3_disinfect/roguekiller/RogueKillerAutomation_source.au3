@@ -16,7 +16,8 @@ ProcessWait( "RogueKillerCMD.exe", 180 )
 ;Activate Tron Window and send keystrokes until RogueKillerCMD.exe isn't running
 do
 sleep(30000)
-ControlSend("[stage_3_disinfect] [RogueKiller]", "", "", "remove{ENTER}")
+ControlSend("TRON v6.6.0 [stage_3_disinfect] [RogueKiller]", "", "", "remove{ENTER}")
+ControlSend("Administrator: TRON v6.6.0 [stage_3_disinfect] [RogueKiller]", "", "", "remove{ENTER}")
 $errorCheck = ProcessExists("RogueKillerCMD.exe")
 until $errorCheck = 0
 
