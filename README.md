@@ -49,7 +49,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -gsl -m -o -p -r -sa -sb -sd -se -sfr -sk
+    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk
               -sm -sp -spr -srr -ss -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
@@ -63,8 +63,6 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -e   Accept EULA (suppress disclaimer warning screen)
 
     -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-
-    -gsl Generate summary logs. These list exactly what files and programs were removed
 
     -h   Display help text
 
@@ -129,7 +127,7 @@ To have Tron send an email report at completion, edit this file:
 
     \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
 
-Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. If you used the `-gsl` flag (generate summary logs) then `tron_removed_files.txt` and `tron_removed_programs.txt` will be attached as well.
+Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
@@ -163,7 +161,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set RAW_LOGS=%LOGPATH%\raw_logs
   ```
 
-- To change where Tron saves summary logs (generated if the -gsl flag is used), edit this line:
+- To change where Tron saves summary logs, edit this line:
   ```
   set SUMMARY_LOGS=%LOGPATH%\summary_logs
   ```
@@ -186,11 +184,6 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To have Tron send an email report when finished, change this to `yes`:
   ```
   set EMAIL_REPORT=no
-  ```
-
-- To have Tron generate summary logs (listing deleted files and removed programs), change this to `yes`:
-  ```
-  set GENERATE_SUMMARY_LOGS=no
   ```
 
 - To preserve default Metro apps (don't remove them), change this to `yes`:
@@ -483,7 +476,7 @@ Tron installs or updates these programs:
 
 1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
 
-2. **generate summary logs**: If selected with `-gsr` flag or GENERATE_SUMMARY_LOGS variable, Tron will generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
+2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
 ## STAGE 8: Manual tools
 Tron does not run these automatically because most of them don't support command-line use, or are only useful in special cases.
