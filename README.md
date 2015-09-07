@@ -3,7 +3,7 @@
 | AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus d0t gate@gmail.com`) // PGP key: `0x07d1490f82a211a2` |
 | BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
-# GITHUB ONLY CONTAINS THE TRON SCRIPT - YOU NEED TO DOWNLOAD THE ENTIRE PACKAGE FROM THE SUBREDDIT AT https://www.reddit.com/r/TronScript !!
+# GITHUB CONTAINS *JUST* THE SCRIPT - YOU NEED TO DOWNLOAD THE ENTIRE PACKAGE FROM THE SUBREDDIT AT https://www.reddit.com/r/TronScript !!
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
@@ -50,7 +50,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
     tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk
-              -sm -sp -spr -srr -ss -sw -v -x] | [-h]
+              -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -95,6 +95,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -srr Skip registry permissions reset (saves time if you're in a hurry)
 
     -ss  Skip Sophos Anti-Virus (SAV) scan
+
+    -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
 
     -sw  Skip Windows Updates (do not attempt to run Windows Update)
 
@@ -259,6 +261,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To skip scanning with Sophos Anti-Virus (SAV), change this to `yes`:
   ```
   set SKIP_SOPHOS_SCAN=no
+  ```
+  
+- To skip removal of the Windows "telemetry" (user tracking) updates, change this to `yes`:
+  ```
+  set SKIP_TELEMETRY_REMOVAL=no
   ```
 
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
@@ -440,7 +447,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
 
-6. **Remove telemetry updates**: Remove telemetry-related updates from Windows Update. These are the updates Microsoft rolled out to Windows 7 and 8 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10. Specifically, Tron removes these KB updates: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374
+6. **Remove telemetry updates**: Remove telemetry-related updates from Windows Update. These are the updates Microsoft rolled out to Windows 7 and 8 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10. Tron removes these specific KB updates: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374. Using Tron's `-str` flag skips this component
 
 
 ## STAGE 5: Patch
