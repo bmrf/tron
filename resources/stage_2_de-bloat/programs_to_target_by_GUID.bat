@@ -376,6 +376,10 @@ start /wait msiexec /x {ED3CBA78-488F-4E8C-B33F-8E3BF4DDB4D2} /qn /norestart
 
 :: Toshiba Book Place
 start /wait msiexec /x {11244D6B-9842-440F-8579-6A4D771A0D9B} /qn /norestart
+start /wait msiexec /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331} /qn /norestart
+
+:: Toshiba Bulletin Board
+start /wait msiexec /x {C14518AF-1A0F-4D39-8011-69BAA01CD380} /qn /norestart
 
 :: Toshiba Desktop Assist
 start /wait msiexec /x {95CCACF0-010D-45F0-82BF-858643D8BC02} /qn /norestart
@@ -405,11 +409,8 @@ start /wait msiexec /x {24811C12-F4A9-4D0F-8494-A7B8FE46123C} /qn /norestart
 :: TOSHBA VIDEO PLAYER
 start /wait msiexec /x {FF07604E-C860-40E9-A230-E37FA41F103A} /qn /norestart
 
-:: Toshiba Book Place
-start /wait msiexec /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331} /qn /norestart
-
-:: Toshiba Value Added Package
-start /wait msiexec /x {066CFFF8-12BF-4390-A673-75F95EFF188E} /qn /norestart
+:: TOSHIBA Quality Application
+start /wait msiexec /x {E69992ED-A7F6-406C-9280-1C156417BC49} /qn /norestart
 
 :: Toshiba Service Station
 start /wait msiexec /x {0DFA8761-7735-4DE8-A0EB-2286578DCFC6} /qn /norestart
@@ -419,11 +420,11 @@ start /wait msiexec /x {6499E894-43F8-458B-AE35-724F4732BCDE} /qn /norestart
 start /wait msiexec /x {B040D5C9-C9AA-430A-A44E-696656012E61} /qn /norestart
 start /wait msiexec /x {05A55927-DB9B-4E26-BA44-828EBFF829F0} /qn /norestart
 
+:: Toshiba Value Added Package
+start /wait msiexec /x {066CFFF8-12BF-4390-A673-75F95EFF188E} /qn /norestart
+
 :: Toshiba Wireless LAN Indicator
 start /wait msiexec /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9} /qn /norestart
-
-:: Toshiba Bulletin Board
-start /wait msiexec /x {C14518AF-1A0F-4D39-8011-69BAA01CD380} /qn /norestart
 
 :: TrayApp
 start /wait msiexec /x {CD31E63D-47FD-491C-8117-CF201D0AFAB5} /qn /norestart
