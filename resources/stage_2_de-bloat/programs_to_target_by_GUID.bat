@@ -99,6 +99,9 @@ start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
 :: DTS Sound
 start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
 
+:: EA Download Manager
+start /wait msiexec /x {EF7E931D-DC84-471B-8DB6-A83358095474} /qn /norestart
+
 :: Embassy Suite
 start /wait msiexec /x {20A4AA32-B3FF-4A0B-853C-ACDDCD6CB344} /qn /norestart
 
@@ -141,6 +144,9 @@ start /wait msiexec /x {9D1DE902-8058-4555-A16A-FBFAA49587DB} /qn /norestart
 :: HP Support Assistant
 start /wait msiexec /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE} /qn /norestart
 start /wait msiexec /x {904822F1-6C7D-4B91-B936-6A1C0810544C} /qn /norestart
+
+:: HP "Toolbox" (hidden)
+start /wait msiexec /x {292F0F52-B62D-4E71-921B-89A682402201} /qn /norestart
 
 :: HP Update
 start /wait msiexec /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2} /qn /norestart
@@ -229,6 +235,9 @@ start /wait msiexec /x {4CBA3D4C-8F51-4D60-B27E-F6B641C571E7} /qn /norestart
 :: Microsoft DVD App Installation for Microsoft.WindowsDVDPlayer_2019.6.11761.0_neutral_~_8wekyb3d8bbwe (x64)
 start /wait msiexec /x {986E003C-E56D-5A47-110E-D3C81F0E8535} /qn /norestart
 
+:: Network64, malware
+start /wait msiexec /x {6BFAB6C1-6D46-46DB-A538-A269907C9F2F} /qn /norestart
+
 :: Office 2013 C2R Suite
 start /wait msiexec /x {90150000-0138-0409-0000-0000000FF1CE} /qn /norestart
 start /wait msiexec /x "C:\ProgramData\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" /qn /norestart
@@ -250,6 +259,9 @@ start /wait msiexec /x {5A06423A-210C-49FB-950E-CB0EB8C5CEC7} /qn /norestart
 
 :: Samsung SW Update (disables Windows Update; very bad)
 start /wait msiexec /x {AAFEFB05-CF98-48FC-985E-F04CD8AD620D} /qn /norestart
+
+:: swMSM -  Shockwave Player Merge Module
+start /wait msiexex /x {612C34C7-5E90-47D8-9B5C-0F717DD82726} /qn /norestart
 
 :: Skype Click 2 Call
 start /wait msiexec /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701} /qn /norestart
