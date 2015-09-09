@@ -393,7 +393,7 @@ start /wait msiexec /x {5A06423A-210C-49FB-950E-CB0EB8C5CEC7} /qn /norestart
 start /wait msiexec /x {AAFEFB05-CF98-48FC-985E-F04CD8AD620D} /qn /norestart
 
 :: swMSM -  Shockwave Player Merge Module
-start /wait msiexex /x {612C34C7-5E90-47D8-9B5C-0F717DD82726} /qn /norestart
+start /wait msiexec /x {612C34C7-5E90-47D8-9B5C-0F717DD82726} /qn /norestart
 
 :: Skype Click 2 Call
 start /wait msiexec /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701} /qn /norestart
