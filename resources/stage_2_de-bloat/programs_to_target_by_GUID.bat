@@ -9,6 +9,24 @@
 :: GUID LIST ::
 :::::::::::::::
 
+:: Adobe Bridge 1.0
+start /wait msiexec /x {B74D4E10-1033-0000-0000-000000000001} /qn /norestart
+
+:: Adobe Content Viewer
+start /wait msiexec /x {483A865C-A74A-12BF-1276-D0111A488F50} /qn /norestart
+
+:: Adobe Common File Installer
+start /wait msiexec /x {8EDBA74D-0686-4C99-BFDD-F894678E5B39} /qn /norestart
+
+:: Adobe Help Center 1.0
+start /wait msiexec /x {E9787678-1033-0000-8E67-000000000001} /qn /norestart
+
+:: Adobe Help Manager
+start /wait msiexec /x {AF37176A-78CA-545B-34EF-8B6A21514DD1} /qn /norestart
+
+:: Adobe Media Player
+start /wait msiexec /x {39F6E2B4-CFE8-C30A-66E8-489651F0F34C} /qn /norestart
+
 :: Adobe Refresh Manager
 start /wait msiexec /x {AC76BA86-0804-1033-1959-001824147215} /qn /norestart
 
@@ -96,7 +114,7 @@ WMIC product where name="Dell Digital Delivery" call uninstall /nointeractive
 :: Dell Dock
 start /wait msiexec /x {E60B7350-EA5F-41E0-9D6F-E508781E36D2} /qn /norestart
 
-:: Dell "Feature Enhancement" Pack
+:: Dell Feature Enhancement Pack
 start /wait msiexec /x {992D1CE7-A20F-4AB0-9D9D-AFC3418844DA} /qn /norestart
 
 :: Dell Getting Started Guide
@@ -157,6 +175,7 @@ start /wait msiexec /x {E8D0E2B8-B64B-44BC-8E01-00DDACBDF78A} /qn /norestart
 
 :: HP 64 Bit HP CIO Components Installer
 start /wait msiexec /x {FF21C3E6-97FD-474F-9518-8DCBE94C2854} /qn /norestart
+start /wait msiexec /x {BC741628-0AFC-405C-8946-DD46D1005A0A} /qn /norestart
 
 :: HP BufferChm
 start /wait msiexec /x {FA0FF682-CC70-4C57-93CD-E276F3E7537E} /qn /norestart
@@ -170,6 +189,9 @@ start /wait msiexec /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5} /qn /norestart
 
 :: HP CoolSense
 start /wait msiexec /x {1504CF6F-8139-497F-86FC-46174B67CF7F} /qn /norestart
+
+:: HP Deskjet 2510 series Setup Guide 
+start /wait msiexec /x {216C7F38-4BBC-4E9A-8392-C9FA21B54386} /qn /norestart
 
 :: HP Documentation
 start /wait msiexec /x {C8D60CF4-BE7A-487E-BD36-535111BDB0FE} /qn /norestart
@@ -231,6 +253,9 @@ start /wait msiexec /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2} /qn /norestart
 :: HP Utility Center
 start /wait msiexec /x {B7B82520-8ECE-4743-BFD7-93B16C64B277} /qn /norestart
 
+:: Instant Housecall Specialist Sign-in
+start /wait msiexec /x {4A89B7B3-EB5B-4B33-B7B4-99E69792C081} /qn /norestart
+
 :: Intel Trusted Connect Client
 start /wait msiexec /x {44B72151-611E-429D-9765-9BA093D7E48A} /qn /norestart
 
@@ -271,6 +296,9 @@ start /wait msiexec /x {409CB30E-E457-4008-9B1A-ED1B9EA21140} /qn /norestart
 :: Java Auto Updater
 start /wait msiexec /x {4A03706F-666A-4037-7777-5F2748764D10} /qn /norestart
 start /wait msiexec /x {CCB6114E-9DB9-BD54-5AA0-BC5123329C9D} /qn /norestart
+
+:: Kaspersky Lab Network Agent
+start /wait msiexec /x {786A9F7E-CFEC-451F-B3C4-22EB11550FD8} /qn /norestart
 
 :: Kaspersky Internet Security
 start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
@@ -316,9 +344,15 @@ start /wait msiexec /x {FD4EC278-C1B1-4496-99ED-C0BE1B0AA521} /qn /norestart
 :: Lenovo Web Start
 if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" /UNINSTALL04bb6df446330549a2cb8d67fbd1a745025b7bd1
 
+:: SSN Librarian (some sketchy Russian program)
+start /wait msiexec /x {1D425886-3FE1-41AA-8D7A-E432CE29A4AE} /qn /norestart
+
 :: McAfee LiveSafe - Internet Security
 if exist %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
 if exist %ProgramFiles%\McAfee\MSC\mcuihost.exe %ProgramFiles%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+
+:: Microsoft Application Error Reporting
+start /wait msiexec /x {95120000-00B9-0409-1000-0000000FF1CE} /qn /norestart
 
 :: Microsoft Search Enhancement Pack
 start /wait msiexec /x {4CBA3D4C-8F51-4D60-B27E-F6B641C571E7} /qn /norestart
@@ -338,6 +372,9 @@ start /wait msiexec /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE} /qn /norestart
 
 :: PlayReady PC Runtime amd64
 start /wait msiexec /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04} /qn /norestart
+
+:: QuickTime 7
+start /wait msiexec /x {3D2CBC2C-65D4-4463-87AB-BB2C859C1F3E} /qn /norestart
 
 :: Recovery Manager
 start /wait msiexec /x {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5} /qn /norestart
@@ -360,6 +397,9 @@ start /wait msiexex /x {612C34C7-5E90-47D8-9B5C-0F717DD82726} /qn /norestart
 
 :: Skype Click 2 Call
 start /wait msiexec /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701} /qn /norestart
+
+:: Symantec WebReg
+start /wait msiexec /x {CCB9B81A-167F-4832-B305-D2A0430840B3} /qn /norestart
 
 :: Toshiba Audio Enhancement
 start /wait msiexec /x {1515F5E3-29EA-4CD1-A981-032D88880F09} /qn /norestart
@@ -451,8 +491,14 @@ start /wait msiexec /x {0C0F368E-17C4-4F28-9F1B-B1DA1D96CF7A} /qn /norestart
 start /wait msiexec /x {36AC0D1D-9715-4F13-B6A4-86F1D35FB4DF} /qn /norestart
 start /wait msiexec /x {03D562B5-C4E2-4846-A920-33178788BE00} /qn /norestart
 
+:: Windows 7 USB/DVD Download Tool
+start /wait msiexec /x {CCF298AF-9CE1-4B26-B251-486E98A34789} /qn /norestart
+
 :: Windows Live Family Safety // Disabled by Vocatus for Tron (some family systems may be using this)
 ::start /wait msiexec /x {5F611ADA-B98C-4DBB-ADDE-414F08457ECF} /qn /norestart
+
+:: Windows Live Sign-in Assistant
+start /wait msiexec /x {CE52672C-A0E9-4450-8875-88A221D5CD50} /qn /norestart
 
 :: Windows Live Toolbar
 start /wait msiexec /x {995F1E2E-F542-4310-8E1D-9926F5A279B3} /qn /norestart
