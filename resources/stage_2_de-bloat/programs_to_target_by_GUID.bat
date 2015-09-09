@@ -12,6 +12,15 @@
 :: Adobe Refresh Manager
 start /wait msiexec /x {AC76BA86-0804-1033-1959-001824147215} /qn /norestart
 
+:: AMD Accelerated Video Transcoding
+start /wait msiexec /x {A6AFFBD8-D006-967F-51AF-0120F0261080} /qn /norestart
+
+:: AMD Catalyst Control Center - Branding
+start /wait msiexec /x {24D38277-CE6E-4E12-A2EE-F46832A4FA2F} /qn /norestart
+
+:: AMD OEM Application Profile
+start /wait msiexec /x {C89A97B6-F991-EBB5-77B7-927BCF420EBE} /qn /norestart
+
 :: Ask Toolbar
 start /wait msiexec /x {4F524A2D-5637-006A-76A7-A758B70C0300} /qn /norestart
 start /wait msiexec /x {86D4B82A-ABED-442A-BE86-96357B70F4FE} /qn /norestart
@@ -27,6 +36,9 @@ start /wait msiexec /x {77F8A71E-3515-4832-B8B2-2F1EDBD2E0F1} /qn /norestart
 
 :: Bing Desktop
 start /wait msiexec /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A} /qn /norestart
+
+:: Connect To Tech-Support (malware)
+start /wait msiexec /x {A22B8513-EA8C-46A1-9735-F5BE971C368D} /qn /norestart
 
 :: CyberLink Power2Go 8
 start /wait msiexec /x {2A87D48D-3FDF-41fd-97CD-A1E370EFFFE2} /qn /norestart
@@ -56,7 +68,7 @@ start /wait msiexec /x {F839C6BD-E92E-48FA-9CE6-7BFAF94F7096} /qn /norestart
 start /wait msiexec /x {975DFE7C-8E56-45BC-A329-401E6B1F8102} /qn /norestart
 start /wait msiexec /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388} /qn /norestart
 start /wait msiexec /x {731B0E4D-F4C7-450C-95B0-E1A3176B1C75} /qn /norestart
-rd /s /q C:\dell\dbrm
+rd /s /q %SystemDrive%\dell\dbrm
 
 :: Dell Client System Update
 start /wait msiexec /x {69093D49-3DD1-4FB5-A378-0D4DB4CF86EA} /qn /norestart
@@ -104,6 +116,7 @@ start /wait msiexec /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2} /qn /norestart
 
 :: DTS Sound
 start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
+start /wait msiexec /x {F8EB8FFC-C535-49A1-A84D-CC75CB2D6ADA} /qn /norestart
 
 :: EA Download Manager
 start /wait msiexec /x {EF7E931D-DC84-471B-8DB6-A83358095474} /qn /norestart
@@ -125,6 +138,13 @@ start /wait msiexec /x {E738A392-F690-4A9D-808E-7BAF80E0B398} /qn /norestart
 
 :: Get Dropbox (also called "Dropbox 25 GB" or "Dropbox 15 GB")
 start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
+
+:: Google Toolbar for Internet Explorer
+start /wait msiexec /x {18455581-E099-4BA8-BC6B-F34B2F06600C} /qn /norestart
+
+:: Google Update Helper
+start /wait msiexec /x {60EC980A-BDA2-4CB6-A427-B07A5498B4CA} /qn /norestart
+start /wait msiexec /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2} /qn /norestart
 
 :: Hewlett-Packard ACLM.NET v1.2.2.3
 start /wait msiexec /x {6F340107-F9AA-47C6-B54C-C3A19F11553F} /qn /norestart
@@ -214,7 +234,11 @@ start /wait msiexec /x {B7B82520-8ECE-4743-BFD7-93B16C64B277} /qn /norestart
 :: Intel Trusted Connect Client
 start /wait msiexec /x {44B72151-611E-429D-9765-9BA093D7E48A} /qn /norestart
 
-:: Intel (R) Trusted Connect Service Client
+:: Intel(R) Technology Access
+start /wait msiexec /x {413fe921-b226-41c8-bc3c-574074ceec4d} /qn /norestart
+start /wait msiexec /x {583882E7-EA75-4BF0-94FA-7DD5A3731C76} /qn /norestart
+
+:: Intel(R) Trusted Connect Service Client
 start /wait msiexec /x {1B444AF9-1DBE-4884-8F35-969BEFCF69A8} /qn /norestart
 start /wait msiexec /x {7D84E343-A23D-451C-B123-0195B2D903A6} /qn /norestart
 
@@ -238,6 +262,7 @@ start /wait msiexec /x {78091D68-706D-4893-B287-9F1DFB24F7AF} /qn /norestart
 
 :: Intel Update Manager
 start /wait msiexec /x {608E1B9B-A2E8-4A1F-8BAB-874EB0DD25E3} /qn /norestart
+start /wait msiexec /x {43FA4AC8-46F8-423F-96FD-9A7D67048F1C} /qn /norestart
 
 :: Intel(R) Rapid Storage Technology
 start /wait msiexec /x {205AE40D-8AD7-4F29-A430-DD2168DA562D} /qn /norestart
@@ -336,20 +361,34 @@ start /wait msiexex /x {612C34C7-5E90-47D8-9B5C-0F717DD82726} /qn /norestart
 :: Skype Click 2 Call
 start /wait msiexec /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701} /qn /norestart
 
+:: Toshiba Audio Enhancement
+start /wait msiexec /x {1515F5E3-29EA-4CD1-A981-032D88880F09} /qn /norestart
+
 :: Toshiba Display Utility
 start /wait msiexec /x {0B39C39A-3ECE-4582-9C91-842D22819A24} /qn /norestart
 
-:: Toshiba Service Station
-start /wait msiexec /x {0DFA8761-7735-4DE8-A0EB-2286578DCFC6} /qn /norestart
+:: Toshiba Application Installer
+start /wait msiexec /x {21A63CA3-75C0-4E56-B602-B7CD2EF6B621} /qn /norestart
+start /wait msiexec /x {970472D0-F5F9-4158-A6E3-1AE49EFEF2D3} /qn /norestart
 
-:: Toshiba Audio Enhancement
-start /wait msiexec /x {1515F5E3-29EA-4CD1-A981-032D88880F09} /qn /norestart
+:: Toshiba App Place
+start /wait msiexec /x {ED3CBA78-488F-4E8C-B33F-8E3BF4DDB4D2} /qn /norestart
+
+:: Toshiba Book Place
+start /wait msiexec /x {11244D6B-9842-440F-8579-6A4D771A0D9B} /qn /norestart
+
+:: Toshiba Desktop Assist
+start /wait msiexec /x {95CCACF0-010D-45F0-82BF-858643D8BC02} /qn /norestart
 
 :: Toshiba System Driver
 start /wait msiexec /x {1E6A96A1-2BAB-43EF-8087-30437593C66C} /qn /norestart
 
-:: Toshiba Application Installer
-start /wait msiexec /x {21A63CA3-75C0-4E56-B602-B7CD2EF6B621} /qn /norestart
+:: TOSHIBA Eco Utility
+start /wait msiexec /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1} /qn /norestart
+start /wait msiexec /x {5944B9D4-3C2A-48DE-931E-26B31714A2F7} /qn /norestart
+
+:: TOSHIBA Recovery Media Creator
+start /wait msiexec /x {B65BBB06-1F8E-48F5-8A54-B024A9E15FDF} /qn /norestart
 
 :: Toshiba Password Utility
 start /wait msiexec /x {26BB68BB-CF93-4A12-BC6D-A3B6F53AC8D9} /qn /norestart
@@ -360,11 +399,11 @@ start /wait msiexec /x {3384E1D9-3F18-4A98-8655-180FEF0DFC02} /qn /norestart
 :: TOSHIBARegistration
 start /wait msiexec /x {5AF550B4-BB67-4E7E-82F1-2C4300279050} /qn /norestart
 
-:: TOSHIBA Eco Utility
-start /wait msiexec /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1} /qn /norestart
-
 :: Toshiba ReelTime
 start /wait msiexec /x {24811C12-F4A9-4D0F-8494-A7B8FE46123C} /qn /norestart
+
+:: TOSHBA VIDEO PLAYER
+start /wait msiexec /x {FF07604E-C860-40E9-A230-E37FA41F103A} /qn /norestart
 
 :: Toshiba Book Place
 start /wait msiexec /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331} /qn /norestart
@@ -372,8 +411,13 @@ start /wait msiexec /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331} /qn /norestart
 :: Toshiba Value Added Package
 start /wait msiexec /x {066CFFF8-12BF-4390-A673-75F95EFF188E} /qn /norestart
 
+:: Toshiba Service Station
+start /wait msiexec /x {0DFA8761-7735-4DE8-A0EB-2286578DCFC6} /qn /norestart
+start /wait msiexec /x {6499E894-43F8-458B-AE35-724F4732BCDE} /qn /norestart
+
 :: Toshiba System Settings
 start /wait msiexec /x {B040D5C9-C9AA-430A-A44E-696656012E61} /qn /norestart
+start /wait msiexec /x {05A55927-DB9B-4E26-BA44-828EBFF829F0} /qn /norestart
 
 :: Toshiba Wireless LAN Indicator
 start /wait msiexec /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9} /qn /norestart
