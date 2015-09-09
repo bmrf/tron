@@ -109,7 +109,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
 # SCRIPT INTERRUPTION
 
-If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_3_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
+If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_2_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
 More details about this function are in the list of all Tron actions at the bottom of this document.
 
