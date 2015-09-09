@@ -9,6 +9,9 @@
 :: GUID LIST ::
 :::::::::::::::
 
+:: Adobe Refresh Manager
+start /wait msiexec /x {AC76BA86-0804-1033-1959-001824147215} /qn /norestart
+
 :: Ask Toolbar
 start /wait msiexec /x {4F524A2D-5637-006A-76A7-A758B70C0300} /qn /norestart
 start /wait msiexec /x {86D4B82A-ABED-442A-BE86-96357B70F4FE} /qn /norestart
@@ -37,8 +40,14 @@ start /wait msiexec /x {B46BEA36-0B71-4A4E-AE41-87241643FA0A} /qn /norestart
 :: CyberLink PowerDirector 12
 start /wait msiexec /x {E1646825-D391-42A0-93AA-27FA810DA093} /qn /norestart
 
+:: CyberLink Power Media Player 14
+start /wait msiexec /x {32C8E300-BDB4-4398-92C2-E9B7D8A233DB} /qn /norestart
+
 :: CyberLink LabelPrint
 start /wait msiexec /x {C59C179C-668D-49A9-B6EA-0121CCFC1243} /qn /norestart
+
+:: CyberLink YouCam
+start /wait msiexec /x {A9CEDD6E-4792-493e-BB35-D86D2E188A5A} /qn /norestart
 
 :: Dell Access
 start /wait msiexec /x {F839C6BD-E92E-48FA-9CE6-7BFAF94F7096} /qn /norestart
@@ -93,9 +102,6 @@ start /wait msiexec /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A} /qn /norestart
 :: DisableMSDefender
 start /wait msiexec /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2} /qn /norestart
 
-:: Dropbox 15 GB (advertisement)
-start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
-
 :: DTS Sound
 start /wait msiexec /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5} /qn /norestart
 
@@ -105,36 +111,64 @@ start /wait msiexec /x {EF7E931D-DC84-471B-8DB6-A83358095474} /qn /norestart
 :: Embassy Suite
 start /wait msiexec /x {20A4AA32-B3FF-4A0B-853C-ACDDCD6CB344} /qn /norestart
 
+:: Energy Star
+start /wait msiexec /x {465CA2B6-98AF-4E77-BE22-A908C34BB9EC} /qn /norestart
+
+:: Energy Star Digital Logo
+start /wait msiexec /x {BD1A34C9-4764-4F79-AE1F-112F8C89D3D4} /qn /norestart
+
 :: Epson Customer Participation
 start /wait msiexec /x {814FA673-A085-403C-9545-747FC1495069} /qn /norestart
 
 :: ESC Home Page Plugin
 start /wait msiexec /x {E738A392-F690-4A9D-808E-7BAF80E0B398} /qn /norestart
 
-:: Get Dropbox
+:: Get Dropbox (also called "Dropbox 25 GB" or "Dropbox 15 GB")
 start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
 
 :: Hewlett-Packard ACLM.NET v1.2.2.3
 start /wait msiexec /x {6F340107-F9AA-47C6-B54C-C3A19F11553F} /qn /norestart
+
+:: HP ActiveCheck component for HP Active Support Libary
+start /wait msiexec /x {254C37AA-6B72-4300-84F6-98A82419187E} /qn /norestart
+
+:: HP 3D DriveGuard
+start /wait msiexec /x {E8D0E2B8-B64B-44BC-8E01-00DDACBDF78A} /qn /norestart
+
+:: HP 64 Bit HP CIO Components Installer
+start /wait msiexec /x {FF21C3E6-97FD-474F-9518-8DCBE94C2854} /qn /norestart
 
 :: HP BufferChm
 start /wait msiexec /x {FA0FF682-CC70-4C57-93CD-E276F3E7537E} /qn /norestart
 
 :: HP Customer Experience Enhancements
 start /wait msiexec /x {07FA4960-B038-49EB-891B-9F95930AA544} /qn /norestart
+start /wait msiexec /x {C9EF1AAF-B542-41C8-A537-1142DA5D4AEC} /qn /norestart
 
 :: HP Connected Music
 start /wait msiexec /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5} /qn /norestart
 
+:: HP CoolSense
+start /wait msiexec /x {1504CF6F-8139-497F-86FC-46174B67CF7F} /qn /norestart
+
 :: HP Documentation
 start /wait msiexec /x {C8D60CF4-BE7A-487E-BD36-535111BDB0FE} /qn /norestart
 start /wait msiexec /x {06600E94-1C34-40E2-AB09-D30AECF78172} /qn /norestart
+
+:: HP DisableMSDefender (disables Microsoft Defender...wtf?)
+start /wait msiexec /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2} /qn /norestart
+
+:: HP GPBaseService2 (popups)
+start /wait msiexec /x {BB3447F6-9553-4AA9-960E-0DB5310C5779} /qn /norestart
 
 :: HP Product Assistant
 start /wait msiexec /x {150B6201-E9E6-4DFB-960E-CCBD53FBDDED} /qn /norestart
 
 :: HP PostScript Converter
 start /wait msiexec /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD} /qn /norestart
+
+:: HP Recovery Manager
+start /wait msiexec /x {64BAA990-F1FC-4145-A7B1-E41FBBC9DA47} /qn /norestart
 
 :: HP Registration Service
 start /wait msiexec /x {D1E8F2D7-7794-4245-B286-87ED86C1893C} /qn /norestart
@@ -145,8 +179,14 @@ start /wait msiexec /x {438363A8-F486-4C37-834C-4955773CB3D3} /qn /norestart
 :: HP SimplePass
 start /wait msiexec /x {314FAD12-F785-4471-BCE8-AB506642B9A1} /qn /norestart
 
+:: HP SmartWebPrinting
+start /wait msiexec /x {8FF6F5CA-4E30-4E3B-B951-204CAAA2716A} /qn /norestart
+
 :: HP Status Alerts
 start /wait msiexec /x {9D1DE902-8058-4555-A16A-FBFAA49587DB} /qn /norestart
+
+:: HP Solution Center
+start /wait msiexec /x {BC5DD87B-0143-4D14-AAE6-97109614DC6B} /qn /norestart
 
 :: HP Support Assistant
 start /wait msiexec /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE} /qn /norestart
@@ -155,6 +195,12 @@ start /wait msiexec /x {61EB474B-67A6-47F4-B1B7-386851BAB3D0} /qn /norestart
 
 :: HP Support Information
 start /wait msiexec /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992} /qn /norestart
+
+:: HP Support Solutions Framework
+start /wait msiexec /x {D7D5F438-26EF-45AB-AB89-C476FBCF8584} /qn /norestart
+
+:: HP System Event Utility
+start /wait msiexec /x {8B4EE87E-6D40-4C91-B5E8-0DC77DC412F1} /qn /norestart
 
 :: HP "Toolbox" (hidden)
 start /wait msiexec /x {292F0F52-B62D-4E71-921B-89A682402201} /qn /norestart
@@ -178,9 +224,14 @@ start /wait msiexec /x {E14B99BA-3282-4990-8BD7-20FD584A217F} /qn /norestart
 :: Intel(R) Trusted Execution Engine Driver
 start /wait msiexec /x {4021582A-4C27-4482-A287-5D49B80DB48F} /qn /norestart
 
+:: Intel(R) Management Engine Components
+start /wait msiexec /x {5D1BFBB8-4923-4388-9559-C86F5D9E2740} /qn /norestart
+start /wait msiexec /x {B434599E-E35F-4612-9803-A2FB7A8E066B} /qn /norestart
+
 :: Intel(R) ME UninstallLegacy
 start /wait msiexec /x {FD37351B-3074-4652-8188-1B3FB784EC4E} /qn /norestart
 start /wait msiexec /x {C9A90201-B2DE-44D0-A618-EF8C9060D318} /qn /norestart
+start /wait msiexec /x {ECA145AF-55D0-42BA-870F-4213F0198A46} /qn /norestart
 
 :: Intel Update
 start /wait msiexec /x {78091D68-706D-4893-B287-9F1DFB24F7AF} /qn /norestart
@@ -240,6 +291,10 @@ start /wait msiexec /x {FD4EC278-C1B1-4496-99ED-C0BE1B0AA521} /qn /norestart
 :: Lenovo Web Start
 if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" /UNINSTALL04bb6df446330549a2cb8d67fbd1a745025b7bd1
 
+:: McAfee LiveSafe - Internet Security
+if exist %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+if exist %ProgramFiles%\McAfee\MSC\mcuihost.exe %ProgramFiles%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+
 :: Microsoft Search Enhancement Pack
 start /wait msiexec /x {4CBA3D4C-8F51-4D60-B27E-F6B641C571E7} /qn /norestart
 
@@ -256,11 +311,15 @@ start /wait msiexec /x "C:\ProgramData\Microsoft\OEMOffice15\OOBE\x86\oemoobe.ms
 :: opensource
 start /wait msiexec /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE} /qn /norestart
 
-:: Recovery Manager
-start /wait msiexec /x {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5} /qn /norestart
-
 :: PlayReady PC Runtime amd64
 start /wait msiexec /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04} /qn /norestart
+
+:: Recovery Manager
+start /wait msiexec /x {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5} /qn /norestart
+start /wait msiexec /x {C7231F7C-6530-4E65-ADA6-5B392CF5BEB1} /qn /norestart
+
+:: RealDownloader
+start /wait msiexec /x {C8E8D2E3-EF6A-4B1D-A09E-7B27EBE2F3CE} /qn /norestart
 
 :: Roxio File Backup
 start /wait msiexec /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB} /qn /norestart
@@ -320,7 +379,10 @@ start /wait msiexec /x {B040D5C9-C9AA-430A-A44E-696656012E61} /qn /norestart
 start /wait msiexec /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9} /qn /norestart
 
 :: Toshiba Bulletin Board
-start /wait msiexec /x {C14518AF-1A0F-4D39-8011-69BAA01CD380}  /qn /norestart
+start /wait msiexec /x {C14518AF-1A0F-4D39-8011-69BAA01CD380} /qn /norestart
+
+:: TrayApp
+start /wait msiexec /x {CD31E63D-47FD-491C-8117-CF201D0AFAB5} /qn /norestart
 
 :: Trend Micro Trial
 start /wait msiexec /x {BED0B8A2-2986-49F8-90D6-FA008D37A3D2} /qn /norestart
