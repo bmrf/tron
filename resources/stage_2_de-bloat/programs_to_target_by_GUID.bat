@@ -117,6 +117,9 @@ start /wait msiexec /x {597A58EC-42D6-4940-8739-FB94491B013C} /qn /norestart
 :: Hewlett-Packard ACLM.NET v1.2.2.3
 start /wait msiexec /x {6F340107-F9AA-47C6-B54C-C3A19F11553F} /qn /norestart
 
+:: HP BufferChm
+start /wait msiexec /x {FA0FF682-CC70-4C57-93CD-E276F3E7537E} /qn /norestart
+
 :: HP Customer Experience Enhancements
 start /wait msiexec /x {07FA4960-B038-49EB-891B-9F95930AA544} /qn /norestart
 
@@ -125,6 +128,10 @@ start /wait msiexec /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5} /qn /norestart
 
 :: HP Documentation
 start /wait msiexec /x {C8D60CF4-BE7A-487E-BD36-535111BDB0FE} /qn /norestart
+start /wait msiexec /x {06600E94-1C34-40E2-AB09-D30AECF78172} /qn /norestart
+
+:: HP Product Assistant
+start /wait msiexec /x {150B6201-E9E6-4DFB-960E-CCBD53FBDDED} /qn /norestart
 
 :: HP PostScript Converter
 start /wait msiexec /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD} /qn /norestart
@@ -144,6 +151,10 @@ start /wait msiexec /x {9D1DE902-8058-4555-A16A-FBFAA49587DB} /qn /norestart
 :: HP Support Assistant
 start /wait msiexec /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE} /qn /norestart
 start /wait msiexec /x {904822F1-6C7D-4B91-B936-6A1C0810544C} /qn /norestart
+start /wait msiexec /x {61EB474B-67A6-47F4-B1B7-386851BAB3D0} /qn /norestart
+
+:: HP Support Information
+start /wait msiexec /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992} /qn /norestart
 
 :: HP "Toolbox" (hidden)
 start /wait msiexec /x {292F0F52-B62D-4E71-921B-89A682402201} /qn /norestart
