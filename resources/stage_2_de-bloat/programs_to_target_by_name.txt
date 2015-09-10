@@ -46,8 +46,9 @@ AppsHat
 ArcadeParlor
 Ask%%Toolbar
 AtuZi
-AVG PC TuneUp 2014
+AVG PC TuneUp%%
 AVG Web TuneUp
+AVG 2014%%
 Baidu PC Faster%%
 Big Fish Games: Game Manager
 Big Fish: Game Manager
@@ -63,6 +64,7 @@ CWA Reminder by We-Care.com%%
 Cyberlink%%
 ClickForSale
 CloudScout%%
+Comodo%%
 DealPly (remove only)
 DealScout for Internet Explorer
 Dell Getting Started Guide%%
@@ -78,6 +80,8 @@ Files Opened
 FilesFrog Update Checker
 flash-Enhancer%%
 Free Download Manager%%
+Free Studio%%
+Free YouTube%%
 freemakeTB Toolbar
 FromDocToPDF Internet Explorer Toolbar
 FromDocToPDF Toolbar
@@ -119,6 +123,7 @@ My Web Search (Zwinky)
 MyPC Backup%%
 Mysearchdial
 Nero BackItUp%%OEM
+Norton Internet%%
 OMG Music Plus%%
 OOBE%%
 Optimizer Pro%%
@@ -133,11 +138,13 @@ Power2Go
 PowerDirector
 PMB%%
 Price Check by AOL
+PrivDog
 Productivity 3.1 B2 Toolbar for IE
 QuickShare
 Qwiklinx
 RadioRage%%
 Raptr
+RealDownloader%%
 RealNetworks%%
 RealUpgrade%%
 Remote Keyboard
@@ -161,6 +168,7 @@ Smiley Central%%
 Software Assist
 Software Updater
 Sonic CinePlayer%%
+Sony Music%%
 Spam Free Search Toolbar
 Speedial%%
 SpeedUpMyPc%%
@@ -179,7 +187,8 @@ Uninstall Helper
 UserGuide%%
 Utility Chest Toolbar
 uTorrentControl2 Toolbar
-Vaio%%
+VAIO%%
+VGClient%%
 Video Converter%%
 Video Player
 VideoDownloadConverter Internet Explorer Toolbar
