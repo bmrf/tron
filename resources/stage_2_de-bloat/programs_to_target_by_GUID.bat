@@ -55,6 +55,69 @@ start /wait msiexec /x {77F8A71E-3515-4832-B8B2-2F1EDBD2E0F1} /qn /norestart
 :: Bing Desktop
 start /wait msiexec /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A} /qn /norestart
 
+:: CCC Help Chinese Standard 2010.1110.1538.28046
+start /wait msiexec /x {8328BF7C-818B-9D36-BA79-0D5BE45620F0}
+
+:: CCC Help Chinese Traditional 2010.1110.1538.28046
+start /wait msiexec /x {63DEFBAD-3265-AD54-E29E-9D2862F2A549} /qn /norestart
+
+:: CCC Help Czech 2010.1110.1538.28046
+start /wait msiexec /x {F0BACABE-F496-5F33-6E36-80D7A9FC2FE6} /qn /norestart
+
+:: CCC Help Danish 2010.1110.1538.28046
+start /wait msiexec /x {75396B8A-2911-D9A1-A608-B4EB3A2CD37C} /qn /norestart
+
+:: CCC Help Dutch 2010.1110.1538.28046
+start /wait msiexec /x {30B5D9AB-BBEF-204C-3358-3F9D975E59A7} /qn /norestart
+
+:: CCC Help English 2010.1110.1538.28046
+start /wait msiexec /x {A3BB948E-71DF-F10D-2441-16BC8A61E225} /qn /norestart
+
+:: CCC Help Finnish 2010.1110.1538.28046
+start /wait msiexec /x {81230599-8908-7D96-2B59-91B13738CC0D} /qn /norestart
+
+:: CCC Help French 2010.1110.1538.28046
+start /wait msiexec /x {4A38D588-649B-1EB1-6A57-75B45C33B7F3} /qn /norestart
+
+:: CCC Help German 2010.1110.1538.28046
+start /wait msiexec /x {8C7D5970-4345-91BA-1581-167DEB552F65} /qn /norestart
+
+:: CCC Help Greek 2010.1110.1538.28046
+start /wait msiexec /x {8E95E884-5F00-3046-02CA-ABC28C6BBD44} /qn /norestart
+
+:: CCC Help Hungarian 2010.1110.1538.28046
+start /wait msiexec /x {9B76FA03-3D4A-81A1-1868-10E00020260F} /qn /norestart
+
+:: CCC Help Italian 2010.1110.1538.28046
+start /wait msiexec /x {A5E85D15-785C-518C-B32C-EE2F70AFF121} /qn /norestart
+
+:: CCC Help Japanese 2010.1110.1538.28046
+start /wait msiexec /x {8FD03154-3788-0AB2-9BE7-3F62A860F38F} /qn /norestart
+
+:: CCC Help Korean 2010.1110.1538.28046
+start /wait msiexec /x {8932E88F-DD0E-9AD4-1C7F-B3A570A02EB6} /qn /norestart
+
+:: CCC Help Norwegian 2010.1110.1538.28046
+start /wait msiexec /x {A0DB4A2B-5AD0-310D-FFA3-50E749FF8305} /qn /norestart
+
+:: CCC Help Polish 2010.1110.1538.28046
+start /wait msiexec /x {B3CBABCC-5027-F2AD-B26F-3CA1500DAEE2} /qn /norestart
+
+:: CCC Help Portuguese 2010.1110.1538.28046
+start /wait msiexec /x {73833816-D0FB-A4A0-1E8D-26B1ABE12836} /qn /norestart
+
+:: CCC Help Russian 2010.1110.1538.28046
+start /wait msiexec /x {C8B57F0F-1582-CA83-A51D-26B5A542623A} /qn /norestart
+
+:: CCC Help Spanish 2010.1110.1538.28046
+start /wait msiexec /x {3EE9FFB6-F2FD-3A11-27E7-6A86A5A08EC0} /qn /norestart
+
+:: CCC Help Swedish 2010.1110.1538.28046
+start /wait msiexec /x {C98C1CA9-FF57-CA5F-84A8-F2F270F3735B} /qn /norestart
+
+:: CCC Help Thai 2010.1110.1538.28046
+start /wait msiexec /x {1CC59E4A-A43D-FA88-E26E-568632554FDC} /qn /norestart
+
 :: Connect To Tech-Support (malware)
 start /wait msiexec /x {A22B8513-EA8C-46A1-9735-F5BE971C368D} /qn /norestart
 
