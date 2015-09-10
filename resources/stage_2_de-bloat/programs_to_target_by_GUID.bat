@@ -390,6 +390,9 @@ start /wait msiexec /x {787D1A33-A97B-4245-87C0-7174609A540C} /qn /norestart
 :: HP Utility Center
 start /wait msiexec /x {B7B82520-8ECE-4743-BFD7-93B16C64B277} /qn /norestart
 
+:: HP WebReg
+start /wait msiexec /x {179C56A4-F57F-4561-8BBF-F911D26EB435} /qn /norestart
+
 :: Instant Housecall Specialist Sign-in
 start /wait msiexec /x {4A89B7B3-EB5B-4B33-B7B4-99E69792C081} /qn /norestart
 
@@ -575,6 +578,24 @@ start /wait msiexec /x {D56DA747-5FDB-4AD5-9A6A-3481C0ED44BD} /qn /norestart
 start /wait msiexec /x {858B32BD-121C-4AC8-BD87-CE37C51C03E2} /qn /norestart
 start /wait msiexec /x {2F41EF61-A066-4EBF-84F8-21C1B317A780} /qn /norestart
 
+:: Sony VCCx64, VCCx86, VIx64, and VIx86
+start /wait msiexec /x {549AD5FB-F52D-4307-864A-C0008FB35D96} /qn /norestart
+start /wait msiexec /x {DF184496-1CA2-4D07-92E7-0BD251D7DEF0} /qn /norestart
+start /wait msiexec /x {D55EAC07-7207-44BD-B524-0F063F327743} /qn /norestart
+start /wait msiexec /x {D17C2A58-E0EA-4DD7-A2D6-C448FD25B6F6} /qn /norestart
+
+:: Sony VMLx86, VPMx64, VSNx64, VSNx86, VSSTx64, VSSTx86, VU5x64, VU5x86, VU5x86, and VWSTx86
+start /wait msiexec /x {02E0F3DE-3FB4-435C-B727-9C9E9EE4ACA4} /qn /norestart
+start /wait msiexec /x {DBEAA361-F8A4-4298-B41C-9E9DCB9AAB84} /qn /norestart
+start /wait msiexec /x {F2611404-06BF-4E67-A5B7-8DB2FFC1CBF6} /qn /norestart
+start /wait msiexec /x {A49A517F-5332-4665-922C-6D9AD31ADD4F} /qn /norestart
+start /wait msiexec /x {4F31AC31-0A28-4F5A-8416-513972DA1F79} /qn /norestart
+start /wait msiexec /x {B24BB74E-8359-43AA-985A-8E80C9219C70} /qn /norestart
+start /wait msiexec /x {6B7DE186-374B-4873-AEC1-7464DA337DD6} /qn /norestart
+start /wait msiexec /x {9D12A8B5-9D41-4465-BF11-70719EB0CD02} /qn /norestart
+start /wait msiexec /x {D2D23D08-D10E-43D6-883C-78E0B2AC9CC6} /qn /norestart
+start /wait msiexec /x {B8991D99-88FD-41F2-8C32-DB70278D5C30} /qn /norestart
+
 :: Spybot - Search & Destroy
 start /wait msiexec /x {B4092C6D-E886-4CB2-BA68-FE5A88D31DE6} /qn /norestart
 
@@ -709,9 +730,14 @@ start /wait msiexec /x {0164FA3B-182D-4237-B22A-081C0B55E0D3} /qn /norestart
 start /wait msiexec /x {3A26D9BD-0F73-432D-B522-2BA18138F7EF} /qn /norestart
 start /wait msiexec /x {C6E893E7-E5EA-4CD5-917C-5443E753FCBD} /qn /norestart
 
-:: VAIO Smart Network, VAIO Update
+:: VAIO Sample Contents, Satisfaction Survey., Transfer Support VAIO Update
+start /wait msiexec /x {547C9EB4-4CA6-402F-9D1B-8BD30DC71E44} /qn /norestart
+start /wait msiexec /x {5DDAFB4B-C52E-468A-9E23-3B0CEEB671BF} /qn /norestart
 start /wait msiexec /x {0899D75A-C2FC-42EA-A702-5B9A5F24EAD5} /qn /norestart
 start /wait msiexec /x {9FF95DA2-7DA1-4228-93B7-DED7EC02B6B2} /qn /norestart
+
+:: VIP Access (Lenovo-installed OEM bloatware for Verisign)
+start /wait msiexec /x {E8D46836-CD55-453C-A107-A59EC51CB8DC} /qn /norestart
 
 :: WOT for Internet Explorer plugin
 start /wait msiexec /x {373B90E1-A28C-434C-92B6-7281AFA6115A} /qn /norestart
