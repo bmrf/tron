@@ -105,7 +105,8 @@ lucky leap%%
 MapsGalaxy%%
 Media Buzz
 Media View%%
-Media Watch
+Media Watch%%
+Media Gallery%%
 McAfee Security Scan
 MixiDJ V30 Toolbar
 MobileWiFi%%
@@ -119,6 +120,7 @@ MyPC Backup%%
 Mysearchdial
 Nero BackItUp%%OEM
 OMG Music Plus%%
+OOBE%%
 Optimizer Pro%%
 Orbit Downloader
 Pdf995%%
@@ -129,12 +131,17 @@ PopularScreensavers Toolbar and Software
 PowerDVD%%
 Power2Go
 PowerDirector
+PMB%%
 Price Check by AOL
 Productivity 3.1 B2 Toolbar for IE
 QuickShare
 Qwiklinx
 RadioRage%%
 Raptr
+RealNetworks%%
+RealUpgrade%%
+Remote Keyboard
+Remote Play with Playstation%%
 RegClean Pro
 Rich Media View
 Rock Turner
