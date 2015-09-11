@@ -11,23 +11,23 @@ I got tired of running these utilities manually and decided to just automate eve
 
 1. [Usage Summary](#use)
 
-2. Command-Line Use
+2. [Command-Line Use](#command-line-use)
 
-3. Script Interruption
+3. [Script Interruption](#script-interruption)
 
-4. Notes on Safe Mode
+4. [Notes on Safe Mode](#safe-mode)
 
-5. Sending a Post-Run Email Report
+5. [Sending a Post-Run Email Report](#email-report)
 
-6. Changing Defaults
+6. [Changing Defaults](#change-defaults-advanced)
 
-7. Pack Integrity
+7. [Pack Integrity](#integrity)
 
-8. License
+8. [License](#license)
 
-9. Contact Info
+9. [Contact Info](#other)
 
-10. Full description of ALL actions
+10. [Full description of ALL actions](#full-tron-description)
 
 # USE
 
@@ -44,6 +44,7 @@ By default the master log file is at `C:\Logs\tron\tron.log`. If you want to cha
 Tron will briefly check for a newer version when it starts up and notify you if one is found.
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
+
 
 # COMMAND-LINE USE
 
@@ -112,6 +113,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_2_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
 More details about this function are in the list of all Tron actions at the bottom of this document.
+
 
 # SAFE MODE
 
