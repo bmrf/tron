@@ -131,7 +131,7 @@ To have Tron send an email report at completion, edit this file:
 
     \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
 
-Specify your SMTP server, username, and password. After specifying your settings you can use the -er flag to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
+Specify your SMTP server, username, and password. After specifying your settings you can use the `-er` flag to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
@@ -285,7 +285,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SELF_DESTRUCT=no
   ```
 
-* There is no -UPM flag
+* There is no `-UPM` flag
 
 
 # INTEGRITY
@@ -441,9 +441,9 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's -srr flag skips this operation
+2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's `-srr` flag skips this operation
 
-3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's -sfr flag skips this operation
+3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's `-sfr` flag skips this operation
 
 4. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
