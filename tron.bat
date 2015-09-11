@@ -1293,9 +1293,9 @@ if /i not %ERRORLEVEL%==0 (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove telemetry-related (user tracking) Windows Updates
+:: JOB: Remove telemetry (user tracking) Windows Updates
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [telemetry]
-call :log "%CUR_DATE% %TIME%    Launch job 'Purge telemetry updates'..."
+call :log "%CUR_DATE% %TIME%    Launch job 'Purge telemetry updates (Win7/8)'..."
 call :log "%CUR_DATE% %TIME%    Removing telemetry-related Windows Updates"
 if /i %DRY_RUN%==no (
 	:: Compatibility update for Windows 7
