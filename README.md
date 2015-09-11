@@ -3,13 +3,13 @@
 | AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus d0t gate@gmail.com`) // PGP key: `0x07d1490f82a211a2` |
 | BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
-# GITHUB CONTAINS *JUST* THE SCRIPT - YOU NEED TO DOWNLOAD THE ENTIRE PACKAGE FROM     https://www.reddit.com/r/TronScript !!
+# GITHUB CONTAINS *JUST* THE SCRIPT - YOU NEED THE ENTIRE PACKAGE FROM https://www.reddit.com/r/TronScript !!
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
 # CONTENTS
 
-1. Usage Summary
+1. [Usage Summary](#use)
 
 2. Command-Line Use
 
