@@ -455,7 +455,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 ## STAGE 5: Patch
 Tron installs or updates these programs:
 
-1. **[7-Zip](http://7-zip.org/faq.html**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using Tron's `-sp` flag skips this component
+1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using Tron's `-sp` flag skips this component
 
 2. **Adobe Flash Player**: Used by YouTube and various other sites. Using Tron's `-sp` flag skips this component
 
