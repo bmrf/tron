@@ -42,6 +42,14 @@ start /wait msiexec /x {24D38277-CE6E-4E12-A2EE-F46832A4FA2F} /qn /norestart
 :: AMD OEM Application Profile
 start /wait msiexec /x {C89A97B6-F991-EBB5-77B7-927BCF420EBE} /qn /norestart
 
+:: AMD Wireless Display v3.0
+start /wait msiexec /x {0A2E1907-D0DE-0D01-CA64-CB0AB0BFE539} /qn /norestart
+start /wait msiexec /x {426582A8-202F-D13C-8BD5-F00551BAFC93} /qn /norestart
+start /wait msiexec /x {630E5EF7-72F8-9E5D-BEF5-ED85B698E160} /qn /norestart
+start /wait msiexec /x {C16CD4C0-48EE-0F40-C9FD-0778EAF73FBD} /qn /norestart
+start /wait msiexec /x {D7C275A6-3266-0FBC-2D84-17A6AC226F01} /qn /norestart
+start /wait msiexec /x {ED273D26-E354-1A5B-A0D0-CB5258D43BD2} /qn /norestart
+
 :: ArcSoft Magic-i Visual Effects 2, ArcSoft WebCam Companion 3 and 4
 start /wait msiexec /x {B1893E3F-9BDF-443F-BED0-1AAA2D9E0D68} /qn /norestart
 start /wait msiexec /x {DE8AAC73-6D8D-483E-96EA-CAEDDADB9079} /qn /norestart
@@ -82,68 +90,40 @@ start /wait msiexec /x {FB90923E-F94F-4343-A084-F0AB39305C8B} /qn /norestart
 :: Catalyst Control Center Graphics Previews Common 2010.1110.1539.28046
 start /wait msiexec /x {190A9F41-85D0-CDB3-AA2D-A076D30953C9} /qn /norestart
 
-:: CCC Help Chinese Standard 2010.1110.1538.28046
-start /wait msiexec /x {8328BF7C-818B-9D36-BA79-0D5BE45620F0}
-
-:: CCC Help Chinese Traditional 2010.1110.1538.28046
+:: CCC Help files. Too many to individually list, Google each GUID for more info
+start /wait msiexec /x {8328BF7C-818B-9D36-BA79-0D5BE45620F0} /qn /norestart
 start /wait msiexec /x {63DEFBAD-3265-AD54-E29E-9D2862F2A549} /qn /norestart
-
-:: CCC Help Czech 2010.1110.1538.28046
 start /wait msiexec /x {F0BACABE-F496-5F33-6E36-80D7A9FC2FE6} /qn /norestart
-
-:: CCC Help Danish 2010.1110.1538.28046
 start /wait msiexec /x {75396B8A-2911-D9A1-A608-B4EB3A2CD37C} /qn /norestart
-
-:: CCC Help Dutch 2010.1110.1538.28046
 start /wait msiexec /x {30B5D9AB-BBEF-204C-3358-3F9D975E59A7} /qn /norestart
-
-:: CCC Help English 2010.1110.1538.28046
 start /wait msiexec /x {A3BB948E-71DF-F10D-2441-16BC8A61E225} /qn /norestart
-
-:: CCC Help Finnish 2010.1110.1538.28046
 start /wait msiexec /x {81230599-8908-7D96-2B59-91B13738CC0D} /qn /norestart
-
-:: CCC Help French 2010.1110.1538.28046
+start /wait msiexec /x {2D0DC4B9-2782-7B15-1501-A03AE797E03A} /qn /norestart
 start /wait msiexec /x {4A38D588-649B-1EB1-6A57-75B45C33B7F3} /qn /norestart
-
-:: CCC Help German 2010.1110.1538.28046
 start /wait msiexec /x {8C7D5970-4345-91BA-1581-167DEB552F65} /qn /norestart
-
-:: CCC Help Greek 2010.1110.1538.28046
 start /wait msiexec /x {8E95E884-5F00-3046-02CA-ABC28C6BBD44} /qn /norestart
-
-:: CCC Help Hungarian 2010.1110.1538.28046
 start /wait msiexec /x {9B76FA03-3D4A-81A1-1868-10E00020260F} /qn /norestart
-
-:: CCC Help Italian 2010.1110.1538.28046
 start /wait msiexec /x {A5E85D15-785C-518C-B32C-EE2F70AFF121} /qn /norestart
-
-:: CCC Help Japanese 2010.1110.1538.28046
 start /wait msiexec /x {8FD03154-3788-0AB2-9BE7-3F62A860F38F} /qn /norestart
-
-:: CCC Help Korean 2010.1110.1538.28046
 start /wait msiexec /x {8932E88F-DD0E-9AD4-1C7F-B3A570A02EB6} /qn /norestart
-
-:: CCC Help Norwegian 2010.1110.1538.28046
 start /wait msiexec /x {A0DB4A2B-5AD0-310D-FFA3-50E749FF8305} /qn /norestart
-
-:: CCC Help Polish 2010.1110.1538.28046
 start /wait msiexec /x {B3CBABCC-5027-F2AD-B26F-3CA1500DAEE2} /qn /norestart
-
-:: CCC Help Portuguese 2010.1110.1538.28046
 start /wait msiexec /x {73833816-D0FB-A4A0-1E8D-26B1ABE12836} /qn /norestart
-
-:: CCC Help Russian 2010.1110.1538.28046
 start /wait msiexec /x {C8B57F0F-1582-CA83-A51D-26B5A542623A} /qn /norestart
-
-:: CCC Help Spanish 2010.1110.1538.28046
 start /wait msiexec /x {3EE9FFB6-F2FD-3A11-27E7-6A86A5A08EC0} /qn /norestart
-
-:: CCC Help Swedish 2010.1110.1538.28046
 start /wait msiexec /x {C98C1CA9-FF57-CA5F-84A8-F2F270F3735B} /qn /norestart
-
-:: CCC Help Thai 2010.1110.1538.28046
 start /wait msiexec /x {1CC59E4A-A43D-FA88-E26E-568632554FDC} /qn /norestart
+start /wait msiexec /x {7268F803-2887-2E4F-C193-3223979A76CC} /qn /norestart
+start /wait msiexec /x {3C0DB13A-2D73-410A-6169-4FD83D8F1E3D} /qn /norestart
+start /wait msiexec /x {E866E52C-1F56-4CCF-0071-CA915F8CFEDA} /qn /norestart
+start /wait msiexec /x {F66299DC-055A-DA2D-4D1C-91F71EDD0129} /qn /norestart
+start /wait msiexec /x {AB6D8A9C-2781-32B9-7B6F-07262A44767C} /qn /norestart
+start /wait msiexec /x {F5D245CC-C332-1E8E-CCB1-75E0C3C4D6F1} /qn /norestart
+start /wait msiexec /x {DC890E2E-FD12-96D2-1B2C-0EA08DE15553} /qn /norestart
+start /wait msiexec /x {DC5825EF-21F2-86B4-1B64-FFF6AC1A6C05} /qn /norestart
+start /wait msiexec /x {53EF1C4D-0705-98F2-1889-A69BBF9F03F3} /qn /norestart
+start /wait msiexec /x {8603DA4D-0A19-0B06-9916-2F71B7898CE5} /qn /norestart
+start /wait msiexec /x {4A85AE1B-9727-261D-9EAF-07C1AECCF977} /qn /norestart
 
 :: Comcast Desktop Software (v1.2.0.9) 23
 start /wait msiexec /x {CEF7211D-CE3A-44C4-B321-D84A2099AE94} /qn /norestart
@@ -346,16 +326,20 @@ start /wait msiexec /x {BB3447F6-9553-4AA9-960E-0DB5310C5779} /qn /norestart
 
 :: HP MarketResearch
 start /wait msiexec /x {95D08F4E-DFC2-4ce3-ACB7-8C8E206217E9} /qn /norestart
+start /wait msiexec /x {D360FA88-17C8-4F14-B67F-13AAF9607B12} /qn /norestart
 
 :: HPPhotoGadget
 start /wait msiexec /x {CAE4213F-F797-439D-BD9E-79B71D115BE3} /qn /norestart
 
-:: HPPhotoSmartDiscLabelContent1 and HPPhotoSmartDiscLable_PrintOnDisc
+:: HPPhotoSmartDiscLabelContent1, DiscLabel_PrintOnDisc, disclabelplugin, DiscLabel_PaperLabel
 start /wait msiexec /x {681B698F-C997-42C3-B184-B489C6CA24C9} /qn /norestart
 start /wait msiexec /x {20EFC9AA-BBC1-4DFD-81FF-99654F71CBF8} /qn /norestart
+start /wait msiexec /x {B28635AB-1DF3-4F07-BFEA-975D911B549B} /qn /norestart
+start /wait msiexec /x {D9D8F2CF-FE2D-4644-9762-01F916FE90A9} /qn /norestart
 
 :: HP Photosmart Essential
 start /wait msiexec /x {EB21A812-671B-4D08-B974-2A347F0D8F70} /qn /norestart
+start /wait msiexec /x {D79113E7-274C-470B-BD46-01B10219DF6A} /qn /norestart
 
 :: HP Product Assistant
 start /wait msiexec /x {150B6201-E9E6-4DFB-960E-CCBD53FBDDED} /qn /norestart
@@ -408,6 +392,9 @@ start /wait msiexec /x {8B4EE87E-6D40-4C91-B5E8-0DC77DC412F1} /qn /norestart
 
 :: HP "Toolbox" (hidden)
 start /wait msiexec /x {292F0F52-B62D-4E71-921B-89A682402201} /qn /norestart
+
+:: HP UnloadSupport (hidden)
+start /wait msiexec /x {E06F04B9-45E6-4AC0-8083-85F7515F40F7} /qn /norestart
 
 :: HP Update
 start /wait msiexec /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2} /qn /norestart
@@ -472,8 +459,13 @@ start /wait msiexec /x {3E29EE6C-963A-4aae-86C1-DC237C4A49FC} /qn /norestart
 :: Intel WiMAX Tutorial
 start /wait msiexec /x {4F26C164-9373-4974-8F43-E0F2176AF937} /qn /norestart
 
+:: _is1 iolo technologies' System Mechanic Professional and UniBlue DriverScanner
+start /wait msiexec /x {BBD3F66B-1180-4785-B679-3F91572CD3B4} /qn /norestart
+start /wait msiexec /x {C2F8CA82-2BD9-4513-B2D1-08A47914C1DA} /qn /norestart
+
 :: iSEEK AnswerWorks English Runtime
 start /wait msiexec /x {18A8E78B-9EF2-496E-B310-BCD8E4C1DAB3} /qn /norestart
+start /wait msiexec /x {DBCC73BA-C69A-4BF5-B4BF-F07501EE7039} /qn /norestart
 
 :: Java Auto Updater
 start /wait msiexec /x {4A03706F-666A-4037-7777-5F2748764D10} /qn /norestart
@@ -542,6 +534,10 @@ start /wait msiexec /x {115B60D5-BBDB-490E-AF2E-064D37A3CE01} /qn /norestart
 :: Microsoft Application Error Reporting
 start /wait msiexec /x {95120000-00B9-0409-1000-0000000FF1CE} /qn /norestart
 
+:: Microsoft Office 2007 "Get Started Tab" for Excel, Word
+start /wait msiexec /x {AB706D91-2242-4E1D-B4D0-1ED35387F5A7} /qn /norestart
+start /wait msiexec /x {68B52EFD-86CC-486E-A8D0-A3A1554CB5BC} /qn /norestart
+
 :: Microsoft Office Click-to-Run 2010 14.0.4763.1000
 start /wait msiexec /x {90140000-006D-0409-1000-0000000FF1CE} /qn /norestart
 
@@ -558,6 +554,9 @@ start /wait msiexec /x {986E003C-E56D-5A47-110E-D3C81F0E8535} /qn /norestart
 start /wait msiexec /x {6BFAB6C1-6D46-46DB-A538-A269907C9F2F} /qn /norestart
 start /wait msiexec /x {48C0866E-57EB-444C-8371-8E4321066BC3} /qn /norestart
 
+:: Nuance Cloud Connector
+start /wait msiexec /x {EEE31B2B-F517-4BD2-8F92-57E4AE938BA3} /qn /norestart
+
 :: Nuance PDF Viewer Plus
 start /wait msiexec /x {042A6F10-F770-4886-A502-B795DCF2D3B5} /qn /norestart
 
@@ -571,11 +570,18 @@ start /wait msiexec /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE} /qn /norestart
 :: PlayReady PC Runtime amd64
 start /wait msiexec /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04} /qn /norestart
 
+:: PlayStation(R)Network Downloader (hidden)
+start /wait msiexec /x {B6659DD8-00A7-4A24-BBFB-C1F6982E5D66} /qn /norestart
+
+:: PlayStation(R)Store (hidden)
+start /wait msiexec /x {0E532C84-4275-41B3-9D81-D4A1A20D8EE7} /qn /norestart
+
 :: PSE10 STI Installer
 start /wait msiexec /x {11D08055-939C-432b-98C3-E072478A0CD7} /qn /norestart
 
 :: QuickTime 7
 start /wait msiexec /x {3D2CBC2C-65D4-4463-87AB-BB2C859C1F3E} /qn /norestart
+start /wait msiexec /x {AF0CE7C0-A3E4-4D73-988B-B29187EC6E9A} /qn /norestart
 
 :: Recovery Manager
 start /wait msiexec /x {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5} /qn /norestart
@@ -846,6 +852,9 @@ start /wait msiexec /x {ABFA6EAE-C9C0-4B39-B722-02094EF6B889} /qn /norestart
 
 :: YouTube Downloader 2.7.2
 start /wait msiexec /x {1a413f37-ed88-4fec-9666-5c48dc4b7bb7} /qn /norestart
+
+:: Zinio Alert Messenger
+start /wait msiexec /x {D2E707E8-090E-EC5B-4833-1CA694FB7460} /qn /norestart
 
 :: ZoneAlarm Antivirus, Firewall, and Security
 start /wait msiexec /x {043A5C25-EC0E-4152-A53B-73065A4315DF} /qn /norestart
