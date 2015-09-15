@@ -137,11 +137,13 @@ start /wait msiexec /qn /norestart /x {4F524A2D-5637-006A-76A7-A758B70C0F01}
 start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C0A00}
 
-:: ASPCA misc programs (we-care.com Macy's nagware)
+:: ASPCA and CWA Reminder misc programs (we-care.com Macy's nagware)
 start /wait msiexec /qn /norestart /x {7E482AF6-AA1F-4CC5-BA13-0536675F5744}
 start /wait msiexec /qn /norestart /x {987F1753-1F42-4DF2-A5EA-0CCB777F3EB0}
 start /wait msiexec /qn /norestart /x {E4FB0B39-C991-4EE7-95DD-1A1A7857D33D}
 start /wait msiexec /qn /norestart /x {1F1E283D-23D9-4E09-B967-F46A053FEA89}
+start /wait msiexec /qn /norestart /x {0228288D-975E-42F7-9993-E91A82E6BBD9}
+start /wait msiexec /qn /norestart /x {6F5E2F4A-377D-4700-B0E3-8F7F7507EA15}
 
 :: ASUS Ai Charger
 start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
@@ -186,11 +188,112 @@ start /wait msiexec /qn /norestart /x {B4089055-D468-45A4-A6BA-5A138DD715FC}
 :: Bing Desktop
 start /wait msiexec /qn /norestart /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A}
 
+:: Business Complete Care Services Agreement
+start /wait msiexec /qn /norestart /x {A3BE3F1E-2472-4211-8735-E8239BE49D9F}
+
 :: Browser Address Error Redirector
 start /wait msiexec /qn /norestart /x {DF9A6075-9308-4572-8932-A4316243C4D9}
 
 :: CA Pest Patrol Realtime Protection 001.001.0034
 start /wait msiexec /qn /norestart /x {F05A5232-CE5E-4274-AB27-44EB8105898D}
+
+:: Camtasia (various versions)
+start /wait msiexec /qn /norestart /x {DB93E2C2-851F-44B2-B09C-351D2C624AE1}
+start /wait msiexec /qn /norestart /x {7A0735CD-5B9D-4FAF-A717-CF99619DDAF8}
+start /wait msiexec /qn /norestart /x {4974F6DC-BA3F-4708-9CF2-8F8B28A8E1C3}
+start /wait msiexec /qn /norestart /x {6D791152-409B-48C9-8050-E31D3B1CDDF0}
+start /wait msiexec /qn /norestart /x {008FD9E3-5F74-42FC-ACF9-B72AB7ED85E3}
+start /wait msiexec /qn /norestart /x {051E55AD-CCE1-4D3B-BA6A-88AD3F656C23}
+start /wait msiexec /qn /norestart /x {296C22B8-5355-4C13-B42B-C06B1A5D1B4E}
+start /wait msiexec /qn /norestart /x {21680605-EAEA-4A34-9C25-F44BB813CC3E}
+start /wait msiexec /qn /norestart /x {BC256BAA-A3D1-438F-ABE8-14E56FF6ECBA}
+start /wait msiexec /qn /norestart /x {FE95684E-62F9-49A1-988E-C88A123DBB18}
+start /wait msiexec /qn /norestart /x {BB62BAD9-AAAB-4552-B304-A3787EC2475B}
+start /wait msiexec /qn /norestart /x {94F167B1-395E-483C-9D12-20F077D7B4A9}
+start /wait msiexec /qn /norestart /x {EDBD11F4-45C8-4028-BC1A-FFE74DE37CB4}
+start /wait msiexec /qn /norestart /x {85BA4B05-A25A-4ABC-A637-14C1F7C6A1FA}
+start /wait msiexec /qn /norestart /x {2919BC46-3875-4175-A60E-71861076DE99}
+start /wait msiexec /qn /norestart /x {1875B4A0-974E-49C9-A817-99D14E19F5F8}
+start /wait msiexec /qn /norestart /x {F11EC76D-794E-4B72-BD73-4EC73498F4A8}
+start /wait msiexec /qn /norestart /x {D01C1100-5746-41C3-B309-29D674B92E2A}
+start /wait msiexec /qn /norestart /x {4325407D-1B78-475B-971A-7266BF17C293}
+start /wait msiexec /qn /norestart /x {0AC51B58-A50C-40F6-B991-523D730945DD}
+start /wait msiexec /qn /norestart /x {E42B58B2-D4A2-4632-8745-BFF041FBB4D9}
+start /wait msiexec /qn /norestart /x {2172CD50-F0DF-43D0-9C1F-7BD964D0289B}
+start /wait msiexec /qn /norestart /x {31591351-2BAE-4B88-8943-B18402D8112A}
+start /wait msiexec /qn /norestart /x {639B2D77-2476-4605-A5D7-8C5D816952C3}
+start /wait msiexec /qn /norestart /x {462A7AF7-6DCE-4609-97E4-A7BBE0B46DEF}
+start /wait msiexec /qn /norestart /x {F63723C9-BF65-4339-B98C-D6FC2A96182B}
+start /wait msiexec /qn /norestart /x {1884FF01-9F27-4D61-A6F2-85AA0A4B42A8}
+start /wait msiexec /qn /norestart /x {59D59A58-7421-4836-9E5C-6D39B005ED78}
+start /wait msiexec /qn /norestart /x {030EBB17-26C3-4C81-A14D-22AB5D2986EC}
+start /wait msiexec /qn /norestart /x {7E01BCC1-806C-4826-97E0-15426F0D1CC9}
+start /wait msiexec /qn /norestart /x {962C7B98-BEA8-45B9-8D56-2F3CBCA4F16B}
+start /wait msiexec /qn /norestart /x {DAC80429-24C7-44F9-828C-9740142FA620}
+start /wait msiexec /qn /norestart /x {95CF0C2A-6B62-4C11-A7BB-FD137CCCB0D6}
+start /wait msiexec /qn /norestart /x {DDBA1A68-E2A5-4C88-B96B-4F21DF964DED}
+start /wait msiexec /qn /norestart /x {2865F201-43B8-4CCC-9106-FE554F32138F}
+start /wait msiexec /qn /norestart /x {DE612AA6-7629-42F8-93CE-0D43A1BB5033}
+start /wait msiexec /qn /norestart /x {5EB67AA7-CC7C-4047-8A18-4B7D30FF8E5C}
+start /wait msiexec /qn /norestart /x {8C8AEE08-F427-452F-95B4-B36ECE4FADE3}
+start /wait msiexec /qn /norestart /x {F8492A18-EEBC-42B1-AF88-807BA37C43DA}
+start /wait msiexec /qn /norestart /x {D2756F6B-BC48-4792-8E3E-0B7053630B1D}
+start /wait msiexec /qn /norestart /x {71A6F5AA-EBDC-4BDF-B231-35B98FA3B9AE}
+start /wait msiexec /qn /norestart /x {8F0459D3-EEE8-414E-9CE1-36C00A19D507}
+start /wait msiexec /qn /norestart /x {CFBC28D9-F7D0-4725-871B-E8A22703ECCB}
+start /wait msiexec /qn /norestart /x {D3317ECB-5C48-4A6B-8C84-7457A9410159}
+start /wait msiexec /qn /norestart /x {BA14C68E-AEDC-4395-BB16-B3D365CF26AF}
+start /wait msiexec /qn /norestart /x {8073CD13-1B0E-446A-A678-9589A2EFFB92}
+start /wait msiexec /qn /norestart /x {1667846F-BC00-4CE6-ADA5-1CE122C33FE2}
+start /wait msiexec /qn /norestart /x {FB8A7032-9682-451E-9E64-89C25CD9E43B}
+start /wait msiexec /qn /norestart /x {DB25BCF6-2C58-473E-A2B6-6F77311F79D1}
+start /wait msiexec /qn /norestart /x {368C2E4B-A37E-466B-958E-C0CD6D6964F4}
+start /wait msiexec /qn /norestart /x {6E30B8A2-4AAA-487E-A80F-E147A9D084DD}
+start /wait msiexec /qn /norestart /x {8F4934B1-83CB-4BFC-8A90-40FF4530115D}
+start /wait msiexec /qn /norestart /x {A27DAE1A-995D-451F-9CCB-C7BF698E4ED4}
+start /wait msiexec /qn /norestart /x {D2F1FCB3-A65C-4BAA-A665-E498C9E80945}
+start /wait msiexec /qn /norestart /x {720F2C5A-DE7A-42A4-B08F-AD504B555155}
+start /wait msiexec /qn /norestart /x {64025BB4-168A-44E5-A10D-37D38A8E0124}
+start /wait msiexec /qn /norestart /x {870A52F4-A2EB-4187-97EA-654BD11A4C6C}
+start /wait msiexec /qn /norestart /x {40FEB178-1855-45A7-B988-F44F1FA896B7}
+start /wait msiexec /qn /norestart /x {222AB816-01E5-43B3-A10D-3F355FAAE513}
+start /wait msiexec /qn /norestart /x {8A3F916F-F9EB-469D-8C09-42273B8C1A66}
+start /wait msiexec /qn /norestart /x {AC89E267-9561-405B-B07F-DD5AAF92D042}
+start /wait msiexec /qn /norestart /x {CF9072B6-A82D-4E3E-8F3C-31614CB150EB}
+start /wait msiexec /qn /norestart /x {D4B7F322-6CFA-4CEE-AAE4-C5ADFA67F83C}
+start /wait msiexec /qn /norestart /x {933B3C90-AEA9-41EB-B555-6A38ADEC50A1}
+start /wait msiexec /qn /norestart /x {D85DD9A0-45CF-435B-98CB-144269DFE8A0}
+start /wait msiexec /qn /norestart /x {957B1FBE-BDB3-4BCC-A3D8-70A0E4A23360}
+start /wait msiexec /qn /norestart /x {6BDB867A-7975-40B5-93CE-11F133E1CDA9}
+start /wait msiexec /qn /norestart /x {6A1A98D3-E814-4E84-B683-69800993380B}
+start /wait msiexec /qn /norestart /x {7DB2CB6A-7248-4DC0-82FE-491D3570807E}
+start /wait msiexec /qn /norestart /x {2790A7CF-0EBD-4728-9364-6B63C5E680E3}
+start /wait msiexec /qn /norestart /x {B35C8CCE-95A1-45A4-BAB7-46154F60D8B2}
+start /wait msiexec /qn /norestart /x {80A19900-E0FA-425B-A1F6-0F7C013CE45A}
+start /wait msiexec /qn /norestart /x {6467DEB1-C20C-44F0-B25C-7A21F264D4F3}
+start /wait msiexec /qn /norestart /x {1EFB479B-C396-4E5B-BBB5-A845C59383CD}
+start /wait msiexec /qn /norestart /x {4786D940-0F26-43A4-98B5-4CAC01CD9FBE}
+start /wait msiexec /qn /norestart /x {D43CBD3F-F4CB-4780-A686-CFD3775FC2A1}
+start /wait msiexec /qn /norestart /x {ADC02977-F2BA-4F25-A550-B754562107A0}
+start /wait msiexec /qn /norestart /x {A1433F59-803E-4CFF-911D-847B22149A6B}
+start /wait msiexec /qn /norestart /x {5EE6CCD2-6142-4D09-8803-D31312574DC5}
+start /wait msiexec /qn /norestart /x {E729BCE1-294E-4364-8170-84036E7696E1}
+start /wait msiexec /qn /norestart /x {944321D8-225A-410E-932C-B8B219DF07D5}
+start /wait msiexec /qn /norestart /x {CD019882-E447-4F30-8FA4-521478BEE8E9}
+start /wait msiexec /qn /norestart /x {8F8BB210-4F82-4818-BF80-1CB57A62B996}
+start /wait msiexec /qn /norestart /x {8375085C-00D4-43EA-8E65-263E8C738E08}
+start /wait msiexec /qn /norestart /x {BCFE8F84-3EB8-40AD-B52F-F07B64F927AA}
+start /wait msiexec /qn /norestart /x {2FD5A4CA-421B-4C9E-952B-EA5B98B40AC3}
+start /wait msiexec /qn /norestart /x {85B51189-8F56-4338-9928-E1BFD7DB9211}
+start /wait msiexec /qn /norestart /x {3614C95F-1376-4551-BDED-EC6B79E74D60}
+start /wait msiexec /qn /norestart /x {967635DD-BA84-45AC-82EC-908D415B71A2}
+start /wait msiexec /qn /norestart /x {5E25963C-8033-4EC2-BDEA-0869E75611C7}
+start /wait msiexec /qn /norestart /x {9B8F134C-3A56-4365-A3FA-BD1824FD1B89}
+start /wait msiexec /qn /norestart /x {AD4F337C-7752-415A-9602-DF17B4F46E68}
+start /wait msiexec /qn /norestart /x {C7FDA25B-9A0F-487B-9502-35ABBF701599}
+start /wait msiexec /qn /norestart /x {BCBE985F-DE7D-41EA-A8AB-A575AEEDBDBD}
+start /wait msiexec /qn /norestart /x {823FCD0D-756D-44BE-A546-1D4D9FBBEA8C}
+
 
 :: Catalyst Control Center - Branding 1.00.0000
 start /wait msiexec /qn /norestart /x {FB90923E-F94F-4343-A084-F0AB39305C8B}
@@ -776,11 +879,28 @@ start /wait msiexec /qn /norestart /x {FEFF81BF-B911-6755-FBDE-09547BDFD0A2}
 start /wait msiexec /qn /norestart /x {FF10AC4D-3349-99DA-3E58-5197CEA1D833}
 start /wait msiexec /qn /norestart /x {FFCF34B9-A0B1-2E2B-7D7E-8FAB4A781CC9}
 
+:: CLEART WiMAX Tutorial 1.5.0.10
+start /wait msiexec /qn /norestart /x {E289B7DD-6732-4333-A47A-75A145D23EE3}
+
 :: Comcast Desktop Software (v1.2.0.9) 23
 start /wait msiexec /qn /norestart /x {CEF7211D-CE3A-44C4-B321-D84A2099AE94}
 
 :: Connect To Tech-Support (malware)
 start /wait msiexec /qn /norestart /x {A22B8513-EA8C-46A1-9735-F5BE971C368D}
+
+:: Consumer In-Home Service Agreement
+start /wait msiexec /qn /norestart /x {F7DA7A20-8EC4-4960-95E5-5531D518B97E}
+
+:: Corel DVD MovieFactory // Photo Album // WinDVD
+start /wait msiexec /qn /norestart /x {1DF03ECE-6AF4-414E-B118-C316F151A9A2}
+start /wait msiexec /qn /norestart /x {5C1F18D2-F6B7-4242-B803-B5A78648185D}
+start /wait msiexec /qn /norestart /x {50F68032-B5B7-4513-9116-C978DBD8F27A}
+
+:: Coupon Network 12.10.2.4058
+start /wait msiexec /qn /norestart /x {6B66E18F-BC5C-47AC-A66C-9F0814A8A0EB}
+
+:: Create Recovery Media 1.20.0.00
+start /wait msiexec /qn /norestart /x {C15914CB-2F62-4A58-86C1-69F90A2AA5EE}
 
 :: CyberLink Blu-ray Disc Suite
 start /wait msiexec /qn /norestart /x {1FBF6C24-C1FD-4101-A42B-0C564F9E8E79}
@@ -816,7 +936,170 @@ start /wait msiexec /qn /norestart /x {F839C6BD-E92E-48FA-9CE6-7BFAF94F7096}
 start /wait msiexec /qn /norestart /x {975DFE7C-8E56-45BC-A329-401E6B1F8102}
 start /wait msiexec /qn /norestart /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388}
 start /wait msiexec /qn /norestart /x {731B0E4D-F4C7-450C-95B0-E1A3176B1C75}
+start /wait msiexec /qn /norestart /x {AB2FDE4F-6BED-4E9E-B676-3DCCEBB1FBFE}
+start /wait msiexec /qn /norestart /x {43CAC9A1-1993-4F65-9096-7C9AFC2BBF54}
+start /wait msiexec /qn /norestart /x {97308CC9-FAED-4A1C-9593-64B2F1FD852D}
+start /wait msiexec /qn /norestart /x {4DEF2722-7EB8-4C5F-8F0A-0295A310002A}
+start /wait msiexec /qn /norestart /x {AE9EB677-66F4-40C0-9269-35067D8C555B}
 rd /s /q %SystemDrive%\dell\dbrm
+
+:: Dell Best of Web 1.00.0000
+start /wait msiexec /qn /norestart /x {BC8233D8-59BA-4D40-92B9-4FDE7452AA8B}
+
+:: Dell CinePlayer 3
+start /wait msiexec /qn /norestart /x {39A6407B-DD99-410D-8EA2-280788F8423B}
+
+:: Dell Client System Update (various versions)
+start /wait msiexec /qn /norestart /x {2B25AEE3-D191-4735-870E-28743D727ED8}
+start /wait msiexec /qn /norestart /x {03A9F528-A754-460F-B2C1-AC125A147114}
+
+:: Dell Command | Power Manager 2.0.0
+start /wait msiexec /qn /norestart /x {DB82968B-57A4-4397-81A5-ECAB21B5DFCD}
+
+:: Dell Command | Update 2.0.0
+start /wait msiexec /qn /norestart /x {E45D7941-F3F0-4E8E-AD55-DCE2FE0AE6D8}
+
+:: Dell Control Point (various versions)
+start /wait msiexec /qn /norestart /x {0DB0EA38-E806-44ED-A892-489F2E305080}
+start /wait msiexec /qn /norestart /x {2E55EEFD-2162-4A7D-9158-EDB0305603A6}
+start /wait msiexec /qn /norestart /x {992D1CE7-A20F-4AB0-9D9D-AFC3418844DA}
+start /wait msiexec /qn /norestart /x {74F7662C-B1DB-489E-A8AC-07A06B24978B}
+start /wait msiexec /qn /norestart /x {24F2AD94-CC1B-4294-B184-D4D31A3186A7}
+start /wait msiexec /qn /norestart /x {4B3230C5-F069-416B-9169-1B84A216ED6A}
+
+:: Dell ControlVault (various versions and components); this is Dell-branded biometric software
+start /wait msiexec /qn /norestart /x {693A23FB-F28B-4F7A-A720-4C1263F97F43}
+start /wait msiexec /qn /norestart /x {5905F42D-3F5F-4916-ADA6-94A3646AEE76}
+start /wait msiexec /qn /norestart /x {7EC66A95-AC2D-4127-940B-0445A526AB2F}
+start /wait msiexec /qn /norestart /x {54C04D53-C3C3-46EA-A75F-7AFF4BEB727C}
+start /wait msiexec /qn /norestart /x {FEFDCDCF-C49C-45D0-AAF8-5345858ADEC7}
+start /wait msiexec /qn /norestart /x {6A7F4379-B2EE-444F-AC4A-C5379B1CF95E}
+start /wait msiexec /qn /norestart /x {815D96BA-2FC6-4F61-9BE3-2CFE446E8ECF}
+start /wait msiexec /qn /norestart /x {90B2EE35-59D0-4A1F-B125-9F678D46A955}
+start /wait msiexec /qn /norestart /x {8B5D0146-5187-40F5-9DD8-15DAF2D11902}
+
+:: Dell Customer Connect 1.2.1.0
+start /wait msiexec /qn /norestart /x {FCD9CD52-7222-4672-94A0-A722BA702FD0}
+
+:: Dell Data Protection (various versions and components)
+start /wait msiexec /qn /norestart /x {CCDF8E78-6102-470A-BBE4-9AF13694C716}
+start /wait msiexec /qn /norestart /x {04566294-A6B6-4462-9721-031073EB3694}
+start /wait msiexec /qn /norestart /x {A9C61491-EF2F-4ED8-8E10-FB33E3C6B55A}
+start /wait msiexec /qn /norestart /x {7FA89EC8-023D-4AEA-94E2-32820FBBDC44}
+start /wait msiexec /qn /norestart /x {AC474F86-9A17-4BCB-8B15-11ABFD5B7F95}
+start /wait msiexec /qn /norestart /x {05FDD00D-1C45-44D1-AB3F-C24D45C39457}
+
+:: Dell Data Services 1.2.7.0
+start /wait msiexec /qn /norestart /x {812AA6D3-5BEB-4577-88B1-00998B91AB41}
+
+:: Dell Data Vault 1.1.0.6
+start /wait msiexec /qn /norestart /x {2B2B45B1-3CA0-4F8D-BBB3-AC77ED46A0FE}
+
+:: Dell DataSafe Online (various versions)
+start /wait msiexec /qn /norestart /x {11F1920A-56A2-4642-B6E0-3B31A12C9288}
+start /wait msiexec /qn /norestart /x {7DB9F1E5-9ACB-410D-A7DC-7A3D023CE045}
+
+:: Dell Digital Delivery (various versions)
+start /wait msiexec /qn /norestart /x {2A0F2CC5-3065-492C-8380-B03AA7106B1A}
+start /wait msiexec /qn /norestart /x {4688EB75-28E2-4731-9BCB-55E624F7CD45}
+start /wait msiexec /qn /norestart /x {975DFE7C-8E56-45BC-A329-401E6B1F8102}
+start /wait msiexec /qn /norestart /x {B7FB9195-E9FC-4316-930E-D799D5D712F7}
+start /wait msiexec /qn /norestart /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A}
+start /wait msiexec /qn /norestart /x {D605CD24-103D-4DB6-B572-653851213C46}
+start /wait msiexec /qn /norestart /x {B9CD9EC9-2566-4064-8599-4A3B742946F4}
+start /wait msiexec /qn /norestart /x {5A26B7C0-55B1-4DA8-A693-E51380497A5E}
+
+:: Dell Dock 1.0.0
+start /wait msiexec /qn /norestart /x {F336F89D-8C5A-432C-8EA9-DA19377AD591}
+
+:: Dell Dock 2
+start /wait msiexec /qn /norestart /x {C39A4E1F-9AF1-4FE1-A80E-A5B867FABB42}
+
+:: Dell Driver Reset Tool 1.02.0000
+start /wait msiexec /qn /norestart /x {55E79447-F6B0-46CB-9F58-F82DAC9C2286}
+
+:: Dell Feature Enhancement Pack 2.2.1
+start /wait msiexec /qn /norestart /x {98CB551E-EDB1-4535-82A6-E3258597F64E}
+
+:: Dell Foundation Services (various versions)
+start /wait msiexec /qn /norestart /x {8E80AF23-17B4-4611-B28E-68A114B23488}
+start /wait msiexec /qn /norestart /x {CF5E8D60-A1FD-4BF2-9EDD-EA8C05F784A9}
+
+:: Dell Getting Started Guide 1.00.0000
+start /wait msiexec /qn /norestart /x {7B7D73E7-79D5-4133-AB7A-E27BB5F64725}
+
+:: Dell Home Systems Service Agreement 2.0.0
+start /wait msiexec /qn /norestart /x {AB2CED80-0F16-476F-8769-30A363562F16}
+
+:: Dell Mobile Broadband Utility 3.00.23.003
+start /wait msiexec /qn /norestart /x {C8B8C745-D288-41B4-9512-01E397F77449}
+
+:: Dell Mobile Broadband Utility 3.00.96.007
+start /wait msiexec /qn /norestart /x {AA2AFD30-F80C-401C-9B85-03A05A2F7EFD}
+
+:: Dell MusicStage 1.4.162.0
+start /wait msiexec /qn /norestart /x {EC542D5D-B608-4145-A8F7-749C02BE6D94}
+
+:: Dell Open Print Driver 1.31.7527.0
+start /wait msiexec /qn /norestart /x {B96348BD-6B0D-42E3-80B1-FA6718067BFE}
+
+:: Dell PhotoStage 1.5.0.30
+start /wait msiexec /qn /norestart /x {E3BFEE55-39E2-4BE0-B966-89FE583822C1}
+
+:: Dell Power Manager 1.1.0
+start /wait msiexec /qn /norestart /x {E4335E82-17B3-460F-9E70-39D9BC269DB3}
+
+:: Dell Product Registration
+start /wait msiexec /qn /norestart /x {287348C8-8B47-4C36-AF28-441A3B7D8722}
+start /wait msiexec /qn /norestart /x {236F9DDF-B9BA-420A-9775-FBBA7B06475B}
+
+:: Dell Protected Workspace 2.3.15835
+start /wait msiexec /qn /norestart /x {DDDAF4A7-8B7D-4088-AECC-6F50E594B4F5}
+
+:: Dell Repository Manager v1.9.0 1.9.0
+start /wait msiexec /qn /norestart /x {2117290E-B7AD-4ACF-AEA4-3DE91A1063AF}
+
+:: Dell Resource CD 1.00.0000
+start /wait msiexec /qn /norestart /x {F6CB42B9-F033-4152-8813-FF11DA8E6A78}
+
+:: Dell Solution Center 1.00.0000
+start /wait msiexec /qn /norestart /x {11DB380B-48CF-46EA-8B03-51874E2733C9}
+
+:: Dell Support 3.1 5.1.760
+start /wait msiexec /qn /norestart /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388}
+
+:: Dell Support Center (various versions)
+start /wait msiexec /qn /norestart /x {E2CAA395-66B3-4772-85E3-6134DBAB244E}
+start /wait msiexec /qn /norestart /x {644B991F-B109-4360-9DA3-40CDAD13961C}
+
+:: Dell SupportAssistAgent 1.1.0.47
+start /wait msiexec /qn /norestart /x {284D3B99-E8F5-4411-A7DD-7072EFCF3A46}
+
+:: Dell System E-support Tool 2.2
+start /wait msiexec /qn /norestart /x {13766F76-6C8C-4E57-A9F3-3212D1C6E0D1}
+
+:: Dell System Manager (various versions)
+start /wait msiexec /qn /norestart /x {0B72160B-9F67-47C0-858F-5A0074162148}
+start /wait msiexec /qn /norestart /x {C73A3942-84C8-4597-9F9B-EE227DCBA758}
+
+:: Dell System Restore 2.00.0000
+start /wait msiexec /qn /norestart /x {7358D71A-DEFE-47DB-910A-B1CAC9C9D7C1}
+
+:: Dell Unified Wireless Suite 1.0.158
+start /wait msiexec /qn /norestart /x {D850CB7E-72BC-4510-BA4F-48932BFAB295}
+
+:: Dell Update 1.7.1015.0
+start /wait msiexec /qn /norestart /x {DA24AEC5-5BD8-4248-AADE-16BB620E4E62}
+
+:: Dell_DTM_X64 1.0.0.6
+start /wait msiexec /qn /norestart /x {FF79C05D-1E19-4FE5-BDD4-AAAFC28DDDDD}
+
+:: Dell_SWEQ 1.0.0.4
+start /wait msiexec /qn /norestart /x {E95696A0-D7C9-4BEC-971E-FC2995DA2055}
+
+:: DellAccess (various versions)
+start /wait msiexec /qn /norestart /x {20A4AA32-B3FF-4A0B-853C-ACDDCD6CB344}
+start /wait msiexec /qn /norestart /x {DC14FF2A-EB53-4093-847D-9314E9555BB6}
 
 :: Dell Client System Update
 start /wait msiexec /qn /norestart /x {69093D49-3DD1-4FB5-A378-0D4DB4CF86EA}
@@ -955,6 +1238,9 @@ start /wait msiexec /qn /norestart /x {CBB639E0-B534-4827-97B5-CA1A4CA985B5}
 
 :: HP BufferChm
 start /wait msiexec /qn /norestart /x {FA0FF682-CC70-4C57-93CD-E276F3E7537E}
+start /wait msiexec /qn /norestart /x {2EEA7AA4-C203-4b90-A34F-19FB7EF1C81C}
+start /wait msiexec /qn /norestart /x {62230596-37E5-4618-A329-0D21F529A86F}
+start /wait msiexec /qn /norestart /x {687FEF8A-8597-40b4-832C-297EA3F35817}
 
 :: HP BPDSoftware (various versions); known to create annoying error messages and popups at system boot
 start /wait msiexec /qn /norestart /x {20D48DD8-06BA-4d5a-9796-6C7582F07947}
@@ -967,6 +1253,13 @@ start /wait msiexec /qn /norestart /x {AFB69549-3AAE-4433-A99B-673B8A513379}
 
 :: HP C4400_Help
 start /wait msiexec /qn /norestart /x {4F923F90-46D1-4492-9CC6-13FBBA00E7EC}
+
+:: HP CinemaNow Media Manager
+start /wait msiexec /qn /norestart /x {A5E65B95-F016-474D-BC0D-6AF64412BBDF}
+
+:: HP Copy (various versions)
+start /wait msiexec /qn /norestart /x {3C92B2E6-380D-4fef-B4DF-4A3B4B669771}
+start /wait msiexec /qn /norestart /x {55D003F4-9599-44BF-BA9E-95D060730DD3}
 
 :: HP CUE Status (various versions)
 start /wait msiexec /qn /norestart /x {5B025634-7D5B-4B8D-BE2A-7943C1CF2D5D}
@@ -981,6 +1274,7 @@ start /wait msiexec /qn /norestart /x {C9EF1AAF-B542-41C8-A537-1142DA5D4AEC}
 
 :: HP CustomerResearchQFolder
 start /wait msiexec /qn /norestart /x {6F5E2F4A-377D-4700-B0E3-8F7F7507EA15}
+start /wait msiexec /qn /norestart /x {7206B668-FEE0-455B-BB1F-9B5A2E0EC94A}
 
 :: HP Connected Music
 start /wait msiexec /qn /norestart /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5}
@@ -1423,6 +1717,9 @@ start /wait msiexec /x "C:\ProgramData\Microsoft\OEMOffice15\OOBE\x86\oemoobe.ms
 :: opensource
 start /wait msiexec /qn /norestart /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE}
 
+:: Panasonic Common Components for Panasonic PC 3.0.1400.100
+start /wait msiexec /qn /norestart /x {7804E86D-6DA1-1014-8C88-F05533644796}
+
 :: PlayReady PC Runtime amd64
 start /wait msiexec /qn /norestart /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04}
 
@@ -1679,6 +1976,9 @@ start /wait msiexec /qn /norestart /x {BED0B8A2-2986-49F8-90D6-FA008D37A3D2}
 
 :: Trend Micro Worry-Free Business Security Trial
 start /wait msiexec /qn /norestart /x {0A07E717-BB5D-4B99-840B-6C5DED52B277}
+
+:: uLead Burn.Now 4.5 4.5.0
+start /wait msiexec /qn /norestart /x {FB3A15FD-FC67-3A2F-892B-6890B0C56EA9}
 
 :: VAIO - Media Gallery
 start /wait msiexec /qn /norestart /x {7C7BC722-BB95-4A6E-9373-DA706D83430B}
