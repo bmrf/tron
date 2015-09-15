@@ -102,7 +102,11 @@ Iminent
 Inbox Toolbar
 InfoAtoms
 InstaCodecs
-Internet Explorer Toolbar 4.6 by SweetPacks
+Intel%%Management Engine%%
+Intel%%ME%%UninstallLegacy
+Intel%%Rapid%%
+Intel%%Smart%%
+Internet Explorer Toolbar%%
 InternetHelper3 Toolbar
 IObit Apps Toolbar v9.3
 IObit Toolbar v8.9
@@ -129,7 +133,7 @@ My Scrap Nook Internet Explorer Toolbar
 My Web Search (Zwinky)
 MyPC Backup%%
 Mysearchdial
-Nero BackItUp%%OEM
+Nero%%
 Norton Internet%%
 OMG Music Plus%%
 OOBE%%
