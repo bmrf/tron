@@ -8,7 +8,10 @@
 ::                      + stage_4_repair:telemetry:  Add full purging of Windows 10 telemetry
 ::                      ! stage_4_repair:dism_store: Fix long-time bug where Dism image repair and cleanup wouldn't run on Server 2012
 ::                      * stage_2_de-bloat:metro:    Expand OEM Metro app purge to include Windows 10
-::                      * stage_2_de-bloat:oem:      Switch order of debloat operations (now target specific GUIDs first; run wildcard as catch-all afterwards). This is because the system can't be force-rebooted when targeting a GUID specifically, but it CAN be when done with a wildcard, so we first try to catch everything we know of in hopes that we'll eliminiate some of the GUIDs that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
+::                      * stage_2_de-bloat:oem:      Switch order of debloat operations (now target specific GUIDs first; run wildcard as catch-all afterwards).
+::                                                   This is because the system can't be force-rebooted when targeting a GUID specifically, but it CAN be when done
+::                                                   with a wildcard, so we first try to catch everything we know of in hopes that we'll eliminiate some of the GUIDs
+::                                                   that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
