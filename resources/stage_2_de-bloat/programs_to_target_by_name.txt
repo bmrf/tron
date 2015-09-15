@@ -214,9 +214,7 @@ WiseConvert%%
 Yahoo%%Toolbar
 Yahoo%%Browser%%
 Yahoo%%Search%%
-Yontoo 2.051
-Yontoo Layers 1.10.01
-YouTube Downloader 2.7
-YouTube Downloader Toolbar v4.3
+Yontoo%%
+YouTube Downloader%%
 ZD Manager
 Zip Opener Packages
