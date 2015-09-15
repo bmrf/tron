@@ -62,15 +62,17 @@ rd /s /q "%appdata%\Macromedia" >nul 2>&1
 
 :: Kill forced OneDrive integration
 taskkill /f /im OneDrive.exe >nul 2>&1
-%SystemRoot%\System32\OneDriveSetup.exe >nul 2>&1
-%SystemRoot%\SysWOW64\OneDriveSetup.exe >nul 2>&1
+%SystemRoot%\System32\OneDriveSetup.exe /uninstall >nul 2>&1
+%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >nul 2>&1
 :: These keys are orphaned after the OneDrive uninstallation, so can be safely removed
 REG Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
 REG Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
-rd "%UserProfile%\OneDrive" /Q /S >nul 2>&1
-rd "%LocalAppData%\Microsoft\OneDrive" /Q /S >nul 2>&1
-rd "%ProgramData%\Microsoft OneDrive" /Q /S >nul 2>&1
-rd "C:\OneDriveTemp" /Q /S >nul 2>&1
+takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >nul 2>&1
+icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >nul 2>&1
+rd /s /q "%LocalAppData%\Microsoft\OneDrive" >nul 2>&1
+rd /s /q "%UserProfile%\OneDrive" /Q /S >nul 2>&1
+rd /s /q "%ProgramData%\Microsoft OneDrive" >nul 2>&1
+rd /s /q "%SystemDrive%\OneDriveTemp" >nul 2>&1
 
 
 :::::::::::::::::::::::::::::::::::::::::::::::
