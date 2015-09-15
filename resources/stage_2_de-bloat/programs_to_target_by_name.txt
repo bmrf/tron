@@ -88,7 +88,14 @@ FromDocToPDF Toolbar
 GetSavin
 Glary Utilities 4.6
 HD-Total-%%
-HP%%Assistant
+HP%%Assistant%%
+HP%%Documentation%%
+HP%%Guide%%
+HP%%Help%%
+HP%%Registration%%
+HP%%Study%%
+HP%%Support%%
+HP%%Update%%
 IB Updater%%
 Iminent
 Inbox Toolbar
