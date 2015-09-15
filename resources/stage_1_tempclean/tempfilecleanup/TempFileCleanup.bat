@@ -93,6 +93,10 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
+		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
+		del /F /Q "%%x\*.blf" 2>NUL
+		del /F /Q "%%x\*.regtrans-ms" 2>NUL
 	)
 )
 
