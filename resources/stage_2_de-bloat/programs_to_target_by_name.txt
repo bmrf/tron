@@ -45,6 +45,7 @@ Any Video Converter%%
 AppsHat
 ArcadeParlor
 Ask%%Toolbar
+ASUS%%
 AtuZi
 AVG PC TuneUp%%
 AVG Web TuneUp
@@ -93,6 +94,7 @@ HP%%Documentation%%
 HP%%Guide%%
 HP%%Help%%
 HP%%Registration%%
+hpStatusAlerts%%
 HP%%Study%%
 HP%%Support%%
 HP%%Update%%
@@ -171,6 +173,7 @@ ShopAtHome.com Toolbar
 Shopping%%
 Shopper%%
 SLOW-PCfighter
+SmartWebPrinting%%
 Smiley Central%%
 Software Assist
 Software Updater
