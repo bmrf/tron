@@ -1085,6 +1085,23 @@ start /wait msiexec /qn /norestart /x {D7D5F438-26EF-45AB-AB89-C476FBCF8584}
 :: HP System Event Utility
 start /wait msiexec /qn /norestart /x {8B4EE87E-6D40-4C91-B5E8-0DC77DC412F1}
 
+:: hpStatusAlerts
+start /wait msiexec /qn /norestart /x {7504A7B0-003E-4875-A454-B627E127E9D9}
+start /wait msiexec /qn /norestart /x {06CE2B24-EC8C-4847-AF33-098255B5D32D}
+start /wait msiexec /qn /norestart /x {44EB02F5-16E5-42BD-9183-C23EF7620CF3}
+start /wait msiexec /qn /norestart /x {46A99EAE-98DA-4BE5-94C3-D41BA4C266DA}
+start /wait msiexec /qn /norestart /x {B8DBED1E-8BC3-4d08-B94A-F9D7D88E9BBF}
+start /wait msiexec /qn /norestart /x {6470E292-3B55-41DC-B5EB-91C34C5ACB5D}
+start /wait msiexec /qn /norestart /x {7C960641-0A27-45C6-96F8-BE4E04A4CC2C}
+start /wait msiexec /qn /norestart /x {092FCD1C-5203-4BD1-B4F4-0F0C6B237A6A}
+start /wait msiexec /qn /norestart /x {0CCFF6E8-B4D1-416F-8198-B223BA8B1991}
+start /wait msiexec /qn /norestart /x {25E11B5A-4817-4296-A260-235AE77B1708}
+start /wait msiexec /qn /norestart /x {A1EF28FB-74A8-4157-91E9-9C164CAB10F8}
+start /wait msiexec /qn /norestart /x {FDEA674C-478D-455F-9894-D6D4CD4BB304}
+start /wait msiexec /qn /norestart /x {71677768-D5DA-4785-8A44-2DFFE33CF70A}
+start /wait msiexec /qn /norestart /x {9652051B-BC94-4588-A84B-B9B34660FB5E}
+start /wait msiexec /qn /norestart /x {456E4C16-227D-48E4-BA3B-52D1B15CB196}
+
 :: HP "Toolbox" (hidden)
 start /wait msiexec /qn /norestart /x {292F0F52-B62D-4E71-921B-89A682402201}
 
