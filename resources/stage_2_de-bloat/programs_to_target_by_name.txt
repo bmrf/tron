@@ -217,6 +217,7 @@ WiseConvert%%
 Yahoo%%Toolbar
 Yahoo%%Browser%%
 Yahoo%%Search%%
+Yammer%%
 Yontoo%%
 YouTube Downloader%%
 ZD Manager
