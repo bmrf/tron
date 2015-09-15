@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
+:: Version:       1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
+::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
 ::                1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
 ::                1.0.2-TRON * Add removal of C:\HP folder
@@ -25,8 +26,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.5-TRON
-set SCRIPT_UPDATED=2015-09-07
+set SCRIPT_VERSION=1.0.6-TRON
+set SCRIPT_UPDATED=2015-09-14
 
 
 ::::::::::::::::::::::::::
@@ -54,12 +55,22 @@ del /F /S /Q "%TEMP%" 2>NUL
 :: Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
 ::rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 
-:: Windows.old cleanup (Windows.old is left behind after an upgrade installation). Thanks to /u/bodkov
-:: Disabled for Tron
+:: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
+REM Disabled for Tron
 REM if exist %SystemDrive%\Windows.old\ (
 	REM takeown /F %SystemDrive%\Windows.old\* /R /A /D Y
 	REM echo y| cacls %SystemDrive%\Windows.old\*.* /C /T /grant administrators:F
 	REM rmdir /S /Q %SystemDrive%\Windows.old\
+	REM )
+REM if exist %SystemDrive%\$Windows.~BT\ (
+	REM takeown /F %SystemDrive%\$Windows.~BT\* /R /A
+	REM icacls %SystemDrive%\$Windows.~BT\*.* /T /grant administrators:F
+	REM rmdir /S /Q %SystemDrive%\$Windows.~BT\
+	REM )
+REM if exist %SystemDrive%\$Windows.~WS (
+	REM takeown /F %SystemDrive%\$Windows.~WS\* /R /A
+	REM icacls %SystemDrive%\$Windows.~WS\*.* /T /grant administrators:F
+	REM rmdir /S /Q %SystemDrive%\$Windows.~WS\
 	REM )
 
 ::::::::::::::::::::::
