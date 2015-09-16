@@ -140,6 +140,11 @@ start /wait msiexec /qn /norestart /x {4F524A2D-5637-006A-76A7-A758B70C0F01}
 start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C0A00}
 
+:: Ask Search App by Ask
+start /wait msiexec /qn /norestart /x {43C423D9-E6D6-4607-ADC9-EBB54F690C57}
+start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C1500}
+start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C2201}
+
 :: ASPCA and CWA Reminder misc programs (we-care.com Macy's nagware)
 start /wait msiexec /qn /norestart /x {7E482AF6-AA1F-4CC5-BA13-0536675F5744}
 start /wait msiexec /qn /norestart /x {987F1753-1F42-4DF2-A5EA-0CCB777F3EB0}
@@ -912,14 +917,11 @@ start /wait msiexec /qn /norestart /x {6B66E18F-BC5C-47AC-A66C-9F0814A8A0EB}
 :: Create Recovery Media 1.20.0.00
 start /wait msiexec /qn /norestart /x {C15914CB-2F62-4A58-86C1-69F90A2AA5EE}
 
-:: CyberLink Blu-ray Disc Suite
+:: CyberLink Blu-ray Disc Suite; CyberLink MediaEspresso shares this GUID
 start /wait msiexec /qn /norestart /x {1FBF6C24-C1FD-4101-A42B-0C564F9E8E79}
 
 :: CyberLink MakeDisc
 start /wait msiexec /qn /norestart /x {0456ebd7-5f67-4ab6-852e-63781e3f389c}
-
-:: CyberLink MediaEspresso 6.50.0000
-start /wait msiexec /qn /norestart /x {1FBF6C24-C1fD-4101-A42B-0C564F9E8E79}
 
 :: CyberLink Media Suite 10
 start /wait msiexec /qn /norestart /x {8DE5BF1E-6857-47C9-84FC-3DADF459493F}
@@ -958,8 +960,7 @@ start /wait msiexec /qn /norestart /x {D36DD326-7280-11D8-97C8-000129760CBE}
 start /wait msiexec /qn /norestart /x {3250260C-7A95-4632-893B-89657EB5545B}
 start /wait msiexec /qn /norestart /x {1896E712-2B3D-45eb-BCE9-542742A51032}
 
-:: CyberLink PowerDVD 12 and DX
-start /wait msiexec /qn /norestart /x {B46BEA36-0B71-4A4E-AE41-87241643FA0A}
+:: CyberLink DX
 start /wait msiexec /qn /norestart /x {6811CAA0-BF12-11D4-9EA1-0050BAE317E1}
 
 :: CyberLink PowerDirector 12
@@ -1008,7 +1009,6 @@ start /wait msiexec /qn /norestart /x {E45D7941-F3F0-4E8E-AD55-DCE2FE0AE6D8}
 :: Dell Control Point (various versions)
 start /wait msiexec /qn /norestart /x {0DB0EA38-E806-44ED-A892-489F2E305080}
 start /wait msiexec /qn /norestart /x {2E55EEFD-2162-4A7D-9158-EDB0305603A6}
-start /wait msiexec /qn /norestart /x {992D1CE7-A20F-4AB0-9D9D-AFC3418844DA}
 start /wait msiexec /qn /norestart /x {74F7662C-B1DB-489E-A8AC-07A06B24978B}
 start /wait msiexec /qn /norestart /x {24F2AD94-CC1B-4294-B184-D4D31A3186A7}
 start /wait msiexec /qn /norestart /x {4B3230C5-F069-416B-9169-1B84A216ED6A}
@@ -1016,7 +1016,6 @@ start /wait msiexec /qn /norestart /x {4B3230C5-F069-416B-9169-1B84A216ED6A}
 :: Dell ControlVault (various versions and components); this is Dell-branded biometric software
 start /wait msiexec /qn /norestart /x {693A23FB-F28B-4F7A-A720-4C1263F97F43}
 start /wait msiexec /qn /norestart /x {5905F42D-3F5F-4916-ADA6-94A3646AEE76}
-start /wait msiexec /qn /norestart /x {7EC66A95-AC2D-4127-940B-0445A526AB2F}
 start /wait msiexec /qn /norestart /x {54C04D53-C3C3-46EA-A75F-7AFF4BEB727C}
 start /wait msiexec /qn /norestart /x {FEFDCDCF-C49C-45D0-AAF8-5345858ADEC7}
 start /wait msiexec /qn /norestart /x {6A7F4379-B2EE-444F-AC4A-C5379B1CF95E}
@@ -1030,7 +1029,6 @@ start /wait msiexec /qn /norestart /x {FCD9CD52-7222-4672-94A0-A722BA702FD0}
 :: Dell Data Protection (various versions and components)
 start /wait msiexec /qn /norestart /x {CCDF8E78-6102-470A-BBE4-9AF13694C716}
 start /wait msiexec /qn /norestart /x {04566294-A6B6-4462-9721-031073EB3694}
-start /wait msiexec /qn /norestart /x {A9C61491-EF2F-4ED8-8E10-FB33E3C6B55A}
 start /wait msiexec /qn /norestart /x {7FA89EC8-023D-4AEA-94E2-32820FBBDC44}
 start /wait msiexec /qn /norestart /x {AC474F86-9A17-4BCB-8B15-11ABFD5B7F95}
 start /wait msiexec /qn /norestart /x {05FDD00D-1C45-44D1-AB3F-C24D45C39457}
@@ -1043,7 +1041,6 @@ start /wait msiexec /qn /norestart /x {2B2B45B1-3CA0-4F8D-BBB3-AC77ED46A0FE}
 
 :: Dell DataSafe Online (various versions)
 start /wait msiexec /qn /norestart /x {11F1920A-56A2-4642-B6E0-3B31A12C9288}
-start /wait msiexec /qn /norestart /x {7DB9F1E5-9ACB-410D-A7DC-7A3D023CE045}
 
 :: Dell Digital Content Portal
 start /wait msiexec /qn /norestart /x {C7FB1A71-D808-4CD2-997D-837B39EA7EB0}
@@ -1051,12 +1048,9 @@ start /wait msiexec /qn /norestart /x {C7FB1A71-D808-4CD2-997D-837B39EA7EB0}
 :: Dell Digital Delivery (various versions)
 start /wait msiexec /qn /norestart /x {2A0F2CC5-3065-492C-8380-B03AA7106B1A}
 start /wait msiexec /qn /norestart /x {4688EB75-28E2-4731-9BCB-55E624F7CD45}
-start /wait msiexec /qn /norestart /x {975DFE7C-8E56-45BC-A329-401E6B1F8102}
 start /wait msiexec /qn /norestart /x {B7FB9195-E9FC-4316-930E-D799D5D712F7}
-start /wait msiexec /qn /norestart /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A}
 start /wait msiexec /qn /norestart /x {D605CD24-103D-4DB6-B572-653851213C46}
 start /wait msiexec /qn /norestart /x {B9CD9EC9-2566-4064-8599-4A3B742946F4}
-start /wait msiexec /qn /norestart /x {5A26B7C0-55B1-4DA8-A693-E51380497A5E}
 
 :: Dell Dock 1.0.0
 start /wait msiexec /qn /norestart /x {F336F89D-8C5A-432C-8EA9-DA19377AD591}
@@ -1124,11 +1118,11 @@ start /wait msiexec /qn /norestart /x {2117290E-B7AD-4ACF-AEA4-3DE91A1063AF}
 :: Dell Resource CD 1.00.0000
 start /wait msiexec /qn /norestart /x {F6CB42B9-F033-4152-8813-FF11DA8E6A78}
 
+:: Dell Security Innovation TSS 2.1.42
+start /wait msiexec /qn /norestart /x {524C544D-2D53-5000-76A7-A758B70C2201}
+
 :: Dell Solution Center 1.00.0000
 start /wait msiexec /qn /norestart /x {11DB380B-48CF-46EA-8B03-51874E2733C9}
-
-:: Dell Support 3.1 5.1.760
-start /wait msiexec /qn /norestart /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388}
 
 :: Dell Support Center (various versions)
 start /wait msiexec /qn /norestart /x {E2CAA395-66B3-4772-85E3-6134DBAB244E}
@@ -1172,14 +1166,6 @@ start /wait msiexec /qn /norestart /x {DC14FF2A-EB53-4093-847D-9314E9555BB6}
 
 :: Dell Client System Update
 start /wait msiexec /qn /norestart /x {69093D49-3DD1-4FB5-A378-0D4DB4CF86EA}
-start /wait msiexec /qn /norestart /x {04566294-A6B6-4462-9721-031073EB3694}
-start /wait msiexec /qn /norestart /x {2B2B45B1-3CA0-4F8D-BBB3-AC77ED46A0FE}
-
-:: Dell Command | Update
-start /wait msiexec /qn /norestart /x {EC542D5D-B608-4145-A8F7-749C02BE6D94}
-
-:: Dell Command | Power
-start /wait msiexec /qn /norestart /x {DDDAF4A7-8B7D-4088-AECC-6F50E594B4F5}
 
 :: Dell ControlPoint
 start /wait msiexec /qn /norestart /x {A9C61491-EF2F-4ED8-8E10-FB33E3C6B55A}
@@ -1200,7 +1186,6 @@ start /wait msiexec /qn /norestart /x {E60B7350-EA5F-41E0-9D6F-E508781E36D2}
 start /wait msiexec /qn /norestart /x {5B54DDC3-0ACC-4722-9C23-C3F07AF4825D}
 
 :: Dell Embassy Suite
-start /wait msiexec /qn /norestart /x {20A4AA32-B3FF-4A0B-853C-ACDDCD6CB344}
 start /wait msiexec /qn /norestart /x {53333479-6A52-4816-8497-5C52B67ED339}
 start /wait msiexec /qn /norestart /x {5F5CBF39-BD29-43C8-B63A-B9758F0FD090}
 start /wait msiexec /qn /norestart /x {7EC46A4C-E659-418E-A65A-BD7FC82D4C48}
@@ -1221,6 +1206,10 @@ start /wait msiexec /qn /norestart /x {CAC1E444-ECC4-4FF8-B328-5E547FD608F8}
 
 :: Dell Protected Workspace
 wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
+
+:: Dell QuickSet32 and QuickSet64
+start /wait msiexec /qn /norestart /x {ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
+start /wait msiexec /qn /norestart /x {C4972073-2BFE-475D-8441-564EA97DA161}
 
 :: Dell Resource CD
 start /wait msiexec /qn /norestart /x {42929F0F-CE14-47AF-9FC7-FF297A603021}
@@ -1256,9 +1245,6 @@ start /wait msiexec /qn /norestart /x {D87149B3-7A1D-4548-9CBF-032B791E5908}
 
 :: DIBS 1.7.0
 start /wait msiexec /qn /norestart /x {2EA870FA-585F-4187-903D-CB9FFD21E2E0}
-
-:: DisableMSDefender
-start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 
 :: Dolby Advanced Audio // Home Theater
 start /wait msiexec /qn /norestart /x {B26438B4-BF51-49C3-9567-7F14A5E40CB9}
@@ -1303,7 +1289,6 @@ start /wait msiexec /qn /norestart /x {4BB82AD9-0CF6-4E14-BD75-C1AB657C2914}
 
 :: Epson Event Manager
 start /wait msiexec /qn /norestart /x {3F29268A-F53A-4387-9F2B-E9368A823178}
-start /wait msiexec /qn /norestart /x {814FA673-A085-403C-9545-747FC1495069}
 start /wait msiexec /qn /norestart /x {2970697F-2A11-4588-8B7F-97322D1CCF3C}
 start /wait msiexec /qn /norestart /x {03B8AA32-F23C-4178-B8E6-09ECD07EAA47}
 start /wait msiexec /qn /norestart /x {10144CFE-D76C-4CFA-81A1-37A1642349A3}
@@ -1346,6 +1331,10 @@ start /wait msiexec /qn /norestart /x {C32028B6-E056-429C-B839-0DCF21528E71}
 start /wait msiexec /qn /norestart /x {0C216C82-F950-4C79-A63E-322C7280AC30}
 start /wait msiexec /qn /norestart /x {E8A5B78F-4456-4511-AB3D-E7BFFB974A7A}
 
+:: Fujitsu Security Panel // Security Panel for Supervisor
+start /wait msiexec /qn /norestart /x {17F82182-0E3D-4A14-8843-5ECBFAF4F12F}
+start /wait msiexec /qn /norestart /x {0EFDF2F9-836D-4EB7-A32D-038BD3F1FB2A}
+
 :: Fujitsu System Extension Utility 2.1.1.0
 start /wait msiexec /qn /norestart /x {DED08875-D1AE-4E66-BE84-BB746019B9F9}
 
@@ -1381,7 +1370,6 @@ start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
 start /wait msiexec /qn /norestart /x {06FCC605-92A1-4A1C-B7D1-85E5778290A4}
 
 :: HP 3.00.xxxx (various versions)
-start /wait msiexec /qn /norestart /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992}
 start /wait msiexec /qn /norestart /x {2F518061-89DB-4AF0-9A7A-2BF73B60E6F0}
 start /wait msiexec /qn /norestart /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2}
 start /wait msiexec /qn /norestart /x {F9569D00-4576-46C8-B6C7-207A4FD39745}
@@ -1485,7 +1473,6 @@ start /wait msiexec /qn /norestart /x {C9EF1AAF-B542-41C8-A537-1142DA5D4AEC}
 start /wait msiexec /qn /norestart /x {07F6DC37-0857-4B68-A675-4E35989E85E3}
 
 :: HP CustomerResearchQFolder
-start /wait msiexec /qn /norestart /x {6F5E2F4A-377D-4700-B0E3-8F7F7507EA15}
 start /wait msiexec /qn /norestart /x {7206B668-FEE0-455B-BB1F-9B5A2E0EC94A}
 
 :: HP Connected Music
@@ -1516,7 +1503,6 @@ start /wait msiexec /qn /norestart /x {AB5D51AE-EBC3-438D-872C-705C7C2084B0}
 start /wait msiexec /qn /norestart /x {F769B78E-FF0E-4db5-95E2-9F4C8D6352FE}
 
 :: HP Discover hp Touchpoint Manager
-start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 start /wait msiexec /qn /norestart /x {37EC8980-A8E5-411D-8CDD-CB1CCA95057F}
 
 :: HP DisplayLink Core Software and DisplayLink Graphics
@@ -1608,7 +1594,6 @@ start /wait msiexec /qn /norestart /x {B8454F30-79EC-4959-BCF1-3776DEC406AB}
 start /wait msiexec /qn /norestart /x {BCFAA37D-A6DB-43BF-A351-43F183E52D07}
 start /wait msiexec /qn /norestart /x {5C76ED0D-0F6F-4985-8B34-F9AE7834848F}
 start /wait msiexec /qn /norestart /x {74038F40-03AE-4785-865B-07EC7F6A5E97}
-start /wait msiexec /qn /norestart /x {97486FBE-A3FC-4783-8D55-EA37E9D171CC}
 start /wait msiexec /qn /norestart /x {04D66C1E-E5E2-483C-8715-916C42703924}
 start /wait msiexec /qn /norestart /x {5D3E11CE-2C9A-44E3-A561-ED9BAC439E83}
 start /wait msiexec /qn /norestart /x {83A375B6-6FC2-4F8A-948E-E506DB9DCDF0}
@@ -1738,6 +1723,9 @@ start /wait msiexec /qn /norestart /x {E4A80DC6-8475-4AD9-9952-5E4437889563}
 start /wait msiexec /qn /norestart /x {6B7AB1ED-B64E-4545-A8E7-F9E071E12B6F}
 start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
 
+:: HP QuickTransfer
+start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
+
 :: HP Recovery Manager
 start /wait msiexec /qn /norestart /x {64BAA990-F1FC-4145-A7B1-E41FBBC9DA47}
 start /wait msiexec /qn /norestart /x {D817481A-193E-4332-A4F3-E19132F744F0}
@@ -1809,7 +1797,6 @@ start /wait msiexec /qn /norestart /x {A36CD345-625C-4d6c-B3E2-76E1248CB451}
 
 :: HP Support Assistant (various versions)
 start /wait msiexec /qn /norestart /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE}
-start /wait msiexec /qn /norestart /x {904822F1-6C7D-4B91-B936-6A1C0810544C}
 start /wait msiexec /qn /norestart /x {61EB474B-67A6-47F4-B1B7-386851BAB3D0}
 start /wait msiexec /qn /norestart /x {4EDD5F10-3961-48C2-ACD9-63D5C125EA8F}
 start /wait msiexec /qn /norestart /x {7414C891-720D-4E86-85E5-C3AA898DA9EC}
@@ -1828,7 +1815,6 @@ start /wait msiexec /qn /norestart /x {8F2FC505-65FC-41B6-AAA7-55E266418E30}
 start /wait msiexec /qn /norestart /x {B8AC1A89-FFD1-4F97-8051-E505A160F562}
 start /wait msiexec /qn /norestart /x {7EF08127-4C30-4C05-8CEB-544F8A71C080}
 start /wait msiexec /qn /norestart /x {B1E569B6-A5EB-4C97-9F93-9ED2AA99AF0E}
-start /wait msiexec /qn /norestart /x {438363A8-F486-4C37-834C-4955773CB3D3}
 start /wait msiexec /qn /norestart /x {FB4BB287-37F9-4E27-9C4D-2D3882E08EFF}
 
 :: HP Support Information
@@ -1840,7 +1826,6 @@ start /wait msiexec /qn /norestart /x {D7D5F438-26EF-45AB-AB89-C476FBCF8584}
 :: HP System Default Settings
 start /wait msiexec /qn /norestart /x {5C90D8CF-F12A-41C6-9007-3B651A1F0D78}
 start /wait msiexec /qn /norestart /x {28FE073B-1230-4BF6-830C-7434FD0C0069}
-start /wait msiexec /qn /norestart /x {D1E8F2D7-7794-4245-B286-87ED86C1893C}
 start /wait msiexec /qn /norestart /x {C422BF2C-E570-4D3E-8718-7C641B190DB2}
 start /wait msiexec /qn /norestart /x {39011DEC-8956-401E-8369-421D402FFF52}
 
@@ -1869,7 +1854,6 @@ start /wait msiexec /qn /norestart /x {B9A03B7B-E0FF-4FB3-BA83-762E58A1B0AA}
 start /wait msiexec /qn /norestart /x {B1CB7E99-4685-45CB-867E-2FB58EDA0A39}
 
 :: HP "Toolbox" (hidden)
-start /wait msiexec /qn /norestart /x {292F0F52-B62D-4E71-921B-89A682402201}
 start /wait msiexec /qn /norestart /x {A7D99092-CFCA-AF69-9B61-B4A8784B5F8C}
 start /wait msiexec /qn /norestart /x {6BBA26E9-AB03-4FE7-831A-3535584CA002}
 start /wait msiexec /qn /norestart /x {292F0F52-B62D-4E71-921B-89A682402201}
@@ -1902,7 +1886,6 @@ start /wait msiexec /qn /norestart /x {A5AB9D5E-52E2-440e-A3ED-9512E253C81A}
 start /wait msiexec /qn /norestart /x {E06F04B9-45E6-4AC0-8083-85F7515F40F7}
 
 :: HP Update
-start /wait msiexec /qn /norestart /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2}
 start /wait msiexec /qn /norestart /x {787D1A33-A97B-4245-87C0-7174609A540C}
 start /wait msiexec /qn /norestart /x {97486FBE-A3FC-4783-8D55-EA37E9D171CC}
 start /wait msiexec /qn /norestart /x {117BBDE7-472E-4DCD-BAAE-410A0794A335}
@@ -1924,7 +1907,6 @@ start /wait msiexec /qn /norestart /x {F07C2CF8-4C53-4EC3-8162-A6221E36EB88}
 
 :: HP Utility Center
 start /wait msiexec /qn /norestart /x {B7B82520-8ECE-4743-BFD7-93B16C64B277}
-start /wait msiexec /qn /norestart /x {07FA4960-B038-49EB-891B-9F95930AA544}
 start /wait msiexec /qn /norestart /x {35021DFB-F9CA-402A-89A2-47F91E506465}
 
 :: HP Vision Hardware Diagnostics
@@ -1958,13 +1940,16 @@ start /wait msiexec /qn /norestart /x {5601F151-A69F-4E30-8C60-37928124CD07}
 :: Instant Housecall Specialist Sign-in
 start /wait msiexec /qn /norestart /x {4A89B7B3-EB5B-4B33-B7B4-99E69792C081}
 
+:: Intel IdentityMine Air Hockey
+start /wait msiexec /qn /norestart /x {DF5DB383-DEEF-4649-8691-58353C928CCA}
+
 :: Intel(R) Identity Protection Technology
 start /wait msiexec /qn /norestart /x {C01A86F5-56E7-101F-9BC9-E3F1025EB779}
 start /wait msiexec /qn /norestart /x {BE77874C-0353-49DF-A5BC-36A8FE51D95E}
 start /wait msiexec /qn /norestart /x {EAF826C0-245E-4D02-9D51-BA4C98717EAE}
 
-:: Intel Trusted Connect Client
-start /wait msiexec /qn /norestart /x {44B72151-611E-429D-9765-9BA093D7E48A}
+:: Intel (R) Pro Alerting Agent
+start /wait msiexec /qn /norestart /x {FCDDBA94-7389-49E5-B287-2661460BAF18}
 
 :: Intel(R) Technology Access
 start /wait msiexec /qn /norestart /x {413fe921-b226-41c8-bc3c-574074ceec4d}
@@ -1984,12 +1969,11 @@ start /wait msiexec /qn /norestart /x {F4404AFD-2EF3-40C1-8C09-29E5F3B6972B}
 start /wait msiexec /qn /norestart /x {3DE97849-544D-4D68-9255-11DF6F9F10D8}
 start /wait msiexec /qn /norestart /x {7AB8C73F-03FE-48AE-990C-CCB8D6C4FAB8}
 start /wait msiexec /qn /norestart /x {977D1ABF-4089-4CA7-BA33-CC75808B7ACE}
-start /wait msiexec /qn /norestart /x {44B72151-611E-429D-9765-9BA093D7E48A}
-start /wait msiexec /qn /norestart /x {1B444AF9-1DBE-4884-8F35-969BEFCF69A8}
 start /wait msiexec /qn /norestart /x {A61059F4-F902-4417-8ED2-20A29972EC40}
 start /wait msiexec /qn /norestart /x {3181229B-05DA-46F9-B8D4-4966BDA99A74}
 start /wait msiexec /qn /norestart /x {181BBF43-CA17-4E1A-A78D-81E67A57B8A4}
 start /wait msiexec /qn /norestart /x {51A66ED3-200E-4147-8D1E-E8D30936FD26}
+start /wait msiexec /qn /norestart /x {44B72151-611E-429D-9765-9BA093D7E48A}
 
 :: Intel(R) Wake on Voice 1.0.6
 start /wait msiexec /qn /norestart /x {A39CDDD2-3FB3-4C98-BDE9-E3032443417C}
@@ -2039,9 +2023,6 @@ start /wait msiexec /qn /norestart /x {32A3A4F4-B792-11D6-A78A-00B0D0170550}
 :: Kaspersky Lab Network Agent
 start /wait msiexec /qn /norestart /x {786A9F7E-CFEC-451F-B3C4-22EB11550FD8}
 
-:: Kaspersky Internet Security
-start /wait msiexec /qn /norestart /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5}
-
 :: KODAK Share Button App
 start /wait msiexec /qn /norestart /x {DE9B51D7-C575-4587-A848-DE95CD7F7684}
 
@@ -2053,9 +2034,10 @@ start /wait msiexec /qn /norestart /x {3849486C-FF09-4F5D-B491-3E179D58EE15}
 start /wait msiexec /qn /norestart /x {7F8205DE-DDFA-4156-ADA2-766E9CB4FABC}
 start /wait msiexec /qn /norestart /x {8C6D6116-B724-4810-8F2D-D047E6B7D68E}
 
-:: Lenovo Metrics Collector SDK
+:: Lenovo Metric Collection SDK
 start /wait msiexec /qn /norestart /x {DDAA788F-52E6-44EA-ADB8-92837B11BF26}
 start /wait msiexec /qn /norestart /x {C2B5B5B0-2545-4E94-B4BA-548D4BF0B196}
+start /wait msiexec /qn /norestart /x {50816F92-1652-4A7C-B9BC-48F682742C4B}
 
 :: Lenovo Patch Utility
 start /wait msiexec /qn /norestart /x {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43}
@@ -2085,10 +2067,7 @@ start /wait msiexec /qn /norestart /x {25097770-2B1F-49F6-AB9D-1C708B96262A}
 start /wait msiexec /qn /norestart /x {63942F7E-3646-45EC-B8A9-EAC40FEB66DB}
 start /wait msiexec /qn /norestart /x {13BD494D-9ACD-420B-A291-E145DED92EF6}
 start /wait msiexec /qn /norestart /x {4C2B6F96-3AED-4E3F-8DCE-917863D1E6B1}
-start /wait msiexec /qn /norestart /x {1CA74803-5CB2-4C03-BDBE-061EDC81CC7F}
-start /wait msiexec /qn /norestart /x {6707C034-ED6B-4B6A-B21F-969B3606FBDE}
 start /wait msiexec /qn /norestart /x {494D80C4-3557-4D73-A153-65FE4B3ECDC3}
-start /wait msiexec /qn /norestart /x {13F59938-C595-479C-B479-F171AB9AF64F}
 
 :: Lenovo System Update
 start /wait msiexec /qn /norestart /x {25C64847-B900-48AD-A164-1B4F9B774650}
@@ -2098,7 +2077,6 @@ start /wait msiexec /qn /norestart /x {C9335768-C821-DD44-38FB-A0D5A6DB2879}
 :: Lenovo ThinkVantage: Active Protection System // Fingerprint Software // System Update
 start /wait msiexec /qn /norestart /x {10F5A72A-1E07-4FAE-A7E7-14B10CC66B17}
 start /wait msiexec /qn /norestart /x {46A84694-59EC-48F0-964C-7E76E9F8A2ED}
-start /wait msiexec /qn /norestart /x {8675339C-128C-44DD-83BF-0A5D6ABD8297}
 start /wait msiexec /qn /norestart /x {479016BF-5B8D-445F-BE15-A187F25D81C8}
 
 :: Lenovo User Guide
@@ -2144,6 +2122,9 @@ start /wait msiexec /qn /norestart /x {86091EC1-DD17-4814-A54B-0A634CB8D82C}
 :: SSN Librarian (some sketchy Russian program)
 start /wait msiexec /qn /norestart /x {1D425886-3FE1-41AA-8D7A-E432CE29A4AE}
 
+:: Steam 1.0.0.0 (malware; not Valve's Steam)
+start /wait msiexec /qn /norestart /x {AE8705FB-E13C-40A9-8A2D-68D6733FBFC2}
+
 :: SupportSoft Assisted Service 15 // SupportUtility (various versions)
 start /wait msiexec /qn /norestart /x {3002C8EB-2A7E-419B-B77F-5AD7E9F54A5A}
 start /wait msiexec /qn /norestart /x {31AF8802-BF43-4C43-984B-EC597CF51505}
@@ -2158,8 +2139,8 @@ start /wait msiexec /qn /norestart /x {13F00518-807A-4B3A-83B0-A7CD90F3A398}
 start /wait msiexec /qn /norestart /x {D2E0F0CC-6BE0-490b-B08B-9267083E34C9}
 start /wait msiexec /qn /norestart /x {b145ec69-66f5-11d8-9d75-000129760d75}
 
-:: MarketSplace Shortcuts
-start /wait msiexec /qn /norestart /x {D360FA88-17C8-4F14-B67F-13AAF9607B12}
+:: Maxx Audio Installer (x64)
+start /wait msiexec /qn /norestart /x {D9428275-602F-4D4B-A921-9CC642B76995}
 
 :: McAfee LiveSafe - Internet Security
 if exist %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
@@ -2245,9 +2226,6 @@ start /wait msiexec /qn /norestart /x {48C0866E-57EB-444C-8371-8E4321066BC3}
 :: NETGEAR A6100 Genie 1.0.0.12
 start /wait msiexec /qn /norestart /x {56C049BE-79E9-4502-BEA7-9754A3E60F9B}
 
-:: Nero High-Definition Video Playback
-start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
-
 :: Norton 360, Internet Security, Online Backup
 start /wait msiexec /qn /norestart /x {E4FC1ED9-E20C-4621-B834-03C388278DD8}
 start /wait msiexec /qn /norestart /x {63A6E9A9-A190-46D4-9430-2DB28654AFD8}
@@ -2295,7 +2273,6 @@ start /wait msiexec /qn /norestart /x {26A67848-1222-4691-B5BA-7E026585886B}
 :: PlayReady PC Runtime amd64 // x86
 start /wait msiexec /qn /norestart /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04}
 start /wait msiexec /qn /norestart /x {20D4A895-748C-4D88-871C-FDB1695B0169}
-start /wait msiexec /qn /norestart /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04}
 
 :: PlayStation(R)Network Downloader (hidden)
 start /wait msiexec /qn /norestart /x {B6659DD8-00A7-4A24-BBFB-C1F6982E5D66}
@@ -2334,7 +2311,6 @@ start /wait msiexec /qn /norestart /x {C7231F7C-6530-4E65-ADA6-5B392CF5BEB1}
 
 :: RealDownloader
 start /wait msiexec /qn /norestart /x {C8E8D2E3-EF6A-4B1D-A09E-7B27EBE2F3CE}
-start /wait msiexec /qn /norestart /x {C8E8D2E3-EF6A-4B1D-A09E-7B27EBE2F3CE}
 start /wait msiexec /qn /norestart /x {2259DBC1-EFFB-42B5-BA35-DFC0AAB2B3FB}
 start /wait msiexec /qn /norestart /x {B0235718-21E0-4A90-A42F-9C64C1B531CD}
 start /wait msiexec /qn /norestart /x {3DC873BB-FFE3-46BF-9701-26B9AE371F9F}
@@ -2349,7 +2325,6 @@ start /wait msiexec /qn /norestart /x {7770E71B-2D43-4800-9CB3-5B6CAAEBEBEA}
 start /wait msiexec /qn /norestart /x {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
 
 :: Roxio GUIDs; too many to list, Google individual GUID if a Roxio program you want to keep is getting removed
-start /wait msiexec /qn /norestart /x {5A06423A-210C-49FB-950E-CB0EB8C5CEC7}
 start /wait msiexec /qn /norestart /x {098122AB-C605-4853-B441-C0A4EB359B75}
 start /wait msiexec /qn /norestart /x {537BF16E-7412-448C-95D8-846E85A1D817}
 start /wait msiexec /qn /norestart /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB}
@@ -2372,7 +2347,6 @@ start /wait msiexec /qn /norestart /x {7746BFAA-2B5D-4FFD-A0E8-4558F4668105}
 start /wait msiexec /qn /norestart /x {BACE8BFA-8F39-421D-BEF1-6E78632BDC90}
 start /wait msiexec /qn /norestart /x {83FFCFC7-88C6-41c6-8752-958A45325C82}
 start /wait msiexec /qn /norestart /x {A33E7B0C-B99C-4EC9-B702-8A328B161AF9}
-start /wait msiexec /qn /norestart /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB}
 start /wait msiexec /qn /norestart /x {08E81ABD-79F7-49C2-881F-FD6CB0975693}
 start /wait msiexec /qn /norestart /x {F6377647-81AF-41C0-BC7E-06CF37E204AB}
 start /wait msiexec /qn /norestart /x {30465B6C-B53F-49A1-9EBA-A3F187AD502E}
@@ -2419,7 +2393,6 @@ start /wait msiexec /qn /norestart /x {0C7FDF6A-C463-173A-7957-74042481E593}
 start /wait msiexec /qn /norestart /x {E11D4FE9-718A-D54C-9C19-A13CA89B9E18}
 
 :: Skype Click 2 Call
-start /wait msiexec /qn /norestart /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701}
 start /wait msiexec /qn /norestart /x {981029E0-7FC9-4CF3-AB39-6F133621921A}
 start /wait msiexec /qn /norestart /x {5EE47864-CF84-4629-86A6-50BEFF406BE5}
 
@@ -2451,8 +2424,6 @@ start /wait msiexec /qn /norestart /x {B12665F4-4E93-4AB4-B7FC-37053B524629}
 start /wait msiexec /qn /norestart /x {1206EF92-2E83-4859-ACCB-2048C3CB7DA6}
 start /wait msiexec /qn /norestart /x {9A00EC4E-27E1-42C4-98DD-662F32AC8870}
 start /wait msiexec /qn /norestart /x {AB708C9B-97C8-4AC9-899B-DBF226AC9382}
-start /wait msiexec /qn /norestart /x {BC5DD87B-0143-4D14-AAE6-97109614DC6B}
-start /wait msiexec /qn /norestart /x {8D337F77-BE7F-41A2-A7CB-D5A63FD7049B}
 
 :: Sony Media Go
 start /wait msiexec /qn /norestart /x {167A1F6A-9BF2-4B24-83DB-C6D659F680EA}
@@ -2519,14 +2490,12 @@ start /wait msiexec /qn /norestart /x {CCB9B81A-167F-4832-B305-D2A0430840B3}
 start /wait msiexec /qn /norestart /x {04C4B49D-45D9-4A28-9ED1-B45CBD99B8C7}
 start /wait msiexec /qn /norestart /x {76CE5B47-F5A4-4E5C-99A0-CEFF6146EA4A}
 start /wait msiexec /qn /norestart /x {DB2C58E0-6284-4B48-97F2-22A980B6360B}
-start /wait msiexec /qn /norestart /x {25C64847-B900-48AD-A164-1B4F9B774650}
 start /wait msiexec /qn /norestart /x {63B7AC7E-0178-4F4F-A79B-08D97ADD02D7}
 
 :: Toshiba Audio Enhancement
 start /wait msiexec /qn /norestart /x {1515F5E3-29EA-4CD1-A981-032D88880F09}
 
 :: Toshiba Application Installer
-start /wait msiexec /qn /norestart /x {21A63CA3-75C0-4E56-B602-B7CD2EF6B621}
 start /wait msiexec /qn /norestart /x {970472D0-F5F9-4158-A6E3-1AE49EFEF2D3}
 start /wait msiexec /qn /norestart /x {1E6A96A1-2BAB-43EF-8087-30437593C66C}
 
@@ -2544,7 +2513,6 @@ start /wait msiexec /qn /norestart /x {1B87C40B-A60B-4EF3-9A68-706CF4B69978}
 start /wait msiexec /qn /norestart /x {230D1595-57DA-4933-8C4E-375797EBB7E1}
 
 :: Toshiba Book Place
-start /wait msiexec /qn /norestart /x {11244D6B-9842-440F-8579-6A4D771A0D9B}
 start /wait msiexec /qn /norestart /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331}
 start /wait msiexec /qn /norestart /x {39187A4B-7538-4BE7-8BAD-9E83303793AA}
 start /wait msiexec /qn /norestart /x {05A55927-DB9B-4E26-BA44-828EBFF829F0}
@@ -2560,18 +2528,15 @@ start /wait msiexec /qn /norestart /x {716C8275-A4A9-48CB-88C0-9829334CA3C5}
 start /wait msiexec /qn /norestart /x {95CCACF0-010D-45F0-82BF-858643D8BC02}
 
 :: TOSHIBA Disc Creator
-start /wait msiexec /qn /norestart /x {5DA0E02F-970B-424B-BF41-513A5018E4C0}
 start /wait msiexec /qn /norestart /x {5944B9D4-3C2A-48DE-931E-26B31714A2F7}
 
 :: Toshiba Display Utility
 start /wait msiexec /qn /norestart /x {0B39C39A-3ECE-4582-9C91-842D22819A24}
-start /wait msiexec /qn /norestart /x {ED3CBA78-488F-4E8C-B33F-8E3BF4DDB4D2}
 start /wait msiexec /qn /norestart /x {78C6A78A-8B03-48C8-A47C-78BA1FCA2307}
 start /wait msiexec /qn /norestart /x {11244D6B-9842-440F-8579-6A4D771A0D9B}
 
 :: TOSHIBA Eco Utility
 start /wait msiexec /qn /norestart /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1}
-start /wait msiexec /qn /norestart /x {5944B9D4-3C2A-48DE-931E-26B31714A2F7}
 start /wait msiexec /qn /norestart /x {59358FD4-252B-4B38-AB81-955C491A494F}
 
 :: TOSHIBA Extended Tiles for Windows Mobility Center
@@ -2615,12 +2580,10 @@ start /wait msiexec /qn /norestart /x {008D69EB-70FF-46AB-9C75-924620DF191A}
 start /wait msiexec /qn /norestart /x {3FBF6F99-8EC6-41B4-8527-0A32241B5496}
 
 :: Toshiba System Driver
-start /wait msiexec /qn /norestart /x {1E6A96A1-2BAB-43EF-8087-30437593C66C}
 start /wait msiexec /qn /norestart /x {16562A90-71BC-41A0-B890-D91B0C267120}
 
 :: Toshiba System Settings
 start /wait msiexec /qn /norestart /x {B040D5C9-C9AA-430A-A44E-696656012E61}
-start /wait msiexec /qn /norestart /x {05A55927-DB9B-4E26-BA44-828EBFF829F0}
 start /wait msiexec /qn /norestart /x {EFCCEE68-1317-40A5-B785-C07AD2769338}
 
 :: Toshiba Utility Common Driver (hidden)
@@ -2729,12 +2692,10 @@ start /wait msiexec /qn /norestart /x {6E3610B2-430D-4EB0-81E3-2B57E8B9DE8D}
 start /wait msiexec /qn /norestart /x {9E9EF3EC-22BC-445C-A883-D8DB2908698D}
 :: \/ "Delicious Emilys Childhood Memories Premium Edition", also used by "Enterprise 50.0.165.000"
 start /wait msiexec /qn /norestart /x {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
-start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
 start /wait msiexec /qn /norestart /x {DD7C5FC1-DCA5-487A-AF23-658B1C00243F}
 start /wait msiexec /qn /norestart /x {0F929651-F516-4956-90F2-FFBD2CD5D30E}
 start /wait msiexec /qn /norestart /x {89C7E0A7-4D9D-4DCC-8834-A9A2B92D7EBB}
 start /wait msiexec /qn /norestart /x {9B56B031-A6C0-4BB7-8F61-938548C1B759}
-start /wait msiexec /qn /norestart /x {0C0F368E-17C4-4F28-9F1B-B1DA1D96CF7A}
 start /wait msiexec /qn /norestart /x {36AC0D1D-9715-4F13-B6A4-86F1D35FB4DF}
 start /wait msiexec /qn /norestart /x {03D562B5-C4E2-4846-A920-33178788BE00}
 
