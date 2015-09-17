@@ -165,11 +165,6 @@ del /F /Q %WINDIR%\*.tmp 2>NUL
 del /F /Q %WINDIR%\Web\Wallpaper\*.* 2>NUL
 rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell 2>NUL
 
-:: JOB: Flash cookies (both locations)
-rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\#SharedObjects" 2>NUL
-rmdir /S /Q "%APPDATA%\Macromedia\Flash Player\macromedia.com\support\flashplayer\sys" 2>NUL
-
-
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
