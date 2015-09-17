@@ -129,7 +129,7 @@ Reboot and you should now be able to use F8 to select Safe Mode. Note that this 
 # EMAIL REPORT
 To have Tron send an email report at completion, edit this file:
 
-    \resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
+    \tron\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
 
 Specify your SMTP server, username, and password. After specifying your settings you can use the `-er` flag to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
 
