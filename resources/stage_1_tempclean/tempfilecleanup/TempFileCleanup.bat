@@ -87,6 +87,9 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
 		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
 		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /Q "%%x\Application Data\Sun\Java\*" 2>NUL
+		del /F /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
+		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
 	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do ( 
@@ -94,6 +97,9 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
+		del /F /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
 		del /F /Q "%%x\*.blf" 2>NUL
