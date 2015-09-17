@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
+:: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
+::                1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
 ::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
 ::                1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
@@ -26,8 +27,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.6-TRON
-set SCRIPT_UPDATED=2015-09-14
+set SCRIPT_VERSION=1.0.7-TRON
+set SCRIPT_UPDATED=2015-09-17
 
 
 ::::::::::::::::::::::::::
