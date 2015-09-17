@@ -68,6 +68,9 @@ start /wait msiexec /qn /norestart /x {11A955CD-4398-405A-886D-E464C3618FBF}
 start /wait msiexec /qn /norestart /x {1D181764-DCD0-41B8-AA7B-0A599F027A72}
 start /wait msiexec /qn /norestart /x {7C548501-3501-468A-A443-CC42F5B3626B}
 
+:: Adobe Widget Browser
+start /wait msiexec /qn /norestart /x {EFBE6DD5-B224-96E5-72B9-68D328CB12A6}
+
 :: Advertising Center 0.0.0.2
 start /wait msiexec /qn /norestart /x {3784D297-8089-43B6-B57F-11B7E96413CD}
 
@@ -124,10 +127,12 @@ start /wait msiexec /qn /norestart /x {1D33EC42-4787-56CD-8137-95D8418FFEE8}
 :: AOLIcon (lol)
 start /wait msiexec /qn /norestart /x {FFC7F03B-7069-4F7B-B0A5-9C173E898AC9}
 
-:: ArcSoft Magic-i Visual Effects 2, ArcSoft WebCam Companion 3 and 4
+:: ArcSoft Magic-i Visual Effects 2 // ArcSoft WebCam Companion 3 and 4 // Family Paint // WebCam Message Board
 start /wait msiexec /qn /norestart /x {B1893E3F-9BDF-443F-BED0-1AAA2D9E0D68}
 start /wait msiexec /qn /norestart /x {DE8AAC73-6D8D-483E-96EA-CAEDDADB9079}
 start /wait msiexec /qn /norestart /x {B77DE05C-7C84-4011-B93F-A29D0D2840F4}
+start /wait msiexec /qn /norestart /x {2B2F5B94-F377-41A2-8DA8-899BC538A4E1}
+start /wait msiexec /qn /norestart /x {7D44F1E8-968F-48D8-A966-2890A2CFFC6F}
 
 :: Ashampoo Burning Studio FREE v.1.14.5
 start /wait msiexec /qn /norestart /x {91B33C97-91F8-FFB3-581B-BC952C901685}
@@ -152,6 +157,7 @@ start /wait msiexec /qn /norestart /x {E4FB0B39-C991-4EE7-95DD-1A1A7857D33D}
 start /wait msiexec /qn /norestart /x {1F1E283D-23D9-4E09-B967-F46A053FEA89}
 start /wait msiexec /qn /norestart /x {0228288D-975E-42F7-9993-E91A82E6BBD9}
 start /wait msiexec /qn /norestart /x {6F5E2F4A-377D-4700-B0E3-8F7F7507EA15}
+start /wait msiexec /qn /norestart /x {B618B8E1-FB71-4237-8361-C3EA3EF15EF7}
 
 :: ASUS Ai Charger
 start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
@@ -198,6 +204,7 @@ start /wait msiexec /qn /norestart /x {3611CA6C-5FCA-4900-A329-6A118123CCFC}
 start /wait msiexec /qn /norestart /x {61EDBE71-5D3E-4AB7-AD95-E53FEAF68C17}
 start /wait msiexec /qn /norestart /x {6ACE7F46-FACE-4125-AE86-672F4F2A6A28}
 start /wait msiexec /qn /norestart /x {B4089055-D468-45A4-A6BA-5A138DD715FC}
+start /wait msiexec /qn /norestart /x {A7E8CB11-B09E-46F8-9BAE-B2E01EBF7E51}
 
 :: Bing Desktop
 start /wait msiexec /qn /norestart /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A}
@@ -1422,6 +1429,7 @@ start /wait msiexec /qn /norestart /x {60EC980A-BDA2-4CB6-A427-B07A5498B4CA}
 start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 start /wait msiexec /qn /norestart /x {A4DE5CD7-96D6-3979-8C39-E864396AFFC0}
 start /wait msiexec /qn /norestart /x {5BAA8884-F661-464B-B5B2-5C6C632BFC21}
+start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 
 :: Hewlett-Packard ACLM.NET
 start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
@@ -2189,6 +2197,9 @@ start /wait msiexec /qn /norestart /x {174A3B31-4C43-43DD-866F-73C9DB887B48}
 :: Setup1 (??)
 start /wait msiexec /qn /norestart /x {86091EC1-DD17-4814-A54B-0A634CB8D82C}
 
+:: Snap.Do (browser hijacker)
+start /wait msiexec /qn /norestart /x {CC6F61A9-A55E-4D04-A674-7A498CD8B809}
+
 :: SSN Librarian (some sketchy Russian program)
 start /wait msiexec /qn /norestart /x {1D425886-3FE1-41AA-8D7A-E432CE29A4AE}
 
@@ -2500,6 +2511,9 @@ start /wait msiexec /qn /norestart /x {1206EF92-2E83-4859-ACCB-2048C3CB7DA6}
 start /wait msiexec /qn /norestart /x {9A00EC4E-27E1-42C4-98DD-662F32AC8870}
 start /wait msiexec /qn /norestart /x {AB708C9B-97C8-4AC9-899B-DBF226AC9382}
 
+:: Sony Keyboard_Shortcuts
+start /wait msiexec /qn /norestart /x {FE8974B4-479C-4DBA-8544-9E5342ABB26A}
+
 :: Sony Media Go
 start /wait msiexec /qn /norestart /x {167A1F6A-9BF2-4B24-83DB-C6D659F680EA}
 
@@ -2508,6 +2522,10 @@ start /wait msiexec /qn /norestart /x {E50FC5DB-7CBD-407D-A46E-0C13E45BC386}
 
 :: Sony OOBE
 start /wait msiexec /qn /norestart /x {18894D16-5448-4BF9-A128-F7E937322F91}
+
+:: Sony PlayMemories Home
+start /wait msiexec /qn /norestart /x {E03CD71A-F595-49DF-9ADC-0CFC93B1B211}
+start /wait msiexec /qn /norestart /x {886C0C18-F905-49B2-90BA-EFC0FEDF27C6}
 
 :: Sony Quick Web Access
 start /wait msiexec /qn /norestart /x {13EC74A6-4707-4D26-B9B9-E173403F3B08}
@@ -2521,6 +2539,66 @@ start /wait msiexec /qn /norestart /x {D56DA747-5FDB-4AD5-9A6A-3481C0ED44BD}
 :: Sony TrackID(TM) with BRAVIA (poor Shazzam clone)
 start /wait msiexec /qn /norestart /x {858B32BD-121C-4AC8-BD87-CE37C51C03E2}
 start /wait msiexec /qn /norestart /x {2F41EF61-A066-4EBF-84F8-21C1B317A780}
+
+:: Sony VAIO Data Restore Tool
+start /wait msiexec /qn /norestart /x {5156C9BF-1C27-430B-96D8-7129F11699A8}
+
+:: Sony VAIO - Media Gallery
+start /wait msiexec /qn /norestart /x {7C7BC722-BB95-4A6E-9373-DA706D83430B}
+start /wait msiexec /qn /norestart /x {0EB7792D-EFA2-42AB-9A22-F33D9458E974}
+
+:: Sony VAIO - Microsoft Visual C++ 2010 SP1 RUntime 10.0.40219.325
+start /wait msiexec /qn /norestart /x {34EB42BE-F4D3-44C1-B28E-9740115DB72C}
+
+:: Sony VAIO - PMB
+start /wait msiexec /qn /norestart /x {B6A98E5F-D6A7-46FB-9E9D-1F7BF443491C}
+
+:: Sony VAIO - PMB VAIO Edition Guide (and associated "Plugin" GUIDs)
+start /wait msiexec /qn /norestart /x {339F9B4D-00CB-4C1C-BED8-EC86A9AB602A}
+start /wait msiexec /qn /norestart /x {133D3F07-D558-46CE-80E8-F4D75DBBAD63}
+start /wait msiexec /qn /norestart /x {270380EB-8812-42E1-8289-53700DB840D2}
+start /wait msiexec /qn /norestart /x {8356CB97-A48F-44CB-837A-A12838DC4669}
+
+:: Sony VAIO - Remote Keyboard, Remote Keyboard with PlayStation(R)3, Remote Play with Playstation(R)3
+start /wait msiexec /qn /norestart /x {7396FB15-9AB4-4B78-BDD8-24A9C15D2C65}
+start /wait msiexec /qn /norestart /x {6466EF6E-700E-470F-94CB-D0050302C84E}
+start /wait msiexec /qn /norestart /x {E682702C-609C-4017-99E7-3129C163955F}
+start /wait msiexec /qn /norestart /x {07441A52-E208-478A-92B7-5C337CA8C131}
+
+:: Sony VAIO Care // VAIO Care Recovery // VAIO Help and Support
+start /wait msiexec /qn /norestart /x {D9FFE40D-1A85-4541-992C-5EF505F391A4}
+start /wait msiexec /qn /norestart /x {55A60C1D-BEBF-4249-BFB2-F4E5C2E77988}
+start /wait msiexec /qn /norestart /x {471F7C0A-CA3A-4F4C-8346-DE36AD5E23D1}
+start /wait msiexec /qn /norestart /x {6ED1750E-F44F-4635-8F0D-B76B9262B7FB}
+start /wait msiexec /qn /norestart /x {AD3E7141-A22E-40F1-A7A4-55E898AE35E3}
+
+:: Sony VAIO Control Center // CPU Fan Diagnostic // Data Restore Tool // Easy Connect
+start /wait msiexec /qn /norestart /x {8E797841-A110-41FD-B17A-3ABC0641187A}
+start /wait msiexec /qn /norestart /x {BCE6E3D7-B565-4E1B-AC77-F780666A35FB}
+start /wait msiexec /qn /norestart /x {3267B2E9-9DF5-4251-87C8-33412234C77F}
+start /wait msiexec /qn /norestart /x {57B955CE-B5D3-495D-AF1B-FAEE0540BFEF}
+start /wait msiexec /qn /norestart /x {7C80D30A-AC02-4E3F-B95D-29F0E4FF937B}
+
+:: Sony VAIO Gate // Gate Default // Help and Support // Improvement // Manual // Gesture Control
+start /wait msiexec /qn /norestart /x {A7C30414-2382-4086-B0D6-01A88ABA21C3}
+start /wait msiexec /qn /norestart /x {AE5F3379-8B81-457E-8E09-7E61D941AFA4}
+start /wait msiexec /qn /norestart /x {B7546697-2A80-4256-A24B-1C33163F535B}
+start /wait msiexec /qn /norestart /x {0164FA3B-182D-4237-B22A-081C0B55E0D3}
+start /wait msiexec /qn /norestart /x {3A26D9BD-0F73-432D-B522-2BA18138F7EF}
+start /wait msiexec /qn /norestart /x {C6E893E7-E5EA-4CD5-917C-5443E753FCBD}
+start /wait msiexec /qn /norestart /x {C8544A9A-76BE-4F82-811E-979799AE493B}
+
+:: Sony VAIOCareLearnContents
+start /wait msiexec /qn /norestart /x {05959BC8-751E-43B1-A427-233DA743E179}
+
+:: Sony VAIO OOB (out of box experience)
+start /wait msiexec /qn /norestart /x {D9777637-33B7-47A9-800C-F6A2CD4EB0FE}
+
+:: Sony VAIO Sample Contents // Satisfaction Survey // Transfer Support VAIO Update
+start /wait msiexec /qn /norestart /x {547C9EB4-4CA6-402F-9D1B-8BD30DC71E44}
+start /wait msiexec /qn /norestart /x {5DDAFB4B-C52E-468A-9E23-3B0CEEB671BF}
+start /wait msiexec /qn /norestart /x {0899D75A-C2FC-42EA-A702-5B9A5F24EAD5}
+start /wait msiexec /qn /norestart /x {9FF95DA2-7DA1-4228-93B7-DED7EC02B6B2}
 
 :: Sony VCCx64, VCCx86, VIx64, and VIx86
 start /wait msiexec /qn /norestart /x {549AD5FB-F52D-4307-864A-C0008FB35D96}
@@ -2713,56 +2791,11 @@ start /wait msiexec /qn /norestart /x {0A07E717-BB5D-4B99-840B-6C5DED52B277}
 :: uLead Burn.Now 4.5 4.5.0
 start /wait msiexec /qn /norestart /x {FB3A15FD-FC67-3A2F-892B-6890B0C56EA9}
 
-:: VAIO - Media Gallery
-start /wait msiexec /qn /norestart /x {7C7BC722-BB95-4A6E-9373-DA706D83430B}
-
-:: VAIO - PMB
-start /wait msiexec /qn /norestart /x {B6A98E5F-D6A7-46FB-9E9D-1F7BF443491C}
-
-:: VAIO - PMB VAIO Edition Guide (and associated "Plugin" GUIDs)
-start /wait msiexec /qn /norestart /x {339F9B4D-00CB-4C1C-BED8-EC86A9AB602A}
-start /wait msiexec /qn /norestart /x {133D3F07-D558-46CE-80E8-F4D75DBBAD63}
-start /wait msiexec /qn /norestart /x {270380EB-8812-42E1-8289-53700DB840D2}
-start /wait msiexec /qn /norestart /x {8356CB97-A48F-44CB-837A-A12838DC4669}
-
-:: VAIO - Remote Keyboard, Remote Keyboard with PlayStation(R)3, Remote Play with Playstation(R)3
-start /wait msiexec /qn /norestart /x {7396FB15-9AB4-4B78-BDD8-24A9C15D2C65}
-start /wait msiexec /qn /norestart /x {6466EF6E-700E-470F-94CB-D0050302C84E}
-start /wait msiexec /qn /norestart /x {E682702C-609C-4017-99E7-3129C163955F}
-start /wait msiexec /qn /norestart /x {07441A52-E208-478A-92B7-5C337CA8C131}
-
-:: VAIO Care, VAIO Care Recovery, VAIO Help and Support
-start /wait msiexec /qn /norestart /x {D9FFE40D-1A85-4541-992C-5EF505F391A4}
-start /wait msiexec /qn /norestart /x {471F7C0A-CA3A-4F4C-8346-DE36AD5E23D1}
-start /wait msiexec /qn /norestart /x {6ED1750E-F44F-4635-8F0D-B76B9262B7FB}
-start /wait msiexec /qn /norestart /x {AD3E7141-A22E-40F1-A7A4-55E898AE35E3}
-
-:: VAIO Control Center, CPU Fan Diagnostic, Data Restore Tool, and Easy Connect
-start /wait msiexec /qn /norestart /x {8E797841-A110-41FD-B17A-3ABC0641187A}
-start /wait msiexec /qn /norestart /x {BCE6E3D7-B565-4E1B-AC77-F780666A35FB}
-start /wait msiexec /qn /norestart /x {3267B2E9-9DF5-4251-87C8-33412234C77F}
-start /wait msiexec /qn /norestart /x {57B955CE-B5D3-495D-AF1B-FAEE0540BFEF}
-start /wait msiexec /qn /norestart /x {7C80D30A-AC02-4E3F-B95D-29F0E4FF937B}
-
-:: VAIO Gate, Gate Default, Help and Support, Improvement, and Manual
-start /wait msiexec /qn /norestart /x {A7C30414-2382-4086-B0D6-01A88ABA21C3}
-start /wait msiexec /qn /norestart /x {AE5F3379-8B81-457E-8E09-7E61D941AFA4}
-start /wait msiexec /qn /norestart /x {B7546697-2A80-4256-A24B-1C33163F535B}
-start /wait msiexec /qn /norestart /x {0164FA3B-182D-4237-B22A-081C0B55E0D3}
-start /wait msiexec /qn /norestart /x {3A26D9BD-0F73-432D-B522-2BA18138F7EF}
-start /wait msiexec /qn /norestart /x {C6E893E7-E5EA-4CD5-917C-5443E753FCBD}
-
-:: VAIO Sample Contents, Satisfaction Survey., Transfer Support VAIO Update
-start /wait msiexec /qn /norestart /x {547C9EB4-4CA6-402F-9D1B-8BD30DC71E44}
-start /wait msiexec /qn /norestart /x {5DDAFB4B-C52E-468A-9E23-3B0CEEB671BF}
-start /wait msiexec /qn /norestart /x {0899D75A-C2FC-42EA-A702-5B9A5F24EAD5}
-start /wait msiexec /qn /norestart /x {9FF95DA2-7DA1-4228-93B7-DED7EC02B6B2}
+:: Vegas Movie Studio HD Platinum 11.0
+start /wait msiexec /qn /norestart /x {CE3DE3AE-F384-11E0-B00E-F04DA23A5C58}
 
 :: VIP Access (Lenovo-installed OEM bloatware for Verisign)
 start /wait msiexec /qn /norestart /x {E8D46836-CD55-453C-A107-A59EC51CB8DC}
-
-:: WOT for Internet Explorer plugin
-start /wait msiexec /qn /norestart /x {373B90E1-A28C-434C-92B6-7281AFA6115A}
 
 :: Video Downloader, VideoManager, VideoStage, VideoToolkit
 start /wait msiexec /qn /norestart /x {62796191-6F12-4ABE-BA8B-B4D4A266C997}
@@ -2823,6 +2856,9 @@ start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240C3}
 start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240CF}
 start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240E3}
 start /wait msiexec /qn /norestart /x {8A6EAACB-E2D6-D6BF-0338-F4AC9641B423}
+
+:: WOT for Internet Explorer plugin
+start /wait msiexec /qn /norestart /x {373B90E1-A28C-434C-92B6-7281AFA6115A}
 
 :: Xmarks for IE
 start /wait msiexec /qn /norestart /x {ABFA6EAE-C9C0-4B39-B722-02094EF6B889}
