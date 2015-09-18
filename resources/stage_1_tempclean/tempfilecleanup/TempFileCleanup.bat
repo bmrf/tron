@@ -29,7 +29,7 @@ SETLOCAL
 @echo off
 pushd %SystemDrive%
 set SCRIPT_VERSION=1.0.7-TRON
-set SCRIPT_UPDATED=2015-09-17
+set SCRIPT_UPDATED=2015-09-18
 
 
 ::::::::::::::::::::::::::
