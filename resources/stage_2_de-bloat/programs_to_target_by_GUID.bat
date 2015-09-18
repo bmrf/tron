@@ -1239,7 +1239,7 @@ start /wait msiexec /qn /norestart /x {5A26B7C0-55B1-4DA8-A693-E51380497A5E}
 start /wait msiexec /qn /norestart /x {7EC66A95-AC2D-4127-940B-0445A526AB2F}
 
 :: Dell Digital Delivery
-WMIC product where name="Dell Digital Delivery" call uninstall /nointeractive
+WMIC product where name="Dell Digital Delivery" call uninstall /nointeractive 2>nul
 
 :: Dell Dock
 start /wait msiexec /qn /norestart /x {E60B7350-EA5F-41E0-9D6F-E508781E36D2}
@@ -1267,7 +1267,7 @@ start /wait msiexec /qn /norestart /x {9EDA3DD1-130D-4EE1-A3D2-5A3D795CC8C9}
 start /wait msiexec /qn /norestart /x {CAC1E444-ECC4-4FF8-B328-5E547FD608F8}
 
 :: Dell Protected Workspace
-wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
+wmic product where name="Dell Protected Workspace" call uninstall /nointeractive 2>nul
 
 :: Dell QuickSet32 and QuickSet64
 start /wait msiexec /qn /norestart /x {ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
