@@ -108,8 +108,8 @@ Intel%%Rapid%%
 Intel%%Smart%%
 Internet Explorer Toolbar%%
 InternetHelper3 Toolbar
-IObit Apps Toolbar v9.3
-IObit Toolbar v8.9
+IObit Apps Toolbar%%
+IObit Toolbar%%
 IWon%%
 Launch Manager%%
 Lenovo%%
@@ -140,7 +140,7 @@ OOBE%%
 Optimizer Pro%%
 Orbit Downloader
 Pdf995%%
-pdfforge Toolbar v4.6
+pdfforge Toolbar%%
 PDFLite Toolbar
 Plus-HD-1.3
 PopularScreensavers Toolbar and Software
@@ -186,7 +186,7 @@ SpeedUpMyPc%%
 StartNow Toolbar
 SocialSafe
 Soluto
-SweetIM for Messenger 3.7
+SweetIM for Messenger%%
 SweetPacks A2 Toolbar for IE
 SySaver
 The Gator
