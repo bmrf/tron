@@ -12,7 +12,77 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
-  
+
+
+
+########################
+# v6.7.0 // 2015-09-xx #
+########################
+tron.bat                         v6.7.0
+
+
+STAGE 0: Prep
+ . rkill                         v2.8.2.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.5
+ * McAfee Stinger                v12.1.0.1716
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.09.5343
+ . BleachBit                     v1.8
+ * TempFileCleanup               v1.0.7-TRON
+	* Merge nemchik's pull request to delete .blf and.regtrans-ms files
+	+ Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
+
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    * Massive updates to the list. Huge, huge thanks to /u/fezzgig for providing thousands of GUID dumps, and thanks to /u/Sir_Brags_A_Lot, /u/BrentNewland, /u/Satiex, /u/captainrv, /u/rodgersayshi, /u/RoninResearcher, /u/Sartanen, and /u/staticextasy as well.
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v18.0.0.232   (language ignored)
+ . Adobe Reader                  v11.0.11      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u60          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.0.7
+ . Autoruns                      v13.4
+ . ComboFix                      v15.9.7.1
+ . Junkware Removal Tool         v7.6.1.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+
 ########################
 # v6.6.1 // 2015-09-14 #
 ########################
@@ -67,7 +137,7 @@ STAGE 7: Wrap-up
 
 STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v5.0.0.8
+ * AdwCleaner                    v5.0.0.7
  . Autoruns                      v13.4
  . ComboFix                      v15.9.7.1
  * Junkware Removal Tool         v7.6.1.0
@@ -79,7 +149,7 @@ STAGE 8: Manual tools
  . ServicesRepair                v1.0.0.3
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
- . VirusTotal uploader tool      v2.2  
+ . VirusTotal uploader tool      v2.2
 
 
 ########################
