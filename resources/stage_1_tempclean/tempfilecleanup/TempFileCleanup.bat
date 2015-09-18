@@ -2,6 +2,7 @@
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
+::                           * Merge nemchik's pull request to purge Flash and Java temp locations
 ::                1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
 ::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
