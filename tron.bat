@@ -1053,7 +1053,7 @@ call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by n
 call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 ::if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-call Remove.exe /I=\resources\stage_2_de-bloat\programs_to_target_by_name.txt
+call resources\stage_2_de-bloat\Remove_by_name.exe /I=\resources\stage_2_de-bloat\programs_to_target_by_name.txt
 call :log "%CUR_DATE% %TIME%    Done."
 
 
