@@ -84,6 +84,8 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
 		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
@@ -94,6 +96,8 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
 		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
@@ -151,8 +155,6 @@ reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> %LOGPATH%\%LOGFILE%
-if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive"
-if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue"
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive"
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue"
 
