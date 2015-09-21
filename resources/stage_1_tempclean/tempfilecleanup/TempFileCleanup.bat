@@ -53,9 +53,6 @@ echo   Cleaning USER temp files...
 :: Create log line
 echo.  %% echo  ! Cleaning USER temp files... %% echo.
 
-:: User temp files, history, and random My Documents stuff
-del /F /S /Q "%TEMP%" 2>NUL
-
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
 REM Disabled for Tron
 REM if exist %SystemDrive%\Windows.old\ (
