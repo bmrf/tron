@@ -946,13 +946,9 @@ start /wait msiexec /qn /norestart /x {FEFF81BF-B911-6755-FBDE-09547BDFD0A2}
 start /wait msiexec /qn /norestart /x {FF10AC4D-3349-99DA-3E58-5197CEA1D833}
 start /wait msiexec /qn /norestart /x {FFCF34B9-A0B1-2E2B-7D7E-8FAB4A781CC9}
 
-
 :: CITIZEN bloatware (printer)
 start /wait msiexec /qn /norestart /x {546D97C7-9DF6-4A2D-BE02-2C0B25FFE1E3}
 start /wait msiexec /qn /norestart /x {39688AE1-0398-4133-942C-EECA9BBD64CC}
-
-:: CLEART WiMAX Tutorial 1.5.0.10
-start /wait msiexec /qn /norestart /x {E289B7DD-6732-4333-A47A-75A145D23EE3}
 
 :: Clickfree
 start /wait msiexec /qn /norestart /x {1EB9B986-CECA-4E05-B454-C9343EE9DDE7}
@@ -1050,7 +1046,7 @@ start /wait msiexec /qn /norestart /x {43CAC9A1-1993-4F65-9096-7C9AFC2BBF54}
 start /wait msiexec /qn /norestart /x {97308CC9-FAED-4A1C-9593-64B2F1FD852D}
 start /wait msiexec /qn /norestart /x {4DEF2722-7EB8-4C5F-8F0A-0295A310002A}
 start /wait msiexec /qn /norestart /x {AE9EB677-66F4-40C0-9269-35067D8C555B}
-rd /s /q %SystemDrive%\dell\dbrm
+if exist %SystemDrive%\dell\dbrm rd /s /q %SystemDrive%\dell\dbrm
 
 :: Dell Best of Web 1.00.0000
 start /wait msiexec /qn /norestart /x {BC8233D8-59BA-4D40-92B9-4FDE7452AA8B}
@@ -2224,8 +2220,8 @@ start /wait msiexec /qn /norestart /x {b145ec69-66f5-11d8-9d75-000129760d75}
 start /wait msiexec /qn /norestart /x {D9428275-602F-4D4B-A921-9CC642B76995}
 
 :: McAfee LiveSafe - Internet Security
-if exist %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe %ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
-if exist %ProgramFiles%\McAfee\MSC\mcuihost.exe %ProgramFiles%\McAfee\MSC\mcuihost.exe /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+if exist "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
 
 :: Media Gallery
 start /wait msiexec /qn /norestart /x {115B60D5-BBDB-490E-AF2E-064D37A3CE01}
@@ -2328,7 +2324,7 @@ start /wait msiexec /qn /norestart /x {B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
 
 :: Office 2013 C2R Suite
 start /wait msiexec /qn /norestart /x {90150000-0138-0409-0000-0000000FF1CE}
-start /wait msiexec /x "C:\ProgramData\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" /qn /norestart
+if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" start /wait msiexec /qn /norestart /x "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi"
 
 :: opensource
 start /wait msiexec /qn /norestart /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE}
