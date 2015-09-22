@@ -81,6 +81,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
 		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Dr Watson\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
@@ -91,6 +92,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
@@ -107,10 +109,14 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
@@ -170,6 +176,13 @@ reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 echo. >> %LOGPATH%\%LOGFILE%
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive"
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue"
+
+:: JOB: Clear Windows Defender Scan Results
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource"
+
+:: JOB: Clear Windows Search Temp Data
+if exist "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp"
 
 :: JOB: Windows update logs & built-in backgrounds (space waste)
 del /F /Q %WINDIR%\*.log 2>NUL
