@@ -3,6 +3,7 @@
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
+::                           * Add /u/neonicacid's suggestion about purging leftover NVIDIA driver installation files
 ::                1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
 ::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
@@ -29,7 +30,7 @@ SETLOCAL
 @echo off
 pushd %SystemDrive%
 set SCRIPT_VERSION=1.0.7-TRON
-set SCRIPT_UPDATED=2015-09-18
+set SCRIPT_UPDATED=2015-09-21
 
 
 ::::::::::::::::::::::::::
@@ -49,7 +50,7 @@ echo   Cleaning USER temp files...
 :: Version-agnostic :: (these jobs run regardless of OS version)
 ::::::::::::::::::::::
 :: Create log line
-echo.  %% echo  ! Cleaning USER temp files... %% echo. 
+echo.  %% echo  ! Cleaning USER temp files... %% echo.
 
 :: User temp files, history, and random My Documents stuff
 del /F /S /Q "%TEMP%" 2>NUL
@@ -93,7 +94,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+	for /D %%x in ("%SystemDrive%\Users\*") do (
 		del /F /Q "%%x\AppData\Local\Temp\*" 2>NUL
 		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
@@ -138,12 +139,16 @@ for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 			rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
 		)
 
+:: JOB: Clear additional unneeded files from NVIDIA driver installs
+if exist "%ProgramFiles%\Nvidia Corporation\Installer2" del /Q "%ProgramFiles%\Nvidia Corporation\Installer2"
+if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /Q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
+
 :: JOB: Remove the Office installation cache. Usually around ~1.5 GB
-if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache 
+if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache
 
 :: JOB: Remove the Windows installation cache. Can be up to 1.0 GB
-if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386 
-		
+if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386
+
 :: JOB: Empty all recycle bins on Windows 5.1 (XP/2k3) and 6.x (Vista and up) systems
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
@@ -184,21 +189,21 @@ if %ERRORLEVEL%==0 (
 	echo  ! Server operating system detected.
 	echo    Removing built-in media files ^(.wav, .midi, etc^)...
 	echo.
-	echo.  && echo  ! Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)... && echo. 
+	echo.  && echo  ! Server operating system detected. Removing built-in media files ^(.wave, .midi, etc^)... && echo.
 
-	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights. 
+	:: 2. Take ownership of the files so we can actually delete them. By default even Administrators have Read-only rights.
 	echo    Taking ownership of %WINDIR%\Media in order to delete files... && echo.
-	echo    Taking ownership of %WINDIR%\Media in order to delete files...  && echo. 
-	if exist %WINDIR%\Media takeown /f %WINDIR%\Media /r /d y 2>NUL && echo. 
-	if exist %WINDIR%\Media icacls %WINDIR%\Media /grant administrators:F /t  && echo. 
-	
+	echo    Taking ownership of %WINDIR%\Media in order to delete files...  && echo.
+	if exist %WINDIR%\Media takeown /f %WINDIR%\Media /r /d y 2>NUL && echo.
+	if exist %WINDIR%\Media icacls %WINDIR%\Media /grant administrators:F /t  && echo.
+
 	:: 3. Do the cleanup
 	rmdir /S /Q %WINDIR%\Media 2>NUL
-	
+
 	echo    Done.
 	echo.
-	echo    Done. 
-	echo. 
+	echo    Done.
+	echo.
 	)
 
 :: JOB: Windows CBS logs
@@ -228,13 +233,13 @@ if %ERRORLEVEL%==0 (
 	:: 3. Do the hotfix clean up
 	for /f %%i in (%TEMP%\hotfix_nuke_list.txt) do (
 		echo Deleting %%i...
-		echo Deleted folder %%i 
+		echo Deleted folder %%i
 		rmdir /S /Q %%i 2>NUL
 		)
 
 	:: 4. Log that we are done with hotfix cleanup and leave the Windows directory
 	echo    Done.  && echo.
-	echo    Done. 
+	echo    Done.
 	del %TEMP%\hotfix_nuke_list.txt
 	echo.
 	popd
