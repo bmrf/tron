@@ -89,6 +89,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
@@ -100,12 +101,14 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
 		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
 		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
