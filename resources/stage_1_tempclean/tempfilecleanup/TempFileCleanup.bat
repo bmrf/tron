@@ -4,6 +4,7 @@
 :: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
 ::                           * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
+::                           ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 ::                1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
 ::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
@@ -55,9 +56,6 @@ echo.  %% echo  ! Cleaning USER temp files... %% echo.
 :: User temp files, history, and random My Documents stuff
 del /F /S /Q "%TEMP%" 2>NUL
 
-:: Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
-::rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
-
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
 REM Disabled for Tron
 REM if exist %SystemDrive%\Windows.old\ (
@@ -106,6 +104,8 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
 		del /F /Q "%%x\*.blf" 2>NUL
 		del /F /Q "%%x\*.regtrans-ms" 2>NUL
+		REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
+		REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	)
 )
 
