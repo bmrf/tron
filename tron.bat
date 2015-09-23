@@ -12,7 +12,7 @@
 ::                                                   This is because the system can't be force-rebooted when targeting a GUID specifically, but it CAN be when done
 ::                                                   with a wildcard, so we first try to catch everything we know of in hopes that we'll eliminiate some of the GUIDs
 ::                                                   that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
-::
+::                      ! stage_1_tempclean:ie:      Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -931,11 +931,14 @@ title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
 
 
-:: JOB: Clean Internet Explorer; Windows built-in method
-title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
-call :log "%CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'..."
-if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
-call :log "%CUR_DATE% %TIME%    Done."
+:: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
+if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+	title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
+	call :log "%CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'..."
+	if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
+	call :log "%CUR_DATE% %TIME%    Done."
+)
+
 
 
 :: JOB: TempFileCleanup.bat
