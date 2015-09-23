@@ -3,7 +3,7 @@
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
-::                           * Add /u/neonicacid's suggestion about purging leftover NVIDIA driver installation files
+::                           * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
 ::                1.0.6-TRON + Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
 ::                1.0.5-TRON + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
 ::                1.0.4-TRON * Re-enable purging of "%WINDIR%\TEMP\*"
@@ -30,7 +30,7 @@ SETLOCAL
 @echo off
 pushd %SystemDrive%
 set SCRIPT_VERSION=1.0.7-TRON
-set SCRIPT_UPDATED=2015-09-21
+set SCRIPT_UPDATED=2015-09-22
 
 
 ::::::::::::::::::::::::::
@@ -140,8 +140,8 @@ for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
 		)
 
 :: JOB: Clear additional unneeded files from NVIDIA driver installs
-if exist "%ProgramFiles%\Nvidia Corporation\Installer2" del /Q "%ProgramFiles%\Nvidia Corporation\Installer2"
-if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /Q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
+if exist "%ProgramFiles%\Nvidia Corporation\Installer2" rmdir /s /q "%ProgramFiles%\Nvidia Corporation\Installer2"
+if exist "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService" del /f /q "%ALLUSERSPROFILE%\NVIDIA Corporation\NetService\*.exe"
 
 :: JOB: Remove the Office installation cache. Usually around ~1.5 GB
 if exist %SystemDrive%\MSOCache rmdir /S /Q %SystemDrive%\MSOCache
