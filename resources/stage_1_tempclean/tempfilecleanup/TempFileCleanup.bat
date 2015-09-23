@@ -121,7 +121,7 @@ if /i "%WIN_VER:~0,9%"=="Microsoft" (
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
-		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /S /Q "%%x\Documents\*.tmp" 2>NUL
 	)
 	REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
 	REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
