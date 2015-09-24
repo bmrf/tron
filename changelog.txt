@@ -16,16 +16,26 @@ Version number legend:
 
 
 ########################
-# v6.7.0 // 2015-09-xx #
+# v6.7.0 // 2015-09-23 #
 ########################
 tron.bat                         v6.7.0
-
+ + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
+                              run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
+                              to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
+ * stage_4_repair:dism_store: Expand Dism image repair to include Windows 10
+ ! stage_4_repair:dism_store: Fix long-time bug where Dism image repair and cleanup wasn't running on Server 2012
+ * stage_2_de-bloat:metro:    Expand OEM Metro app purge to include Windows 10
+ * stage_2_de-bloat:oem:      Switch order of debloat operations to target specific GUIDs first and run wildcard as catch-all afterwards.
+                              The system can't be force-rebooted when targeting a GUID specifically, but it CAN be when targeting with a 
+                              wildcard. So, we first try and catch everything we know of in hopes that we'll eliminiate some of the GUIDs
+                              that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
+ ! stage_1_tempclean:ie:      Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 
 STAGE 0: Prep
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
- * McAfee Stinger                v12.1.0.1716
+ * McAfee Stinger                v12.1.0.1732
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
 
@@ -34,14 +44,15 @@ STAGE 1: Tempclean
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.7-TRON
 	* Merge nemchik's pull request to delete .blf and.regtrans-ms files
-	+ Add purging of additional old Windows version locations (left in place from Upgrade installations); disabled for now
-
+	* Merge nemchik's pull request to purge Flash and Java temp locations 
+	* Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files 
+	! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003) 
  . USB Device Cleanup            v1.1.0
 
 STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
-    * Massive updates to the list. Huge, huge thanks to /u/fezzgig for providing thousands of GUID dumps, and thanks to /u/Sir_Brags_A_Lot, /u/BrentNewland, /u/Satiex, /u/captainrv, /u/rodgersayshi, /u/RoninResearcher, /u/Sartanen, and /u/staticextasy as well.
+    * Massive updates to the list. Huge, huge thanks to /u/fezzgig for providing hundreds of GUID dumps, and thanks to /u/Sir_Brags_A_Lot, /u/BrentNewland, /u/Satiex, /u/captainrv, /u/rodgersayshi, /u/RoninResearcher, /u/dancsi, /u/Aarinfel, /u/Sartanen, /u/TheDreamerofWorlds, /u/staticextasy, and any others I missed as well.
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -53,8 +64,8 @@ STAGE 4: Repair
 
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
- . Adobe Flash Player            v18.0.0.232   (language ignored)
- . Adobe Reader                  v11.0.11      (English-only; replace with your language version if necessary)
+ * Adobe Flash Player            v19.0.0.185   (language ignored)
+ * Adobe Reader                  v11.0.12      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u60          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
@@ -67,10 +78,10 @@ STAGE 7: Wrap-up
 
 STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v5.0.0.7
+ . AdwCleaner                    v5.0.0.8
  . Autoruns                      v13.4
- . ComboFix                      v15.9.7.1
- . Junkware Removal Tool         v7.6.1.0
+ * ComboFix                      v15.9.21.1
+ * Junkware Removal Tool         v7.6.3.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
  . PC Hunter                     v1.35 x86
