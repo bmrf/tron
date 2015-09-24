@@ -483,7 +483,7 @@ Tron installs or updates these programs:
 
 ## STAGE 7: Wrap-up
 
-1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_6_wrap-up\email_report\SwithMailSettings.xml`
+1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
 2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
