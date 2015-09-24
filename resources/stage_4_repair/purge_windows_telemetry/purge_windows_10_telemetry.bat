@@ -1,5 +1,5 @@
 :: Purpose:       Purges Windows 10 telemetry
-:: Requirements:  Called from Tron script ( reddit.com/r/TronScript ), or can be called in standalone mode
+:: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 ::                code heavily borrowed from:
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
@@ -32,7 +32,7 @@ set SCRIPT_UPDATED=2015-09-14
 :::::::::::::
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
 
 :: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense ...
@@ -51,20 +51,21 @@ setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive"
 setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >nul 2>&1
 
 :: Kill Adobe Flash that ships baked-in to Windows 10
-takeown /f "%windir%\System32\Macromed" /r /d y >nul 2>&1
-icacls "%windir%\System32\Macromed" /grant administrators:F /t >nul 2>&1
-rd /s /q "%windir%\System32\Macromed" >nul 2>&1
-takeown /f "%windir%\SysWOW64\Macromed" /r /d y >nul 2>&1
-icacls "%windir%\SysWOW64\Macromed" /grant administrators:F /t >nul 2>&1
-rd /s /q "%windir%\SysWOW64\Macromed" >nul 2>&1
-rd /s /q "%appdata%\Adobe" >nul 2>&1
-rd /s /q "%appdata%\Macromedia" >nul 2>&1
+:: Disabled for Tron; regular Flash also stores files here
+REM takeown /f "%windir%\System32\Macromed" /r /d y >nul 2>&1
+REM icacls "%windir%\System32\Macromed" /grant administrators:F /t >nul 2>&1
+REM rd /s /q "%windir%\System32\Macromed" >nul 2>&1
+REM takeown /f "%windir%\SysWOW64\Macromed" /r /d y >nul 2>&1
+REM icacls "%windir%\SysWOW64\Macromed" /grant administrators:F /t >nul 2>&1
+REM rd /s /q "%windir%\SysWOW64\Macromed" >nul 2>&1
+REM rd /s /q "%appdata%\Adobe" >nul 2>&1
+REM rd /s /q "%appdata%\Macromedia" >nul 2>&1
 
 :: Kill forced OneDrive integration
 taskkill /f /im OneDrive.exe >nul 2>&1
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall >nul 2>&1
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >nul 2>&1
-:: These keys are orphaned after the OneDrive uninstallation, so can be safely removed
+:: These keys are orphaned after the OneDrive uninstallation and can be safely removed
 REG Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
 REG Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
 takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >nul 2>&1
@@ -75,7 +76,7 @@ rd /s /q "%ProgramData%\Microsoft OneDrive" >nul 2>&1
 rd /s /q "%SystemDrive%\OneDriveTemp" >nul 2>&1
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: UPDATES
 
 :: Second, purge bad updates
@@ -126,7 +127,7 @@ start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet >nul 2>&1
 echo.
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
 schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" >nul 2>&1
 schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" >nul 2>&1
@@ -169,7 +170,7 @@ schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >nul 
 echo.
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
 
 :: Diagnostic Tracking
@@ -197,16 +198,21 @@ sc delete XblGameSave >nul 2>&1
 sc delete XboxNetApiSvc >nul 2>&1
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-reg import %~dp0purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-reg import purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-regedit /S %~dp0purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-regedit /S purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
+reg import %~dp0disable_telemetry_registry_entries.reg >nul 2>&1
+reg import disable_telemetry_registry_entries.reg >nul 2>&1
+regedit /S %~dp0disable_telemetry_registry_entries.reg >nul 2>&1
+regedit /S disable_telemetry_registry_entries.reg >nul 2>&1
 
 
-:::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS ...
+
+:: Uncomment and run this command to flush ALL routes IMMEDIATELY (you'll need to reboot or do an ipconfig /release & ipconfig /renew to get a new default route)
+::route -f
+:: Uncomment and run this commend to clear persistent routes only, takes effect at reboot. This will undo all the below changes
+::reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
 
 :: a-0001.a-msedge.net
 route -p add 204.79.197.200/32 0.0.0.0 >nul 2>&1
@@ -224,8 +230,6 @@ route -p add 198.78.209.253/32 0.0.0.0 >nul 2>&1
 route -p add 8.254.23.254/32 0.0.0.0 >nul 2>&1
 :: ac3.msn.com
 route -p add 131.253.14.76/32 0.0.0.0 >nul 2>&1
-:: activation.playready.microsoft.com
-route -p add 134.170.119.205/32 0.0.0.0 >nul 2>&1
 :: ads1.msads.net
 route -p add 23.201.58.73/32 0.0.0.0 >nul 2>&1
 :: ads1.msn.com
@@ -266,8 +270,6 @@ route -p add 65.55.44.108/32 0.0.0.0 >nul 2>&1
 route -p add 157.56.106.210/32 0.0.0.0 >nul 2>&1
 :: sgmetrics.cloudapp.net
 route -p add 168.62.11.145/32 0.0.0.0 >nul 2>&1
-:: shell.windows.com
-route -p add 137.116.81.94/32 0.0.0.0 >nul 2>&1
 :: sls.update.microsoft.com
 route -p add 157.55.133.204/32 0.0.0.0 >nul 2>&1
 :: sls.update.microsoft.com.akadns.net
