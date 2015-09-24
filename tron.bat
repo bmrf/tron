@@ -4,13 +4,15 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.7.0 * stage_4_repair:dism_store: Expand Dism image repair to include Windows 10
-::                      + stage_4_repair:telemetry:  Add full purging of Windows 10 telemetry
-::                      ! stage_4_repair:dism_store: Fix long-time bug where Dism image repair and cleanup wouldn't run on Server 2012
+:: Version:       6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
+::                                                   run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
+::                                                   to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
+::                      * stage_4_repair:dism_store: Expand Dism image repair to include Windows 10
+::                      ! stage_4_repair:dism_store: Fix long-time bug where Dism image repair and cleanup wasn't running on Server 2012
 ::                      * stage_2_de-bloat:metro:    Expand OEM Metro app purge to include Windows 10
-::                      * stage_2_de-bloat:oem:      Switch order of debloat operations (now target specific GUIDs first; run wildcard as catch-all afterwards).
-::                                                   This is because the system can't be force-rebooted when targeting a GUID specifically, but it CAN be when done
-::                                                   with a wildcard, so we first try to catch everything we know of in hopes that we'll eliminiate some of the GUIDs
+::                      * stage_2_de-bloat:oem:      Switch order of debloat operations to target specific GUIDs first and run wildcard as catch-all afterwards.
+::                                                   The system can't be force-rebooted when targeting a GUID specifically, but it CAN be when targeting with a 
+::                                                   wildcard. So, we first try and catch everything we know of in hopes that we'll eliminiate some of the GUIDs
 ::                                                   that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
 ::                      ! stage_1_tempclean:ie:      Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
@@ -158,7 +160,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.7.0
-set SCRIPT_DATE=2015-09-xx
+set SCRIPT_DATE=2015-09-23
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1316,8 +1318,8 @@ title TRON v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call :log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling Microsoft telemetry (user tracking) instead of purging"
 	REM Only disable telemetry, don't completely purge it
-	reg import stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-	regedit /S stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
+	reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+	regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 	goto skip_telem_removal
 )
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
@@ -1326,7 +1328,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	if /i %DRY_RUN%==no (
 
 		REM Call sub-script to kill Windows 10 telemetry
-		REM It involves too much to add directly to Tron.bat, so we put it in an external script
+		REM Normally I try to embed everything directly, but it was quite a bit of code so I put it in an external script to avoid bloating tron.bat too much
 		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 ) else (
@@ -1406,7 +1408,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	)
 )
 :skip_telem_removal
-call :log "%CUR_DATE% %TIME%    Done."
+call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 
 
 
