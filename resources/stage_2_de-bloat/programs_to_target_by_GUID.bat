@@ -84,7 +84,7 @@ start /wait msiexec /qn /norestart /x {B0D59FDC-FEAB-49A2-9B5A-E5E0A8F9D7E0}
 :: Amazon 1Button App 1.0.0.4
 start /wait msiexec /qn /norestart /x {134E190A-CE2A-4436-BDEB-387CC36A96C9}
 
-:: AMD Accelerated Video Transcoding
+:: AMD Accelerated Video Transcoding // Drag-and-Drop Transcoding
 start /wait msiexec /qn /norestart /x {A6AFFBD8-D006-967F-51AF-0120F0261080}
 start /wait msiexec /qn /norestart /x {8642397F-CF08-6B30-A477-A039BBAA511E}
 start /wait msiexec /qn /norestart /x {9427FF53-EEF7-6D70-73AE-596A6B0CBC36}
@@ -95,6 +95,8 @@ start /wait msiexec /qn /norestart /x {E7ACB435-E0B4-4770-77DE-ED38887CD133}
 start /wait msiexec /qn /norestart /x {ABD675FF-147C-689A-50B9-6DC57DE4044F}
 start /wait msiexec /qn /norestart /x {3BF3599D-7F28-C60B-1C5D-82BFD4E5EF33}
 start /wait msiexec /qn /norestart /x {D1822C34-F342-B6AA-6369-899C9D2A9227}
+start /wait msiexec /qn /norestart /x {F6BF49D7-479E-23FE-A8A9-63D193D05697}
+start /wait msiexec /qn /norestart /x {8F2415FA-72F2-F029-0450-4EB2FAE484C5}
 
 :: AMD Catalyst Control Center - Branding
 start /wait msiexec /qn /norestart /x {24D38277-CE6E-4E12-A2EE-F46832A4FA2F}
@@ -123,6 +125,7 @@ start /wait msiexec /qn /norestart /x {C16CD4C0-48EE-0F40-C9FD-0778EAF73FBD}
 start /wait msiexec /qn /norestart /x {D7C275A6-3266-0FBC-2D84-17A6AC226F01}
 start /wait msiexec /qn /norestart /x {ED273D26-E354-1A5B-A0D0-CB5258D43BD2}
 start /wait msiexec /qn /norestart /x {1D33EC42-4787-56CD-8137-95D8418FFEE8}
+start /wait msiexec /qn /norestart /x {678F0819-823E-D737-3FD1-13EF6D9AE2EC}
 
 :: AOLIcon (lol)
 start /wait msiexec /qn /norestart /x {FFC7F03B-7069-4F7B-B0A5-9C173E898AC9}
@@ -392,6 +395,28 @@ start /wait msiexec /qn /norestart /x {50BFCE80-042B-E53F-05EF-ACA0CC16A0DF}
 start /wait msiexec /qn /norestart /x {9A3F65CA-78FA-4749-004B-23743CF642D1}
 
 :: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info
+start /wait msiexec /qn /norestart /x {0539BDDF-F755-D9E5-01DD-C849A8FEAFBA}
+start /wait msiexec /qn /norestart /x {7CD296DF-92C6-0AFA-2266-52D2E9E6F94A}
+start /wait msiexec /qn /norestart /x {637C66DF-2C30-92D5-FF70-4C6BF78A70B8}
+start /wait msiexec /qn /norestart /x {8DA5268F-0878-6946-18C5-AC119E909E45}
+start /wait msiexec /qn /norestart /x {5059FE9E-985A-5042-4E40-0599893F1BD4}
+start /wait msiexec /qn /norestart /x {317F1B3D-6D11-845F-78A4-A7043709BE98}
+start /wait msiexec /qn /norestart /x {561F34EC-58FD-012E-97E9-FD602FE05793}
+start /wait msiexec /qn /norestart /x {88ED4B4B-737C-436A-1986-5C11DAE3AF58}
+start /wait msiexec /qn /norestart /x {868A261B-F138-F634-809D-FB055FBD64D7}
+start /wait msiexec /qn /norestart /x {55B3618A-C140-9255-4A2E-DFDA4FA73079}
+start /wait msiexec /qn /norestart /x {80D7F879-2B6B-A962-7CDB-9D44EBF94179}
+start /wait msiexec /qn /norestart /x {7646ABF9-134D-E4D4-6CAB-BDCC6C1B757E}
+start /wait msiexec /qn /norestart /x {9334EE39-4008-DADF-312A-959732D2BA89}
+start /wait msiexec /qn /norestart /x {C3949029-D1B6-7C46-8924-D923632D25C6}
+start /wait msiexec /qn /norestart /x {B5B56A67-A778-EC49-933C-A16ACDDB36AA}
+start /wait msiexec /qn /norestart /x {CB875A37-DCFE-D05D-0D46-56FF566687F3}
+start /wait msiexec /qn /norestart /x {9F405B46-9A78-F808-F993-A7F9F97B31A4}
+start /wait msiexec /qn /norestart /x {7998A135-B567-5CBB-0C0A-D7095D9AD198}
+start /wait msiexec /qn /norestart /x {7D524964-6AB4-2712-5B65-80770A1C080F}
+start /wait msiexec /qn /norestart /x {7CD40554-C923-6261-534B-B81F37519864}
+start /wait msiexec /qn /norestart /x {597AB871-BC7D-29EC-2DB5-F29C32FBD6A3}
+start /wait msiexec /qn /norestart /x {972315D0-3943-6BAB-CCC8-4B6E9F844390}
 start /wait msiexec /qn /norestart /x {1E2ABB89-F7F3-8D64-3345-27E5735AA20C}
 start /wait msiexec /qn /norestart /x {990B884F-569C-5078-DD76-8BE91A569291}
 start /wait msiexec /qn /norestart /x {CD4005E4-E612-14BB-1BC4-636AE955D995}
@@ -1328,6 +1353,7 @@ start /wait msiexec /qn /norestart /x {793B70D2-41E9-46AB-9DDC-B34C99D07DB5}
 start /wait msiexec /qn /norestart /x {F8EB8FFC-C535-49A1-A84D-CC75CB2D6ADA}
 start /wait msiexec /qn /norestart /x {1BDEB6E2-6706-4132-A5D3-99190C6BECD8}
 start /wait msiexec /qn /norestart /x {2DFA9084-CEB3-4A48-B9F7-9038FEF1B8F4}
+start /wait msiexec /qn /norestart /x {4E91898E-4DED-4B17-94F0-FA61AACCDEB0}
 
 :: EA Download Manager
 start /wait msiexec /qn /norestart /x {EF7E931D-DC84-471B-8DB6-A83358095474}
@@ -1412,9 +1438,6 @@ start /wait msiexec /qn /norestart /x {597A58EC-42D6-4940-8739-FB94491B013C}
 :: GeekBuddy
 start /wait msiexec /qn /norestart /x {17004FB0-9CFD-43DC-BB2D-E2BA612D98D0}
 
-:: GlobalUpdate Helper
-start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
-
 :: Google Toolbar for Internet Explorer
 start /wait msiexec /qn /norestart /x {18455581-E099-4BA8-BC6B-F34B2F06600C}
 start /wait msiexec /qn /norestart /x {2318C2B1-4965-11d4-9B18-009027A5CD4F}
@@ -1425,7 +1448,6 @@ start /wait msiexec /qn /norestart /x {60EC980A-BDA2-4CB6-A427-B07A5498B4CA}
 start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 start /wait msiexec /qn /norestart /x {A4DE5CD7-96D6-3979-8C39-E864396AFFC0}
 start /wait msiexec /qn /norestart /x {5BAA8884-F661-464B-B5B2-5C6C632BFC21}
-start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 
 :: Hewlett-Packard ACLM.NET
 start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
@@ -1544,7 +1566,7 @@ start /wait msiexec /qn /norestart /x {8126E380-F9C6-4317-9CEE-9BBDDAB676E5}
 :: HP D2400_Help
 start /wait msiexec /qn /norestart /x {7EF7CCB0-52BF-4947-BE6E-E47D586E8842}
 
-:: HP Deskjet 2510 series Setup Guide 
+:: HP Deskjet 2510 series Setup Guide
 start /wait msiexec /qn /norestart /x {216C7F38-4BBC-4E9A-8392-C9FA21B54386}
 
 :: HP Deskjet 3050 J610 series Help 140.0.63.63
@@ -2093,6 +2115,7 @@ start /wait msiexec /qn /norestart /x {FE0133FE-9AEE-4A36-9F46-749E069540D3}
 start /wait msiexec /qn /norestart /x {4A03706F-666A-4037-7777-5F2748764D10}
 start /wait msiexec /qn /norestart /x {CCB6114E-9DB9-BD54-5AA0-BC5123329C9D}
 start /wait msiexec /qn /norestart /x {32A3A4F4-B792-11D6-A78A-00B0D0170550}
+start /wait msiexec /qn /norestart /x {C270821D-2479-D0F4-1BD1-7BBAF6762A98}
 
 :: Kaspersky Lab Network Agent
 start /wait msiexec /qn /norestart /x {786A9F7E-CFEC-451F-B3C4-22EB11550FD8}
@@ -2248,6 +2271,9 @@ start /wait msiexec /qn /norestart /x {90150000-008C-0409-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008C-0000-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008C-0409-0000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008F-0000-1000-0000000FF1CE}
+
+:: Microsoft Office 2003 Web Components
+start /wait msiexec /qn /norestart /x {90120000-00A4-0409-0000-0000000FF1CE}
 
 :: Microsoft Office 2007 "Get Started Tab" for PowerPoint, Excel, and Word
 start /wait msiexec /qn /norestart /x {5AE5DB70-5CE6-4876-A83E-8246CC36FC28}
