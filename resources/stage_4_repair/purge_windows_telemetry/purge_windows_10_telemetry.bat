@@ -4,7 +4,7 @@
 ::                code heavily borrowed from:
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
 ::                  - win10-unfu**k: https://github.com/dfkt/waitin10-unfuck
-::                  - ... and other places around the web
+::                  - ... and many other places around the web
 :: Version:       1.0.0-TRON + Initial write
 SETLOCAL
 
@@ -24,7 +24,7 @@ SETLOCAL
 @echo off
 pushd %SystemDrive%
 set SCRIPT_VERSION=1.0.0-TRON
-set SCRIPT_UPDATED=2015-09-14
+set SCRIPT_UPDATED=2015-09-23
 
 
 :::::::::::::
