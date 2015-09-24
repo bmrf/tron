@@ -51,7 +51,7 @@ setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive"
 setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >nul 2>&1
 
 :: Kill Adobe Flash that ships baked-in to Windows 10
-:: Disabled for Tron; regular Flash also stores files here
+:: Disabled for Tron; it seems regular Flash also stores files here
 REM takeown /f "%windir%\System32\Macromed" /r /d y >nul 2>&1
 REM icacls "%windir%\System32\Macromed" /grant administrators:F /t >nul 2>&1
 REM rd /s /q "%windir%\System32\Macromed" >nul 2>&1
