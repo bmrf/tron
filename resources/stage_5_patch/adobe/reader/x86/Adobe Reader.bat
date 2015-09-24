@@ -29,6 +29,9 @@ pushd %~dp0
 :: This line installs the package from the local folder (if all files are in the same directory)
 "%BINARY%" %FLAGS%
 
+:: Install a patch from the local folder (if all files are in the same directory)
+msiexec /p "Adobe Reader v11.0.12 patch.msp" REINSTALL=ALL REINSTALLMODE=omus /qn
+
 :: Disable Adobe Updater via registry
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Adobe\Acrobat Reader\11.0\FeatureLockDown" /v bUpdater /t REG_DWORD /d 00000000 /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
