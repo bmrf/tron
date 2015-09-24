@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
+:: Version:       6.7.1 + tron.bat:prep:             Check to see if Tron is running from Windows TEMP folder, alert the user if so, and then exit. Thanks to /u/ALittleFunInTheSun
+::                6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
 ::                                                   run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
 ::                                                   to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
 ::                      * stage_4_repair:dism_store: Expand Dism image repair to include Windows 10
@@ -159,8 +160,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.7.0
-set SCRIPT_DATE=2015-09-23
+set SCRIPT_VERSION=6.7.1
+set SCRIPT_DATE=2015-09-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -184,6 +185,27 @@ set RESUME_DETECTED=no
 reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
 if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
 if /i "%1"=="-resume" set RESUME_DETECTED=yes
+
+
+:: Make sure we're not running from the %TEMP% directory
+if "%~dp0"=="%TEMP%\" (
+	color 0c
+	cls
+	echo.
+	echo  ERROR
+	echo.
+	echo  Tron is running from the Windows TEMP directory. Tron 
+	echo  cannot run from the TEMP directory as it's one of the 
+	echo  first places to get wiped when Tron starts. Run Tron
+	echo  from another location ^(directly from the Desktop is 
+	echo  the recommended location^).
+	echo.
+	echo  Tron will now quit.
+	echo.
+	pause
+	cls
+	goto :eof
+)
 
 
 :: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
@@ -581,21 +603,21 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 :: Check if we have network support
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
-		color 0e
-		cls
-		echo.
-		echo  NOTE
-		echo.
-		echo  The system is in Safe Mode without Network support.
-		echo  Tron functions best in "Safe Mode with Networking" in
-		echo  order to download Windows and anti-virus updates.
-		echo.
-		echo  Tron will still function, but rebooting to "Safe Mode
-		echo  with Networking" is recommended.
-		echo.
-		pause
-		cls
-		)
+	color 0e
+	cls
+	echo.
+	echo  NOTE
+	echo.
+	echo  The system is in Safe Mode without Network support.
+	echo  Tron functions best in "Safe Mode with Networking" in
+	echo  order to download Windows and anti-virus updates.
+	echo.
+	echo  Tron will still function, but rebooting to "Safe Mode
+	echo  with Networking" is recommended.
+	echo.
+	pause
+	cls
+	)
 
 
 :: PREP: UPM detection circuit
@@ -1871,3 +1893,4 @@ for %%i in (%*) do (
 	if %%i==-UPM set UNICORN_POWER_MODE=on
 	)
 goto :eof
+:eof
