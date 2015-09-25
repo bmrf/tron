@@ -5,7 +5,10 @@
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
 ::                  - win10-unfu**k: https://github.com/dfkt/waitin10-unfuck
 ::                  - ... and many other places around the web
-:: Version:       1.0.0-TRON + Initial write
+:: Version:       1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
+::                           - Remove incorrect pushd %SystemDrive at head of script
+::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
+::                1.0.0-TRON + Initial write
 SETLOCAL
 
 
@@ -22,9 +25,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.0-TRON
-set SCRIPT_UPDATED=2015-09-23
+set SCRIPT_VERSION=1.0.1-TRON
+set SCRIPT_UPDATED=2015-09-25
 
 
 :::::::::::::
@@ -66,8 +68,8 @@ taskkill /f /im OneDrive.exe >nul 2>&1
 %SystemRoot%\System32\OneDriveSetup.exe /uninstall >nul 2>&1
 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >nul 2>&1
 :: These keys are orphaned after the OneDrive uninstallation and can be safely removed
-REG Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
-REG Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
+reg Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
+reg Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
 takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >nul 2>&1
 icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >nul 2>&1
 rd /s /q "%LocalAppData%\Microsoft\OneDrive" >nul 2>&1
@@ -80,8 +82,6 @@ rd /s /q "%SystemDrive%\OneDriveTemp" >nul 2>&1
 :: UPDATES
 
 :: Second, purge bad updates
-:: 01/22 - kb 971033  (https://support.microsoft.com/en-us/kb/971033)
-start /wait "" wusa /uninstall /kb:971033 /norestart /quiet >nul 2>&1
 :: 02/22 - kb 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet >nul 2>&1
 :: 03/22 - kb 2922324 (https://support.microsoft.com/en-us/kb/2922324)
@@ -209,9 +209,10 @@ regedit /S disable_telemetry_registry_entries.reg >nul 2>&1
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS ...
 
-:: Uncomment and run this command to flush ALL routes IMMEDIATELY (you'll need to reboot or do an ipconfig /release & ipconfig /renew to get a new default route)
+:: Run this command to flush ALL routes IMMEDIATELY (you'll need to reboot or do an ipconfig /release & ipconfig /renew to get a new default route)
 ::route -f
-:: Uncomment and run this commend to clear persistent routes only, takes effect at reboot. This will undo all the below changes
+
+:: Run this commend to clear persistent routes only, takes effect at reboot. This will undo all the below changes
 ::reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
 
 :: a-0001.a-msedge.net
@@ -270,12 +271,6 @@ route -p add 65.55.44.108/32 0.0.0.0 >nul 2>&1
 route -p add 157.56.106.210/32 0.0.0.0 >nul 2>&1
 :: sgmetrics.cloudapp.net
 route -p add 168.62.11.145/32 0.0.0.0 >nul 2>&1
-:: sls.update.microsoft.com
-route -p add 157.55.133.204/32 0.0.0.0 >nul 2>&1
-:: sls.update.microsoft.com.akadns.net
-route -p add 157.55.240.220/32 0.0.0.0 >nul 2>&1
-:: sls.update.microsoft.com.nsatc.net
-route -p add 157.55.133.204/32 0.0.0.0 >nul 2>&1
 :: spynet2.microsoft.com
 route -p add 23.96.212.225/32 0.0.0.0 >nul 2>&1
 :: spynetalt.microsoft.com
