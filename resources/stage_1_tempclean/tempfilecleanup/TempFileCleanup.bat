@@ -53,9 +53,6 @@ echo   Cleaning USER temp files...
 :: Create log line
 echo.  %% echo  ! Cleaning USER temp files... %% echo.
 
-:: User temp files, history, and random My Documents stuff
-del /F /S /Q "%TEMP%" 2>NUL
-
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
 REM Disabled for Tron
 REM if exist %SystemDrive%\Windows.old\ (
@@ -82,31 +79,52 @@ REM if exist %SystemDrive%\$Windows.~WS (
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
 if /i "%WIN_VER:~0,9%"=="Microsoft" (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
-		del /F /Q "%%x\Local Settings\Temp\*" 2>NUL
-		del /F /Q "%%x\Recent\*" 2>NUL
-		del /F /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
-		del /F /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
-		del /F /Q "%%x\Application Data\Sun\Java\*" 2>NUL
-		del /F /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
-		del /F /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Dr Watson\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
+		del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
+		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
+		del /F /S /Q "%%x\Recent\*" 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do (
-		del /F /Q "%%x\AppData\Local\Temp\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
-		del /F /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
-		del /F /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.blf" 2>NUL
-		del /F /Q "%%x\AppData\Local\Microsoft\Windows\*.regtrans-ms" 2>NUL
-		del /F /Q "%%x\*.blf" 2>NUL
-		del /F /Q "%%x\*.regtrans-ms" 2>NUL
-		REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
-		REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
+	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+		del /F /S /Q "%%x\*.blf" 2>NUL
+		del /F /S /Q "%%x\*.regtrans-ms" 2>NUL
+		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
+		del /F /S /Q "%%x\Documents\*.tmp" 2>NUL
 	)
+	REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
+	REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 )
 
 echo. && echo   Done. && echo.
@@ -158,10 +176,15 @@ reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> %LOGPATH%\%LOGFILE%
-if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportArchive"
-if exist "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%USERPROFILE%\AppData\Local\Microsoft\Windows\WER\ReportQueue"
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportArchive"
 if exist "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows\WER\ReportQueue"
+
+:: JOB: Clear Windows Defender Scan Results
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Quick"
+if exist "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Windows Defender\Scans\History\Results\Resource"
+
+:: JOB: Clear Windows Search Temp Data
+if exist "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp" rmdir /s /q "%ALLUSERSPROFILE%\Microsoft\Search\Data\Temp"
 
 :: JOB: Windows update logs & built-in backgrounds (space waste)
 del /F /Q %WINDIR%\*.log 2>NUL
