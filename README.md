@@ -290,7 +290,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 
 # INTEGRITY
 
-In every release `checksums.txt`, which contains SHA-256 hashes of *ever* file included in Tron, is signed with my PGP key (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
+In every release `checksums.txt`, which contains SHA-256 hashes of *every* file included in Tron, is signed with my PGP key (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
 
 
 # LICENSE
