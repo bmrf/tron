@@ -64,7 +64,7 @@ call :set_cur_date
 ::  * No trailing slashes on paths!   (BAD:  SET VAR=C:\Directory\)
 ::  * BAD quotes!                     (BAD:  SET VAR="C:\Directory")
 ::  * Network paths are okay          (okay: SET VAR=\\SERVER\Share)
-::  * Spaces are okay                 (okay: SET VAR=C:\Directory")
+::  * Spaces are okay                 (okay: SET VAR=C:\My Folder\With Spaces)
 ::  * BEST quotes with spaces is best (BEST: SET "VAR=C:\My Folder\With Spaces")
 ::  *                                 (BEST: SET "VAR=\\SERVER\Share With Spaces")
 
