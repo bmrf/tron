@@ -1343,7 +1343,7 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call :log "!  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
 	goto SKIP_TELEMETRY_REMOVAL
 )
-set "JOB=windows_telemetry_removal"
+set "JOB=MTRT - MS Telemetry Removal"
 title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [%JOB%]
 CD /D "%RES%\%RESUME_STAGE%\%JOB%" >NUL 2>&1
 
@@ -1354,7 +1354,7 @@ IF /I "%WIN_VER:~0,9%"=="Windows 7" (GOTO :TELEMETRY_REMOVAL)
 IF /I "%WIN_VER:~0,9%"=="Windows 8" (GOTO :TELEMETRY_REMOVAL)
 GOTO SKIP_TELEMETRY_REMOVAL
 :TELEMETRY_REMOVAL
-call :log "   Launch job 'Microsoft Telemetry Removal (Win7-10)'..."
+call :log "   Launch job: %JOB%..."
 call :log "!  THIS TAKES A WHILE - BE PATIENT!!"
 IF /I %DRY_RUN%==YES (GOTO END_TELEMETRY_REMOVAL)
 	START "MTRT" /I /High /Wait MTRT.cmd "%RAW_LOGS%" >NUL 2>&1

@@ -1,23 +1,14 @@
-:: Title:         Microsoft Telemetry Removal Tool - MTRT
+:: Title:         MTRT - Microsoft Telemetry Removal Tool
 :: Purpose:       Purges Windows 7/8/8/1/10 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/spexdi
-::                code heavily borrowed from:
-::                  - Aegis project: https://Voat.co/V/Technology/comments/459263
-::                  - win10-unfu**k: https://github.com/Dfkt/waitin10-unfuck
-::                  - Spybot Anti-Beacon: http://forums.spybot.info/showthread.php?72686
-::                  - Current list of bad KB updates: http://techne.alaya.net/?p=12499
-::                  - blockwindows: https://blockwindows.wordpress.com
-::                  - Debloat-Windows-10: https://github.com/W4RH4WK/Debloat-Windows-10
-::                  - ... and many other places around the web
-:: Version:       1.0.2-TRON - 1.0.1-TRON merged with Spexdi's MTRT (reddit.com/r/computertechs/comments/3kn4cf)
-:: Version:       1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
+::
+:: Version:       2.0-MTRT   - 1.0.1-TRON merged with Spexdi's MTRT (reddit.com/r/computertechs/comments/3kn4cf), see ReadMe file
+::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
 ::                           - Remove incorrect pushd %SystemDrive at head of script
 ::                1.0.0-TRON + Initial write
 @ECHO OFF
-CD /D "%~DP0"
 SETLOCAL ENABLEDELAYEDEXPANSION
-
 
 :::::::::::::::
 :: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
@@ -26,17 +17,21 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 :: Log File Name
 SET "MTRT_LOGFILE=MTRT_Log.log"
 
-REM Pull log path from command switch if invoked from TRON (Ex: MTRT.cmd "C:\Temp Files")
-REM  Do not Edit!
-set "MTRT_LOGPATH=%~1"
-
 REM Setting to either 'Disable' or 'Delete' the questionable Scheduled Tasks
 REM You can review and change what gets affected by editing the SchedTasks.ini file
-SET TASKMODE=Disable
+SET "TASKMODE=Disable"
 
-:: If no switch, set root MTRT dir as log destination
+:: MTRT scripts folder. Leave entry blank if you put everything in the same folder.
+SET "SCRIPTS=data"
+
+REM Pull log path from command switch if invoked from TRON (Ex: MTRT.cmd "C:\Temp Files")
+REM You can edit this manually, but it will will no longer save in the RAW_LOGS folder that Tron defines
+REM DEFAULT: set "MTRT_LOGPATH=%~1"
+set "MTRT_LOGPATH=%~1"
+
+:: If no switch passed, set MTRT help dir as log destination
 IF "%MTRT_LOGPATH%"=="" (
-	set "MTRT_LOGPATH=%~dp0"
+	set "MTRT_LOGPATH=%~dp0help"
 )
 :: --------------------------- Don't edit anything below this line --------------------------- ::
 REM Check Admin
@@ -46,20 +41,26 @@ IF ERRORLEVEL 1 GOTO FAIL
 FOR /F %%a IN ('WMIC OS GET LocalDateTime ^| find "."') DO SET DTS=%%a
 SET CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
-SET SCRIPT_VERSION=1.0.2-TRON
-SET SCRIPT_UPDATED=2015-09-26
+SET SCRIPT_VERSION=2.0
 
 REM Determine OS
 FOR /F "tokens=3*" %%I IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /V ProductName ^| Find "ProductName"') DO (SET WIN_VER=%%I %%J)
 
+REM Set scripts path
+IF NOT DEFINED SCRIPTS (
+		SET "DATA=%~dp0"
+	) ELSE (
+		SET "DATA=%~Dp0\%SCRIPTS%"
+)
+
 REM Settings for KB.ini file
-IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "kb_tokens=1,4")
-IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "kb_tokens=2,4")
-IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "kb_tokens=3,4")
+REM IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4")
+REM IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4")
+REM IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4")
 REM Settings for Reg.ini file
-IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "REG_TOKENS=1,4,5,6,7")
-IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "REG_TOKENS=2,4,5,6,7")
-IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "REG_TOKENS=3,4,5,6,7")
+IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4,5,6,7")
+IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4,5,6,7")
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4,5,6,7")
 
 REM Get User SID
 FOR /F "delims= " %%A IN ('"wmic path win32_useraccount where name='%UserName%' get sid"') DO (
@@ -69,20 +70,22 @@ FOR /F "delims= " %%A IN ('"wmic path win32_useraccount where name='%UserName%' 
    )
 )
 :END_SID_LOOP
-
+CD /D "%DATA%"
 
 
 :START
+
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
+CALL :LOG "  Start MTRT - MS Telemetry Removal %SCRIPT_VERSION%"
 CALL :LOG "   Killing Gwx / OneDrive"
 TASKKILL /F /IM Gwx.exe /T >NUL 2>&1
 TASKKILL /F /IM OneDrive.exe /T >NUL 2>&1
 
 CALL :LOG "   Setting registry permissions"
 REM Take ownership of registry folders as defined in reg.ini file
-FOR /F "eol=# tokens=%REG_TOKENS% delims=	|" %%A IN (Reg.ini) DO (
+FOR /F "eol=# tokens=%TOKENS% delims=	|" %%A IN (Reg.ini) DO (
 	IF /I %%A==Y (
 		setacl.exe -ON "%%B" -OT REG -ACTN SETOWNER -OWNR N:ADMINISTRATORS >NUL 2>&1
 		setacl.exe -ON "%%B" -OT REG -ACTN ACE -ACE "N:ADMINISTRATORS;P:FULL" >NUL 2>&1
@@ -90,7 +93,7 @@ FOR /F "eol=# tokens=%REG_TOKENS% delims=	|" %%A IN (Reg.ini) DO (
 )
 
 CALL :LOG "   Disable scheduled telemtry tasks"
-FOR /F "eol=# tokens=1* delims=$" %%D IN (SchedTasks.ini) DO schtasks /Change /Disable /TN "%%D" >NUL 2>&1
+FOR /F "eol=# tokens=1* delims=$" %%D IN (SchedTasks.ini) DO schtasks /Change /%TASKMODE% /TN "%%D" >NUL 2>&1
 
 CALL :LOG "   Disable Remote Registry"
 SC STOP RemoteRegistry >NUL 2>&1
@@ -116,7 +119,7 @@ IF EXIST "%SYSTEMDRIVE%\ProgramData\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoL
 		COPY /Y NUL AutoLogger-Diagtrack-Listener.etl >NUL 2>&1
 		ICACLS AutoLogger-Diagtrack-Listener.etl /DENY SYSTEM:F /Q >NUL 2>&1
 )
-CD /D "%~DP0"
+CD /D "%DATA%"
 
 :: Start Window 10 Only
 IF /I NOT "%WIN_VER:~0,9%"=="Windows 1" (GOTO SKIP_10_TWEAKS)
@@ -153,7 +156,7 @@ FOR /D %%O IN (*onedrive*) DO (
 	DEL %%O /F /S /Q >NUL 2>&1
 	RMDIR %%O /S /Q >NUL 2>&1
 )
-CD /D "%~DP0"
+CD /D "%DATA%"
 
 CALL :LOG "   Disable geolocation "
 SC STOP lfsvc  >NUL 2>&1
@@ -172,7 +175,6 @@ SC DELETE XblGameSave >NUL 2>&1
 SC DELETE XboxNetApiSvc >NUL 2>&1
 
 REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%" /T REG_DWORD /V FeatureStates /D 0x33c /F >NUL 2>&1
-
 :SKIP_10_TWEAKS
 
 
@@ -182,16 +184,16 @@ Set-WindowsSearchSetting -EnableWebResultsSetting $False -SafeSearchSetting "Off
 
 
 CALL :LOG "   Adding registry tweaks"
-FOR /F "eol=# tokens=%REG_TOKENS% delims=	|" %%A IN (Reg.ini) DO (
+CD /D "%DATA%"
+FOR /F "eol=# tokens=%TOKENS% delims=	|" %%A IN (Reg.ini) DO (
 	IF /I %%A==Y (
 		REG ADD "%%B" /T %%E /V %%C /D %%D /F >NUL 2>&1
 	)
 )
 
-
 CALL :LOG "   Blocking PersistentRoutes"
 REM Parse PersistentRoutes.ini, skip any line starting with ; and route to 0.0.0.0
- FOR /F "eol=# tokens=1*" %%E in (PersistentRoutes.ini) do route -p add %%E 0.0.0.0 >NUL 2>&1
+FOR /F "eol=# tokens=1*" %%E in (PersistentRoutes.ini) do route -p add %%E 0.0.0.0 >NUL 2>&1
 
 
 CALL :LOG "   Backing up HOSTS file and applying tweaks"
@@ -200,10 +202,10 @@ CD /D "%WINDIR%\System32\drivers\etc"
 TAKEOWN /F hosts >NUL 2>&1
 ICACLS hosts /GRANT ADMINISTRATORS:F /Q >NUL 2>&1
 IF EXIST %WINDIR%\System32\drivers\etc\hosts*.* ATTRIB +A -H -R -S %WINDIR%\System32\drivers\etc\hosts*.* >NUL 2>&1
-IF EXIST %WINDIR%\System32\drivers\etc\hosts (COPY %WINDIR%\System32\drivers\etc\hosts "HOSTS_%CUR_DATE%_%TIME%.BAK" /Y) >NUL 2>&1
-CALL :LOG "     - File HOSTS_%CUR_DATE%_%TIME%.BAK created."
+IF EXIST %WINDIR%\System32\drivers\etc\hosts (COPY %WINDIR%\System32\drivers\etc\hosts "HOSTS_%CUR_DATE%.BAK" /Y) >NUL 2>&1
+CALL :LOG "     - File HOSTS_%CUR_DATE%.BAK created."
 ECHO. >>%WINDIR%\System32\Drivers\etc\hosts
-CD /D "%~DP0"
+CD /D "%DATA%"
 REM Finding and adding missing HOSTS entries as defined by hosts.ini
 FOR /F "eol=# tokens=1* delims=" %%F IN (hosts.ini) DO CALL :SCANHOSTS "%%F"
 GOTO SKIPHOSTS
@@ -214,9 +216,9 @@ GOTO SKIPHOSTS
 :SKIPHOSTS
 
 
-IF NOT DEFINED KB_TOKENS (CALL :LOG "     - ERROR! Skipping.") && (GOTO SKIPKBREMOVAL)
+IF NOT DEFINED TOKENS (CALL :LOG "     - ERROR! Skipping.") && (GOTO SKIPKBREMOVAL)
 CALL :LOG "   Searching and Uninstalling KB updates:"
-FOR /F "skip=5 eol=# tokens=%kb_tokens% delims=	|" %%A IN (KB.ini) DO (
+FOR /F "skip=5 eol=# tokens=%TOKENS% delims=	|" %%A IN (KB.ini) DO (
 	IF /I %%A==Y (
 		SET KBNUM=%%B
 		TITLE Searching for "KB%%B"
@@ -247,8 +249,9 @@ NET START wuauserv >NUL 2>&1
 
 
 CALL :LOG "   Hiding Updates (VERY SLOW, last step though)"
-IF NOT DEFINED KB_TOKENS (CALL :LOG "     - ERROR! Skipping.") && (GOTO SKIP_KB_HIDE)
-FOR /F "skip=5 eol=# tokens=%kb_tokens% delims=	|" %%A IN (KB.ini) DO (
+CD /D "%DATA%"
+IF NOT DEFINED TOKENS (CALL :LOG "     - ERROR! Skipping.") && (GOTO SKIP_KB_HIDE)
+FOR /F "skip=5 eol=# tokens=%TOKENS% delims=	|" %%A IN (KB.ini) DO (
 	IF /I %%A==Y (	
 		SET KB=!KB! %%B
 		echo !KB!
