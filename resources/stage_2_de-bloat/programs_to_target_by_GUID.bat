@@ -3010,14 +3010,14 @@ start /wait msiexec /qn /norestart /x {CDC1AB00-01FF-4FC7-816A-16C67F0923C0}
 :: Windows Live Toolbar
 start /wait msiexec /qn /norestart /x {995F1E2E-F542-4310-8E1D-9926F5A279B3}
 
-:: WinZip (various versions) // WinZip Courier
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240ED}
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240CD}
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-11AF-B2CC-ABCD21A325B8}
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240C3}
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240CF}
-start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240E3}
-start /wait msiexec /qn /norestart /x {8A6EAACB-E2D6-D6BF-0338-F4AC9641B423}
+:: WinZip (various versions) // WinZip Courier // Disabled by Vocatus for Tron
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240ED}
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240CD}
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-11AF-B2CC-ABCD21A325B8}
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240C3}
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240CF}
+:: start /wait msiexec /qn /norestart /x {CD95F661-A5C4-44F5-A6AA-ECDD91C240E3}
+:: start /wait msiexec /qn /norestart /x {8A6EAACB-E2D6-D6BF-0338-F4AC9641B423}
 
 :: WOT for Internet Explorer plugin
 start /wait msiexec /qn /norestart /x {373B90E1-A28C-434C-92B6-7281AFA6115A}
@@ -3034,10 +3034,10 @@ start /wait msiexec /qn /norestart /x {1a413f37-ed88-4fec-9666-5c48dc4b7bb7}
 :: Zinio Alert Messenger
 start /wait msiexec /qn /norestart /x {D2E707E8-090E-EC5B-4833-1CA694FB7460}
 
-:: ZoneAlarm Antivirus, Firewall, and Security
-start /wait msiexec /qn /norestart /x {043A5C25-EC0E-4152-A53B-73065A4315DF}
-start /wait msiexec /qn /norestart /x {537317B1-FB59-4578-953F-544914A8F25F}
-start /wait msiexec /qn /norestart /x {9A121E1B-1E87-4F37-BC9C-F8D073047942}
+:: ZoneAlarm Antivirus, Firewall, and Security // Disabled for Tron
+::start /wait msiexec /qn /norestart /x {043A5C25-EC0E-4152-A53B-73065A4315DF}
+::start /wait msiexec /qn /norestart /x {537317B1-FB59-4578-953F-544914A8F25F}
+::start /wait msiexec /qn /norestart /x {9A121E1B-1E87-4F37-BC9C-F8D073047942}
 
 :: Zune Desktop Theme
 start /wait msiexec /qn /norestart /x {76BA306B-2AA0-47C0-AB6B-F313AB56C136}
