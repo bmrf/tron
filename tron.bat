@@ -784,8 +784,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	call :log "%CUR_DATE% %TIME%    Done."
 )
 
-title TRON v%SCRIPT_VERSION% [stage_0_prep]
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
 
 
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
