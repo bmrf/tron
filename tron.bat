@@ -64,32 +64,50 @@ call :set_cur_date
 :: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
 :::::::::::::::
 :: Rules for variables:
-::  * NO quotes!                    (bad:  "c:\directory\path"       )
-::  * NO trailing slashes on paths! (bad:   c:\directory\            )
-::  * Spaces are okay               (okay:  c:\my folder\with spaces )
-::  * Network paths are okay        (okay:  \\server\share name      )
+::  * No trailing slashes on paths!   (BAD:  SET VAR=C:\MyFolder\)
+::  * BAD quotes!                     (BAD:  SET VAR="C:\MyFolder")
+::  * Network paths are okay          (okay: SET VAR=\\SERVER\Share)
+::  * Spaces are okay                 (okay: SET VAR=C:\My Folder\With Spaces)
+::  * BEST quotes around VAR is best  (BEST: SET "VAR=C:\MyFolder")
+::  *                                 (BEST: SET "VAR=C:\My Folder\With Spaces")
+::  *                                 (BEST: SET "VAR=\\SERVER\Share With Spaces")
 
 :: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
 :: If you want a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
 ::   set LOGPATH=%SystemDrive%\Logs\tron\%computername%_%DTS%
-set LOGPATH=%SystemDrive%\Logs\tron
+set "LOGPATH=%SystemDrive%\Logs\tron"
 
 :: Master log file. To differentiate logfiles if you're doing multiple runs, you can set this to something like:
 ::  set LOGFILE=tron_%COMPUTERNAME%_%DTS%.log
 set LOGFILE=tron.log
 
 :: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here)
-set QUARANTINE=%LOGPATH%\quarantine
+set "QUARANTINE=%LOGPATH%\quarantine"
 
 :: Registry, Event Logs, and power scheme backups are all saved here
-set BACKUPS=%LOGPATH%\backups
+set "BACKUPS=%LOGPATH%\backups"
 
 :: Where to save raw unprocessed logs from the various sub-tools
-set RAW_LOGS=%LOGPATH%\raw_logs
+set "RAW_LOGS=%LOGPATH%\raw_logs"
 
 :: Where to save the summary logs
-set SUMMARY_LOGS=%LOGPATH%\summary_logs
+set "SUMMARY_LOGS=%LOGPATH%\summary_logs"
 
+:: Where resume state and flags are stored
+set "STAGE_FILE=%LOGPATH%\tron_stage.txt"
+set "FLAGS_FILE=%LOGPATH%\tron_flags.txt"
+REM  Job-level resume function in near future? set "JOB_FILE=%LOGPATH%\tron_currentjob.txt"
+
+:: Set Tron RESources path, quotes allow for spaces
+set "TRES=%~DP0resources"
+
+:: Set what stage we are on
+set "STAGE=launch"
+
+:: Set what job we are on
+:: Will allow implementation of Job-Level resume function in future
+:: Use folder name if it exists, quotes allow for spaces
+set "JOB=setup"
 
 :::::::::::::::::::::
 :: SCRIPT DEFAULTS ::
@@ -1316,7 +1334,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: Added by spexdi to make next process work. Will be re(moved) if and when approved.
 set "TRES=%~DP0resources"
-set "RESUME_STAGE=stage_4_repair"
+set "STAGE=stage_4_repair"
 :: Kill Microsoft telemetry (user tracking)
 IF /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	CALL :Log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
@@ -1324,8 +1342,8 @@ IF /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	GOTO SKIP_TELEMETRY_REMOVAL
 )
 SET "JOB=MTRT - MS Telemetry Removal"
-title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [%JOB%]
-CD /D "%TRES%\%RESUME_STAGE%\%JOB%" >NUL 2>&1
+title TRON v%SCRIPT_VERSION% [%STAGE%] [%JOB%]
+CD /D "%TRES%\%STAGE%\%JOB%" >NUL 2>&1
 
 :: Call sub-script if supported OS
 IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO :TELEMETRY_REMOVAL)
