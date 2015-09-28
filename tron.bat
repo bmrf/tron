@@ -5,6 +5,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.7.1 + tron.bat:prep:             Check to see if Tron is running from Windows TEMP folder, alert the user if so, and then exit. Thanks to /u/ALittleFunInTheSun
+::                      ! tron.bat:prep:resume:      Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error that occured on German localisation versions. Thanks to /u/Modeopfa
+::                      ! stage_7_wrap-up:sum_logs:  Fix minor log error due to missing closing quote mark
 ::                      * stage_0_prep:repair_wmi:   Break WMI repair into it's own subscript, with additions from /u/expert02
 ::                6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
 ::                                                   run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
@@ -740,8 +742,9 @@ call :log "---------------------------------------------------------------------
 :::::::::::::::::::
 :stage_0_prep
 :: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
+:: Don't stamp anything to the flags file if no CLI flags were used
 echo stage_0_prep>tron_stage.txt
-echo %*> tron_flags.txt
+if /i not "%*"=="" echo %*> tron_flags.txt
 
 
 :: JOB: Run a quick SMART check and notify if there are any drives with problems
@@ -1680,7 +1683,7 @@ if /i %DRY_RUN%==no (
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
-call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\"
+call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\""
 
 
 :: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
