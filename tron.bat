@@ -754,9 +754,10 @@ call :log "---------------------------------------------------------------------
 :::::::::::::::::::
 :stage_0_prep
 :: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
+set "RESUME_STAGE=stage_0_prep"
+CALL :StampStage
 :: Don't stamp anything to the flags file if no CLI flags were used
-echo stage_0_prep>tron_stage.txt
-if /i not "%*"=="" echo %*> tron_flags.txt
+if /i not "%*"=="" echo %*> "%FLAGS_FILE%"
 
 
 :: JOB: Run a quick SMART check and notify if there are any drives with problems
@@ -939,10 +940,8 @@ call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
 :: STAGE 1: TEMPCLEAN ::
 ::::::::::::::::::::::::
 :stage_1_tempclean
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_1_tempclean>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
+set "RESUME_STAGE=stage_1_tempclean"
+CALL :StampStage
 
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
@@ -1045,15 +1044,13 @@ call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
 :: STAGE 2: De-Bloat ::
 :::::::::::::::::::::::
 :stage_2_de-bloat
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_2_de-bloat>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
+set "RESUME_STAGE=stage_2_de-bloat"
+CALL :StampStage
+
 if /i %SKIP_DEBLOAT%==yes (
 	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs..."
 	goto skip_debloat
 	)
-
-call :log "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
 
 
 :: JOB: Remove crapware programs, phase 1 (by specific GUID)
@@ -1111,10 +1108,8 @@ call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
 :: STAGE 3: Disinfect ::
 ::::::::::::::::::::::::
 :stage_3_disinfect
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_3_disinfect>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs begin..."
+set "RESUME_STAGE=stage_3_disinfect"
+CALL :StampStage
 
 
 :: JOB: Check for -sa flag (skip ALL antivirus scans) and skip RogueKiller, Sophos, KVRT and MBAM if it was used
@@ -1213,10 +1208,8 @@ call :set_cur_date
 :: STAGE 4: Repair ::
 :::::::::::::::::::::
 :stage_4_repair
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_4_repair>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_4_repair]
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
+set "RESUME_STAGE=stage_4_repair"
+CALL :StampStage
 
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
@@ -1326,9 +1319,6 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 
-:: Added by spexdi to make next process work. Will be re(moved) if and when approved.
-set "TRES=%~DP0resources"
-set "RESUME_STAGE=stage_4_repair"
 :: Kill Microsoft telemetry (user tracking)
 IF /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	CALL :Log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
@@ -1369,12 +1359,10 @@ call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
 :: STAGE 5: Patches ::
 ::::::::::::::::::::::
 :stage_5_patch
+set "RESUME_STAGE=stage_5_patch"
 :: Set current date again, since Stage 4 can take quite a while to run
-call :set_cur_date
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_5_patch>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_5_patch]
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs begin..."
+CALL :set_cur_date
+CALL :StampStage
 
 
 :: Prep task: enable MSI installer in Safe Mode
@@ -1525,10 +1513,8 @@ call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
 :: STAGE 6: Optimize ::
 :::::::::::::::::::::::
 :stage_6_optimize
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_6_optimize>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_6_optimize]
-call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs begin..."
+set "RESUME_STAGE=stage_6_optimize"
+CALL :StampStage
 
 
 :: JOB: Reset the system page file settings
@@ -1570,9 +1556,8 @@ if "%SSD_DETECTED%"=="no" (
 :: STAGE 7: Wrap-up ::
 ::::::::::::::::::::::
 :stage_7_wrap-up
-:: Stamp current stage so we can resume if we get interrupted by a reboot
-echo stage_7_wrap-up>tron_stage.txt
-call :log "%CUR_DATE% %TIME%   stage_7_wrap-up jobs begin..."
+set "RESUME_STAGE=stage_7_wrap-up"
+CALL :StampStage
 
 
 
@@ -1778,14 +1763,20 @@ exit /B
 :log
 echo:%~1 >> "%LOGPATH%\%LOGFILE%"
 echo:%~1
-goto :eof
+exit /b
 
+:: Update Stamp file and log
+:StampStage
+echo %RESUME_STAGE%>"%STAGE_FILE%"
+title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%]
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs begin..."
+exit /b
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 :set_cur_date
 for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
-goto :eof
+exit /b
 
 
 :: Parse CLI arguments and flip the appropriate variables. Thanks to /u/douglas_swehla for conversion to function
@@ -1819,5 +1810,5 @@ for %%i in (%*) do (
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
 	)
-goto :eof
+exit /b
 :eof
