@@ -1757,8 +1757,8 @@ exit /B
 :: whole argument string is wrapped in double quotes, it is sent as on argument.
 :: The tilde syntax (%~1) removes the double quotes around the argument.
 :log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
+echo:%CUR_DATE% %TIME% %~1 >> "%LOGPATH%\%LOGFILE%"
+echo:%CUR_DATE% %TIME% %~1
 exit /b
 
 :: Update Stamp file and log
