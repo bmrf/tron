@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.7.1 + tron.bat:prep:             Check to see if Tron is running from Windows TEMP folder, alert the user if so, and then exit. Thanks to /u/ALittleFunInTheSun
+::                      * stage_0_prep:repair_wmi:   Break WMI repair into it's own subscript, with additions from /u/expert02
 ::                6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
 ::                                                   run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
 ::                                                   to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
@@ -839,7 +840,7 @@ if /i %DRY_RUN%==no (
 	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /config /syncfromflags:manual /manualpeerlist:"time.nist.gov 3.pool.ntp.org time.windows.com" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /config /syncfromflags:manual /manualpeerlist:"time.nist.gov 2.pool.ntp.org time.windows.com" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
@@ -848,39 +849,13 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Check WMI and repair if necessary
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
-call :log "%CUR_DATE% %TIME%    Checking WMI..."
+call :log "%CUR_DATE% %TIME%    Checking WMI health..."
 if /i %DRY_RUN%==yes goto skip_repair_wmi
 %WMIC% timezone >NUL
 if /i not %ERRORLEVEL%==0 (
-    call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This might take a minute, please be patient..."
-    net stop winmgmt
-    pushd %SystemRoot%\system32\wbem
-    for %%i in (*.dll) do RegSvr32 -s %%i
-    :: Kill this random window that pops up
-    tskill wbemtest /a 2>NUL
-    scrcons.exe /RegServer
-    unsecapp.exe /RegServer
-    start "" wbemtest.exe /RegServer
-    tskill wbemtest /a 2>NUL
-    tskill wbemtest /a 2>NUL
-    :: winmgmt.exe /resetrepository       -- optional; force full rebuild instead of repair like the line below this. Enable if you're feeling REAAAALLY crazy
-    winmgmt.exe /salvagerepository /resyncperf
-    wmiadap.exe /RegServer
-    wmiapsrv.exe /RegServer
-    wmiprvse.exe /RegServer
-    :: Get the 64-bit versions if they exist
-	if exist %SystemRoot%\SysWOW64\wbem (
-		pushd %SystemRoot%\SysWOW64\wbem
-		for %%j in (*.dll) do RegSvr32 -s %%j
-		winmgmt.exe /salvagerepository /resyncperf
-		wmiadap.exe /RegServer
-		wmiprvse.exe /RegServer
-		popd
-		)
-	net start winmgmt
-	popd
-    )
-
+    call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This will take time, please be patient..."
+	call stage_0_prep\repair_wmi\repair_wmi.bat
+	)
 :skip_repair_wmi
 call :log "%CUR_DATE% %TIME%    Done."
 
