@@ -932,10 +932,9 @@ if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 	)
 call :log "%CUR_DATE% %TIME%    Done."
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
 
 
-
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN ::
 ::::::::::::::::::::::::
@@ -1036,7 +1035,7 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 
 
 
@@ -1099,7 +1098,7 @@ if /i %TARGET_METRO%==yes (
 )
 
 
-call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 :skip_debloat
 
 
@@ -1195,12 +1194,12 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 )
 
 :: AV scans finished
-:skip_antivirus_scans
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
-
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
 :: This is a half-hearted fix for now. Thanks to /u/ScubaSteve for finding the bug
 call :set_cur_date
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
+:skip_antivirus_scans
+
 
 
 
@@ -1340,8 +1339,7 @@ CALL :Log "%CUR_DATE% %TIME%    Launch job: %RESUME_JOB%..."
 CALL :Log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
 REM CALL :log "   Launch job: %RESUME_JOB%..."
 REM CALL :log "!  THIS TAKES A WHILE - BE PATIENT!!"
-IF /I %DRY_RUN%==YES (GOTO END_TELEMETRY_REMOVAL)
-	START "MTRT" /I /High /Wait MTRT.cmd "%RAW_LOGS%" >NUL 2>&1
+IF /I "%DRY_RUN%"=="NO" (START "MTRT" /I /High /Wait MTRT.cmd "%RAW_LOGS%") >NUL 2>&1
 :END_TELEMETRY_REMOVAL
 CALL :Log "%CUR_DATE% %TIME%    Done."
 REM CALL :Log "   Done."
@@ -1351,7 +1349,7 @@ REM CALL :Log "   Done."
 
 
 
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 
 
 
@@ -1505,7 +1503,7 @@ if /i %DRY_RUN%==no (
 	)
 call :log "%CUR_DATE% %TIME%    Done."
 
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 
 
 
@@ -1538,8 +1536,6 @@ if "%SKIP_DEFRAG%"=="yes" (
 :: Check if a Solid State hard drive was detected before doing the section below
 if "%SSD_DETECTED%"=="yes" (
 	call :log "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
-	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
-	goto stage_7_wrap-up
 	)
 
 :: JOB: Defrag the system drive
@@ -1548,9 +1544,10 @@ if "%SSD_DETECTED%"=="no" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'..."
 	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call :log "%CUR_DATE% %TIME%    Done."
-	call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
 	)
 
+
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 
 ::::::::::::::::::::::
 :: STAGE 7: Wrap-up ::
@@ -1658,6 +1655,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
+call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs complete."
 call :log "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
 
 
