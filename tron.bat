@@ -739,14 +739,14 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 :: Create log header
 cls
-call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
-call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
-call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
-call :log "                          Command-line flags: %*"
-call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-call :log "-------------------------------------------------------------------------------"
+call :Header "-------------------------------------------------------------------------------"
+call :Header "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
+call :Header "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+call :Header "                          Logfile: %LOGPATH%\%LOGFILE%"
+call :Header "                          Command-line flags: %*"
+call :Header "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call :Header "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+call :Header "-------------------------------------------------------------------------------"
 
 
 :::::::::::::::::::
@@ -1687,20 +1687,20 @@ if /i %SELF_DESTRUCT%==yes (
 :: Display and log the job summary
 :: Turn the window green so we can see at a glance if it's done
 color 2F
-call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
-call :log "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
-call :log "                          Command-line flags: %*"
-call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-call :log "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
-call :log "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
-call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
-call :log ""
-call :log "     * If you see negative disk space don't panic. Due to how some of Tron's"
-call :log "       functions work, actual disk space reclaimed will not be visible until"
-call :log "       after a reboot."
-call :log "-------------------------------------------------------------------------------"
+call :Header "-------------------------------------------------------------------------------"
+call :Header "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call :Header "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+call :Header "                          Command-line flags: %*"
+call :Header "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call :Header "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+call :Header "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
+call :Header "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
+call :Header "                          Logfile: %LOGPATH%\%LOGFILE%"
+call :Header ""
+call :Header "     * If you see negative disk space don't panic. Due to how some of Tron's"
+call :Header "       functions work, actual disk space reclaimed will not be visible until"
+call :Header "       after a reboot."
+call :Header "-------------------------------------------------------------------------------"
 
 
 :: JOB: Actually send the email report if it was requested
@@ -1766,6 +1766,11 @@ exit /b
 echo %RESUME_STAGE%>"%STAGE_FILE%"
 title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%]
 call :log "%CUR_DATE% %TIME%   %RESUME_STAGE% jobs begin..."
+exit /b
+
+:Header
+echo:%~1 >> "%LOGPATH%\%LOGFILE%"
+echo:%~1
 exit /b
 
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
