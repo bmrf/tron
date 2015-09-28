@@ -1243,6 +1243,9 @@ start /wait msiexec /qn /norestart /x {4E5563B6-DE0A-4F3B-A5D6-15789FD12D9B}
 :: Dell Home Systems Service Agreement 2.0.0
 start /wait msiexec /qn /norestart /x {AB2CED80-0F16-476F-8769-30A363562F16}
 
+:: Dell _IsIcoRes.exe
+start /wait msiexec /qn /norestart /x {CD31E63D-47FD-491C-8117-CF201D0AFAB5}
+
 :: Dell mDrWifi
 start /wait msiexec /qn /norestart /x {90CC4231-94AC-45CD-991A-0253BFAC0650}
 start /wait msiexec /qn /norestart /x {A0F925BF-5C55-44C2-A4E7-5A4C59791C29}
@@ -1382,6 +1385,9 @@ start /wait msiexec /qn /norestart /x {42929F0F-CE14-47AF-9FC7-FF297A603021}
 
 :: Dell Support Center
 start /wait msiexec /qn /norestart /x {0090A87C-3E0E-43D4-AA71-A71B06563A4A}
+
+:: :: Dell VideoStage
+start /wait msiexec /qn /norestart /x {DCE0E79A-B9AC-41AC-98C1-7EF0538BCA7F}
 
 :: Dell Wave Crypto Runtime // Infrastructure Installer // Support Software Installer // ESC Home Page Plugin // Preboot Manager // Private Information Manager
 start /wait msiexec /qn /norestart /x {8A2EF9A3-F1A8-4160-8C7D-4CADA7883BD1}
@@ -1733,6 +1739,9 @@ start /wait msiexec /qn /norestart /x {846B5DED-DC8C-4E1A-B5B4-9F5B39A0CACE}
 start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 start /wait msiexec /qn /norestart /x {AF9E97C1-7431-426D-A8D5-ABE40995C0B1}
 
+:: HP Energy Star
+start /wait msiexec /qn /norestart /x {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
+
 :: HP ENVY 4500 series Help
 start /wait msiexec /qn /norestart /x {95BECC50-22B4-4FCA-8A2E-BF77713E6D3A}
 
@@ -2055,6 +2064,13 @@ start /wait msiexec /qn /norestart /x {872B1C80-38EC-4A31-A25C-980820593900}
 start /wait msiexec /qn /norestart /x {70F9BF10-3729-4333-BCBE-5218F69582FA}
 start /wait msiexec /qn /norestart /x {A535F266-291E-447F-ABE6-0BE17D0CB036}
 start /wait msiexec /qn /norestart /x {19484EF1-E27A-43D1-9EEB-685D41888AC8}
+
+:: HP TrayApp (various versions)
+start /wait msiexec /qn /norestart /x {FF075778-6E50-47ed-991D-3B07FD4E3250}
+start /wait msiexec /qn /norestart /x {4D304678-738E-42a0-931A-2B022F49DEB8}
+start /wait msiexec /qn /norestart /x {1EC71BFB-01A3-4239-B6AF-B1AE656B15C0}
+start /wait msiexec /qn /norestart /x {1B57D761-768E-4FB8-A6BB-057A977A7C81}
+start /wait msiexec /qn /norestart /x {5ACE69F0-A3E8-44eb-88C1-0A841E700180}
 
 :: HP Trust Circles
 start /wait msiexec /qn /norestart /x {C4E9E8A4-EEC4-4F9E-B140-520A8B75F430}
@@ -2484,6 +2500,9 @@ start /wait msiexec /qn /norestart /x {739843A9-A2D0-4994-8DE0-AF9FF1BB1A27}
 :: Perion Networks Photo Notifier and Animation Creator
 start /wait msiexec /qn /norestart /x {722CD95C-98C7-4E73-925A-68D2D4F651A6}
 
+:: Pinger
+start /wait msiexec /qn /norestart /x {9B56B031-A6C0-4BB7-8F61-938548C1B759}
+
 :: Plantronics MyHeadset Updater
 start /wait msiexec /qn /norestart /x {24116AB5-8147-42F6-9A09-6B26DBBCE584}
 start /wait msiexec /qn /norestart /x {7D7B61A3-22AC-4141-B88E-5F695128DAD0}
@@ -2805,6 +2824,9 @@ start /wait msiexec /qn /norestart /x {1B87C40B-A60B-4EF3-9A68-706CF4B69978}
 start /wait msiexec /qn /norestart /x {230D1595-57DA-4933-8C4E-375797EBB7E1}
 start /wait msiexec /qn /norestart /x {CEBB6BFB-D708-4F99-A633-BC2600E01EF6}
 
+:: TOSHIBA Blu-ray Disc Player
+start /wait msiexec /qn /norestart /x {FF07604E-C860-40E9-A230-E37FA41F103A}
+
 :: Toshiba Book Place
 start /wait msiexec /qn /norestart /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331}
 start /wait msiexec /qn /norestart /x {39187A4B-7538-4BE7-8BAD-9E83303793AA}
@@ -2913,20 +2935,9 @@ start /wait msiexec /qn /norestart /x {FBFCEEA5-96EA-4C8E-9262-43CBBEBAE413}
 start /wait msiexec /qn /norestart /x {5E6F6CF3-BACC-4144-868C-E14622C658F3}
 start /wait msiexec /qn /norestart /x {6F3C8901-EBD3-470D-87F8-AC210F6E5E02}
 
-:: TOSHIBA VIDEO PLAYER
-start /wait msiexec /qn /norestart /x {FF07604E-C860-40E9-A230-E37FA41F103A}
-
 :: Toshiba Wireless LAN Indicator
 start /wait msiexec /qn /norestart /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9}
 start /wait msiexec /qn /norestart /x {5B01BCB7-A5D3-476F-AF11-E515BA206591}
-
-:: TrayApp (various versions)
-start /wait msiexec /qn /norestart /x {CD31E63D-47FD-491C-8117-CF201D0AFAB5}
-start /wait msiexec /qn /norestart /x {FF075778-6E50-47ed-991D-3B07FD4E3250}
-start /wait msiexec /qn /norestart /x {4D304678-738E-42a0-931A-2B022F49DEB8}
-start /wait msiexec /qn /norestart /x {1EC71BFB-01A3-4239-B6AF-B1AE656B15C0}
-start /wait msiexec /qn /norestart /x {1B57D761-768E-4FB8-A6BB-057A977A7C81}
-start /wait msiexec /qn /norestart /x {5ACE69F0-A3E8-44eb-88C1-0A841E700180}
 
 :: Trend Micro Trial
 start /wait msiexec /qn /norestart /x {BED0B8A2-2986-49F8-90D6-FA008D37A3D2}
@@ -2937,38 +2948,27 @@ start /wait msiexec /qn /norestart /x {0A07E717-BB5D-4B99-840B-6C5DED52B277}
 :: uLead Burn.Now 4.5 4.5.0
 start /wait msiexec /qn /norestart /x {FB3A15FD-FC67-3A2F-892B-6890B0C56EA9}
 
-:: Vegas Movie Studio HD Platinum 11.0
-start /wait msiexec /qn /norestart /x {CE3DE3AE-F384-11E0-B00E-F04DA23A5C58}
-
 :: VIP Access (Lenovo-installed OEM bloatware for Verisign)
 start /wait msiexec /qn /norestart /x {E8D46836-CD55-453C-A107-A59EC51CB8DC}
 
-:: Video Downloader, VideoManager, VideoStage, VideoToolkit
+:: Real Networks Video Downloader, VideoManager, VideoToolkit
 start /wait msiexec /qn /norestart /x {62796191-6F12-4ABE-BA8B-B4D4A266C997}
-start /wait msiexec /qn /norestart /x {6F0FA48E-DAEE-4CCE-BA6A-68C25E27BC85}
 start /wait msiexec /qn /norestart /x {E60AFF01-6087-47BD-8272-61FA3CFC309D}
+start /wait msiexec /qn /norestart /x {6F0FA48E-DAEE-4CCE-BA6A-68C25E27BC85}
 start /wait msiexec /qn /norestart /x {9C618A4D-5428-41B7-8A25-36B311FF8C77}
-start /wait msiexec /qn /norestart /x {DCE0E79A-B9AC-41AC-98C1-7EF0538BCA7F}
 
 :: WD Quick View, SmartWare
-start /wait msiexec /qn /norestart /x {F9843E68-4E61-41B0-946E-66989DB35902}
 start /wait msiexec /qn /norestart /x {7AE43D6C-B3F1-448D-AD84-1CDC7AC6EBC7}
 start /wait msiexec /qn /norestart /x {79966948-BECF-4CB1-A79F-E76C830A17D2}
 
 :: WildTangent GUIDs. Thanks to /u/mnbitcoin
-start /wait msiexec /qn /norestart /x {23170F69-40C1-2702-0938-000001000000}
 start /wait msiexec /qn /norestart /x {2FA94A64-C84E-49d1-97DD-7BF06C7BBFB2}
 start /wait msiexec /qn /norestart /x {EE691BD9-2B2C-6BFB-6389-ABAF5AD2A4A1}
-start /wait msiexec /qn /norestart /x {6E3610B2-430D-4EB0-81E3-2B57E8B9DE8D}
 start /wait msiexec /qn /norestart /x {9E9EF3EC-22BC-445C-A883-D8DB2908698D}
-:: \/ "Delicious Emilys Childhood Memories Premium Edition", also used by "Enterprise 50.0.165.000"
-start /wait msiexec /qn /norestart /x {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
 start /wait msiexec /qn /norestart /x {DD7C5FC1-DCA5-487A-AF23-658B1C00243F}
 start /wait msiexec /qn /norestart /x {0F929651-F516-4956-90F2-FFBD2CD5D30E}
 start /wait msiexec /qn /norestart /x {89C7E0A7-4D9D-4DCC-8834-A9A2B92D7EBB}
-start /wait msiexec /qn /norestart /x {9B56B031-A6C0-4BB7-8F61-938548C1B759}
 start /wait msiexec /qn /norestart /x {36AC0D1D-9715-4F13-B6A4-86F1D35FB4DF}
-start /wait msiexec /qn /norestart /x {03D562B5-C4E2-4846-A920-33178788BE00}
 start /wait msiexec /qn /norestart /x {70B446D1-E03B-4ab0-9B3C-0832142C9AA8}
 start /wait msiexec /qn /norestart /x {182d7111-a24a-4fdf-8f04-063b2496bd3c}
 start /wait msiexec /qn /norestart /x {1a64c8aa-b65a-4ba4-ac23-74a9a923066c}
