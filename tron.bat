@@ -98,16 +98,9 @@ set "STAGE_FILE=%LOGPATH%\tron_stage.txt"
 set "FLAGS_FILE=%LOGPATH%\tron_flags.txt"
 REM  Job-level resume function in near future? set "JOB_FILE=%LOGPATH%\tron_currentjob.txt"
 
-:: Set Tron RESources path, quotes allow for spaces
+:: Where the Tron RESources path is, quotes allow for spaces
 set "TRES=%~DP0resources"
 
-:: Set what stage we are on
-set "STAGE=launch"
-
-:: Set what job we are on
-:: Will allow implementation of Job-Level resume function in future
-:: Use folder name if it exists, quotes allow for spaces
-set "JOB=setup"
 
 :::::::::::::::::::::
 :: SCRIPT DEFAULTS ::
@@ -200,6 +193,7 @@ set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 :: Stuff related to resuming from an interrupted run
+set RESUME_JOB=0
 set RESUME_STAGE=0
 set RESUME_FLAGS=0
 set RESUME_DETECTED=no
@@ -1334,27 +1328,27 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: Added by spexdi to make next process work. Will be re(moved) if and when approved.
 set "TRES=%~DP0resources"
-set "STAGE=stage_4_repair"
+set "RESUME_STAGE=stage_4_repair"
 :: Kill Microsoft telemetry (user tracking)
 IF /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	CALL :Log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
 	REM CALL :Log "!  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
 	GOTO SKIP_TELEMETRY_REMOVAL
 )
-SET "JOB=MTRT - MS Telemetry Removal"
-title TRON v%SCRIPT_VERSION% [%STAGE%] [%JOB%]
-CD /D "%TRES%\%STAGE%\%JOB%" >NUL 2>&1
+SET "RESUME_JOB=MTRT - MS Telemetry Removal"
+title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [%RESUME_JOB%]
+CD /D "%TRES%\%RESUME_STAGE%\%RESUME_JOB%" >NUL 2>&1
 
 :: Call sub-script if supported OS
 IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO :TELEMETRY_REMOVAL)
 IF /I "%WIN_VER:~0,9%"=="Windows 7" (GOTO :TELEMETRY_REMOVAL)
 IF /I "%WIN_VER:~0,9%"=="Windows 8" (GOTO :TELEMETRY_REMOVAL)
-CALL :Log "%CUR_DATE% %TIME% !  %JOB% NOT SUPPORTED ON THIS OS! Skipping"
+CALL :Log "%CUR_DATE% %TIME% !  %RESUME_JOB% NOT SUPPORTED ON THIS OS! Skipping"
 GOTO SKIP_TELEMETRY_REMOVAL
 :TELEMETRY_REMOVAL
-CALL :Log "%CUR_DATE% %TIME%    Launch job: %JOB%..."
+CALL :Log "%CUR_DATE% %TIME%    Launch job: %RESUME_JOB%..."
 CALL :Log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
-REM CALL :log "   Launch job: %JOB%..."
+REM CALL :log "   Launch job: %RESUME_JOB%..."
 REM CALL :log "!  THIS TAKES A WHILE - BE PATIENT!!"
 IF /I %DRY_RUN%==YES (GOTO END_TELEMETRY_REMOVAL)
 	START "MTRT" /I /High /Wait MTRT.cmd "%RAW_LOGS%" >NUL 2>&1
