@@ -58,7 +58,7 @@ set ATTEMPT=2
 set LERR=2001
 echo 2. REPAIRING WMI REPOSITORY... ATTEMPT:%ATTEMPT%...
 echo 2. REPAIRING WMI REPOSITORY... 1. Resetting permissions...
-	sc sdset winmgmt D:(A;;CCDCLCSWRPWPDTLOCRRC;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;DA)(A;;CCDCLCSWRPWPDTLOCRRC;;;PU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)
+sc sdset winmgmt D:(A;;CCDCLCSWRPWPDTLOCRRC;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;DA)(A;;CCDCLCSWRPWPDTLOCRRC;;;PU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)
 echo 2. REPAIRING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository
 IF %ERRORLEVEL%==0 GOTO SKIPRESET
 set LERR=2002
@@ -87,10 +87,10 @@ echo 3. REBUILDING WMI REPOSITORY... Stopping BITS& net stop BITS /y> nul& sc st
 ping 127.0.0.1 -n 5
 echo 3. REBUILDING WMI REPOSITORY... Stopping WinMgmt& net stop winmgmt /y> nul& sc stop winmgmt> nul
 ping 127.0.0.1 -n 5
-c:
-cd %systemroot%\system32\wbem
+%SystemDrive%
+pushd %systemroot%\system32\wbem
 echo 3. REBUILDING WMI REPOSITORY... Deleting WMI Repository& rd /S /Q repository
-IF EXIST %systemroot%\system32\wbem\repository echo 3. REBUILDING WMI REPOSITORY... ERROR! Unable to delete WMI repository. Reboot Required.
+if exist %systemroot%\system32\wbem\repository echo 3. REBUILDING WMI REPOSITORY... ERROR! Unable to delete WMI repository. Reboot Required.
 pause
 echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (scecli.dll)& regsvr32 /s %systemroot%\system32\scecli.dll
 echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (userenv.dll)& regsvr32 /s %systemroot%\system32\userenv.dll
@@ -145,4 +145,5 @@ IF %LERR% NEQ 0 echo WMI REPAIR SUCCESS! WMI REPAIRED (%ATTEMPT%:%LERR%).
 GOTO END
 
 :END
+popd
 REM EXIT %LERR%
