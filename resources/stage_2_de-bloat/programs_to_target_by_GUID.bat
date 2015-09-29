@@ -189,6 +189,7 @@ start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C2201}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-006A-76A7-A758B70C0F01}
 start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C0A00}
+start /wait msiexec /qn /norestart /x {4F564F32-5637-2D53-4154-A758B70C0300}
 
 :: Ask Search App by Ask
 start /wait msiexec /qn /norestart /x {43C423D9-E6D6-4607-ADC9-EBB54F690C57}
@@ -203,6 +204,7 @@ start /wait msiexec /qn /norestart /x {1F1E283D-23D9-4E09-B967-F46A053FEA89}
 start /wait msiexec /qn /norestart /x {0228288D-975E-42F7-9993-E91A82E6BBD9}
 start /wait msiexec /qn /norestart /x {6F5E2F4A-377D-4700-B0E3-8F7F7507EA15}
 start /wait msiexec /qn /norestart /x {B618B8E1-FB71-4237-8361-C3EA3EF15EF7}
+start /wait msiexec /qn /norestart /x {A6558E2A-FAF9-4570-AA49-6328D0354517}
 
 :: ASUS Ai Charger
 start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
@@ -1810,6 +1812,7 @@ start /wait msiexec /qn /norestart /x {274E6D9A-7CCD-4D67-9660-639486F466B2}
 start /wait msiexec /qn /norestart /x {92AB9371-D327-4D56-9BDD-B38A671A631D}
 start /wait msiexec /qn /norestart /x {32A4CF00-9FAC-47c8-9B37-91CC23815D64}
 start /wait msiexec /qn /norestart /x {6357D25F-A9C9-4CC7-A1FB-0DCF344E7C40}
+start /wait msiexec /qn /norestart /x {1F670068-9589-4DC7-8FE4-1D0D13AF2526}
 
 :: HP Insight Diagnostics Online Edition for Windows 9.3.0
 start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
@@ -1886,6 +1889,7 @@ start /wait msiexec /qn /norestart /x {A90F92B7-3C3F-4AEF-B281-31DD17BB73CA}
 start /wait msiexec /qn /norestart /x {37839D69-6DA4-4125-B33A-30DE86345DF4}
 start /wait msiexec /qn /norestart /x {FEB2C4AA-661E-483F-9626-21A8ACFD10F2}
 start /wait msiexec /qn /norestart /x {D2064264-3162-4DB1-AFE0-167BEFBBCD9C}
+start /wait msiexec /qn /norestart /x {32797608-0840-4645-BE1B-37AFFB18908A}
 
 :: HP PostScript Converter
 start /wait msiexec /qn /norestart /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD}
@@ -2096,7 +2100,7 @@ start /wait msiexec /qn /norestart /x {A5AB9D5E-52E2-440e-A3ED-9512E253C81A}
 :: HP UnloadSupport (hidden)
 start /wait msiexec /qn /norestart /x {E06F04B9-45E6-4AC0-8083-85F7515F40F7}
 
-:: HP Update
+:: HP Update, various versions
 start /wait msiexec /qn /norestart /x {787D1A33-A97B-4245-87C0-7174609A540C}
 start /wait msiexec /qn /norestart /x {97486FBE-A3FC-4783-8D55-EA37E9D171CC}
 start /wait msiexec /qn /norestart /x {117BBDE7-472E-4DCD-BAAE-410A0794A335}
@@ -2223,6 +2227,9 @@ start /wait msiexec /qn /norestart /x {6307E820-0317-4DCE-AAE0-7B6CAD867055}
 start /wait msiexec /qn /norestart /x {D6C630BF-8DBB-4042-8562-DC9A52CB6E7E}
 start /wait msiexec /qn /norestart /x {B7368FC9-A295-4A95-A9EB-AFD659BA7B71}
 
+:: Itibiti RTC
+start /wait msiexec /qn /norestart /x {730E03E4-350E-48E5-9D3E-4329903D454D}
+
 :: Intel Update
 start /wait msiexec /qn /norestart /x {78091D68-706D-4893-B287-9F1DFB24F7AF}
 
@@ -2329,6 +2336,9 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 :: Lenovo Welcome
 start /wait msiexec /qn /norestart /x {1CA74803-5CB2-4C03-BDBE-061EDC81CC7F}
 
+:: Level Quality Watcher (outright adware, no pretense of being anything else)
+start /wait msiexec /qn /norestart /x {19DC5AB8-0792-4875-8F1B-896C5A9CE6AE}
+
 :: LightScribe
 start /wait msiexec /qn /norestart /x {6226477E-444F-4DFE-BA19-9F4F7D4565BC}
 start /wait msiexec /qn /norestart /x {A87B11AC-4344-4E5D-8B12-8F471A87DAD9}
@@ -2351,6 +2361,11 @@ start /wait msiexec /qn /norestart /x {1651216E-E7AD-4250-92A1-FB8ED61391C9}
 start /wait msiexec /qn /norestart /x {83C8FA3C-F4EA-46C4-8392-D3CE353738D6}
 start /wait msiexec /qn /norestart /x {8937D274-C281-42E4-8CDB-A0B2DF979189}
 start /wait msiexec /qn /norestart /x {174A3B31-4C43-43DD-866F-73C9DB887B48}
+
+:: ScorpionSaver // ScorpionSaver Services
+start /wait msiexec /qn /norestart /x {9B65F9A3-9D24-452A-B6EF-1457D65E4259}
+start /wait msiexec /qn /norestart /x {273E1F1A-7B1A-436C-A783-A4A8C97AD036}
+start /wait msiexec /qn /norestart /x {6E810AB6-F34E-49A3-A93F-9E503660F718}
 
 :: Setup1 (??)
 start /wait msiexec /qn /norestart /x {86091EC1-DD17-4814-A54B-0A634CB8D82C}
@@ -2523,6 +2538,9 @@ start /wait msiexec /qn /norestart /x {9F94F9AC-CFFF-477A-AF0A-FF443FEF0261}
 start /wait msiexec /qn /norestart /x {15B1D4C6-A245-41CD-96E8-5C63E37DDBFF}
 start /wait msiexec /qn /norestart /x {26A67848-1222-4691-B5BA-7E026585886B}
 
+:: Playalot Games
+start /wait msiexec /qn /norestart /x {3A3532ED-A121-4297-AA4F-70B60E4BD631} 
+
 :: PlayReady PC Runtime amd64 // x86
 start /wait msiexec /qn /norestart /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04}
 start /wait msiexec /qn /norestart /x {20D4A895-748C-4D88-871C-FDB1695B0169}
@@ -2576,6 +2594,7 @@ start /wait msiexec /qn /norestart /x {EA1FAE0F-2354-4E32-B423-ABAE8E358F91}
 start /wait msiexec /qn /norestart /x {21E47F47-C9A7-4454-BA48-388327B0EA00}
 start /wait msiexec /qn /norestart /x {7770E71B-2D43-4800-9CB3-5B6CAAEBEBEA}
 start /wait msiexec /qn /norestart /x {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
+start /wait msiexec /qn /norestart /x {AAECF7BA-E83B-4A10-87EA-DE0B333F8734} 
 
 :: Roxio GUIDs; too many to list, Google individual GUID if a Roxio program you want to keep is getting removed
 start /wait msiexec /qn /norestart /x {098122AB-C605-4853-B441-C0A4EB359B75}
