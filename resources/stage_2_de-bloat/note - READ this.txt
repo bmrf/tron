@@ -6,20 +6,19 @@ There are two files in this directory that determine what Tron targets for bloat
 Insert program names, one per line, into the text file 'programs_to_target_by_name.txt'
 Tron will TRY to uninstall any program whose name matches one of the names in this file.
 Don't put any special characters around the name (quotes, commas, etc). Spaces are fine.
-Tron uses WMI queries inside a batch file, so the wildcard character is double-percent (%%).
 
 Example:
 
-    Cyberlink%%
-    Dell Getting Started Guide%%
-    Dell Video%%
-    %%Toolbar%%
+    Cyberlink*
+    Dell Getting Started Guide*
+    Dell Video*
+    *Toolbar*
 
 The scanner will iterate through the list of programs, one by one, and try to uninstall any program matching that entry. 
 
 In this example:
 	
-	Dell%%
+	Dell*
 
 ...would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
 
