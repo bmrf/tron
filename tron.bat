@@ -4,23 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
+:: Version:       6.8.1 ! tron.bat:prep:update:       Fix "do you want to download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
+::                6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
 ::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
 ::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
 ::                      + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
 ::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
 ::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with significant additions from /u/expert02
-::                6.7.0 + stage_4_repair:telemetry:   Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
-::                                                    run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
-::                                                    to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
-::                      * stage_4_repair:dism_store:  Expand Dism image repair to include Windows 10
-::                      ! stage_4_repair:dism_store:  Fix long-time bug where Dism image repair and cleanup wasn't running on Server 2012
-::                      * stage_2_de-bloat:metro:     Expand OEM Metro app purge to include Windows 10
-::                      * stage_2_de-bloat:oem:       Switch order of debloat operations to target specific GUIDs first and run wildcard as catch-all afterwards.
-::                                                    The system can't be force-rebooted when targeting a GUID specifically, but it CAN be when targeting with a 
-::                                                    wildcard. So, we first try and catch everything we know of in hopes that we'll eliminiate some of the GUIDs
-::                                                    that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
-::                      ! stage_1_tempclean:ie:       Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -165,8 +155,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.8.0
-set SCRIPT_DATE=2015-09-28
+set SCRIPT_VERSION=6.8.1
+set SCRIPT_DATE=2015-09-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -390,7 +380,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 	echo              ^(This copy of Tron will self-destruct afterwards^)
 	echo.
 	set /p CHOICE= Auto-download latest version now? [Y/n]:
-	if !CHOICE!==y (
+	if /i !CHOICE!==y (
 		color 8B
 		cls
 		echo.
