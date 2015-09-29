@@ -326,29 +326,30 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
 :: PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
-:: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
-:: trying to figure out all the annoying variable expansion parsing stuff. Oh well
-if /i %RESUME_DETECTED%==yes (
-	REM Quick check for a faulty resume detection
-	if not exist tron_stage.txt (
-		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
-		REM Bail out
-		goto detect_win_ver
-		)
-
-	:: Otherwise read in the values from the previous run
-	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
-	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
-)
-if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
-if /i %RESUME_DETECTED%==yes (
-	:: Notify and jump
-	call :log "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
-	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to resume-looping where we keep trying to resume
-	:: even if a reboot didn't happen
-	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
-	goto %RESUME_STAGE%
-)
+:: Populate what stage we were on as well as what CLI flags were used.
+IF /I %RESUME_DETECTED%==yes GOTO CHECK_RESUME
+GOTO SKIP_CHECK_RESUME
+:CHECK_RESUME
+REM Quick check for a faulty resume detection
+IF NOT EXIST "%STAGE_FILE%" (
+	REG DELETE "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >NUL 2>&1
+	REM Bail out
+	GOTO DETECT_WIN_VER
+	)
+:: Otherwise read in the values from the previous run
+SET /P RESUME_STAGE=<"%STAGE_FILE%" 2>NUL
+SET /P RESUME_FLAGS=<"%FLAGS_FILE%" 2>NUL
+CALL :parse_cmdline_args %RESUME_FLAGS%
+:: Notify and jump
+call :log "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
+:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to resume-looping where we keep trying to resume
+:: even if a reboot didn't happen
+:: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
+goto %RESUME_STAGE%
+call :log "  Some unknown error occured, please contact helpdesk"
+PAUSE
+goto end_and_skip_shutdown
+:SKIP_CHECK_RESUME
 
 
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
