@@ -14,6 +14,76 @@ Version number legend:
 
 
 
+########################
+# v6.8.0 // 2015-09-xx #
+########################
+tron.bat                         v6.8.0
+ ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
+ + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
+ + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
+ + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
+ ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
+ * stage_0_prep:repair_wmi:    Break WMI repair out into its own subscript, with significant additions from /u/expert02
+
+STAGE 0: Prep
+ . rkill                         v2.8.2.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.5
+ . McAfee Stinger                v12.1.0.1732
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+STAGE 1: Tempclean
+ * CCLeaner                      v5.10.5373
+    + Integrate the CCEnhancer project's winapp2.ini file; now cleans significantly more individual program locations. Thanks to /u/Chimaera12
+ . BleachBit                     v1.8
+ * TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    * significant updates from various users
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v19.0.0.185   (language ignored)
+ . Adobe Reader                  v11.0.12      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u60          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v5.0.0.9
+ . Autoruns                      v13.4
+ * ComboFix                      v15.9.25.1
+ . Junkware Removal Tool         v7.6.3.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+ 
 
 ########################
 # v6.7.0 // 2015-09-23 #
