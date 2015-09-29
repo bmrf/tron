@@ -5,11 +5,11 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
-::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error that occured on German localisation versions. Thanks to /u/Modeopfa
+::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
 ::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
 ::                      + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
 ::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
-::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with additions from /u/expert02
+::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with significant additions from /u/expert02
 ::                6.7.0 + stage_4_repair:telemetry:   Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
 ::                                                    run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
 ::                                                    to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
@@ -1786,7 +1786,7 @@ call :log "---------------------------------------------------------------------
 
 
 :: JOB: Actually send the email report if it was requested
-:: This line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
+:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
 set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
