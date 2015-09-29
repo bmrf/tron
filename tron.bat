@@ -1329,9 +1329,9 @@ IF /I "%SKIP_TELEMETRY_REMOVAL%"=="YES" (
 		CALL :Log "   Launch job: %RESUME_JOB%..."
 )
 :: Call sub-script if supported OS
-IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO :START_TELEMETRY_REMOVAL)
-IF /I "%WIN_VER:~0,9%"=="Windows 7" (GOTO :START_TELEMETRY_REMOVAL)
-IF /I "%WIN_VER:~0,9%"=="Windows 8" (GOTO :START_TELEMETRY_REMOVAL)
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO START_TELEMETRY_REMOVAL)
+IF /I "%WIN_VER:~0,9%"=="Windows 7" (GOTO START_TELEMETRY_REMOVAL)
+IF /I "%WIN_VER:~0,9%"=="Windows 8" (GOTO START_TELEMETRY_REMOVAL)
 CALL :Log "!  %RESUME_JOB% NOT SUPPORTED ON THIS OS! Skipping"
 GOTO SKIP_TELEMETRY_REMOVAL
 :START_TELEMETRY_REMOVAL
@@ -1628,11 +1628,11 @@ call :log "   Done."
 
 
 :: JOB: Remove resume-related files, registry entry, and boot flag
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
+title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [Remove resume files]
 call :log "   Removing resume-support files and Safeboot flag..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
-	del /f /q tron_flags.txt >nul 2>&1
-	del /f /q tron_stage.txt >nul 2>&1
+	del /f /q "%STAGE_FILE%" >nul 2>&1
+	del /f /q "%FLAGS_FILE%" >nul 2>&1
 	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
@@ -1640,7 +1640,7 @@ call :log "   Done."
 
 
 :: JOB: Calculate saved disk space
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
+title TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [Calculate saved disk space]
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
