@@ -231,6 +231,9 @@ start /wait msiexec /qn /norestart /x {FFCF82EC-895F-4AC8-925E-3412FE25EF62}
 :: Avery Toolbar
 start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
 
+:: AVG
+start /wait msiexec /qn /norestart /x {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
+
 :: AVG 2014
 start /wait msiexec /qn /norestart /x {FC3B3A5D-7058-4627-9F1E-F95CC38B6054}
 start /wait msiexec /qn /norestart /x {524569AC-B3EE-468B-BFD5-19A89EA7CE8E}
@@ -244,6 +247,14 @@ start /wait msiexec /qn /norestart /x {3B3927B0-0A21-4B4C-9FF3-AB4C42E2AF79}
 start /wait msiexec /qn /norestart /x {966F007B-0D8A-44A6-A6C3-5395983C356D}
 start /wait msiexec /qn /norestart /x {0B7BE3CA-AF33-4CE3-BC27-1456C96EF996}
 start /wait msiexec /qn /norestart /x {7A5DB14B-14B0-4F09-A130-BF60503B4248}
+start /wait msiexec /qn /norestart /x {CEEAE734-B717-41D1-BF50-378EC081C6B1}
+
+:: AVG 2016
+start /wait msiexec /qn /norestart /x {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
+
+:: AVG PC TuneUp 2015
+start /wait msiexec /qn /norestart /x {4AC74ED1-719B-46DA-8B8A-340FBF892291}
+start /wait msiexec /qn /norestart /x {A996C182-3724-4DF1-A4BC-66154FE57DFE}
 
 :: Avira Launcher
 start /wait msiexec /qn /norestart /x {EA226E08-91E7-4F05-B61E-3EDBBBEB15BB}
