@@ -451,6 +451,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 6. **Windows "telemetry" purge**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. Tron removes these specific KB updates from Win 7/8/8.1: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features. Go over the code in `\tron\resources\stage_4_repair\purge_windows_telemetry\` to see exactly what is removed and disabled. Using Tron's `-str` flag skips this component
 
+7. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`,	`netsh interface ip delete arpcache`, `netsh winsock reset catalog`
+
 
 ## STAGE 5: Patch
 Tron installs or updates these programs:
