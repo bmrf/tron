@@ -4,9 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.7.1 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
+:: Version:       6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
 ::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error that occured on German localisation versions. Thanks to /u/Modeopfa
 ::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
+::                      + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
 ::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
 ::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with additions from /u/expert02
 ::                6.7.0 + stage_4_repair:telemetry:   Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
@@ -56,7 +57,7 @@
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
 SETLOCAL
 @echo off
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 call :set_cur_date
 
 
@@ -164,8 +165,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.7.1
-set SCRIPT_DATE=2015-09-xx
+set SCRIPT_VERSION=6.8.0
+set SCRIPT_DATE=2015-09-28
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1264,7 +1265,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
 	call :log "%CUR_DATE% %TIME%    Resetting registry permissions..."
-	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
+	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
 	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
 	call :log "%CUR_DATE% %TIME%    Done."
@@ -1277,7 +1278,7 @@ if /i %SKIP_REGPERMS_RESET%==no (
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
 	call :log "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
-	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A WHILE - BE PATIENT"
+	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
 	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_file_permissions.bat"
 	call :log "%CUR_DATE% %TIME%    Done."
@@ -1290,9 +1291,8 @@ if /i %SKIP_FILEPERMS_RESET%==no (
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
 call :log "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
 if /i %DRY_RUN%==yes goto skip_sfc
-:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker"
+:: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
 if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
-:: Dump the SFC log into the Tron log. Thanks to reddit.com/user/adminhugh
 %SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 :skip_sfc
 call :log "%CUR_DATE% %TIME%    Done."
@@ -1409,6 +1409,18 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 )
 :skip_telem_removal
 call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+
+
+:: JOB: Network repair (minor). Thanks to /u/chinpopocortez
+title TRON v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
+call :log "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
+if /i %DRY_RUN%==no (
+	ipconfig /flushdns >> "%LOGPATH%\%LOGFILE%" 2>&1
+	:: Below command probably not necessary, but just in case there are dodgy static ARP entries
+	netsh interface ip delete arpcache >> "%LOGPATH%\%LOGFILE%" 2>&1
+	netsh winsock reset catalog >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+call :log "%CUR_DATE% %TIME%    Done."
 
 
 
@@ -1832,7 +1844,7 @@ echo:%~1
 goto :eof
 
 
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
 for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
