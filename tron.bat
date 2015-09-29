@@ -4,21 +4,22 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.7.1 + tron.bat:prep:             Check to see if Tron is running from Windows TEMP folder, alert the user if so, and then exit. Thanks to /u/ALittleFunInTheSun
-::                      ! tron.bat:prep:resume:      Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error that occured on German localisation versions. Thanks to /u/Modeopfa
-::                      ! stage_7_wrap-up:sum_logs:  Fix minor log error due to missing closing quote mark
-::                      * stage_0_prep:repair_wmi:   Break WMI repair into it's own subscript, with additions from /u/expert02
-::                6.7.0 + stage_4_repair:telemetry:  Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
-::                                                   run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
-::                                                   to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
-::                      * stage_4_repair:dism_store: Expand Dism image repair to include Windows 10
-::                      ! stage_4_repair:dism_store: Fix long-time bug where Dism image repair and cleanup wasn't running on Server 2012
-::                      * stage_2_de-bloat:metro:    Expand OEM Metro app purge to include Windows 10
-::                      * stage_2_de-bloat:oem:      Switch order of debloat operations to target specific GUIDs first and run wildcard as catch-all afterwards.
-::                                                   The system can't be force-rebooted when targeting a GUID specifically, but it CAN be when targeting with a 
-::                                                   wildcard. So, we first try and catch everything we know of in hopes that we'll eliminiate some of the GUIDs
-::                                                   that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
-::                      ! stage_1_tempclean:ie:      Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
+:: Version:       6.7.1 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
+::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error that occured on German localisation versions. Thanks to /u/Modeopfa
+::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
+::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
+::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with additions from /u/expert02
+::                6.7.0 + stage_4_repair:telemetry:   Add purging of Windows 10 telemetry! NOTE: This is a working first attempt; PLEASE review the code or
+::                                                    run it on Win10 systems and give feedback if anything breaks so I can fix it ASAP! Big, big thanks 
+::                                                    to the win10-unf**k Github project, the voat.co Aegis project, and many other random places around the web
+::                      * stage_4_repair:dism_store:  Expand Dism image repair to include Windows 10
+::                      ! stage_4_repair:dism_store:  Fix long-time bug where Dism image repair and cleanup wasn't running on Server 2012
+::                      * stage_2_de-bloat:metro:     Expand OEM Metro app purge to include Windows 10
+::                      * stage_2_de-bloat:oem:       Switch order of debloat operations to target specific GUIDs first and run wildcard as catch-all afterwards.
+::                                                    The system can't be force-rebooted when targeting a GUID specifically, but it CAN be when targeting with a 
+::                                                    wildcard. So, we first try and catch everything we know of in hopes that we'll eliminiate some of the GUIDs
+::                                                    that force a reboot in wildcard mode. TL;DR: should be less forced reboots in stage 2.
+::                      ! stage_1_tempclean:ie:       Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -940,7 +941,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	call :log "%CUR_DATE% %TIME%    Done."
 )
-
 
 
 :: JOB: TempFileCleanup.bat
