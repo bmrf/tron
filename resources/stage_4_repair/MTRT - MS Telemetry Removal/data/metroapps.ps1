@@ -5,14 +5,14 @@
 # Just remove the # (comment in PowerShell) on the ones you want to remove
 ###############################
 
-# Be gone, heathen!
+# Candy Crush
 Get-AppxPackage king.com.CandyCrushSaga | Remove-AppxPackage
-# Bing Weather, News, Sports, and Finance (Money):
+# Bing
 Get-AppxPackage Microsoft.BingWeather | Remove-AppxPackage
 Get-AppxPackage Microsoft.BingNews | Remove-AppxPackage
 Get-AppxPackage Microsoft.BingSports | Remove-AppxPackage
 Get-AppxPackage Microsoft.BingFinance | Remove-AppxPackage
-# Xbox:
+# Xbox
 Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage
 # Windows Phone Companion
 #Get-AppxPackage Microsoft.WindowsPhone | Remove-AppxPackage
@@ -33,4 +33,4 @@ Get-AppxPackage Microsoft.Office.OneNote | Remove-AppxPackage
 # Mail & Calendar
 #Get-AppxPackage microsoft.windowscommunicationsapps | Remove-AppxPackage
 # Skype (Metro version)
-#Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage
+Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage

@@ -51,14 +51,12 @@ IF NOT DEFINED SCRIPTS (
 		SET "DATA=%~Dp0\%SCRIPTS%"
 )
 
-REM Settings for KB.ini file
-REM IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4")
-REM IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4")
-REM IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4")
-REM Settings for Reg.ini file
-IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4,5,6,7")
-IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4,5,6,7")
-IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4,5,6,7")
+REM Settings for Reg.ini and KB.ini file
+IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4,5,6,7") && (GOTO:END_VER_CHECK)
+IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4,5,6,7") && (GOTO:END_VER_CHECK)
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4,5,6,7") && (GOTO:END_VER_CHECK)
+GOTO:FAIL
+:END_VER_CHECK
 
 REM Get User SID
 FOR /F "delims= " %%A IN ('"wmic path win32_useraccount where name='%UserName%' get sid"') DO (
