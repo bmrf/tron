@@ -256,6 +256,7 @@ start /wait msiexec /qn /norestart /x {966F007B-0D8A-44A6-A6C3-5395983C356D}
 start /wait msiexec /qn /norestart /x {0B7BE3CA-AF33-4CE3-BC27-1456C96EF996}
 start /wait msiexec /qn /norestart /x {7A5DB14B-14B0-4F09-A130-BF60503B4248}
 start /wait msiexec /qn /norestart /x {CEEAE734-B717-41D1-BF50-378EC081C6B1}
+start /wait msiexec /qn /norestart /x {6B171EFC-F41F-4055-A4DE-5B9480DA17AA}
 
 :: AVG 2016
 start /wait msiexec /qn /norestart /x {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
