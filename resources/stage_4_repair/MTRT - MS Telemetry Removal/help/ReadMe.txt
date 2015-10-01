@@ -27,6 +27,10 @@ This tool covers many areas of the decontamination process, such as:
    - Disable (Or Delete) Telemetry scheduled tasks
    - Delete Diagnostic Tracking Service and attempt to lock down log file
    - Disable Remote Registry
+   - Remove OneDrive and other Metro apps
+   - Disable WER and WEC
+   - Delete xBox Live services
+   - Tons of registry entries applied to help protect your privacy
    - Block hosts: Through the HOSTS file and PersistentRoutes
    - Delete the Windows.~BT, Windows.~WS and Windows.old folders, then attempt to lock them.
    - Remove and block evil updates: updates are uninstalled and then ignored in windows updates.
@@ -44,14 +48,14 @@ You can edit some variables at the top of the MTRT.cmd file
 ===========
 
 MTRT.cmd							- Main Program, run as Admin
-	\data\acl.ini					- List of registry folders to reset permissions on..Use # to comment out any line
+	\data\Reg.ini					- List of registry folders to reset permissions on, as well as entries to set	**Open with spreadsheet app, don't merge Delimeters, and it's  VERY easy to work with.
 	\data\HideWindowsUpdates.vbs	- File called on to hide updates
 	\data\hosts.ini					- Entries being added to HOSTS file.				Use # to comment out any line
 	\data\KB.ini					- Current list of KB's being removed.				Use # to comment out any line
 	\data\PersistentRoutes.ini		- Entries being added to PersistentRoutes.			Use # to comment out any line
 	\data\SchedTasks.ini			- List of scheduled tasks to be disabled. 			Use # to comment out any line
 	\data\setacl.exe				- Program used to parse acl.ini and set registry permissions
-	\data\metroapps.ps1				- Metro apps removed from Windows 10
+	\data\metroapps.ps1				- Metro apps removed from Windows 8 and 10			Use # to comment out any line
 	
 	\help\Clear PersistentRoutes.bat		- Used to clear the table if needed
 	\help\Edit system HOSTS file.lnk		- Admin shortcut to edit your system HOSTS file
@@ -65,9 +69,12 @@ MTRT.cmd							- Main Program, run as Admin
 == Version History ==
 =====================
 
-27/09/2015	v2.0	- Windows 10 support added! 
+01/10/2015	v2.0	- Windows 10 support added!
+					- Metro apps list added
 					- Bundled with Tron_script https://www.reddit.com/r/TronScript/
 					- INI files have data on which OS to apply certain settings to, you are welcome to customize and disable whatever you need, or add your own custom entries!
+					- Command Logging and Dry Run features added
+					- Lots of registry keys, tasks, and IPs added
 
 19/09/2015	v1.2	- Minor typo fixes
 
@@ -142,4 +149,5 @@ Debloat-Windows-10: https://github.com/W4RH4WK/Debloat-Windows-10
 == Known limitations / To Do ==
 ===============================
 
- - Hiding windows updates doesn't always seem to work even when it reports it did, suggest manually checking after reboot.
+ - Hiding windows updates doesn't always seem to work even when it reports it did, suggest manually checking after reboot. (May remove this in the near future if performance doesn't improve)
+ - Thinking about adding a variable option + ini to configure whether to disable or attempt delete of services. Currently hard-coded
