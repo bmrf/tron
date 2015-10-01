@@ -303,10 +303,20 @@ ECHO   Error, OS not recognized!
 ECHO   This tool is to be run on Windows 7, 8, or 10
 ECHO   Please Right-Click on this file and choose "Run as Administrator" 
 PAUSE >NUL 
-GOTO EOF
-:LOG
-ECHO:%CUR_DATE% %TIME% %~1 >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
-ECHO:%CUR_DATE% %TIME% %~1
+GOTO:EOF
+:LOGCMD
+IF /I "%COMMAND_LOGGING%"=="YES" (
+		ECHO:%CUR_DATE% %TIME%      ^> %* >>"%MTRT_LOGPATH%\%MTRT_LOGFILE%"
+		IF /I "%DRY_RUN%"=="YES" (EXIT /B)
+		%* >>"%MTRT_LOGPATH%\%MTRT_LOGFILE%" 2>&1
+	) ELSE (
+		IF /I "%DRY_RUN%"=="YES" (EXIT /B)
+		%* >NUL 2>&1
+)
+EXIT /B
+:LOGTXT
+ECHO:%CUR_DATE% %TIME%  %~1 >>"%MTRT_LOGPATH%\%MTRT_LOGFILE%"
+ECHO:%CUR_DATE% %TIME%  %~1
 EXIT /B
 :EOF
 ENDLOCAL
