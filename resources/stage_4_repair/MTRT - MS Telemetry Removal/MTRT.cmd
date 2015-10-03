@@ -202,6 +202,13 @@ CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features
 :SKIP_10_TWEAKS
 
 
+IF /I NOT "%WIN_VER:~0,9%"=="Windows 7" (
+:: Check the metroapps.ps1 file for more info on what is removed.
+CALL :LOGTXT "   Removing junk Metro apps"
+CALL :LOGCMD PowerShell.exe -NoProfile -ExecutionPolicy Bypass -Command "metroapps.ps1"
+CALL :LOGCMD Set-WindowsSearchSetting -EnableWebResultsSetting $False -SafeSearchSetting "Off" -SearchExperienceSetting "NotPersonalized"
+)
+
 
 CALL :LOGTXT "   Adding registry tweaks"
 CD /D "%DATA%"
