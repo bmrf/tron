@@ -181,9 +181,10 @@ FOR /D %%O IN (*onedrive*) DO (
 CALL :LOGCMD START Explorer.exe
 CD /D "%DATA%"
 
-CALL :LOGTXT "   Disable geolocation Service"
-CALL :LOGCMD SC STOP lfsvc 
-CALL :LOGCMD SC CONFIG lfsvc START= disabled
+:: Do not want to disable this by default - this has legitimate uses, especially on mobile devices.
+:: CALL :LOGTXT "   Disable geolocation Service"
+:: CALL :LOGCMD SC STOP lfsvc 
+:: CALL :LOGCMD SC CONFIG lfsvc START= disabled
 
 CALL :LOGTXT "   Delete WAP Push Message Routing Service"
 CALL :LOGCMD SC STOP dmwappushservice
@@ -211,10 +212,11 @@ FOR /F "eol=# tokens=%TOKENS% delims=	" %%A IN (Reg.ini) DO (
 	)
 )
 
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO:SKIPPERSISTENTROUTES)
 CALL :LOGTXT "   Blocking PersistentRoutes"
 REM Parse PersistentRoutes.ini, skip any line starting with ; and route to 0.0.0.0
 FOR /F "eol=# tokens=1*" %%E in (PersistentRoutes.ini) DO (CALL :LOGCMD route -p add %%E 0.0.0.0)
-
+:SKIPPERSISTENTROUTES
 
 CALL :LOGTXT "   Backing up HOSTS file and applying tweaks"
 REM Configure HOSTS permissions and make backup
