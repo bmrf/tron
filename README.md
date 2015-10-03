@@ -1,9 +1,9 @@
 | NAME       | Tron, an automated PC cleanup script                                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
-| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus d0t gate@gmail.com`) // PGP key: `0x07d1490f82a211a2` |
+| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus d0t gate@gmail`) // PGP key: `0x07d1490f82a211a2` |
 | BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
-# GITHUB CONTAINS *JUST* THE SCRIPT - YOU NEED THE ENTIRE PACKAGE FROM https://www.reddit.com/r/TronScript !!
+# DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [/r/TronScript](https://www.reddit.com/r/TronScript) !!
 
 I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
 
