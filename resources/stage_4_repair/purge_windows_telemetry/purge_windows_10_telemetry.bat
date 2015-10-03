@@ -5,7 +5,8 @@
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
 ::                  - win10-unfu**k: https://github.com/dfkt/waitin10-unfuck
 ::                  - ... and many other places around the web
-:: Version:       1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
+:: Version:       1.0.2-TRON + Add removing of RetailDemo service
+::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
 ::                           - Remove incorrect pushd %SystemDrive at head of script
 ::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
 ::                1.0.0-TRON + Initial write
@@ -25,8 +26,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2015-09-25
+set SCRIPT_VERSION=1.0.2-TRON
+set SCRIPT_UPDATED=2015-10-02
 
 
 :::::::::::::
@@ -180,6 +181,10 @@ sc delete Diagtrack >nul 2>&1
 :: Remote Registry (disable only)
 sc config remoteregistry start= disabled >nul 2>&1
 sc stop remoteregistry >nul 2>&1
+
+:: Retail Demo
+sc stop RetailDemo >nul 2>&1
+sc delete RetailDemo >nul 2>&1
 
 :: "WAP Push Message Routing Service"
 sc stop dmwappushservice >nul 2>&1
