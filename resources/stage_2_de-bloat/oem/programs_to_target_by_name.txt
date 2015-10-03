@@ -35,6 +35,7 @@
 24x7 Help
 3vix%%
 888bar
+Advanced Registry%%
 Acer%%
 Adobe Shockwave%%
 Advanced%%FX Engine
@@ -57,6 +58,7 @@ Bing%%
 BitTorrentBar Toolbar
 BlueStack%%
 Bonzi Buddy%%
+Browser%%Optimize%%
 BrowserSafeguard%%
 Buzzdock%%
 ConservativeTalkNow Firefox Toolbar
@@ -130,7 +132,7 @@ Move Media%%
 MPlayerplus%%
 My HP%%
 My Scrap Nook Internet Explorer Toolbar
-My Web Search (Zwinky)
+My Web Searc%%
 MyPC Backup%%
 Mysearchdial
 Nero%%
@@ -165,9 +167,10 @@ Rock Turner
 Roxio%%
 SaveOn%%
 ScorpionSave%%
-Search Protection
-Search Settings
-Search Toolbar
+Search Assistant%%
+Search Protectio%%
+Search Setting%%
+Search Toolba%%
 SelectionLinks
 Shop To Win
 ShopAtHome.com Toolbar
@@ -187,7 +190,7 @@ StartNow Toolbar
 SocialSafe
 Soluto
 SweetIM for Messenger%%
-SweetPacks A2 Toolbar for IE
+SweetPacks%%
 SySaver
 The Gator
 TidyNetwork.com
@@ -206,7 +209,8 @@ VideoDownloadConverter Internet Explorer Toolbar
 VideoFileDownload
 VisualBee%%
 Wajam
-WebConnect 3.0.0
+WebConnect%%
+Webshots%%
 WhenU%%
 WildGames%%
 WildTangent%%
@@ -215,6 +219,7 @@ WiseConvert%%
 Yahoo%%Toolbar
 Yahoo%%Browser%%
 Yahoo%%Search%%
+Yahoo%%Software%%
 Yammer%%
 Yontoo%%
 YouTube Downloader%%
