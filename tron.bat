@@ -5,10 +5,12 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.8.1 ! tron.bat:prep:update:       Fix "do you want to download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
+::                      / stage_0_prep:ntp:           Swap order of NTP servers, now query NTP servers in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
+::                      * stage_2_de-bloat:oem:win10: Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator as well
 ::                6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
 ::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
 ::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
-::                      + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
+::                      + stage_4_repair:network:     Add a minor network repair section. Might expand or remove this in the future. Thanks to /u/chinpopocortez
 ::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
 ::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with significant additions from /u/expert02
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
@@ -156,7 +158,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.8.1
-set SCRIPT_DATE=2015-09-xx
+set SCRIPT_DATE=2015-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -189,10 +191,10 @@ if "%~dp0"=="%TEMP%\" (
 	echo.
 	echo  ERROR
 	echo.
-	echo  Tron is running from the Windows TEMP directory. Tron 
-	echo  cannot run from the TEMP directory as it's one of the 
+	echo  Tron is running from the Windows TEMP directory. Tron
+	echo  cannot run from the TEMP directory as it's one of the
 	echo  first places to get wiped when Tron starts. Run Tron
-	echo  from another location ^(directly from the Desktop is 
+	echo  from another location ^(directly from the Desktop is
 	echo  the recommended location^).
 	echo.
 	echo  Tron will now quit.
@@ -835,7 +837,7 @@ if /i %DRY_RUN%==no (
 	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /config /syncfromflags:manual /manualpeerlist:"time.nist.gov 2.pool.ntp.org time.windows.com" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /config /syncfromflags:manual /manualpeerlist:"2.pool.ntp.org time.windows.com time.nist.gov" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
@@ -1054,26 +1056,71 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Remove default Metro apps (Windows 8 and up). Thanks to https://keybase.io/exabrial
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
-:: Read nine characters into the WIN_VER variable (starting at position 0 on the left) to check for Windows 8; 16 characters in to check for Server 2012.
-:: The reason we read partially into the variable instead of comparing the whole thing is because we don't care what sub-version of 8/2012 we're on.
-:: Also I'm lazy and don't want to write ten different comparisons for all the random sub-versions MS churns out with inconsistent names.
+:: This command will re-install ALL default Windows 10 apps:
+:: Get-AppxPackage -AllUsers| Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+
+:: Version checks
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
 if "%WIN_VER:~0,9%"=="Windows 1" set TARGET_METRO=yes
 if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
-:: Check if we're forcefully skipping Metro de-bloat. Thanks to /u/swtester for the suggestion
 if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
 	call :log "%CUR_DATE% %TIME%    Windows 8 or higher detected, removing OEM Metro apps..."
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
+		REM Enable starting AppXSVC in Safe Mode
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start AppXSVC
-		:: Enable scripts in PowerShell
+		REM Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
-		:: Call PowerShell to run the commands
-		powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-		powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+		if /i not "%WIN_VER:~0,9%"=="Windows 1" (
+			REM Windows 8/8.1 version
+			powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+		) else (
+			REM Windows 10 version
+
+			REM "Get Office"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*officehub*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *officehub* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Get Skype"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*getstarted*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *getstarted* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Groove Music"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*zunemusic*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *zunemusic* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Money / Bing Finance"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*bingfinance*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *bingfinance* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Movies & TV / Zune Video"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*zunevideo*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *zunevideo* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "News / Bing News"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*bingnews*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *bingnews* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Phone Companion"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*windowsphone*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *windowsphone* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Sports / Bing Sports"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*bingsports*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *bingsports* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+
+			REM "Xbox"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*windowsfeedback*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *windowsfeedback* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+			
+			REM "Xbox"
+			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*xboxapp*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 		)
+	)
 	call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries..."
 	:: Thanks to reddit.com/user/nommaddave
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
