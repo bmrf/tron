@@ -242,6 +242,10 @@ start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
 :: AVG
 start /wait msiexec /qn /norestart /x {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
 
+:: AVG 2013
+start /wait msiexec /qn /norestart /x {C09E8C9E-A243-430E-8811-7C7C36BD8A71}
+start /wait msiexec /qn /norestart /x {9EF01972-D320-49A9-BA40-BED677587E32}
+
 :: AVG 2014
 start /wait msiexec /qn /norestart /x {FC3B3A5D-7058-4627-9F1E-F95CC38B6054}
 start /wait msiexec /qn /norestart /x {524569AC-B3EE-468B-BFD5-19A89EA7CE8E}
@@ -1876,6 +1880,7 @@ start /wait msiexec /qn /norestart /x {92AB9371-D327-4D56-9BDD-B38A671A631D}
 start /wait msiexec /qn /norestart /x {32A4CF00-9FAC-47c8-9B37-91CC23815D64}
 start /wait msiexec /qn /norestart /x {6357D25F-A9C9-4CC7-A1FB-0DCF344E7C40}
 start /wait msiexec /qn /norestart /x {1F670068-9589-4DC7-8FE4-1D0D13AF2526}
+start /wait msiexec /qn /norestart /x {E1AE0CB7-1333-4728-8520-CB3F88A252B4}
 
 :: HP Insight Diagnostics Online Edition for Windows 9.3.0
 start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
@@ -1953,6 +1958,7 @@ start /wait msiexec /qn /norestart /x {37839D69-6DA4-4125-B33A-30DE86345DF4}
 start /wait msiexec /qn /norestart /x {FEB2C4AA-661E-483F-9626-21A8ACFD10F2}
 start /wait msiexec /qn /norestart /x {D2064264-3162-4DB1-AFE0-167BEFBBCD9C}
 start /wait msiexec /qn /norestart /x {32797608-0840-4645-BE1B-37AFFB18908A}
+start /wait msiexec /qn /norestart /x {988D55BB-08DE-43C9-8D16-3751361E2A79}
 
 :: HP PostScript Converter
 start /wait msiexec /qn /norestart /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD}
@@ -2093,6 +2099,7 @@ start /wait msiexec /qn /norestart /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992}
 
 :: HP Support Solutions Framework
 start /wait msiexec /qn /norestart /x {D7D5F438-26EF-45AB-AB89-C476FBCF8584}
+start /wait msiexec /qn /norestart /x {348A1F5B-07B3-4436-9A47-FFE44EFE856E}
 
 :: HP System Default Settings
 start /wait msiexec /qn /norestart /x {5C90D8CF-F12A-41C6-9007-3B651A1F0D78}
@@ -2258,6 +2265,7 @@ start /wait msiexec /qn /norestart /x {4B230374-6475-4A73-BA6E-41015E9C5013}
 :: Intel(R) Smart Connect Technology
 start /wait msiexec /qn /norestart /x {9B5FD763-5074-474C-B898-24567E6450C8}
 start /wait msiexec /qn /norestart /x {DE788AD4-F7CE-4995-ADF8-56174A7B613C}
+start /wait msiexec /qn /norestart /x {DBECAE94-4C04-40AC-9AFB-FA9953258EAF}
 
 :: Intel(R) Technology Access
 start /wait msiexec /qn /norestart /x {413fe921-b226-41c8-bc3c-574074ceec4d}
@@ -2314,6 +2322,7 @@ start /wait msiexec /qn /norestart /x {75060E95-A018-47BD-BCC5-06DE7DB2744D}
 start /wait msiexec /qn /norestart /x {0D01BDA8-C995-40AD-95F8-26B7EA4DCF9F}
 start /wait msiexec /qn /norestart /x {83F793B5-8BBF-42FD-A8A6-868CB3E2AAEA}
 start /wait msiexec /qn /norestart /x {43A76F9B-48F1-4E0D-A9B4-8E4F6C42E28C}
+start /wait msiexec /qn /norestart /x {12914061-EB9B-4AE7-AC7E-0B8A607C7DF4}
 
 :: Intel Viiv(TM) various software GUIDs
 start /wait msiexec /qn /norestart /x {A6C48A9F-694A-4234-B3AA-62590B668927}
@@ -2383,6 +2392,9 @@ start /wait msiexec /qn /norestart /x {46F4D124-20E5-4D12-BE52-EC177A7A4B42}
 :: Lenovo Patch Utility
 start /wait msiexec /qn /norestart /x {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43}
 
+:: Lenovo Quick Control
+start /wait msiexec /qn /norestart /x {4855C42F-5197-4AAD-A50D-5066D2CC4647}
+
 :: Lenovo QuickOptimizer
 start /wait msiexec /qn /norestart /x {8D2C871B-1B9F-45AC-9C43-2BB18089CDFA}
 
@@ -2390,6 +2402,9 @@ start /wait msiexec /qn /norestart /x {8D2C871B-1B9F-45AC-9C43-2BB18089CDFA}
 start /wait msiexec /qn /norestart /x {3245D8C8-7FE0-4FD4-B04B-2720A333D592}
 start /wait msiexec /qn /norestart /x {0B5E0E89-4BCA-4035-BBA1-D1439724B6E2}
 start /wait msiexec /qn /norestart /x {4532E4C5-C84D-4040-A044-ECFCC5C6995B}
+
+:: Lenovo Recovery Media
+start /wait msiexec /qn /norestart /x {50DC5136-21E8-48BC-97E5-1AD055F6B0B6}
 
 :: Lenovo Registration
 start /wait msiexec /qn /norestart /x {6707C034-ED6B-4B6A-B21F-969B3606FBDE}
@@ -2533,6 +2548,9 @@ start /wait msiexec /qn /norestart /x {B8A9EB6B-E41A-4B69-B996-3BFCFA743E5C}
 start /wait msiexec /qn /norestart /x {E20B2752-0909-4B28-B8A9-A9BE519CA1A1}
 start /wait msiexec /qn /norestart /x {22F9A831-CA56-4406-85FE-47FFB0472804}
 
+:: Microsoft Online Services Sign-in Assistant
+start /wait msiexec /qn /norestart /x {5D62CA9E-C68A-4BED-A1E9-7D38D9DDC2DB}
+
 :: Microsoft Office 15 Click-to-Run Extensibility Component (various versions)
 start /wait msiexec /qn /norestart /x {90150000-008C-0000-0000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-007E-0000-1000-0000000FF1CE}
@@ -2542,6 +2560,11 @@ start /wait msiexec /qn /norestart /x {90150000-008C-0409-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008C-0000-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008C-0409-0000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90150000-008F-0000-1000-0000000FF1CE}
+
+:: Microsoft Office 16 Click-to-Run
+start /wait msiexec /qn /norestart /x {90160000-008C-0000-0000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-008C-0409-0000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-008F-0000-1000-0000000FF1CE}
 
 :: Microsoft Office 2003 Web Components
 start /wait msiexec /qn /norestart /x {90120000-00A4-0409-0000-0000000FF1CE}
