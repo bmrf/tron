@@ -201,7 +201,8 @@ CALL :LOGCMD SC DELETE XblGameSave
 CALL :LOGCMD SC DELETE XboxNetApiSvc
 
 :: Overly redundant keys, as we disable Wifi Sense is the main tweaks, this is just another layer
-CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%" /T REG_DWORD /V FeatureStates /D 0x33c /F
+:: 893- All enabled		828- All disabled
+CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%" /T REG_DWORD /V FeatureStates /D 828 /F
 CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\ABCH" /T REG_DWORD /V OptInStatus /D 0 /F
 CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\ABCH-SKYPE" /T REG_DWORD /V OptInStatus /D 0 /F
 CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\FACEBOOK" /T REG_DWORD /V OptInStatus /D 0 /F
