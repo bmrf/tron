@@ -3,7 +3,7 @@
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 ::                code heavily borrowed from:
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
-::                  - win10-unfu**k: https://github.com/dfkt/waitin10-unfuck
+::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - ... and many other places around the web
 :: Version:       1.0.2-TRON + Add removing of RetailDemo service
 ::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
