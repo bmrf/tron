@@ -88,6 +88,8 @@ FOR /F "delims= " %%A IN ('"wmic path win32_useraccount where name='%UserName%' 
 :END_SID_LOOP
 CD /D "%DATA%"
 
+
+
 :START
 
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
@@ -198,7 +200,11 @@ CALL :LOGCMD SC DELETE XblAuthManager
 CALL :LOGCMD SC DELETE XblGameSave
 CALL :LOGCMD SC DELETE XboxNetApiSvc
 
+:: Overly redundant keys, as we disable Wifi Sense is the main tweaks, this is just another layer
 CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%" /T REG_DWORD /V FeatureStates /D 0x33c /F
+CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\ABCH" /T REG_DWORD /V OptInStatus /D 0 /F
+CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\ABCH-SKYPE" /T REG_DWORD /V OptInStatus /D 0 /F
+CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features\%SID%\SocialNetworks\FACEBOOK" /T REG_DWORD /V OptInStatus /D 0 /F
 
 :SKIP_10_TWEAKS
 
@@ -206,11 +212,12 @@ CALL :LOGCMD REG ADD "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\features
 
 CALL :LOGTXT "   Adding registry tweaks"
 CD /D "%DATA%"
-FOR /F "eol=# tokens=%TOKENS% delims=	" %%A IN (Reg.ini) DO (
+FOR /F "eol=# tokens=%TOKENS% delims=	:" %%A IN (Reg.ini) DO (
 	IF /I %%A==Y (
 		CALL :LOGCMD REG ADD "%%B" /T %%E /V %%C /D %%D /F
 	)
 )
+
 
 IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO:SKIPHOSTS)
 CALL :LOGTXT "   Blocking PersistentRoutes"
