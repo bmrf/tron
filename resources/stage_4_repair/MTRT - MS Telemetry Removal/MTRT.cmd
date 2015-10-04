@@ -108,6 +108,7 @@ CALL :LOGCMD SC CONFIG RemoteRegistry START= disabled
 
 CALL :LOGTXT "   Setting registry permissions"
 REM Take ownership of registry folders as defined in reg.ini file
+REM There will be a ton of errors here, as it will try to set permissions to many folders that don't exist
 FOR /F "eol=# tokens=%TOKENS% delims=	|" %%A IN (Reg.ini) DO (
 	IF /I "%%A"=="Y" (
 		CALL :LOGCMD setacl.exe -ON "%%B" -OT REG -ACTN SETOWNER -OWNR "N:ADMINISTRATORS"

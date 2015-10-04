@@ -143,7 +143,7 @@ Most current list of bad KB updates (techne.alaya.net/?p=12499)
 spexdi for code compilation
 More KB's (wilderssecurity.com/threads/379151)
 xvitaly & azizLIGHT for more KB's (gist.github.com/xvitaly/eafa75ed2cb79b3bd4e9)
-win10-unfu**k (https://github.com/Dfkt/waitin10-unfuck)
+win10-unfu**k (https://github.com/Dfkt/win10-unfuck)
 Debloat-Windows-10: https://github.com/W4RH4WK/Debloat-Windows-10
 ===============================
 == Known limitations / To Do ==
