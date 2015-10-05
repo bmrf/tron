@@ -8,6 +8,7 @@
 ::                                                    Throws up a message telling you to use the -dev flag if you want to override this check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:     Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running Tron on unsupported Windows versions). Thanks to ..somebody
 ::                      ! tron.bat:prep:update:       Fix "do you want to download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
+::                      ! tron.bat:prep:quarantine:   Fix incorrectly-named quarantine path variable
 ::                      / stage_0_prep:ntp:           Swap order of NTP servers, now query NTP servers in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
 ::                      * stage_2_de-bloat:oem:win10: Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator as well
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
@@ -71,7 +72,7 @@ set LOGPATH=%SystemDrive%\Logs\tron
 set LOGFILE=tron.log
 
 :: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here)
-set QUARANTINE=%LOGPATH%\quarantine
+set QUARANTINE_PATH=%LOGPATH%\quarantine
 
 :: Registry, Event Logs, and power scheme backups are all saved here
 set BACKUPS=%LOGPATH%\backups
