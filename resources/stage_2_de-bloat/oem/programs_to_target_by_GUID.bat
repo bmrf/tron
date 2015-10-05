@@ -72,9 +72,6 @@ start /wait msiexec /qn /norestart /x {88B10E3E-8911-4FAC-8663-CCF6E33C58B3}
 start /wait msiexec /qn /norestart /x {FABDFEBE-A430-48B4-89F2-B35594E43965}
 start /wait msiexec /qn /norestart /x {902C3D36-9254-437D-98AC-913B78E60864}
 
-:: Adobe Bridge 1.0 // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {B74D4E10-1033-0000-0000-000000000001}
-
 :: Adobe Content Viewer
 start /wait msiexec /qn /norestart /x {483A865C-A74A-12BF-1276-D0111A488F50}
 
@@ -208,9 +205,6 @@ start /wait msiexec /qn /norestart /x {A6558E2A-FAF9-4570-AA49-6328D0354517}
 
 :: ASUS Ai Charger
 start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
-
-:: ASUS ATK Package // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {AB5C933E-5C7D-4D30-B314-9C83A49B94BE}
 
 :: ASUS AudioWizard
 start /wait msiexec /qn /norestart /x {57E770A2-2BAF-4CAA-BAA3-BD896E2254D3}
@@ -1196,8 +1190,8 @@ start /wait msiexec /qn /norestart /x {6811CAA0-BF12-11D4-9EA1-0050BAE317E1}
 :: CyberLink PowerDirector 12
 start /wait msiexec /qn /norestart /x {E1646825-D391-42A0-93AA-27FA810DA093}
 
-:: CyberLink Power Media Player 14 // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {32C8E300-BDB4-4398-92C2-E9B7D8A233DB}
+:: CyberLink Power Media Player 14
+start /wait msiexec /qn /norestart /x {32C8E300-BDB4-4398-92C2-E9B7D8A233DB}
 
 :: CyberLink LabelPrint
 start /wait msiexec /qn /norestart /x {C59C179C-668D-49A9-B6EA-0121CCFC1243}
@@ -1210,16 +1204,16 @@ start /wait msiexec /qn /norestart /x {01FB4998-33C4-4431-85ED-079E3EEFE75D}
 :: Dell Access
 start /wait msiexec /qn /norestart /x {F839C6BD-E92E-48FA-9CE6-7BFAF94F7096}
 
-:: Dell Backup and Recovery Manager // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {975DFE7C-8E56-45BC-A329-401E6B1F8102}
-::start /wait msiexec /qn /norestart /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388}
-::start /wait msiexec /qn /norestart /x {731B0E4D-F4C7-450C-95B0-E1A3176B1C75}
-::start /wait msiexec /qn /norestart /x {AB2FDE4F-6BED-4E9E-B676-3DCCEBB1FBFE}
-::start /wait msiexec /qn /norestart /x {43CAC9A1-1993-4F65-9096-7C9AFC2BBF54}
-::start /wait msiexec /qn /norestart /x {97308CC9-FAED-4A1C-9593-64B2F1FD852D}
-::start /wait msiexec /qn /norestart /x {4DEF2722-7EB8-4C5F-8F0A-0295A310002A}
-::start /wait msiexec /qn /norestart /x {AE9EB677-66F4-40C0-9269-35067D8C555B}
-::if exist %SystemDrive%\dell\dbrm rd /s /q %SystemDrive%\dell\dbrm
+:: Dell Backup and Recovery Manager
+start /wait msiexec /qn /norestart /x {975DFE7C-8E56-45BC-A329-401E6B1F8102}
+start /wait msiexec /qn /norestart /x {50B4B603-A4C6-4739-AE96-6C76A0F8A388}
+start /wait msiexec /qn /norestart /x {731B0E4D-F4C7-450C-95B0-E1A3176B1C75}
+start /wait msiexec /qn /norestart /x {AB2FDE4F-6BED-4E9E-B676-3DCCEBB1FBFE}
+start /wait msiexec /qn /norestart /x {43CAC9A1-1993-4F65-9096-7C9AFC2BBF54}
+start /wait msiexec /qn /norestart /x {97308CC9-FAED-4A1C-9593-64B2F1FD852D}
+start /wait msiexec /qn /norestart /x {4DEF2722-7EB8-4C5F-8F0A-0295A310002A}
+start /wait msiexec /qn /norestart /x {AE9EB677-66F4-40C0-9269-35067D8C555B}
+if exist %SystemDrive%\dell\dbrm rd /s /q %SystemDrive%\dell\dbrm
 
 :: Dell Best of Web 1.00.0000
 start /wait msiexec /qn /norestart /x {BC8233D8-59BA-4D40-92B9-4FDE7452AA8B}
@@ -1446,7 +1440,7 @@ start /wait msiexec /qn /norestart /x {CAC1E444-ECC4-4FF8-B328-5E547FD608F8}
 :: Dell Protected Workspace
 wmic product where name="Dell Protected Workspace" call uninstall /nointeractive 2>nul
 
-:: Dell QuickSet32 and QuickSet64 // Disabled by /u/kamakaze_chickn for Tron
+:: Dell QuickSet32 and QuickSet64 // Disabled by /u/kamakaze_chickn for Tron; hotkey drivers
 ::start /wait msiexec /qn /norestart /x {ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
 ::start /wait msiexec /qn /norestart /x {C4972073-2BFE-475D-8441-564EA97DA161}
 
@@ -2000,14 +1994,14 @@ start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
 :: HP QuickTransfer
 start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
 
-:: HP Recovery Manager // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {528AB81B-D65A-4AB0-A2B6-82B51A087D01}
-::start /wait msiexec /qn /norestart /x {64BAA990-F1FC-4145-A7B1-E41FBBC9DA47}
-::start /wait msiexec /qn /norestart /x {D817481A-193E-4332-A4F3-E19132F744F0}
-::start /wait msiexec /qn /norestart /x {6369FC9E-FC8D-493F-AD87-D51FAB492705}
-::start /wait msiexec /qn /norestart /x {DB97D0DE-0AA1-413C-8398-92C7FA3F4A67}
-::start /wait msiexec /qn /norestart /x {4F46FDB9-B906-47BF-B3D5-C62E01B3C5EE}
-::start /wait msiexec /qn /norestart /x {98C4DE92-27C8-482C-8431-514828756E80}
+:: HP Recovery Manager
+start /wait msiexec /qn /norestart /x {528AB81B-D65A-4AB0-A2B6-82B51A087D01}
+start /wait msiexec /qn /norestart /x {64BAA990-F1FC-4145-A7B1-E41FBBC9DA47}
+start /wait msiexec /qn /norestart /x {D817481A-193E-4332-A4F3-E19132F744F0}
+start /wait msiexec /qn /norestart /x {6369FC9E-FC8D-493F-AD87-D51FAB492705}
+start /wait msiexec /qn /norestart /x {DB97D0DE-0AA1-413C-8398-92C7FA3F4A67}
+start /wait msiexec /qn /norestart /x {4F46FDB9-B906-47BF-B3D5-C62E01B3C5EE}
+start /wait msiexec /qn /norestart /x {98C4DE92-27C8-482C-8431-514828756E80}
 
 :: HP Registration Service
 start /wait msiexec /qn /norestart /x {D1E8F2D7-7794-4245-B286-87ED86C1893C}
@@ -2021,7 +2015,7 @@ start /wait msiexec /qn /norestart /x {C81D8576-F1B1-4E3A-9DC3-DF1B664962F0}
 :: HP Setup
 start /wait msiexec /qn /norestart /x {438363A8-F486-4C37-834C-4955773CB3D3}
 
-:: HP SimplePass // Disabled by /u/kamakaze_chickn for Tron
+:: HP SimplePass // Disabled by /u/kamakaze_chickn for Tron; "fingerprint reader driver and can produce an error code in DevMan if missing"
 ::start /wait msiexec /qn /norestart /x {314FAD12-F785-4471-BCE8-AB506642B9A1}
 ::start /wait msiexec /qn /norestart /x {F1390872-2500-4408-A46C-CD16C960C661}
 ::start /wait msiexec /qn /norestart /x {BBEB46E1-810D-449F-A9C5-4D60F3BF187D}
@@ -2254,10 +2248,12 @@ start /wait msiexec /qn /norestart /x {FD37351B-3074-4652-8188-1B3FB784EC4E}
 :: Intel (R) Pro Alerting Agent
 start /wait msiexec /qn /norestart /x {FCDDBA94-7389-49E5-B287-2661460BAF18}
 
-:: Intel(R) Rapid Storage Technology // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {96714280-14E6-4DF7-BACD-F797C0F17C3D}
-::start /wait msiexec /qn /norestart /x {205AE40D-8AD7-4F29-A430-DD2168DA562D}
-::start /wait msiexec /qn /norestart /x {93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
+:: Intel(R) Rapid Storage Technology // often the culprit behind BSODs when scanning drives with smartctl
+:: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
+::         Please comment on this program at reddit.com/r/TronScript on the main release thread
+start /wait msiexec /qn /norestart /x {96714280-14E6-4DF7-BACD-F797C0F17C3D}
+start /wait msiexec /qn /norestart /x {205AE40D-8AD7-4F29-A430-DD2168DA562D}
+start /wait msiexec /qn /norestart /x {93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
 
 :: Intel(R) Security Assist
 start /wait msiexec /qn /norestart /x {4B230374-6475-4A73-BA6E-41015E9C5013}
@@ -2888,12 +2884,12 @@ start /wait msiexec /qn /norestart /x {6466EF6E-700E-470F-94CB-D0050302C84E}
 start /wait msiexec /qn /norestart /x {E682702C-609C-4017-99E7-3129C163955F}
 start /wait msiexec /qn /norestart /x {07441A52-E208-478A-92B7-5C337CA8C131}
 
-:: Sony VAIO Care // VAIO Care Recovery // VAIO Help and Support // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {D9FFE40D-1A85-4541-992C-5EF505F391A4}
-::start /wait msiexec /qn /norestart /x {55A60C1D-BEBF-4249-BFB2-F4E5C2E77988}
-::start /wait msiexec /qn /norestart /x {471F7C0A-CA3A-4F4C-8346-DE36AD5E23D1}
-::start /wait msiexec /qn /norestart /x {6ED1750E-F44F-4635-8F0D-B76B9262B7FB}
-::start /wait msiexec /qn /norestart /x {AD3E7141-A22E-40F1-A7A4-55E898AE35E3}
+:: Sony VAIO Care // VAIO Care Recovery // VAIO Help and Support
+start /wait msiexec /qn /norestart /x {D9FFE40D-1A85-4541-992C-5EF505F391A4}
+start /wait msiexec /qn /norestart /x {55A60C1D-BEBF-4249-BFB2-F4E5C2E77988}
+start /wait msiexec /qn /norestart /x {471F7C0A-CA3A-4F4C-8346-DE36AD5E23D1}
+start /wait msiexec /qn /norestart /x {6ED1750E-F44F-4635-8F0D-B76B9262B7FB}
+start /wait msiexec /qn /norestart /x {AD3E7141-A22E-40F1-A7A4-55E898AE35E3}
 
 :: Sony VAIO Control Center // CPU Fan Diagnostic // Data Restore Tool // Easy Connect
 start /wait msiexec /qn /norestart /x {8E797841-A110-41FD-B17A-3ABC0641187A}
@@ -3207,7 +3203,7 @@ start /wait msiexec /qn /norestart /x {1a413f37-ed88-4fec-9666-5c48dc4b7bb7}
 :: Zinio Alert Messenger
 start /wait msiexec /qn /norestart /x {D2E707E8-090E-EC5B-4833-1CA694FB7460}
 
-:: ZoneAlarm Antivirus, Firewall, and Security // Disabled for Tron
+:: ZoneAlarm Antivirus, Firewall, and Security // Disabled for Tron by /u/vocatus
 ::start /wait msiexec /qn /norestart /x {043A5C25-EC0E-4152-A53B-73065A4315DF}
 ::start /wait msiexec /qn /norestart /x {537317B1-FB59-4578-953F-544914A8F25F}
 ::start /wait msiexec /qn /norestart /x {9A121E1B-1E87-4F37-BC9C-F8D073047942}
