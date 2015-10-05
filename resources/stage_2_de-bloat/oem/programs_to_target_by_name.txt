@@ -35,6 +35,7 @@
 24x7 Help
 3vix%%
 888bar
+ABBYY FineReader
 Advanced Registry%%
 Acer%%
 Adobe Shockwave%%
@@ -51,6 +52,7 @@ AtuZi
 AVG PC TuneUp%%
 AVG Web TuneUp
 AVG 2014%%
+AVG Toolbar
 Baidu PC Faster%%
 Big Fish Games: Game Manager
 Big Fish: Game Manager
