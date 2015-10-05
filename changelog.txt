@@ -15,7 +15,7 @@ Version number legend:
 
 
 ########################
-# v6.8.0 // 2015-09-xx #
+# v6.8.0 // 2015-09-28 #
 ########################
 tron.bat                         v6.8.0
  ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
