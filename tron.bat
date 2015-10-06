@@ -11,6 +11,7 @@
 ::                      ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
 ::                      ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
 ::                      / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
+::                      ! stage_1_tempclean:ccleaner:  Fix bug where script continued before CCleaner was finished. Thanks to /u/Chmaera12
 ::                      * stage_2_de-bloat:oem:win10:  Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator and some other desireable apps
 ::                      * stage_2_de-bloat:by_guid:    Add new entries and remove many incorrect ones based on user feedback
 ::                      * stage_4_repair:dism_rebuild: Move DISM rebuild out of Stage 2: De-bloat and into Stage 4: Repair after Windows telemetry removal. This prevents telemetry updates from getting "baked in" to Windows. Major thanks to /u/spexdi
@@ -971,7 +972,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call :log "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
-	stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done."
