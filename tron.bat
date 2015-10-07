@@ -1086,14 +1086,15 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
 if "%WIN_VER:~0,9%"=="Windows 1" set TARGET_METRO=yes
 if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
-if %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
+if /i %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
+if /i %DRY_RUN%==no net start AppXSVC >nul 2>&1
 if /i %TARGET_METRO%==yes (
 	call :log "%CUR_DATE% %TIME%    Windows 8 or higher detected, removing OEM Metro apps..."
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		REM Enable starting AppXSVC in Safe Mode
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
-		net start AppXSVC
+		net start AppXSVC >nul 2>&1
 		REM Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
 		if /i not "%WIN_VER:~0,9%"=="Windows 1" (
