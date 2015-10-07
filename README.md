@@ -5,7 +5,7 @@
 
 # DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [/r/TronScript](https://www.reddit.com/r/TronScript) !!
 
-I got tired of running these utilities manually and decided to just automate everything, so Tron basically automates a variety of tasks to clean up/disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up/disinfect a Windows machine.
 
 # CONTENTS
 
@@ -50,8 +50,8 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk
-              -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
+              -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -60,6 +60,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
          if this flag is used)
 
     -d   Dry run (run through script without executing any jobs)
+    
+    -dev Override OS detection (allow running on unsupported Windows versions)
 
     -e   Accept EULA (suppress disclaimer warning screen)
 
@@ -117,9 +119,9 @@ More details about this function are in the list of all Tron actions at the bott
 
 # SAFE MODE
 
-You can [follow these instructions](http://windows.microsoft.com/en-us/windows/start-computer-safe-mode), but basically it involves pressing F8 after restarting your computer.
+In versions of Windows prior to 8, you could [follow these instructions](http://windows.microsoft.com/en-us/windows/start-computer-safe-mode); basically it involves pressing F8 after restarting your computer.
 
-However the process is a bit different in Windows 8 and up. Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode for Windows 8, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
+However from Windows 8 onwared the process is a bit different. Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
 
     bcdedit /set {default} bootmenupolicy legacy
 
@@ -152,7 +154,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 
 - To change where Tron stores quarantined files, change this path (note: this is currently unused by Tron, setting it has no effect):
   ```
-  set QUARANTINE=%LOGPATH%\quarantine
+  set QUARANTINE_PATH=%LOGPATH%\quarantine
   ```
 
 - To change the location of the backups Tron makes (Registry, Event Logs, power scheme, etc), edit this line:
@@ -178,6 +180,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To do a dry run (don't actually execute jobs), change this to `yes`:
   ```
   set DRY_RUN=no
+  ```
+
+- To override OS detection (allow Tron to run on unsupported Windows versions), change this to `yes`:
+  ```
+  set DEV_MODE=no
   ```
 
 - To permanently accept the End User License Agreement (suppress display of disclaimer warning screen), change this to `yes`:
@@ -324,21 +331,23 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Detect Windows version**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
+2. **Unsupported OS blocker**: Throws an alert message if running on an unsupported OS then exits. Use Tron's `-dev` flag to override this behavior and allow running on unsupported Windows versions.
 
-3. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
+3. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
 
-4. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
+4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
-5. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+5. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
 
-6. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
 
-7. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
+7. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
-8. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-9. **Make log directories**: Create the master log directory and sub-directories if they don't exist
+9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+
+10. **Make log directories**: Create the master log directory and sub-directories if they don't exist
 
 
 ## STAGE 0: Prep

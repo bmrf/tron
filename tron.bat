@@ -4,15 +4,17 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.8.1 ! tron.bat:prep:update:       Fix "do you want to download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
-::                      / stage_0_prep:ntp:           Swap order of NTP servers, now query NTP servers in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
-::                      * stage_2_de-bloat:oem:win10: Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator as well
-::                6.8.0 + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
-::                      ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
-::                      + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
-::                      + stage_4_repair:network:     Add a minor network repair section. Might expand or remove this in the future. Thanks to /u/chinpopocortez
-::                      ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
-::                      * stage_0_prep:repair_wmi:    Break WMI repair into its own subscript, with significant additions from /u/expert02
+:: Version:       6.9.0 + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
+::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
+::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
+::                                                     Tron on unsupported Windows versions). Thanks to ..somebody
+::                      ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
+::                      ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
+::                      / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
+::                      ! stage_1_tempclean:ccleaner:  Fix bug where script continued before CCleaner was finished. Thanks to /u/Chmaera12
+::                      * stage_2_de-bloat:oem:win10:  Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator and some other desireable apps
+::                      * stage_2_de-bloat:by_guid:    Add new entries and remove many incorrect ones based on user feedback
+::                      * stage_4_repair:dism_rebuild: Move DISM rebuild out of Stage 2: De-bloat and into Stage 4: Repair after Windows telemetry removal. This prevents telemetry updates from getting "baked in" to Windows. Major thanks to /u/spexdi
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -20,6 +22,7 @@
 ::                      -c   Config dump (display config. Can be used with other flags to see what
 ::                           WOULD happen, but script will never execute if this flag is used)
 ::                      -d   Dry run (run through script without executing any jobs)
+::                      -dev Override OS detection (allow running on unsupported Windows versions)
 ::                      -e   Accept EULA (suppress disclaimer warning screen)
 ::                      -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
 ::                      -h   Display help text
@@ -73,7 +76,7 @@ set LOGPATH=%SystemDrive%\Logs\tron
 set LOGFILE=tron.log
 
 :: Where Tron should save files that the various virus scanners put in quarantine. Currently unused (created, but nothing is stored here)
-set QUARANTINE=%LOGPATH%\quarantine
+set QUARANTINE_PATH=%LOGPATH%\quarantine
 
 :: Registry, Event Logs, and power scheme backups are all saved here
 set BACKUPS=%LOGPATH%\backups
@@ -92,6 +95,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 ::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
+:: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
 :: EMAIL_REPORT           (-er)  = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
 :: PRESERVE_METRO_APPS    (-m)   = Don't remove OEM Metro apps
@@ -116,6 +120,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
 set DRY_RUN=no
+set DEV_MODE=no
 set EULA_ACCEPTED=no
 set EMAIL_REPORT=no
 set PRESERVE_METRO_APPS=no
@@ -157,7 +162,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.8.1
+set SCRIPT_VERSION=6.9.0
 set SCRIPT_DATE=2015-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -222,14 +227,15 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk
-	echo                -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
+	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
  	echo    -c   Config dump ^(display config. Can be used with other flags to see what
 	echo         WOULD happen, but script will never execute if this flag is used^)
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
+	echo    -dev Override OS detection ^(allow running on unsupported Windows versions^)
 	echo    -e   Accept EULA ^(suppress disclaimer warning screen^)
 	echo    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
 	echo    -m   Preserve OEM Metro apps ^(don't remove them^)
@@ -271,6 +277,22 @@ set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 :: PREP: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+
+
+:: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail.
+if "%WIN_VER:~0,9%"=="Windows 1" (
+	if /i %DEV_MODE%==no (
+		color 0c
+		echo ^! ERROR 
+		echo.
+		echo    %WIN_VER% is not supported yet.
+		echo    If you want to ignore this and run Tron anyway,
+		echo    re-run Tron from the command-line with -dev flag.
+		echo.   
+		pause
+		goto eof
+	)
+)
 
 
 :: PREP: Detect Solid State hard drives (determines if post-run defrag executes or not)
@@ -440,6 +462,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
+	echo    DEV_MODE:               %DEV_MODE%
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
 	echo    LOGPATH:                %LOGPATH%
@@ -460,7 +483,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_REGPERMS_RESET:    %SKIP_REGPERMS_RESET%
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
-	echo	SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
+	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
@@ -660,6 +683,7 @@ if /i not "%SKIP_DEFRAG%"=="no" (
 	)
 if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        7-9 hours)
 if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
+if /i %DEV_MODE%==yes echo  ! DEV_MODE set; unsupported OS detection overridden
 if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
@@ -810,7 +834,6 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-
 :: JOB: Disable mode and disable screen saver
 if /i %DRY_RUN%==no (
 		call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
@@ -949,7 +972,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call :log "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
-	stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done."
@@ -1121,10 +1144,6 @@ if /i %TARGET_METRO%==yes (
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 		)
 	)
-	call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused App binaries..."
-	:: Thanks to reddit.com/user/nommaddave
-	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
-	call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
@@ -1372,6 +1391,13 @@ IF /I %DRY_RUN%==YES (GOTO:END_TELEMETRY_REMOVAL)
 :END_TELEMETRY_REMOVAL
 call :log "%CUR_DATE% %TIME%    Done."
 :SKIP_TELEMETRY_REMOVAL
+
+
+:: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
+call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused binaries..."
+:: Thanks to reddit.com/user/nommaddave
+if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
+call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Network repair (minor). Thanks to /u/chinpopocortez
@@ -1820,6 +1846,7 @@ for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
+	if /i %%i==-dev set DEV_MODE=yes
 	if /i %%i==-e set EULA_ACCEPTED=yes
 	if /i %%i==-er set EMAIL_REPORT=yes
 	if /i %%i==-h set HELP=yes
