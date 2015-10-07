@@ -193,6 +193,11 @@ CALL :LOGTXT "   Delete WAP Push Message Routing Service"
 CALL :LOGCMD SC STOP dmwappushservice
 CALL :LOGCMD SC DELETE dmwappushservice
 
+
+CALL :LOGTXT "   Delete RetailDemo Service"
+CALL :LOGCMD SC STOP RetailDemo
+CALL :LOGCMD SC DELETE RetailDemo
+
 CALL :LOGTXT "   Delete Xbox Live Services"
 CALL :LOGCMD SC STOP XblAuthManager
 CALL :LOGCMD SC STOP XblGameSave
