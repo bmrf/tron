@@ -106,7 +106,6 @@ InfoAtoms
 InstaCodecs
 Intel%%Management Engine%%
 Intel%%ME%%UninstallLegacy
-Intel%%Rapid%%
 Intel%%Smart%%
 Internet Explorer Toolbar%%
 InternetHelper3 Toolbar

@@ -8,6 +8,7 @@
 ::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
 ::                                                     Tron on unsupported Windows versions). Thanks to ..somebody
+::                      * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
 ::                      ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
 ::                      ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
 ::                      / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
@@ -163,7 +164,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=6.9.0
-set SCRIPT_DATE=2015-10-xx
+set SCRIPT_DATE=2015-10-08
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -228,7 +229,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
-	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo                    -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -283,12 +284,17 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 if "%WIN_VER:~0,9%"=="Windows 1" (
 	if /i %DEV_MODE%==no (
 		color 0c
-		echo ^! ERROR 
 		echo.
-		echo    %WIN_VER% is not supported yet.
-		echo    If you want to ignore this and run Tron anyway,
-		echo    re-run Tron from the command-line with -dev flag.
-		echo.   
+		echo  ^! ERROR 
+		echo.
+		echo    Tron does not support %WIN_VER% ^(yet^).
+		echo.
+		echo    If you want to override and run anyway, re-run
+		echo    Tron from the command-line with -dev flag.
+		echo.
+		echo    Keep in mind that by doing this you're effectively
+		echo    becoming a beta tester!
+		echo.
 		pause
 		goto eof
 	)
@@ -746,7 +752,8 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 :: Create log header
 cls
 call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
+call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
+call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
 call :log "                          Command-line flags: %*"
@@ -1761,6 +1768,7 @@ if /i %SELF_DESTRUCT%==yes (
 color 2F
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call :log "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Command-line flags: %*"
 call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
@@ -1875,3 +1883,4 @@ for %%i in (%*) do (
 	)
 goto :eof
 :eof
+color

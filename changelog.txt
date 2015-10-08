@@ -17,29 +17,42 @@ Version number legend:
 
 
 ########################
-# v6.9.0 // 2015-10-xx #
+# v6.9.0 // 2015-10-08 #
 ########################
 tron.bat                         v6.9.0
-
+ + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
+                                Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
+ + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
+                                Tron on unsupported Windows versions). Thanks to ..somebody
+ * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
+ ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
+ ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
+ / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
+ ! stage_1_tempclean:ccleaner:  Fix bug where script continued before CCleaner was finished. Thanks to /u/Chmaera12
+ * stage_2_de-bloat:oem:win10:  Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator and some other desireable apps
+ * stage_2_de-bloat:by_guid:    Add new entries and remove many incorrect ones based on user feedback
+ * stage_4_repair:dism_rebuild: Move DISM rebuild out of Stage 2: De-bloat and into Stage 4: Repair after Windows telemetry removal. This prevents telemetry updates from getting "baked in" to Windows. Major thanks to /u/spexdi
 
 STAGE 0: Prep
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
- . McAfee Stinger                v12.1.0.1732
+ * McAfee Stinger                v12.1.0.1753
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
  * CCLeaner                      v5.10.5373
-    + Integrate the CCEnhancer project's winapp2.ini file; now cleans significantly more individual program locations. Thanks to /u/Chimaera12
+    ! winapp2.ini: Disable Sticky Notes cleaning. Thanks to /u/Tronium90
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
 
 STAGE 2: De-bloat
- . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
- . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+ * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+    - Remove some incorrect entries based on user feedback
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    - Remove some incorrect entries based on user feedback
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -65,10 +78,10 @@ STAGE 7: Wrap-up
 
 STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v5.0.0.9
+ * AdwCleaner                    v5.0.1.0
  . Autoruns                      v13.4
- . ComboFix                      v15.9.25.1
- . Junkware Removal Tool         v7.6.3.0
+ * ComboFix                      v15.10.6.1
+ * Junkware Removal Tool         v7.6.4.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
  . PC Hunter                     v1.35 x86
