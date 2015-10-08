@@ -8,6 +8,7 @@
 ::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
 ::                                                     Tron on unsupported Windows versions). Thanks to ..somebody
+::                      * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
 ::                      ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
 ::                      ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
 ::                      / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
@@ -746,7 +747,8 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 :: Create log header
 cls
 call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%), %PROCESSOR_ARCHITECTURE% architecture"
+call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
+call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
 call :log "                          Command-line flags: %*"
@@ -1835,6 +1837,7 @@ if /i %SELF_DESTRUCT%==yes (
 color 2F
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call :log "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
 call :log "                          Command-line flags: %*"
 call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
