@@ -229,7 +229,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
-	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo                    -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -284,12 +284,17 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 if "%WIN_VER:~0,9%"=="Windows 1" (
 	if /i %DEV_MODE%==no (
 		color 0c
-		echo ^! ERROR 
 		echo.
-		echo    %WIN_VER% is not supported yet.
-		echo    If you want to ignore this and run Tron anyway,
-		echo    re-run Tron from the command-line with -dev flag.
-		echo.   
+		echo  ^! ERROR 
+		echo.
+		echo    Tron does not support %WIN_VER% ^(yet^).
+		echo.
+		echo    If you want to override and run anyway, re-run
+		echo    Tron from the command-line with -dev flag.
+		echo.
+		echo    Keep in mind that by doing this you're effectively
+		echo    becoming a beta tester!
+		echo.
 		pause
 		goto eof
 	)
@@ -1952,3 +1957,4 @@ for %%i in (%*) do (
 	)
 goto :eof
 :eof
+color
