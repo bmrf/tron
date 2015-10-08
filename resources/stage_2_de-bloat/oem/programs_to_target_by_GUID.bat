@@ -300,124 +300,124 @@ start /wait msiexec /qn /norestart /x {DF9A6075-9308-4572-8932-A4316243C4D9}
 :: CA Pest Patrol Realtime Protection 001.001.0034
 start /wait msiexec /qn /norestart /x {F05A5232-CE5E-4274-AB27-44EB8105898D}
 
-:: Camtasia (various versions)
-start /wait msiexec /qn /norestart /x {DB93E2C2-851F-44B2-B09C-351D2C624AE1}
-start /wait msiexec /qn /norestart /x {7A0735CD-5B9D-4FAF-A717-CF99619DDAF8}
-start /wait msiexec /qn /norestart /x {4974F6DC-BA3F-4708-9CF2-8F8B28A8E1C3}
-start /wait msiexec /qn /norestart /x {6D791152-409B-48C9-8050-E31D3B1CDDF0}
-start /wait msiexec /qn /norestart /x {008FD9E3-5F74-42FC-ACF9-B72AB7ED85E3}
-start /wait msiexec /qn /norestart /x {051E55AD-CCE1-4D3B-BA6A-88AD3F656C23}
-start /wait msiexec /qn /norestart /x {296C22B8-5355-4C13-B42B-C06B1A5D1B4E}
-start /wait msiexec /qn /norestart /x {21680605-EAEA-4A34-9C25-F44BB813CC3E}
-start /wait msiexec /qn /norestart /x {BC256BAA-A3D1-438F-ABE8-14E56FF6ECBA}
-start /wait msiexec /qn /norestart /x {FE95684E-62F9-49A1-988E-C88A123DBB18}
-start /wait msiexec /qn /norestart /x {BB62BAD9-AAAB-4552-B304-A3787EC2475B}
-start /wait msiexec /qn /norestart /x {94F167B1-395E-483C-9D12-20F077D7B4A9}
-start /wait msiexec /qn /norestart /x {EDBD11F4-45C8-4028-BC1A-FFE74DE37CB4}
-start /wait msiexec /qn /norestart /x {85BA4B05-A25A-4ABC-A637-14C1F7C6A1FA}
-start /wait msiexec /qn /norestart /x {2919BC46-3875-4175-A60E-71861076DE99}
-start /wait msiexec /qn /norestart /x {1875B4A0-974E-49C9-A817-99D14E19F5F8}
-start /wait msiexec /qn /norestart /x {F11EC76D-794E-4B72-BD73-4EC73498F4A8}
-start /wait msiexec /qn /norestart /x {D01C1100-5746-41C3-B309-29D674B92E2A}
-start /wait msiexec /qn /norestart /x {4325407D-1B78-475B-971A-7266BF17C293}
-start /wait msiexec /qn /norestart /x {0AC51B58-A50C-40F6-B991-523D730945DD}
-start /wait msiexec /qn /norestart /x {E42B58B2-D4A2-4632-8745-BFF041FBB4D9}
-start /wait msiexec /qn /norestart /x {2172CD50-F0DF-43D0-9C1F-7BD964D0289B}
-start /wait msiexec /qn /norestart /x {31591351-2BAE-4B88-8943-B18402D8112A}
-start /wait msiexec /qn /norestart /x {639B2D77-2476-4605-A5D7-8C5D816952C3}
-start /wait msiexec /qn /norestart /x {462A7AF7-6DCE-4609-97E4-A7BBE0B46DEF}
-start /wait msiexec /qn /norestart /x {F63723C9-BF65-4339-B98C-D6FC2A96182B}
-start /wait msiexec /qn /norestart /x {1884FF01-9F27-4D61-A6F2-85AA0A4B42A8}
-start /wait msiexec /qn /norestart /x {59D59A58-7421-4836-9E5C-6D39B005ED78}
-start /wait msiexec /qn /norestart /x {030EBB17-26C3-4C81-A14D-22AB5D2986EC}
-start /wait msiexec /qn /norestart /x {7E01BCC1-806C-4826-97E0-15426F0D1CC9}
-start /wait msiexec /qn /norestart /x {962C7B98-BEA8-45B9-8D56-2F3CBCA4F16B}
-start /wait msiexec /qn /norestart /x {DAC80429-24C7-44F9-828C-9740142FA620}
-start /wait msiexec /qn /norestart /x {95CF0C2A-6B62-4C11-A7BB-FD137CCCB0D6}
-start /wait msiexec /qn /norestart /x {DDBA1A68-E2A5-4C88-B96B-4F21DF964DED}
-start /wait msiexec /qn /norestart /x {2865F201-43B8-4CCC-9106-FE554F32138F}
-start /wait msiexec /qn /norestart /x {DE612AA6-7629-42F8-93CE-0D43A1BB5033}
-start /wait msiexec /qn /norestart /x {5EB67AA7-CC7C-4047-8A18-4B7D30FF8E5C}
-start /wait msiexec /qn /norestart /x {8C8AEE08-F427-452F-95B4-B36ECE4FADE3}
-start /wait msiexec /qn /norestart /x {F8492A18-EEBC-42B1-AF88-807BA37C43DA}
-start /wait msiexec /qn /norestart /x {D2756F6B-BC48-4792-8E3E-0B7053630B1D}
-start /wait msiexec /qn /norestart /x {71A6F5AA-EBDC-4BDF-B231-35B98FA3B9AE}
-start /wait msiexec /qn /norestart /x {8F0459D3-EEE8-414E-9CE1-36C00A19D507}
-start /wait msiexec /qn /norestart /x {CFBC28D9-F7D0-4725-871B-E8A22703ECCB}
-start /wait msiexec /qn /norestart /x {D3317ECB-5C48-4A6B-8C84-7457A9410159}
-start /wait msiexec /qn /norestart /x {BA14C68E-AEDC-4395-BB16-B3D365CF26AF}
-start /wait msiexec /qn /norestart /x {8073CD13-1B0E-446A-A678-9589A2EFFB92}
-start /wait msiexec /qn /norestart /x {1667846F-BC00-4CE6-ADA5-1CE122C33FE2}
-start /wait msiexec /qn /norestart /x {FB8A7032-9682-451E-9E64-89C25CD9E43B}
-start /wait msiexec /qn /norestart /x {DB25BCF6-2C58-473E-A2B6-6F77311F79D1}
-start /wait msiexec /qn /norestart /x {368C2E4B-A37E-466B-958E-C0CD6D6964F4}
-start /wait msiexec /qn /norestart /x {6E30B8A2-4AAA-487E-A80F-E147A9D084DD}
-start /wait msiexec /qn /norestart /x {8F4934B1-83CB-4BFC-8A90-40FF4530115D}
-start /wait msiexec /qn /norestart /x {A27DAE1A-995D-451F-9CCB-C7BF698E4ED4}
-start /wait msiexec /qn /norestart /x {D2F1FCB3-A65C-4BAA-A665-E498C9E80945}
-start /wait msiexec /qn /norestart /x {720F2C5A-DE7A-42A4-B08F-AD504B555155}
-start /wait msiexec /qn /norestart /x {64025BB4-168A-44E5-A10D-37D38A8E0124}
-start /wait msiexec /qn /norestart /x {870A52F4-A2EB-4187-97EA-654BD11A4C6C}
-start /wait msiexec /qn /norestart /x {40FEB178-1855-45A7-B988-F44F1FA896B7}
-start /wait msiexec /qn /norestart /x {222AB816-01E5-43B3-A10D-3F355FAAE513}
-start /wait msiexec /qn /norestart /x {8A3F916F-F9EB-469D-8C09-42273B8C1A66}
-start /wait msiexec /qn /norestart /x {AC89E267-9561-405B-B07F-DD5AAF92D042}
-start /wait msiexec /qn /norestart /x {CF9072B6-A82D-4E3E-8F3C-31614CB150EB}
-start /wait msiexec /qn /norestart /x {D4B7F322-6CFA-4CEE-AAE4-C5ADFA67F83C}
-start /wait msiexec /qn /norestart /x {933B3C90-AEA9-41EB-B555-6A38ADEC50A1}
-start /wait msiexec /qn /norestart /x {D85DD9A0-45CF-435B-98CB-144269DFE8A0}
-start /wait msiexec /qn /norestart /x {957B1FBE-BDB3-4BCC-A3D8-70A0E4A23360}
-start /wait msiexec /qn /norestart /x {6BDB867A-7975-40B5-93CE-11F133E1CDA9}
-start /wait msiexec /qn /norestart /x {6A1A98D3-E814-4E84-B683-69800993380B}
-start /wait msiexec /qn /norestart /x {7DB2CB6A-7248-4DC0-82FE-491D3570807E}
-start /wait msiexec /qn /norestart /x {2790A7CF-0EBD-4728-9364-6B63C5E680E3}
-start /wait msiexec /qn /norestart /x {B35C8CCE-95A1-45A4-BAB7-46154F60D8B2}
-start /wait msiexec /qn /norestart /x {80A19900-E0FA-425B-A1F6-0F7C013CE45A}
-start /wait msiexec /qn /norestart /x {6467DEB1-C20C-44F0-B25C-7A21F264D4F3}
-start /wait msiexec /qn /norestart /x {1EFB479B-C396-4E5B-BBB5-A845C59383CD}
-start /wait msiexec /qn /norestart /x {4786D940-0F26-43A4-98B5-4CAC01CD9FBE}
-start /wait msiexec /qn /norestart /x {D43CBD3F-F4CB-4780-A686-CFD3775FC2A1}
-start /wait msiexec /qn /norestart /x {ADC02977-F2BA-4F25-A550-B754562107A0}
-start /wait msiexec /qn /norestart /x {A1433F59-803E-4CFF-911D-847B22149A6B}
-start /wait msiexec /qn /norestart /x {5EE6CCD2-6142-4D09-8803-D31312574DC5}
-start /wait msiexec /qn /norestart /x {E729BCE1-294E-4364-8170-84036E7696E1}
-start /wait msiexec /qn /norestart /x {944321D8-225A-410E-932C-B8B219DF07D5}
-start /wait msiexec /qn /norestart /x {CD019882-E447-4F30-8FA4-521478BEE8E9}
-start /wait msiexec /qn /norestart /x {8F8BB210-4F82-4818-BF80-1CB57A62B996}
-start /wait msiexec /qn /norestart /x {8375085C-00D4-43EA-8E65-263E8C738E08}
-start /wait msiexec /qn /norestart /x {BCFE8F84-3EB8-40AD-B52F-F07B64F927AA}
-start /wait msiexec /qn /norestart /x {2FD5A4CA-421B-4C9E-952B-EA5B98B40AC3}
-start /wait msiexec /qn /norestart /x {85B51189-8F56-4338-9928-E1BFD7DB9211}
-start /wait msiexec /qn /norestart /x {3614C95F-1376-4551-BDED-EC6B79E74D60}
-start /wait msiexec /qn /norestart /x {967635DD-BA84-45AC-82EC-908D415B71A2}
-start /wait msiexec /qn /norestart /x {5E25963C-8033-4EC2-BDEA-0869E75611C7}
-start /wait msiexec /qn /norestart /x {9B8F134C-3A56-4365-A3FA-BD1824FD1B89}
-start /wait msiexec /qn /norestart /x {AD4F337C-7752-415A-9602-DF17B4F46E68}
-start /wait msiexec /qn /norestart /x {C7FDA25B-9A0F-487B-9502-35ABBF701599}
-start /wait msiexec /qn /norestart /x {BCBE985F-DE7D-41EA-A8AB-A575AEEDBDBD}
-start /wait msiexec /qn /norestart /x {823FCD0D-756D-44BE-A546-1D4D9FBBEA8C}
-start /wait msiexec /qn /norestart /x {990B884F-569C-5078-DD76-8BE91A569291}
-start /wait msiexec /qn /norestart /x {7D263751-40FB-D719-9F42-B62B67553D6F}
-start /wait msiexec /qn /norestart /x {BD37CF23-3458-BFD1-7583-F8FFC37561F2}
-start /wait msiexec /qn /norestart /x {931991F4-99D4-95A6-1235-EAA599884AC6}
-start /wait msiexec /qn /norestart /x {C2471823-76DB-B529-F037-8D02CAC5DE5E}
-start /wait msiexec /qn /norestart /x {1FAB6902-546D-9060-D0C8-4B502160AA06}
-start /wait msiexec /qn /norestart /x {DAE76FE1-BD65-3251-1B6F-6B519A661A1F}
-start /wait msiexec /qn /norestart /x {FE3E16F2-D838-7B5F-A31E-2D55757D18E7}
-start /wait msiexec /qn /norestart /x {BF34B28A-4D50-439A-6B6B-13EA41235E43}
-start /wait msiexec /qn /norestart /x {9E77F8EF-588E-D11B-697F-5514B97779DF}
-start /wait msiexec /qn /norestart /x {571F7B9B-96B8-E1B8-E198-0458BF5F80C4}
-start /wait msiexec /qn /norestart /x {3D516940-6675-41C1-E3DA-E3D358A7C207}
-start /wait msiexec /qn /norestart /x {0AB6726B-2C04-75E6-D30A-AA8C0E26E46A}
-start /wait msiexec /qn /norestart /x {3253D3E5-C08E-E22B-BA99-DE88F520CBB3}
-start /wait msiexec /qn /norestart /x {82EE309C-B63C-1AAA-79AB-8A5E5986B687}
-start /wait msiexec /qn /norestart /x {B9818C90-560C-8DC7-E254-38323B9A41EA}
-start /wait msiexec /qn /norestart /x {E7809829-3AC8-FBFA-2001-0D9BEBE51386}
-start /wait msiexec /qn /norestart /x {1D74451F-B220-E2E4-7FCD-520AA66F1A85}
-start /wait msiexec /qn /norestart /x {B740C369-EA8D-2FDB-4265-CB70DD08095D}
-start /wait msiexec /qn /norestart /x {2CC1453B-3385-F6FF-735F-F3BA36758715}
-start /wait msiexec /qn /norestart /x {F79997CC-F030-93C6-7882-92DC241D7C07}
-start /wait msiexec /qn /norestart /x {7540EB6A-FE9B-4EE2-37D9-A88DC87AA9E6}
+:: Camtasia (various versions) // Disabled for Tron by /u/vocatus per https://www.reddit.com/r/TronScript/comments/3nvfqj/guid_list_update_and_a_couple_of_questions/
+:: start /wait msiexec /qn /norestart /x {DB93E2C2-851F-44B2-B09C-351D2C624AE1}
+:: start /wait msiexec /qn /norestart /x {7A0735CD-5B9D-4FAF-A717-CF99619DDAF8}
+:: start /wait msiexec /qn /norestart /x {4974F6DC-BA3F-4708-9CF2-8F8B28A8E1C3}
+:: start /wait msiexec /qn /norestart /x {6D791152-409B-48C9-8050-E31D3B1CDDF0}
+:: start /wait msiexec /qn /norestart /x {008FD9E3-5F74-42FC-ACF9-B72AB7ED85E3}
+:: start /wait msiexec /qn /norestart /x {051E55AD-CCE1-4D3B-BA6A-88AD3F656C23}
+:: start /wait msiexec /qn /norestart /x {296C22B8-5355-4C13-B42B-C06B1A5D1B4E}
+:: start /wait msiexec /qn /norestart /x {21680605-EAEA-4A34-9C25-F44BB813CC3E}
+:: start /wait msiexec /qn /norestart /x {BC256BAA-A3D1-438F-ABE8-14E56FF6ECBA}
+:: start /wait msiexec /qn /norestart /x {FE95684E-62F9-49A1-988E-C88A123DBB18}
+:: start /wait msiexec /qn /norestart /x {BB62BAD9-AAAB-4552-B304-A3787EC2475B}
+:: start /wait msiexec /qn /norestart /x {94F167B1-395E-483C-9D12-20F077D7B4A9}
+:: start /wait msiexec /qn /norestart /x {EDBD11F4-45C8-4028-BC1A-FFE74DE37CB4}
+:: start /wait msiexec /qn /norestart /x {85BA4B05-A25A-4ABC-A637-14C1F7C6A1FA}
+:: start /wait msiexec /qn /norestart /x {2919BC46-3875-4175-A60E-71861076DE99}
+:: start /wait msiexec /qn /norestart /x {1875B4A0-974E-49C9-A817-99D14E19F5F8}
+:: start /wait msiexec /qn /norestart /x {F11EC76D-794E-4B72-BD73-4EC73498F4A8}
+:: start /wait msiexec /qn /norestart /x {D01C1100-5746-41C3-B309-29D674B92E2A}
+:: start /wait msiexec /qn /norestart /x {4325407D-1B78-475B-971A-7266BF17C293}
+:: start /wait msiexec /qn /norestart /x {0AC51B58-A50C-40F6-B991-523D730945DD}
+:: start /wait msiexec /qn /norestart /x {E42B58B2-D4A2-4632-8745-BFF041FBB4D9}
+:: start /wait msiexec /qn /norestart /x {2172CD50-F0DF-43D0-9C1F-7BD964D0289B}
+:: start /wait msiexec /qn /norestart /x {31591351-2BAE-4B88-8943-B18402D8112A}
+:: start /wait msiexec /qn /norestart /x {639B2D77-2476-4605-A5D7-8C5D816952C3}
+:: start /wait msiexec /qn /norestart /x {462A7AF7-6DCE-4609-97E4-A7BBE0B46DEF}
+:: start /wait msiexec /qn /norestart /x {F63723C9-BF65-4339-B98C-D6FC2A96182B}
+:: start /wait msiexec /qn /norestart /x {1884FF01-9F27-4D61-A6F2-85AA0A4B42A8}
+:: start /wait msiexec /qn /norestart /x {59D59A58-7421-4836-9E5C-6D39B005ED78}
+:: start /wait msiexec /qn /norestart /x {030EBB17-26C3-4C81-A14D-22AB5D2986EC}
+:: start /wait msiexec /qn /norestart /x {7E01BCC1-806C-4826-97E0-15426F0D1CC9}
+:: start /wait msiexec /qn /norestart /x {962C7B98-BEA8-45B9-8D56-2F3CBCA4F16B}
+:: start /wait msiexec /qn /norestart /x {DAC80429-24C7-44F9-828C-9740142FA620}
+:: start /wait msiexec /qn /norestart /x {95CF0C2A-6B62-4C11-A7BB-FD137CCCB0D6}
+:: start /wait msiexec /qn /norestart /x {DDBA1A68-E2A5-4C88-B96B-4F21DF964DED}
+:: start /wait msiexec /qn /norestart /x {2865F201-43B8-4CCC-9106-FE554F32138F}
+:: start /wait msiexec /qn /norestart /x {DE612AA6-7629-42F8-93CE-0D43A1BB5033}
+:: start /wait msiexec /qn /norestart /x {5EB67AA7-CC7C-4047-8A18-4B7D30FF8E5C}
+:: start /wait msiexec /qn /norestart /x {8C8AEE08-F427-452F-95B4-B36ECE4FADE3}
+:: start /wait msiexec /qn /norestart /x {F8492A18-EEBC-42B1-AF88-807BA37C43DA}
+:: start /wait msiexec /qn /norestart /x {D2756F6B-BC48-4792-8E3E-0B7053630B1D}
+:: start /wait msiexec /qn /norestart /x {71A6F5AA-EBDC-4BDF-B231-35B98FA3B9AE}
+:: start /wait msiexec /qn /norestart /x {8F0459D3-EEE8-414E-9CE1-36C00A19D507}
+:: start /wait msiexec /qn /norestart /x {CFBC28D9-F7D0-4725-871B-E8A22703ECCB}
+:: start /wait msiexec /qn /norestart /x {D3317ECB-5C48-4A6B-8C84-7457A9410159}
+:: start /wait msiexec /qn /norestart /x {BA14C68E-AEDC-4395-BB16-B3D365CF26AF}
+:: start /wait msiexec /qn /norestart /x {8073CD13-1B0E-446A-A678-9589A2EFFB92}
+:: start /wait msiexec /qn /norestart /x {1667846F-BC00-4CE6-ADA5-1CE122C33FE2}
+:: start /wait msiexec /qn /norestart /x {FB8A7032-9682-451E-9E64-89C25CD9E43B}
+:: start /wait msiexec /qn /norestart /x {DB25BCF6-2C58-473E-A2B6-6F77311F79D1}
+:: start /wait msiexec /qn /norestart /x {368C2E4B-A37E-466B-958E-C0CD6D6964F4}
+:: start /wait msiexec /qn /norestart /x {6E30B8A2-4AAA-487E-A80F-E147A9D084DD}
+:: start /wait msiexec /qn /norestart /x {8F4934B1-83CB-4BFC-8A90-40FF4530115D}
+:: start /wait msiexec /qn /norestart /x {A27DAE1A-995D-451F-9CCB-C7BF698E4ED4}
+:: start /wait msiexec /qn /norestart /x {D2F1FCB3-A65C-4BAA-A665-E498C9E80945}
+:: start /wait msiexec /qn /norestart /x {720F2C5A-DE7A-42A4-B08F-AD504B555155}
+:: start /wait msiexec /qn /norestart /x {64025BB4-168A-44E5-A10D-37D38A8E0124}
+:: start /wait msiexec /qn /norestart /x {870A52F4-A2EB-4187-97EA-654BD11A4C6C}
+:: start /wait msiexec /qn /norestart /x {40FEB178-1855-45A7-B988-F44F1FA896B7}
+:: start /wait msiexec /qn /norestart /x {222AB816-01E5-43B3-A10D-3F355FAAE513}
+:: start /wait msiexec /qn /norestart /x {8A3F916F-F9EB-469D-8C09-42273B8C1A66}
+:: start /wait msiexec /qn /norestart /x {AC89E267-9561-405B-B07F-DD5AAF92D042}
+:: start /wait msiexec /qn /norestart /x {CF9072B6-A82D-4E3E-8F3C-31614CB150EB}
+:: start /wait msiexec /qn /norestart /x {D4B7F322-6CFA-4CEE-AAE4-C5ADFA67F83C}
+:: start /wait msiexec /qn /norestart /x {933B3C90-AEA9-41EB-B555-6A38ADEC50A1}
+:: start /wait msiexec /qn /norestart /x {D85DD9A0-45CF-435B-98CB-144269DFE8A0}
+:: start /wait msiexec /qn /norestart /x {957B1FBE-BDB3-4BCC-A3D8-70A0E4A23360}
+:: start /wait msiexec /qn /norestart /x {6BDB867A-7975-40B5-93CE-11F133E1CDA9}
+:: start /wait msiexec /qn /norestart /x {6A1A98D3-E814-4E84-B683-69800993380B}
+:: start /wait msiexec /qn /norestart /x {7DB2CB6A-7248-4DC0-82FE-491D3570807E}
+:: start /wait msiexec /qn /norestart /x {2790A7CF-0EBD-4728-9364-6B63C5E680E3}
+:: start /wait msiexec /qn /norestart /x {B35C8CCE-95A1-45A4-BAB7-46154F60D8B2}
+:: start /wait msiexec /qn /norestart /x {80A19900-E0FA-425B-A1F6-0F7C013CE45A}
+:: start /wait msiexec /qn /norestart /x {6467DEB1-C20C-44F0-B25C-7A21F264D4F3}
+:: start /wait msiexec /qn /norestart /x {1EFB479B-C396-4E5B-BBB5-A845C59383CD}
+:: start /wait msiexec /qn /norestart /x {4786D940-0F26-43A4-98B5-4CAC01CD9FBE}
+:: start /wait msiexec /qn /norestart /x {D43CBD3F-F4CB-4780-A686-CFD3775FC2A1}
+:: start /wait msiexec /qn /norestart /x {ADC02977-F2BA-4F25-A550-B754562107A0}
+:: start /wait msiexec /qn /norestart /x {A1433F59-803E-4CFF-911D-847B22149A6B}
+:: start /wait msiexec /qn /norestart /x {5EE6CCD2-6142-4D09-8803-D31312574DC5}
+:: start /wait msiexec /qn /norestart /x {E729BCE1-294E-4364-8170-84036E7696E1}
+:: start /wait msiexec /qn /norestart /x {944321D8-225A-410E-932C-B8B219DF07D5}
+:: start /wait msiexec /qn /norestart /x {CD019882-E447-4F30-8FA4-521478BEE8E9}
+:: start /wait msiexec /qn /norestart /x {8F8BB210-4F82-4818-BF80-1CB57A62B996}
+:: start /wait msiexec /qn /norestart /x {8375085C-00D4-43EA-8E65-263E8C738E08}
+:: start /wait msiexec /qn /norestart /x {BCFE8F84-3EB8-40AD-B52F-F07B64F927AA}
+:: start /wait msiexec /qn /norestart /x {2FD5A4CA-421B-4C9E-952B-EA5B98B40AC3}
+:: start /wait msiexec /qn /norestart /x {85B51189-8F56-4338-9928-E1BFD7DB9211}
+:: start /wait msiexec /qn /norestart /x {3614C95F-1376-4551-BDED-EC6B79E74D60}
+:: start /wait msiexec /qn /norestart /x {967635DD-BA84-45AC-82EC-908D415B71A2}
+:: start /wait msiexec /qn /norestart /x {5E25963C-8033-4EC2-BDEA-0869E75611C7}
+:: start /wait msiexec /qn /norestart /x {9B8F134C-3A56-4365-A3FA-BD1824FD1B89}
+:: start /wait msiexec /qn /norestart /x {AD4F337C-7752-415A-9602-DF17B4F46E68}
+:: start /wait msiexec /qn /norestart /x {C7FDA25B-9A0F-487B-9502-35ABBF701599}
+:: start /wait msiexec /qn /norestart /x {BCBE985F-DE7D-41EA-A8AB-A575AEEDBDBD}
+:: start /wait msiexec /qn /norestart /x {823FCD0D-756D-44BE-A546-1D4D9FBBEA8C}
+:: start /wait msiexec /qn /norestart /x {990B884F-569C-5078-DD76-8BE91A569291}
+:: start /wait msiexec /qn /norestart /x {7D263751-40FB-D719-9F42-B62B67553D6F}
+:: start /wait msiexec /qn /norestart /x {BD37CF23-3458-BFD1-7583-F8FFC37561F2}
+:: start /wait msiexec /qn /norestart /x {931991F4-99D4-95A6-1235-EAA599884AC6}
+:: start /wait msiexec /qn /norestart /x {C2471823-76DB-B529-F037-8D02CAC5DE5E}
+:: start /wait msiexec /qn /norestart /x {1FAB6902-546D-9060-D0C8-4B502160AA06}
+:: start /wait msiexec /qn /norestart /x {DAE76FE1-BD65-3251-1B6F-6B519A661A1F}
+:: start /wait msiexec /qn /norestart /x {FE3E16F2-D838-7B5F-A31E-2D55757D18E7}
+:: start /wait msiexec /qn /norestart /x {BF34B28A-4D50-439A-6B6B-13EA41235E43}
+:: start /wait msiexec /qn /norestart /x {9E77F8EF-588E-D11B-697F-5514B97779DF}
+:: start /wait msiexec /qn /norestart /x {571F7B9B-96B8-E1B8-E198-0458BF5F80C4}
+:: start /wait msiexec /qn /norestart /x {3D516940-6675-41C1-E3DA-E3D358A7C207}
+:: start /wait msiexec /qn /norestart /x {0AB6726B-2C04-75E6-D30A-AA8C0E26E46A}
+:: start /wait msiexec /qn /norestart /x {3253D3E5-C08E-E22B-BA99-DE88F520CBB3}
+:: start /wait msiexec /qn /norestart /x {82EE309C-B63C-1AAA-79AB-8A5E5986B687}
+:: start /wait msiexec /qn /norestart /x {B9818C90-560C-8DC7-E254-38323B9A41EA}
+:: start /wait msiexec /qn /norestart /x {E7809829-3AC8-FBFA-2001-0D9BEBE51386}
+:: start /wait msiexec /qn /norestart /x {1D74451F-B220-E2E4-7FCD-520AA66F1A85}
+:: start /wait msiexec /qn /norestart /x {B740C369-EA8D-2FDB-4265-CB70DD08095D}
+:: start /wait msiexec /qn /norestart /x {2CC1453B-3385-F6FF-735F-F3BA36758715}
+:: start /wait msiexec /qn /norestart /x {F79997CC-F030-93C6-7882-92DC241D7C07}
+:: start /wait msiexec /qn /norestart /x {7540EB6A-FE9B-4EE2-37D9-A88DC87AA9E6}
 
 :: Casino'Touch for Microsoft Windows
 start /wait msiexec /qn /norestart /x {44F55387-1032-486F-88E0-A58FEAA97BE4}
