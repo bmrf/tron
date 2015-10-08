@@ -3,48 +3,35 @@ If Wscript.Arguments.Count < 1 Then
     WScript.Quit 1
 End If
 
-Dim fso, updateSession, updateSearcher, dt
+Dim fso, logPath
 Set fso = CreateObject("Scripting.FileSystemObject")
-Set updateSession = CreateObject("Microsoft.Update.Session")
-Set updateSearcher = updateSession.CreateUpdateSearcher()
-
-Dim logPath
 set logPath = fso.OpenTextFile(Wscript.Arguments(Wscript.Arguments.Count - 1), 8, True)
 
-Dim kbList()
+Dim hideupdates()
 For i = 0 to Wscript.Arguments.Count - 2
-    Redim Preserve kbList(i)
-    kbList(i) = Wscript.Arguments(i)
+    Redim Preserve hideupdates(i)
+    hideupdates(i) = Wscript.Arguments(i)
 Next
 
-'Log ("                            - Searching for updates (Please wait)"), True
-Dim searchResult
-Set searchResult = updateSearcher.Search("IsInstalled=0")
-'Log ("                            - " & CStr(searchResult.Updates.Count) & " found"), True
-Log ("                            - Hiding Updates"), True
 
-Dim index, index2, update, kbArticleId
-For index = 0 To searchResult.Updates.Count - 1
-    Set update = searchResult.Updates.Item(index)
-	For index2 = 0 To update.KBArticleIDs.Count - 1
-		kbArticleId = update.KBArticleIDs(index2)
-		found = False
-		For Each hotfixId in kbList
-			If hotfixId = kbArticleId Then
-				found = True
-				If update.IsHidden = False Then
-					Log ("                            - Hiding KB" & hotfixId), True
-					Set update.IsHidden = True
-				Else
-					Log ("                            - KB" & hotfixId & " already hidden"), True
-				End If          
-			End If          
-		Next
-		'If found = False Then
-			'Log ("                            - KB" & kbArticleId & " not found"), True
-		'End If
+set updateSession = createObject("Microsoft.Update.Session")
+set updateSearcher = updateSession.CreateupdateSearcher()
+
+Set searchResult = updateSearcher.Search("IsInstalled=0 and IsHidden=0")
+Log ("                             - Hiding Updates"), True
+
+For i = 0 To searchResult.Updates.Count-1
+	set update = searchResult.Updates.Item(i)
+	For j = LBound(hideupdates) To UBound(hideupdates)
+		if instr(1, update.Title, hideupdates(j), vbTextCompare) = 0 then
+				'Wscript.echo "No match found for " & hideupdates(j)
+			else
+				Log ("                              - Hiding KB" & hideupdates(j)), True
+				update.IsHidden = True
+		end if
 	Next
 Next
+
 
 'Function for logging
 Function log(logStr, toConsole)

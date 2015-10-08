@@ -41,12 +41,12 @@ set "MTRT_LOGPATH=%~1"
 
 REM Dry Run (Run through script, but don't execute any jobs)
 REM Can be paired with Command Logging to generate a log of what commands will run on your system.
-SET "DRY_RUN=Yes"
+SET "DRY_RUN=NO"
 
 REM Command Logging: Logs command and it's output to log file *WARNING* May generate large log file!
 REM Can be paired with Dry Run to skip command execution
 REM SETTINGS: YES or NO
-SET "COMMAND_LOGGING=YES"
+SET "COMMAND_LOGGING=NO"
 
 
 
@@ -73,10 +73,10 @@ SET CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 REM Determine OS
 FOR /F "tokens=3*" %%I IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /V ProductName ^| Find "ProductName"') DO (SET WIN_VER=%%I %%J)
 REM Settings for Reg.ini and KB.ini file
-IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4,5,6,7") && (GOTO:END_VER_CHECK)
-IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4,5,6,7") && (GOTO:END_VER_CHECK)
-IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4,5,6,7") && (GOTO:END_VER_CHECK)
-GOTO:FAIL
+IF /I "%WIN_VER:~0,9%"=="Windows 7" (set "TOKENS=1,4,5,6,7" & GOTO END_VER_CHECK)
+IF /I "%WIN_VER:~0,9%"=="Windows 8" (set "TOKENS=2,4,5,6,7" & GOTO END_VER_CHECK)
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (set "TOKENS=3,4,5,6,7" & GOTO END_VER_CHECK)
+GOTO FAIL
 :END_VER_CHECK
 REM Get User SID
 FOR /F "delims= " %%A IN ('"wmic path win32_useraccount where name='%UserName%' get sid"') DO (
@@ -96,7 +96,7 @@ ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
 ECHO: >> "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
 CALL :LOGTXT "  Start MTRT - MS Telemetry Removal %SCRIPT_VERSION%"
-CALL :LOGTXT "   Logging to: %MTRT_LOGPATH%\%MTRT_LOGFILE%")
+CALL :LOGTXT "   Logging to: %MTRT_LOGPATH%\%MTRT_LOGFILE%"
 
 CALL :LOGTXT "   TaskKilling Gwx / OneDrive"
 CALL :LOGCMD TASKKILL /F /IM Gwx.exe /T
@@ -293,10 +293,10 @@ FOR /F "skip=5 eol=# tokens=%TOKENS% delims=	|" %%A IN (KB.ini) DO (
 		SET KB=!KB! %%B
 	)
 )
-CALL :LOGTXT "     - Press CTRL_C to skip if pressed for time"
-CALL :LOGCMD CSCRIPT //NOLOGO HideWindowsUpdates.vbs%KB% "%MTRT_LOGPATH%%MTRT_LOGFILE%"
-:SKIPHIDEUPDATES
 
+CALL :LOGTXT "     - Press CTRL_C to skip if pressed for time"
+CALL :LOGCMD CSCRIPT //NOLOGO HideWindowsUpdates.vbs%KB% "%MTRT_LOGPATH%\%MTRT_LOGFILE%"
+:SKIPHIDEUPDATES
 
 
 :COMPLETE
