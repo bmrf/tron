@@ -287,7 +287,7 @@ if "%WIN_VER:~0,9%"=="Windows 1" (
 		echo.
 		echo  ^! ERROR 
 		echo.
-		echo    Tron does not support %WIN_VER% ^(yet^).
+		echo    Tron does not support "%WIN_VER%" ^(yet^).
 		echo.
 		echo    If you want to override and run anyway, re-run
 		echo    Tron from the command-line with -dev flag.
