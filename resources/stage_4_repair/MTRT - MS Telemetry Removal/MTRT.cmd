@@ -311,7 +311,7 @@ ECHO   
 ECHO   Error, OS not recognized!
 ECHO   This tool is to be run on Windows 7, 8, or 10
 ECHO   Please Right-Click on this file and choose "Run as Administrator" 
-PAUSE >NUL 
+timeout 6 >NUL
 GOTO:EOF
 :LOGCMD
 IF /I "%COMMAND_LOGGING%"=="YES" (
