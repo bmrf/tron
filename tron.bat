@@ -7,7 +7,7 @@
 :: Version:       6.9.0 + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
 ::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
-::                                                     Tron on unsupported Windows versions). Thanks to ..somebody
+::                                                     Tron on unsupported Windows versions). Thanks to /u/spexdi
 ::                      * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
 ::                      ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
 ::                      ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
