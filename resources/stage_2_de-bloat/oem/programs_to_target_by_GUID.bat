@@ -1,6 +1,6 @@
 :: Batch file to uninstall a specific list of programs by GUID
 :: Called by Tron in Stage 2: De-bloat
-:: Initial list by reddit.com/user/tuxedo_jack, modifications for use in Tron by reddit.com/user/vocatus
+:: Initial list by reddit.com/user/tuxedo_jack, modifications for use in Tron by reddit.com/user/vocatus and many, many, many others
 :: Add any GUID uninstall commands to this list to target them for removal
 @echo off
 
@@ -233,31 +233,31 @@ start /wait msiexec /qn /norestart /x {FFCF82EC-895F-4AC8-925E-3412FE25EF62}
 :: Avery Toolbar
 start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
 
-:: AVG
-start /wait msiexec /qn /norestart /x {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
+:: AVG // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: start /wait msiexec /qn /norestart /x {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
 
-:: AVG 2013
-start /wait msiexec /qn /norestart /x {C09E8C9E-A243-430E-8811-7C7C36BD8A71}
-start /wait msiexec /qn /norestart /x {9EF01972-D320-49A9-BA40-BED677587E32}
+:: AVG 2013 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: start /wait msiexec /qn /norestart /x {C09E8C9E-A243-430E-8811-7C7C36BD8A71}
+:: start /wait msiexec /qn /norestart /x {9EF01972-D320-49A9-BA40-BED677587E32}
 
-:: AVG 2014
-start /wait msiexec /qn /norestart /x {FC3B3A5D-7058-4627-9F1E-F95CC38B6054}
-start /wait msiexec /qn /norestart /x {524569AC-B3EE-468B-BFD5-19A89EA7CE8E}
-start /wait msiexec /qn /norestart /x {91569630-3DDC-43EB-9425-E6C41431D535}
-start /wait msiexec /qn /norestart /x {A64D4055-F3E5-40E7-982A-C1FC10C3B4AF}
-start /wait msiexec /qn /norestart /x {B53BE722-137D-4A7C-BC7A-F495DF36AF59}
-start /wait msiexec /qn /norestart /x {F4735E8D-3570-4606-A4E9-0BE44F3B0DFC}
+:: AVG 2014 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: start /wait msiexec /qn /norestart /x {FC3B3A5D-7058-4627-9F1E-F95CC38B6054}
+:: start /wait msiexec /qn /norestart /x {524569AC-B3EE-468B-BFD5-19A89EA7CE8E}
+:: start /wait msiexec /qn /norestart /x {91569630-3DDC-43EB-9425-E6C41431D535}
+:: start /wait msiexec /qn /norestart /x {A64D4055-F3E5-40E7-982A-C1FC10C3B4AF}
+:: start /wait msiexec /qn /norestart /x {B53BE722-137D-4A7C-BC7A-F495DF36AF59}
+:: start /wait msiexec /qn /norestart /x {F4735E8D-3570-4606-A4E9-0BE44F3B0DFC}
 
-:: AVG 2015
-start /wait msiexec /qn /norestart /x {3B3927B0-0A21-4B4C-9FF3-AB4C42E2AF79}
-start /wait msiexec /qn /norestart /x {966F007B-0D8A-44A6-A6C3-5395983C356D}
-start /wait msiexec /qn /norestart /x {0B7BE3CA-AF33-4CE3-BC27-1456C96EF996}
-start /wait msiexec /qn /norestart /x {7A5DB14B-14B0-4F09-A130-BF60503B4248}
-start /wait msiexec /qn /norestart /x {CEEAE734-B717-41D1-BF50-378EC081C6B1}
-start /wait msiexec /qn /norestart /x {6B171EFC-F41F-4055-A4DE-5B9480DA17AA}
+:: AVG 2015 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: start /wait msiexec /qn /norestart /x {3B3927B0-0A21-4B4C-9FF3-AB4C42E2AF79}
+:: start /wait msiexec /qn /norestart /x {966F007B-0D8A-44A6-A6C3-5395983C356D}
+:: start /wait msiexec /qn /norestart /x {0B7BE3CA-AF33-4CE3-BC27-1456C96EF996}
+:: start /wait msiexec /qn /norestart /x {7A5DB14B-14B0-4F09-A130-BF60503B4248}
+:: start /wait msiexec /qn /norestart /x {CEEAE734-B717-41D1-BF50-378EC081C6B1}
+:: start /wait msiexec /qn /norestart /x {6B171EFC-F41F-4055-A4DE-5B9480DA17AA}
 
-:: AVG 2016
-start /wait msiexec /qn /norestart /x {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
+:: AVG 2016 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: start /wait msiexec /qn /norestart /x {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
 
 :: AVG PC TuneUp 2015
 start /wait msiexec /qn /norestart /x {4AC74ED1-719B-46DA-8B8A-340FBF892291}
