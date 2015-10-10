@@ -1377,102 +1377,28 @@ if /i not %ERRORLEVEL%==0 (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Kill Microsoft telemetry (user tracking)
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
-if /i %SKIP_TELEMETRY_REMOVAL%==yes (
-	call :log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling Microsoft telemetry (user tracking) instead of purging"
-	REM Only disable telemetry, don't completely purge it
-	reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-	regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-	goto skip_telem_removal
+:: Kill Microsoft telemetry (user tracking)
+IF /I %SKIP_TELEMETRY_REMOVAL%==yes (
+	CALL :Log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Skipping"
+	GOTO:SKIP_TELEMETRY_REMOVAL
 )
-if /i "%WIN_VER:~0,9%"=="Windows 1" (
-	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
-	call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
-	if /i %DRY_RUN%==no (
-
-		REM Call sub-script to kill Windows 10 telemetry
-		REM Normally I try to embed everything directly, but it was quite a bit of code so I put it in an external script to avoid bloating tron.bat too much
-		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
-) else (
-	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
-	if /i %DRY_RUN%==no (
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM UPDATES
-		REM Compatibility update for Windows 7
-		wusa /uninstall /kb:2952664 /quiet /norestart
-
-		REM Compatibility update for Windows 8.1 and Windows 8
-		wusa /uninstall /kb:2976978 /quiet /norestart
-
-		REM Update that enables you to upgrade from Windows 7 to a later version of Windows
-		wusa /uninstall /kb:2990214 /quiet /norestart
-
-		REM Customer Experience and Diagnostic Telemetry-related updates
-		wusa /uninstall /kb:3022345 /quiet /norestart
-		wusa /uninstall /kb:3068708 /quiet /norestart
-		wusa /uninstall /kb:3080149 /quiet /norestart
-		wusa /uninstall /kb:3021917 /quiet /norestart
-
-		REM Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
-		wusa /uninstall /kb:3075249 /quiet /norestart
-		wusa /uninstall /kb:3015249 /quiet /norestart
-
-		REM "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
-		wusa /uninstall /kb:3035583 /quiet /norestart
-
-		REM Enable upgrade from Windows 8.1 to Windows 10
-		wusa /uninstall /kb:3044374 /quiet /norestart
-
-		REM Description of the update for Windows Activation Technologies
-		wusa /uninstall /kb:971033 /quiet /norestart
-
-		REM Descriptions not available, update was pulled by Microsoft
-		wusa /uninstall /kb:2902907 /quiet /norestart
-		wusa /uninstall /kb:2922324 /quiet /norestart
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM SCHEDULED TASKS
-		schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-		schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-		schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-		schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-		schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
-		schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-		schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM SERVICES
-		REM Diagnostic Tracking
-		sc stop Diagtrack >nul 2>&1
-		sc delete Diagtrack >nul 2>&1
-
-		REM Remote Registry (disable only)
-		sc config remoteregistry start= disabled >nul 2>&1
-		sc stop remoteregistry >nul 2>&1
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM MISC
-		REM Kill pending tracking reports
-		if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
-		echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
-		echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM 2>NUL
-
-		REM Disable telemetry via master registry key
-		reg import stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-		regedit /S stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-
-	)
-)
-:skip_telem_removal
-call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+SET "JOB=MTRT - MS Telemetry Removal"
+TITLE TRON v%SCRIPT_VERSION% [stage_4_repair] [%JOB%]
+CD /D "stage_4_repair\%JOB%" >NUL 2>&1
+REM Call sub-script to kill Windows telemetry
+REM Normally I try to embed everything directly, but it was quite a bit of code so I put it in an external script to avoid bloating tron.bat too much
+IF /I "%WIN_VER:~0,9%"=="Windows 1" (GOTO:TELEMETRY_REMOVAL)
+IF /I "%WIN_VER:~0,9%"=="Windows 7" (GOTO:TELEMETRY_REMOVAL)
+IF /I "%WIN_VER:~0,9%"=="Windows 8" (GOTO:TELEMETRY_REMOVAL)
+GOTO SKIP_TELEMETRY_REMOVAL
+:TELEMETRY_REMOVAL
+call :log "%CUR_DATE% %TIME%    Launch job: %JOB%..."
+call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
+IF /I %DRY_RUN%==YES (GOTO:END_TELEMETRY_REMOVAL)
+	START "MTRT" /I /High /Wait MTRT.cmd "%RAW_LOGS%" >NUL 2>&1
+:END_TELEMETRY_REMOVAL
+call :log "%CUR_DATE% %TIME%    Done."
+:SKIP_TELEMETRY_REMOVAL
 
 
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
