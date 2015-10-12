@@ -2561,6 +2561,9 @@ start /wait msiexec /qn /norestart /x {90150000-008F-0000-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-008C-0000-0000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-008C-0409-0000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-008F-0000-1000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-008C-0000-1000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-008C-0409-1000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-007E-0000-1000-0000000FF1CE}
 
 :: Microsoft Office 2003 Web Components
 start /wait msiexec /qn /norestart /x {90120000-00A4-0409-0000-0000000FF1CE}
