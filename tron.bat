@@ -1080,7 +1080,14 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by name)..."
 call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no (
+	reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client" /v Install
+	if %ERRORLEVEL%==0 (
+		call stage_2_de-bloat\oem\QuickRemoval.exe /I=stage_2_de-bloat\oem\programs_to_target_by_name.txt /L="%LOGPATH%\QuickRemoval.log"
+	) else (
+		FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+	)
+)
 call :log "%CUR_DATE% %TIME%    Done."
 
 
