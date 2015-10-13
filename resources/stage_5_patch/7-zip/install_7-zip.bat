@@ -44,13 +44,20 @@ IF EXIST "%ProgramFiles(x86)%" (
 :: Command-Line arguments to pass to installer
 set "FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip""
 
-:: Get into the correct directory
-pushd "%LOCATION%"
-
+:: File associations
+:: Set first variable if it was passed the flag "-Associate_All", else set the second variable
+IF /I "%1"=="-Associate_All" (
+		SET "FILE_ASSOC=001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip"
+	) ELSE (
+		SET "FILE_ASSOC=7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip"
+)
 
 ::::::::::::::::::
 :: INSTALLATION ::
 ::::::::::::::::::
+:: Get into the correct directory
+pushd "%LOCATION%"
+
 :: This line installs the package from the local folder (if all files are in the same directory)
 START "" /I /High /Wait MSIEXEC /I "%BINARY%" %FLAGS%
 
