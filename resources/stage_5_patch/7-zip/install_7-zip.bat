@@ -31,7 +31,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set LOCATION=
+set "LOCATION=%~Dp0"
 set BINARY=7-Zip v9.38 x86.msi
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip"
 
