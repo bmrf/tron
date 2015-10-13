@@ -45,7 +45,7 @@ IF EXIST "%ProgramFiles(x86)%" (
 set "FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip""
 
 :: File associations
-:: Set first variable if it was passed the flag "-Associate_All", else set the second variable
+:: Set full list of file associations "-Associate_All" flag was passed, else set common list of associations
 IF /I "%1"=="-Associate_All" (
 		SET "FILE_ASSOC=001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip"
 	) ELSE (
@@ -63,28 +63,13 @@ START "" /I /High /Wait MSIEXEC /I "%BINARY%" %FLAGS%
 
 :: Create file associations
 :: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
-IF /I "%1"=="-Associate_All" GOTO :Associate_All
-
-:: This section will run no matter what's passed to the installer, UNLESS it's "Associate_All"
-:Associate_Common
-for %%i in (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip) do (
+for %%i in (%FILE_ASSOC%) do (
 		:: Associations...
 		assoc .%%i=7-Zip.%%i >nul 2>&1
 		:: ...and Open With...
 		ftype 7-Zip.%%i="C:\Program Files\7-Zip\7zFM.exe" "%%1" >nul 2>&1
 	)
-goto finished
 
-
-:Associate_All
-:: We do this section if "Associate_All" was passed to the installer
-for %%i in (001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip) do (
-		:: Associations...
-		assoc .%%i=7-Zip.%%i >nul 2>&1
-		:: ...and Open With...
-		ftype 7-Zip.%%i="C:\Program Files\7-Zip\7zFM.exe" "%%1" >nul 2>&1
-	)
-goto finished
 
 :finished
 :: Pop back to original directory. This isn't necessary in stand-alone runs of the script, but is needed when being called from another script
