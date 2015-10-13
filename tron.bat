@@ -1528,7 +1528,6 @@ if /i %SKIP_PATCHES%==yes (
 :: JOB: 7-Zip
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip v9.38'..."
-
 IF /I %DRY_RUN%==Yes GOTO Skip_7-Zip
 	call "stage_5_patch\7-Zip\Install_7-Zip.bat"
 	call :log "%CUR_DATE% %TIME%    Done."
