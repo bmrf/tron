@@ -1527,21 +1527,12 @@ if /i %SKIP_PATCHES%==yes (
 
 :: JOB: 7-Zip
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
-:: Check if we're on 32-bit Windows and run the appropriate architecture installer
-if /i %DRY_RUN%==yes goto skip_7-Zip
-if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	setlocal
-	call "stage_5_patch\7-Zip\v9.38\x86\7-Zip v9.38 x86.bat"
-	endlocal
-) else (
-	setlocal
-	call "stage_5_patch\7-Zip\v9.38\x64\7-Zip v9.38 x64.bat"
-	endlocal
-	)
-:skip_7-Zip
+call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip v9.38'..."
 
-call :log "%CUR_DATE% %TIME%    Done."
+IF /I %DRY_RUN%==Yes GOTO Skip_7-Zip
+	call "stage_5_patch\7-Zip\Install_7-Zip.bat"
+	call :log "%CUR_DATE% %TIME%    Done."
+:Skip_7-Zip
 
 
 :: JOB: Adobe Flash Player
