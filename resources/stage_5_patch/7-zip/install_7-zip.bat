@@ -15,17 +15,15 @@
 ::                                               rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip)
 ::
 ::                e.g. install_7-Zip.bat -Associate_All  
-
-
 ::::::::::
 :: Prep :: -- Don't change anything in this section
 ::::::::::
-@echo off
+@ECHO OFF
 set VERSION=1.3.0-TRON
 set UPDATED=2015-10-13
 :: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+	set "CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%"
 
 
 :::::::::::::::
@@ -71,9 +69,9 @@ for %%i in (%FILE_ASSOC%) do (
 	)
 
 
-:finished
+:Finished
 :: Pop back to original directory. This isn't necessary in stand-alone runs of the script, but is needed when being called from another script
 popd
 
-:: Return exit code to SCCM/PDQ Deploy/etc
+:: Return exit code
 exit /B %EXIT_CODE%
