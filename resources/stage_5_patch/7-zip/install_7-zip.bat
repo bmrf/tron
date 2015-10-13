@@ -6,14 +6,15 @@
 ::                1.2.0-TRON - Remove logging functions since Tron handles logging
 ::                1.0.0      + Initial write
 
-:: Usage:         Run the script and pass one of the following arguments to it:
-::                  associate_common  Associate 7-Zip with the common file compression formats 
+:: Usage:         Run the script as an admin. By default, will associate 7-Zip with the common file compression formats 
 ::                                     (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip)
-::                  associate_all     Associate 7-zip with ALL the file compression formats it supports
 ::
-::                e.g. install_7-Zip.bat associate_all  
 ::
-::                Default is "associate_common" unless told otherwise
+::                Pass the argument "-Associate_All" to Associate 7-zip with ALL the file compression formats it supports
+::                                       (001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,
+::                                               rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip)
+::
+::                e.g. install_7-Zip.bat -Associate_All  
 
 
 ::::::::::
@@ -55,10 +56,10 @@ START "" /I /High /Wait MSIEXEC /I "%BINARY%" %FLAGS%
 
 :: Create file associations
 :: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
-if '%1'=='associate_all' goto associate_all
+IF /I "%1"=="-Associate_All" GOTO :Associate_All
 
-:: This section will run no matter what's passed to the installer, UNLESS it's "associate_all" 
-:associate_common
+:: This section will run no matter what's passed to the installer, UNLESS it's "Associate_All"
+:Associate_Common
 for %%i in (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip) do (
 		:: Associations...
 		assoc .%%i=7-Zip.%%i >nul 2>&1
@@ -67,8 +68,9 @@ for %%i in (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip) do (
 	)
 goto finished
 
-:: We do this section if "associate_all" was passed to the installer
-:associate_all
+
+:Associate_All
+:: We do this section if "Associate_All" was passed to the installer
 for %%i in (001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip) do (
 		:: Associations...
 		assoc .%%i=7-Zip.%%i >nul 2>&1
