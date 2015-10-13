@@ -15,17 +15,7 @@
 ::                                               rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip)
 ::
 ::                e.g. install_7-Zip.bat -Associate_All  
-::::::::::
-:: Prep :: -- Don't change anything in this section
-::::::::::
 @ECHO OFF
-set VERSION=1.3.0-TRON
-set UPDATED=2015-10-13
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-	set "CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%"
-
-
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
@@ -43,12 +33,23 @@ IF EXIST "%ProgramFiles(x86)%" (
 set "FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip""
 
 :: File associations
-:: Set full list of file associations "-Associate_All" flag was passed, else set common list of associations
+:: Set full list of file associations "-Associate_All" flag was passed, or else set common list of associations
 IF /I "%1"=="-Associate_All" (
 		SET "FILE_ASSOC=001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip"
 	) ELSE (
 		SET "FILE_ASSOC=7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip"
 )
+
+
+:: =============== Don not change anything below this line =============== ::
+::::::::::
+:: Prep ::
+::::::::::
+set VERSION=1.3.0-TRON
+set UPDATED=2015-10-13
+:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+	set "CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%"
 
 ::::::::::::::::::
 :: INSTALLATION ::
