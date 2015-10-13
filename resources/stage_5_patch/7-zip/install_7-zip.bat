@@ -30,13 +30,21 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
-:: Package to install. Do not use trailing slashes (\)
+:: Location of installation files relative to install script. Do not use trailing slashes (\)
 set "LOCATION=%~Dp0"
-set BINARY=7-Zip v9.38 x86.msi
-set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip"
+
+:: 64/32 bit dependant settings. Determine what package to install
+IF EXIST "%ProgramFiles(x86)%" (
+	set "BINARY=7-Zip_x64.msi"
+		) else (
+	set "BINARY=7-Zip_x32.msi"
+)
+
+:: Command-Line arguments to pass to installer
+set "FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip""
 
 :: Get into the correct directory
-pushd "%~dp0"
+pushd "%LOCATION%"
 
 
 ::::::::::::::::::
