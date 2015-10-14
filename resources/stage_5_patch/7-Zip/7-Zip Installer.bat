@@ -21,7 +21,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set LOCATION=
+set BINARY_VERSION=9.38
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
@@ -44,9 +44,9 @@ pushd "%~dp0"
 ::::::::::::::::::
 :: Detect system architecture and install appropriate version
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	"7-Zip v9.38 x86.msi" %FLAGS%
+	"7-Zip v%BINARY_VERSION% x86.msi" %FLAGS%
 ) else (
-	"7-Zip v9.38 x64.msi" %FLAGS%
+	"7-Zip v%BINARY_VERSION% x64.msi" %FLAGS%
 )
 
 :: Create file associations
