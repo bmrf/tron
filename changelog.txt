@@ -18,13 +18,15 @@ Version number legend:
 # v6.9.1 // 2015-10-14 #
 ########################
 tron.bat                         v6.9.1
- ! Minor bug fixes
+ / stage_5_patch: Simplify file paths to make updates easier. Thanks to /u/spexdi
+ * stage_5_patch: Make app patch installers architecture independent; they'll now detect system architecture and install appropriate version
+ * stage_5_patch: Make app patch installers standalone capable. Can now be run by themselves without being called by Tron
 
 STAGE 0: Prep
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
- . McAfee Stinger                v12.1.0.1753
+ * McAfee Stinger                v12.1.0.1759
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
 
@@ -46,11 +48,12 @@ STAGE 3: Disinfect
 
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
-
+ + Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ 
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
  . Adobe Flash Player            v19.0.0.185   (language ignored)
- . Adobe Reader                  v11.0.12      (English-only; replace with your language version if necessary)
+ * Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u60          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
@@ -63,10 +66,10 @@ STAGE 7: Wrap-up
 
 STAGE 8: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v5.0.1.0
+ * AdwCleaner                    v5.0.1.3
  . Autoruns                      v13.4
- + BlueScreenView                v1.55       // allows viewing crash codes for BSODs
- . ComboFix                      v15.10.6.1
+ . BlueScreenView                v1.55
+ * ComboFix                      v15.10.9.1
  . Junkware Removal Tool         v7.6.4.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
