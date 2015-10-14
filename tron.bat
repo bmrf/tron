@@ -4,24 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.9.1 + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
+:: Version:       7.0.0 / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
+::                      + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
 ::                      / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
 ::                      * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and 
 ::                                                        into app-specific patch installer file. Makes maintenance and portability easier. Thanks to /u/spexdi
 
 ::                      * stage_5_patch:                  Make app patch installers standalone capable. Can now be run by themselves without being called by Tron
-::                6.9.0 + tron.bat:prep:os_detection:     Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
-::                                                        Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
-::                      + tron.bat:prep:dev_mode:         Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
-::                                                        Tron on unsupported Windows versions). Thanks to /u/spexdi
-::                      * tron.bat:log:header_trailer:    Add detected OS version to log header and trailer (why did it take this long to think of this??)
-::                      ! tron.bat:prep:update:           Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
-::                      ! tron.bat:prep:quarantine:       Fix incorrectly-named quarantine path variable
-::                      / stage_0_prep:ntp:               Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
-::                      ! stage_1_tempclean:ccleaner:     Fix bug where script continued before CCleaner was finished. Thanks to /u/Chimaera12
-::                      * stage_2_de-bloat:oem:win10:     Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator and some other desireable apps
-::                      * stage_2_de-bloat:by_guid:       Add new entries and remove many incorrect ones based on user feedback
-::                      * stage_4_repair:dism_rebuild:    Move DISM rebuild out of Stage 2: De-bloat and into Stage 4: Repair after Windows telemetry removal. This prevents telemetry updates from getting "baked in" to Windows. Major thanks to /u/spexdi
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -169,7 +158,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.9.1
+set SCRIPT_VERSION=7.0.0
 set SCRIPT_DATE=2015-10-14
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -287,7 +276,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 
 
 :: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail.
-if "%WIN_VER:~0,9%"=="Windows 1" (
+if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 	if /i %DEV_MODE%==no (
 		color 0c
 		echo.
