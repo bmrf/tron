@@ -462,6 +462,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 7. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`,	`netsh interface ip delete arpcache`, `netsh winsock reset catalog`
 
+8. **File extension repair**: Tron repairs most default file extensions with a batch file that loops through a series of registry files stored in `\tron\resources\stage_4_repair\repair_file_extensions\`
+
 
 ## STAGE 5: Patch
 Tron installs or updates these programs:
