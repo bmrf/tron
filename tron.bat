@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.9.1 ! Some bug fixes
+:: Version:       6.9.1 / tron.bat:                    Simplify file paths to make updates easier. Thanks to /u/spexdi
 ::                6.9.0 + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
 ::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
@@ -1549,12 +1549,12 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player (Firefox)'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\firefox\Adobe Flash Player (Firefox).bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player (Firefox).bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player (IE)'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\ie\Adobe Flash Player (IE).bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player (IE).bat"
 endlocal
 call :log "%CUR_DATE% %TIME%    Done."
 
