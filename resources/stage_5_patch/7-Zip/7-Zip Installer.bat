@@ -1,65 +1,81 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
+:: History:       1.2.2-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
 ::                           * Replace all hard-coded system file paths with relevant variable for better portability
-::                1.0.0-TRON + Initial build for Tron, modified from PDQ Deploy pack installer version
-::                             Remove many items not necessary for Tron
-::                             Script inherits log parameters when called by Tron
+::                1.2.1-TRON - Remove logging of ftype and assoc output since it's not of any consequence
+::                1.2.0-TRON - Remove logging functions since Tron handles logging
+::                1.0.0      + Initial write
+
+:: Usage:         Run the script and pass one of the following arguments to it:
+::                  associate_common  Associate 7-Zip with the common file compression formats 
+::                                     (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip)
+::                  associate_all     Associate 7-zip with ALL the file compression formats it supports
+::
+::                e.g. 7-Zip v9.20.bat associate_all  
+::
+::                Default is "associate_common" unless told otherwise
 
 
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set FLAGS=ALLUSERS=1 /q /norestart
+set LOCATION=
+set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
 ::::::::::
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2015-03-25
-pushd %~dp0
+set VERSION=1.2.2-TRON
+set UPDATED=2015-10-14
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
+FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
+
+:: Get into the correct directory
+pushd "%~dp0"
 
 
 ::::::::::::::::::
 :: INSTALLATION ::
 ::::::::::::::::::
-:: Attempt to kill any running instances first
-taskkill /f /im firefox.exe /t >> "%LOGPATH%\%LOGFILE%" 2>NUL
-taskkill /f /im palemoon.exe /t >> "%LOGPATH%\%LOGFILE%" 2>NUL
-wmic process where name="firefox.exe" call terminate >> "%LOGPATH%\%LOGFILE%" 2>NUL
-wmic process where name="palemoon.exe" call terminate >> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: Detect system architecture and install appropriate version
+if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
+	"7-Zip v9.38 x86.msi" %FLAGS%
+) else (
+	"7-Zip v9.38 x64.msi" %FLAGS%
+)
 
-:: Remove prior versions of the Flash player
-wmic product where "name like 'Adobe Flash Player%%Plugin'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: Create file associations
+:: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
+if '%1'=='associate_all' goto associate_all
 
-:: Install the package from the local folder (if all files are in the same directory)
-msiexec /i "%BINARY%" %FLAGS% >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-:: Delete the Adobe Acrobat Update Service
-net stop AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
-sc delete AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-:: Delete the Adobe Acrobat Update Service (older version)
-net stop armsvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
-sc delete armsvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-:: Delete the Adobe Flash Player Update Service
-net stop AdobeFlashPlayerUpdateSvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
-sc delete AdobeFlashPlayerUpdateSvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-:: Delete the scheduled task Adobe installs (against our wishes)
-del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Updater.job" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-:: Delete the annoying Acrobat tray icon
-if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
-	taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: This section will run no matter what's passed to the installer, UNLESS it's "associate_all" 
+:associate_common
+for %%i in (7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip) do (
+		:: Associations...
+		assoc .%%i=7-Zip.%%i >nul 2>&1
+		:: ...and Open With...
+		ftype 7-Zip.%%i="%ProgramFiles%\7-Zip\7zFM.exe" "%%1" >nul 2>&1
 	)
+goto finished
+
+:: We do this section if "associate_all" was passed to the installer
+:associate_all
+for %%i in (001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lzma,ntfs,rar,rpm,squashfs,swm,tar,taz,tbz,tbz2,tgz,tpz,txz,vhd,wim,xar,xz,z,zip) do (
+		:: Associations...
+		assoc .%%i=7-Zip.%%i >nul 2>&1
+		:: ...and Open With...
+		ftype 7-Zip.%%i="%ProgramFiles%\7-Zip\7zFM.exe" "%%1" >nul 2>&1
+	)
+goto finished
+
+:finished
+:: Pop back to original directory. This isn't necessary in stand-alone runs of the script, but is needed when being called from another script
+popd
 
 :: Return exit code to SCCM/PDQ Deploy/etc
 exit /B %EXIT_CODE%
