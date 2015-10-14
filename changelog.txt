@@ -15,10 +15,10 @@ Version number legend:
   
   
 ########################
-# v6.9.1 // 2015-10-xx #
+# v6.9.1 // 2015-10-14 #
 ########################
 tron.bat                         v6.9.1
-
+ ! Minor bug fixes
 
 STAGE 0: Prep
  . rkill                         v2.8.2.0
@@ -29,14 +29,15 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.10.5373
+ * CCLeaner                      v5.10.5373
+    ! Disable Restore Point cleaning. Thanks to /u/spexdi and /u/mycroc
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
 
 STAGE 2: De-bloat
- . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
- . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+ * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
