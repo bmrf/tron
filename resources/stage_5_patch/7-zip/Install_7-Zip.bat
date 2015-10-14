@@ -26,11 +26,11 @@ set "LOCATION=%~Dp0"
 IF EXIST "%ProgramFiles(x86)%" (
 	set "BINARY=7-Zip_x64.msi"
 		) else (
-	set "BINARY=7-Zip_x32.msi"
+	set "BINARY=7-Zip_x86.msi"
 )
 
 :: Command-Line arguments to pass to installer
-set "FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="C:\Program Files\7-Zip""
+set "FLAGS=/Qn /NoRestart INSTALLDIR="C:\Program Files\7-Zip" ALLUSERS=1"
 
 :: File associations
 :: Set full list of file associations "-Associate_All" flag was passed, or else set common list of associations
@@ -39,7 +39,6 @@ IF /I "%1"=="-Associate_All" (
 	) ELSE (
 		SET "FILE_ASSOC=7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip"
 )
-
 
 :: =============== Don not change anything below this line =============== ::
 ::::::::::
@@ -54,8 +53,10 @@ set UPDATED=2015-10-13
 :: Get into the correct directory
 pushd "%LOCATION%"
 
+:: Just in case file does not exist, will make sure script doesn't pause at a msiexec error message
+IF NOT EXIST "%BINARY%" EXIT /B
 :: This line installs the package from the local folder (if all files are in the same directory)
-START "" /I /High /Wait MSIEXEC /I "%BINARY%" %FLAGS%
+START "" /Wait /I MSIEXEC /I "%BINARY%" %FLAGS%
 
 :: Create file associations
 :: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
