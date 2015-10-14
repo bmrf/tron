@@ -21,7 +21,6 @@
 :::::::::::::::
 :: Location of installation files relative to install script. Do not use trailing slashes (\)
 set "LOCATION=%~Dp0"
-
 :: 64/32 bit dependant settings. Determine what package to install
 IF EXIST "%ProgramFiles(x86)%" (
 	set "BINARY=7-Zip_x64.msi"
@@ -46,31 +45,30 @@ IF /I "%1"=="-Associate_All" (
 ::::::::::
 set VERSION=1.3.0-TRON
 set UPDATED=2015-10-13
+:: Get into the correct directory
+pushd "%LOCATION%"
+:: Just in case file does not exist, will make sure script doesn't pause at a msiexec error message
+IF NOT EXIST "%BINARY%" EXIT /B
+
 
 ::::::::::::::::::
 :: INSTALLATION ::
 ::::::::::::::::::
-:: Get into the correct directory
-pushd "%LOCATION%"
-
-:: Just in case file does not exist, will make sure script doesn't pause at a msiexec error message
-IF NOT EXIST "%BINARY%" EXIT /B
 :: This line installs the package from the local folder (if all files are in the same directory)
 START "" /Wait /I MSIEXEC /I "%BINARY%" %FLAGS%
 
 :: Create file associations
 :: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
-for %%i in (%FILE_ASSOC%) do (
+FOR %%I IN (%FILE_ASSOC%) DO (
 		:: Associations...
-		assoc .%%i=7-Zip.%%i >nul 2>&1
+		assoc .%%I=7-Zip.%%I >nul 2>&1
 		:: ...and Open With...
-		ftype 7-Zip.%%i="C:\Program Files\7-Zip\7zFM.exe" "%%1" >nul 2>&1
+		ftype 7-Zip.%%I="C:\Program Files\7-Zip\7zFM.exe" "%%1" >nul 2>&1
 	)
 
 
-:Finished
+:EOF
 :: Pop back to original directory. This isn't necessary in stand-alone runs of the script, but is needed when being called from another script
 popd
-
 :: Return exit code
-exit /B %EXIT_CODE%
+EXIT /B %EXIT_CODE%
