@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       6.9.0 + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
+:: Version:       6.9.1 ! Some bug fixes
+::                6.9.0 + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
 ::                                                     Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
 ::                      + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
 ::                                                     Tron on unsupported Windows versions). Thanks to /u/spexdi
@@ -163,8 +164,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=6.9.0
-set SCRIPT_DATE=2015-10-08
+set SCRIPT_VERSION=6.9.1
+set SCRIPT_DATE=2015-10-14
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1562,7 +1563,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
 call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
 setlocal
-if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\x86\Adobe Reader.bat"
+if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\Adobe Reader.bat"
 endlocal
 
 call :log "%CUR_DATE% %TIME%    Done."
@@ -1608,12 +1609,12 @@ call :log "%CUR_DATE% %TIME%    Installing latest JRE..."
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	call :log "%CUR_DATE% %TIME%    x86 architecture detected, installing x86 version..."
 	setlocal
-	call "stage_5_patch\java\jre\8\x86\jre-8-i586.bat"
+	call "stage_5_patch\java\jre\x86\jre-8-i586.bat"
 	endlocal
 ) else (
 	call :log "%CUR_DATE% %TIME%    x64 architecture detected, installing x64 version..."
 	setlocal
-	call "stage_5_patch\java\jre\8\x64\jre-8-x64.bat"
+	call "stage_5_patch\java\jre\x64\jre-8-x64.bat"
 	endlocal
 	)
 
