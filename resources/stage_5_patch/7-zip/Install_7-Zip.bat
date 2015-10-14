@@ -55,7 +55,7 @@ IF NOT EXIST "%BINARY%" EXIT /B
 :: INSTALLATION ::
 ::::::::::::::::::
 :: This line installs the package from the local folder (if all files are in the same directory)
-START "" /Wait /I MSIEXEC /I "%BINARY%" %FLAGS%
+START "" /I /Wait MSIEXEC /I "%BINARY%" %FLAGS%
 
 :: Create file associations
 :: Basically we just use a couple FOR loops to iterate through the list since it's prettier than using individual 'assoc' and 'ftype' commands
