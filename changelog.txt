@@ -15,12 +15,13 @@ Version number legend:
   
   
 ########################
-# v6.9.1 // 2015-10-14 #
+# v7.0.0 // 2015-10-14 #
 ########################
-tron.bat                         v6.9.1
+tron.bat                         v7.0.0
+ / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
  + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
- / stage_5_patch: Simplify file paths to make updates easier. Thanks to /u/spexdi
- * stage_5_patch: Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and into app-specific patch installer file. Makes maintenance and portability easier. Thanks to /u/spexdi
+ / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
+ * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and into app-specific patch installer file. Makes maintenance and portability easier. Thanks to /u/spexdi
 
  * stage_5_patch: Make app patch installers standalone capable. Can now be run by themselves without being called by Tron
 
