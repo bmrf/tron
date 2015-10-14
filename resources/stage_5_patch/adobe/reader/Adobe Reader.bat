@@ -5,7 +5,7 @@
 ::                1.0.0-TRON + Initial build for Tron, modified from PDQ Deploy pack installer version
 ::                             Remove many items not necessary for Tron
 ::                             Script inherits log parameters when called by Tron
-
+@echo off
 
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
@@ -19,7 +19,7 @@ set FLAGS=/sAll /rs /msi /qb- /norestart EULA_ACCEPT=YES REMOVE_PREVIOUS=YES
 ::::::::::
 :: Prep :: -- Don't change anything in this section
 ::::::::::
-@echo off
+
 set SCRIPT_VERSION=1.0.1-TRON
 set SCRIPT_UPDATED=2015-10-14
 pushd %~dp0
@@ -47,6 +47,9 @@ del /F /Q C:\windows\tasks\Adobe*.job >> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: Delete the desktop icons
 if exist "%PUBLIC%\Desktop\Adobe Reader XI.lnk" del /s /q "%PUBLIC%\Desktop\Adobe Reader XI.lnk"
 if exist "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" del /s /q "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk"
+
+:: Delete the Start Menu icon
+if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" del /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" >NUL
 
 :: Delete the annoying Acrobat tray icon
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
