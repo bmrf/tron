@@ -1526,23 +1526,49 @@ if /i %SKIP_PATCHES%==yes (
 	)
 
 
-:: JOB: 7-Zip
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
-:: Check if we're on 32-bit Windows and run the appropriate architecture installer
-if /i %DRY_RUN%==yes goto skip_7-Zip
-if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
-	setlocal
-	call "stage_5_patch\7-Zip\v9.38\x86\7-Zip v9.38 x86.bat"
-	endlocal
-) else (
-	setlocal
-	call "stage_5_patch\7-Zip\v9.38\x64\7-Zip v9.38 x64.bat"
-	endlocal
-	)
-:skip_7-Zip
-
-call :log "%CUR_DATE% %TIME%    Done."
+:: Set at beginning of tron, AFTER the pushd command
+	SET "DATA_FOLDER=%~Dp0resources"
+	:: IF /I "%SHOULD_RESUME%"=="Yes" GOTO :%RESUME_STAGE%
+:: :stage_5_patch
+:: Set at the start of each stage for stamping, and header update
+	SET "RESUME_STAGE=stage_5_patch"
+	:: CALL :StampStage :: Will be similar to :StampJob below
+	:: IF /I "%SHOULD_RESUME%"=="Yes" GOTO :Job_%RESUME_JOB%
+:Job_7-Zip
+:: Set label above as :Job_%RESUME_JOB%
+	SET "RESUME_JOB=7-Zip"
+	SET "JOB_TITLE=Update 7-Zip v9.38"
+	:: If app is in stage folder, set JOB_FOLDER to blank. Make sure to include the backslash for folders
+	SET "JOB_FOLDER=\7-Zip"
+:: =========== CALL :StampJob =============
+	:: :StampJob
+	:: This area will eventually get called by a stage stamping function and will be (re)moved
+	:: Set current job working directory
+		SET "JOB_PATH=%DATA_FOLDER%\%RESUME_STAGE%%JOB_FOLDER%"
+	:: Write Job file/value, use RESUME_JOB as label. JOB_FILE defined at beginning
+		:: ECHO:%RESUME_JOB%"greater than""%JOB_FILE%"
+	:: Maybe redundant in my specific case, but very smart to include
+		CD /D "%JOB_PATH%" >NUL 2>&1
+	:: Update window title
+		TITLE TRON v%SCRIPT_VERSION% [%RESUME_STAGE%] [%JOB_TITLE%]
+	:: Log and echo current job
+		CALL :Log "%CUR_DATE% %TIME%    Launch job '%JOB_TITLE%'..."
+	:: Exit /B
+:: =========== Back to Job ================
+	:: This is where the IF THEN GOTO code to skip would go if you need it.
+:: Batch reads linearly, so while it seems scary, we can technically use :End_Job and :Skip_Job over and over
+	IF /I %DRY_RUN%==Yes GOTO :End_Job
+	:: SetLocal - If you need it
+:: Actual meat whatever you want to do
+	:: If exist command is to make sure we do not get a file not found error if it is missing, which would pause tron
+	IF NOT EXIST "%JOB_PATH%\Install_7-Zip.bat" GOTO :Skip_Job
+	:: The order of command switches after the START command is extremely important, things will not work quite right if re(moved)
+	:: For example, if the /Wait is moved anywhere else, it will not actually wait for the batch to finish before moving on
+	START "" /D "%JOB_PATH%" /I /Min /Wait "Install_7-Zip.bat"
+:End_Job
+	:: EndLocal - If you started it
+	CALL :Log "%CUR_DATE% %TIME%    Done."
+:Skip_Job
 
 
 :: JOB: Adobe Flash Player
