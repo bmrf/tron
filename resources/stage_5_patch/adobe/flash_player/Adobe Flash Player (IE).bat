@@ -10,7 +10,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY=Adobe Flash Player v19.0.0.185 (IE).msi
+set BINARY=Adobe Flash Player v19.0.0.207 (IE).msi
 set FLAGS=ALLUSERS=1 /q /norestart
 
 
