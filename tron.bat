@@ -1525,17 +1525,6 @@ if /i %SKIP_PATCHES%==yes (
 	)
 
 
-:Job_7-Zip
-SET "RESUME_JOB=7-Zip"
-SET "JOB_TITLE=Update 7-Zip v9.38"
-SET "JOB_FOLDER=\7-Zip"
-CALL :StampJob
-IF /I %DRY_RUN%==Yes GOTO :End_Job
-	IF NOT EXIST "%JOB_PATH%\Install_7-Zip.bat" GOTO :Skip_Job
-	START "" /D "%JOB_PATH%" /I /B /Wait "Install_7-Zip.bat"
-:End_Job
-	CALL :Log "%CUR_DATE% %TIME%    Done."
-:Skip_Job
 
 
 :: JOB: Adobe Flash Player
