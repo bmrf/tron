@@ -6,7 +6,9 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       6.9.1 + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
 ::                      / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
-::                      * stage_5_patch:                  Make app patch installers architecture independent; they'll now detect system architecture and install appropriate version
+::                      * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and 
+::                                                        into app-specific patch installer file. Makes maintenance and portability easier. Thanks to /u/spexdi
+
 ::                      * stage_5_patch:                  Make app patch installers standalone capable. Can now be run by themselves without being called by Tron
 ::                6.9.0 + tron.bat:prep:os_detection:     Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
 ::                                                        Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
