@@ -39,7 +39,7 @@ IF /I "%1"=="-Associate_All" (
 		SET "FILE_ASSOC=7z,bz2,bzip2,gz,gzip,lzh,lzma,rar,tar,tgz,zip"
 )
 
-:: =============== Don not change anything below this line =============== ::
+:: =============== Do not change anything below this line =============== ::
 ::::::::::
 :: Prep ::
 ::::::::::
