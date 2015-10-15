@@ -476,7 +476,7 @@ Tron installs or updates these programs:
 
 4. **Java Runtime Environment**: I hate Java, but it is still widely used so we at least get the system on the latest version. Using Tron's `-sp` flag skips this component
 
-5. **Windows updates**: Self-explanatory
+5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`
 
 6. **DISM base reset**: Recompile the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
 
