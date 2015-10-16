@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.0.0 / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
+:: Version:       7.0.1 ! stage_4_repair:telemetry:       Fix bug where Win7/8 telemetry removal code would mistakenly execute on Windows Vista. Thanks to /u/Chimaera12
+::                7.0.0 / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
 ::                      + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
 ::                      / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
 ::                      * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and 
@@ -158,8 +159,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.0.0
-set SCRIPT_DATE=2015-10-14
+set SCRIPT_VERSION=7.0.1
+set SCRIPT_DATE=2015-10-16
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1381,16 +1382,24 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 	goto skip_telem_removal
 )
+
+:: Windows 10 version
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
 	call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
 	if /i %DRY_RUN%==no (
-
-		REM Call sub-script to kill Windows 10 telemetry
 		REM Normally I try to embed everything directly, but it was quite a bit of code so I put it in an external script to avoid bloating tron.bat too much
 		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
-) else (
+call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+) 
+
+:: Spawn temporary variable to check for Win7 and 8. This is an ugly hack but at least it works
+set RUN_7_OR_8_TELEM=no
+if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
+if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
+
+if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no (
 		REM :::::::::::::::::::::::::::::::::::::::::::::
@@ -1465,9 +1474,11 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 		regedit /S stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
 
 	)
-)
-:skip_telem_removal
 call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+)
+
+:skip_telem_removal
+
 
 
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
