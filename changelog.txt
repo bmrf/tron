@@ -12,8 +12,16 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
-  
-  
+
+
+########################
+# v7.0.1 // 2015-10-16 #
+########################
+tron.bat                         v7.0.1
+ ! stage_4_repair:telemetry: Fix bug where Win7/8 telemetry removal code would mistakenly execute on Windows Vista. Thanks to /u/Chimaera12
+
+
+
 ########################
 # v7.0.0 // 2015-10-14 #
 ########################
@@ -52,7 +60,7 @@ STAGE 3: Disinfect
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
  + Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
- 
+
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
  . Adobe Flash Player            v19.0.0.185   (language ignored)
@@ -83,7 +91,7 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
-  
+
 
 
 ########################
@@ -92,7 +100,7 @@ STAGE 8: Manual tools
 tron.bat                         v6.9.0
  + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
                                 Also throws a message telling you to use the -dev flag to override the check. Thanks to /u/spexdi
- + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running 
+ + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running
                                 Tron on unsupported Windows versions). Thanks to /u/spexdi
  * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
  ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
