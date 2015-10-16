@@ -1,0 +1,58 @@
+All text typed on the keyboard is stored in temporary files, and sent (once per 30 mins) to:
+
+oca.telemetry.microsoft.com.nsatc.net
+pre.footprintpredict.com
+reports.wes.df.telemetry.microsoft.com
+
+Telemetry is sent once per 5 minutes, to:
+vortex.data.microsoft.com
+vortex-win.data.microsoft.com
+telecommand.telemetry.microsoft.com
+telecommand.telemetry.microsoft.com.nsatc.net
+oca.telemetry.microsoft.com
+oca.telemetry.microsoft.com.nsatc.net
+sqm.telemetry.microsoft.com
+sqm.telemetry.microsoft.com.nsatc.net
+
+
+typing the name of any popular movie into your local file search starts a telemetry process that indexes all media files on your computer and transmits them to:
+df.telemetry.microsoft.com
+reports.wes.df.telemetry.microsoft.com
+cs1.wpc.v0cdn.net
+vortex-sandbox.data.microsoft.com
+pre.footprintpredict.com
+
+
+
+When a webcam is first enabled, ~35mb of data gets immediately transmitted to:
+oca.telemetry.microsoft.com
+oca.telemetry.microsoft.com.nsatc.net
+vortex-sandbox.data.microsoft.com
+i1.services.social.microsoft.com
+i1.services.social.microsoft.com.nsatc.net
+
+
+
+Everything that is said into an enabled microphone is immediately transmitted to:
+oca.telemetry.microsoft.com
+oca.telemetry.microsoft.com.nsatc.net
+vortex-sandbox.data.microsoft.com
+pre.footprintpredict.com
+i1.services.social.microsoft.com
+i1.services.social.microsoft.com.nsatc.net
+telemetry.appex.bing.net
+telemetry.urs.microsoft.com
+cs1.wpc.v0cdn.net
+statsfe1.ws.microsoft.com
+
+
+If this weren’t bad enough, this behaviour still occurs after Cortana is fully disabled/uninstalled. It’s speculated that the purpose of this function to build up a massive voice database, then tie those voices to identities, and eventually be able to identify anyone simply by picking up their voice, whether it be a microphone in a public place or a wiretap on a payphone.
+
+
+Interestingly, if Cortana is enabled, the voice is first transcribed to text, then the transcription is sent to:
+pre.footprintpredict.com
+reports.wes.df.telemetry.microsoft.com
+df.telemetry.microsoft.com
+
+
+While the inital reflex may be to block all of the above servers via HOSTS, it turns out this won’t work: Microsoft has taken the care to hardcode certain IPs, meaning that there is no DNS lookup and no HOSTS consultation. However, if the above servers are blocked via HOSTS, Windows will pretend to be crippled by continuously throwing errors, while still maintaining data collection in the background. Other than an increase in errors, HOSTS blocking did not affect the volume, frequency, or rate of data being transmitted.
