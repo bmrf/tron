@@ -188,7 +188,8 @@ start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C0A00}
 start /wait msiexec /qn /norestart /x {4F564F32-5637-2D53-4154-A758B70C0300}
 
-:: Ask Search App by Ask
+:: Search App by Ask
+start /wait msiexec /qn /norestart /x {57425637-2D53-5000-76A7-A758B70C2300}
 start /wait msiexec /qn /norestart /x {43C423D9-E6D6-4607-ADC9-EBB54F690C57}
 start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C1500}
 start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C2201}
@@ -2807,7 +2808,10 @@ start /wait msiexec /qn /norestart /x {5EE47864-CF84-4629-86A6-50BEFF406BE5}
 :: Skype Toolbars (various versions)
 start /wait msiexec /qn /norestart /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701}
 
-:: SlimCleaner Plus  //  SlimDrivers
+:: SlimWare Utilities  //  SlimDrivers // DriverUpdate // SlimCleaner
+start /wait msiexec /qn /norestart /x {8C2A08C5-FE74-412B-9160-B008E6D3A4C1}
+start /wait msiexec /qn /norestart /x {57425637-2D53-5000-76A7-A758B70C2300}
+start /wait msiexec /qn /norestart /x {6B8D6199-EE44-4FD7-813A-6D8C62C9B384}
 start /wait msiexec /qn /norestart /x {0C0F368E-17C4-4F28-9F1B-B1DA1D96CF7A}
 start /wait msiexec /qn /norestart /x {7A3C7E05-EE37-47D6-99E1-2EB05A3DA3F7}
 start /wait msiexec /qn /norestart /x {F09879E9-7CA4-460F-B14A-6E55FEFB34F7}
