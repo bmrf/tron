@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       7.0.1 ! stage_4_repair:telemetry:       Fix bug where Win7/8 telemetry removal code would mistakenly execute on Windows Vista. Thanks to /u/Chimaera12
+::                      + stage_4_repair:telemetry:win78: Add additional KB patches to the removal list that Microsoft recently pushed back out. Thanks to /u/blksith0. Reference: http://www.infoworld.com/article/2989896/microsoft-windows/windows-snooping-and-nagging-patches-return-kb-3035583-kb-2952664.html  
 ::                7.0.0 / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
 ::                      + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
 ::                      / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
@@ -1404,12 +1405,22 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	if /i %DRY_RUN%==no (
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM UPDATES
+		
+		REM Compatibility update for Windows 7 (is a scanner)
+		wusa /uninstall /kb:2977759 /quiet /norestart
+		
 		REM Compatibility update for Windows 7
 		wusa /uninstall /kb:2952664 /quiet /norestart
 
 		REM Compatibility update for Windows 8.1 and Windows 8
 		wusa /uninstall /kb:2976978 /quiet /norestart
 
+		REM New update client for Windows 7
+		wusa /uninstall /kb:3083710 /quiet /norestart
+		
+		REM New update client for Windows 8/8.1
+		wusa /uninstall /kb:3083711 /quiet /norestart
+		
 		REM Update that enables you to upgrade from Windows 7 to a later version of Windows
 		wusa /uninstall /kb:2990214 /quiet /norestart
 
