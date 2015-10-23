@@ -2336,7 +2336,7 @@ start /wait msiexec /qn /norestart /x {18A8E78B-9EF2-496E-B310-BCD8E4C1DAB3}
 start /wait msiexec /qn /norestart /x {DBCC73BA-C69A-4BF5-B4BF-F07501EE7039}
 start /wait msiexec /qn /norestart /x {FE0133FE-9AEE-4A36-9F46-749E069540D3}
 
-:: iTunes Library Updater (non Apple PUP)
+:: iTunes Library Updater (non Apple PUP) // added by /u/kamakazechickn
 start /wait msiexec /qn /norestart /x {38EE230F-F631-451F-8800-E29F5E5C9E7D}
 
 :: Java Auto Updater
