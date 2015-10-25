@@ -5,7 +5,8 @@
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - ... and many other places around the web
-:: Version:       1.0.2-TRON + Add removing of RetailDemo service
+:: Version:       1.0.3-TRON - Remove "Kill forced OneDrive integration" and move it to Windows 10 Metro de-bloat section of main Tron.bat
+::                1.0.2-TRON + Add removing of RetailDemo service
 ::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
 ::                           - Remove incorrect pushd %SystemDrive at head of script
 ::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
@@ -26,8 +27,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.2-TRON
-set SCRIPT_UPDATED=2015-10-02
+set SCRIPT_VERSION=1.0.3-TRON
+set SCRIPT_UPDATED=2015-10-25
 
 
 :::::::::::::
@@ -63,20 +64,6 @@ REM icacls "%windir%\SysWOW64\Macromed" /grant administrators:F /t >nul 2>&1
 REM rd /s /q "%windir%\SysWOW64\Macromed" >nul 2>&1
 REM rd /s /q "%appdata%\Adobe" >nul 2>&1
 REM rd /s /q "%appdata%\Macromedia" >nul 2>&1
-
-:: Kill forced OneDrive integration
-taskkill /f /im OneDrive.exe >nul 2>&1
-%SystemRoot%\System32\OneDriveSetup.exe /uninstall >nul 2>&1
-%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >nul 2>&1
-:: These keys are orphaned after the OneDrive uninstallation and can be safely removed
-reg Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
-reg Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >nul 2>&1
-takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >nul 2>&1
-icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >nul 2>&1
-rd /s /q "%LocalAppData%\Microsoft\OneDrive" >nul 2>&1
-rd /s /q "%UserProfile%\OneDrive" /Q /S >nul 2>&1
-rd /s /q "%ProgramData%\Microsoft OneDrive" >nul 2>&1
-rd /s /q "%SystemDrive%\OneDriveTemp" >nul 2>&1
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
