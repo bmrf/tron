@@ -23,7 +23,9 @@ In this example:
 
 ...would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
 
-Secondly, you can list specific GUIDs to target in "programs_to_target_by_GUID.bat." This file is a batch file (not flat text) and gets called by Tron. The reason I made it a batch instead of plain text was so you can put comments over each GUID describing what it is.
+Secondly, you can list specific GUIDs to target in "programs_to_target_by_GUID.bat." 
+This file is a batch file (not flat text) and gets called by Tron. 
+The reason I made it a batch instead of plain text was so you can put comments over each GUID describing what it is.
 
 
  !! NOTE !!
