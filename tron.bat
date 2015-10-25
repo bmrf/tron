@@ -4,15 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.0.1 ! stage_4_repair:telemetry:       Fix bug where Win7/8 telemetry removal code would mistakenly execute on Windows Vista. Thanks to /u/Chimaera12
-::                      + stage_4_repair:telemetry:win78: Add additional KB patches to the removal list that Microsoft recently pushed back out. Thanks to /u/blksith0. Reference: http://www.infoworld.com/article/2989896/microsoft-windows/windows-snooping-and-nagging-patches-return-kb-3035583-kb-2952664.html  
-::                7.0.0 / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
-::                      + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks to /u/cuddlychops06
-::                      / stage_5_patch:                  Simplify file paths to make updates easier. Thanks to /u/spexdi
-::                      * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and 
-::                                                        into app-specific patch installer file. Makes maintenance and portability easier. Thanks to /u/spexdi
-
-::                      * stage_5_patch:                  Make app patch installers standalone capable. Can now be run by themselves without being called by Tron
+:: Version:       7.1.0 / stage_4_repair:telemetry: Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks to /u/jwhispersc
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -160,8 +152,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.0.1
-set SCRIPT_DATE=2015-10-21
+set SCRIPT_VERSION=7.1.0
+set SCRIPT_DATE=2015-10-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1108,6 +1100,20 @@ if /i %TARGET_METRO%==yes (
 		) else (
 			REM Windows 10 version
 
+			:: Kill forced OneDrive integration
+			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
+			%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" 2>&1 >nul 2>&1
+			%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" 2>&1
+			:: These keys are orphaned after the OneDrive uninstallation and can be safely removed
+			reg Delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+			reg Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+			takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
+			icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rd /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rd /s /q "%UserProfile%\OneDrive" /Q /S >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rd /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rd /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			
 			REM "Get Office"
 			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*officehub*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *officehub* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
@@ -1140,7 +1146,7 @@ if /i %TARGET_METRO%==yes (
 			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*bingsports*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *bingsports* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
-			REM "Xbox"
+			REM "Windows Feedback"
 			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*windowsfeedback*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *windowsfeedback* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 			
