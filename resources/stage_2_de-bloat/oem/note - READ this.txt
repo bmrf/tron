@@ -25,11 +25,13 @@ In this example:
 
 Secondly, you can list specific GUIDs to target in "programs_to_target_by_GUID.bat." 
 This file is a batch file (not flat text) and gets called by Tron. 
-The reason I made it a batch instead of plain text was so you can put comments over each GUID describing what it is.
+The reason it's a batch file instead of plain text was so you can put comments over each GUID describing what it is.
 
 
  !! NOTE !!
 
-Many programs do not register with WMI and so can't be targeted with this method. For those programs, you'll have to manually remove them. This stage is just a "best-effort" attempt to automate some of the tedium.
+Many programs do not register with WMI and so can't be targeted with this method.
+For those programs, you'll have to manually remove them. 
+This stage is just a "best-effort" attempt to automate some of the tedium.
 
 Godspeed
