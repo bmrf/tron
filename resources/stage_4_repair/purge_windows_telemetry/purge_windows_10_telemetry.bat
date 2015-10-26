@@ -6,6 +6,7 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - ... and many other places around the web
 :: Version:       1.0.3-TRON - Remove "Kill forced OneDrive integration" and move it to Windows 10 Metro de-bloat section of main Tron.bat
+::                           / Change Wecsvc deletion to disabling only
 ::                1.0.2-TRON + Add removing of RetailDemo service
 ::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
 ::                           - Remove incorrect pushd %SystemDrive at head of script
@@ -179,7 +180,7 @@ sc delete dmwappushservice >nul 2>&1
 
 :: Windows Event Collector Service (disable only)
 sc stop Wecsvc >nul 2>&1
-sc delete Wecsvc >nul 2>&1
+sc disable Wecsvc >nul 2>&1
 
 :: Xbox Live services
 sc stop XblAuthManager >nul 2>&1
