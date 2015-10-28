@@ -50,6 +50,13 @@ start /wait msiexec /qn /norestart /x {C1FA525F-D701-4B31-9D32-504FC0CF0B98}
 :: Acer Recovery Management // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {07F2005A-8CAC-4A4B-83A2-DA98A722CA61}
 
+:: Acer Tour / Acer Product Registration
+start /wait msiexec /qn /norestart /x {94389919-B0AA-4882-9BE8-9F0B004ECA35}
+start /wait msiexec /qn /norestart /x {DA20E1A8-07CB-4EE7-9B72-A7E28C953F0E}
+
+:: Acer Updater
+start /wait msiexec /qn /norestart /x {EE171732-BEB4-4576-887D-CB62727F01CA}
+
 :: Acer User Experience Improvement Program Framework and associated GUIDs
 start /wait msiexec /qn /norestart /x {12A718F2-2357-4D41-9E1F-18583A4745F7}
 start /wait msiexec /qn /norestart /x {978724F6-1863-4DD5-9E66-FB77F5AB5613}
@@ -62,7 +69,6 @@ start /wait msiexec /qn /norestart /x {EBE939ED-4612-45FD-A39E-77AC199C4273}
 
 :: Acrobat.com (various versions)
 start /wait msiexec /qn /norestart /x {6D8D64BE-F500-55B6-705D-DFD08AFE0624}
-start /wait msiexec /qn /norestart /x {6978914A-A5AC-4F14-8158-DB66EE41E72B}
 start /wait msiexec /qn /norestart /x {287ECFA4-719A-2143-A09B-D6A12DE54E40}
 start /wait msiexec /qn /norestart /x {E7C97E98-4C2D-BEAF-5D2F-CC45A2F95D90}
 start /wait msiexec /qn /norestart /x {77DCDCE3-2DED-62F3-8154-05E745472D07}
@@ -77,9 +83,6 @@ start /wait msiexec /qn /norestart /x {483A865C-A74A-12BF-1276-D0111A488F50}
 
 :: Adobe Community Help
 start /wait msiexec /qn /norestart /x {A127C3C0-055E-38CF-B38F-1E85F8BBBFFE}
-
-:: Adobe Common File Installer // Disabled by /u/kamakaze_chickn for Tron
-::start /wait msiexec /qn /norestart /x {8EDBA74D-0686-4C99-BFDD-F894678E5B39}
 
 :: Adobe Download Assistant
 start /wait msiexec /qn /norestart /x {5C804EBB-475F-4555-A225-1D6573F158BD}
@@ -208,6 +211,9 @@ start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
 
 :: ASUS AudioWizard
 start /wait msiexec /qn /norestart /x {57E770A2-2BAF-4CAA-BAA3-BD896E2254D3}
+
+:: ASUS: Fast Boot by ASUS
+start /wait msiexec /qn /norestart /x {13F4A7F3-EABC-4261-AF6B-1317777F0755}
 
 :: ASUS FlipLock
 start /wait msiexec /qn /norestart /x {7C7F8DAC-8ADA-4B86-BCB6-48B6FFB673DD}
@@ -1341,6 +1347,7 @@ start /wait msiexec /qn /norestart /x {E4335E82-17B3-460F-9E70-39D9BC269DB3}
 start /wait msiexec /qn /norestart /x {287348C8-8B47-4C36-AF28-441A3B7D8722}
 start /wait msiexec /qn /norestart /x {236F9DDF-B9BA-420A-9775-FBBA7B06475B}
 start /wait msiexec /qn /norestart /x {93870CD7-7A8D-4880-9BEF-95382F44E848}
+start /wait msiexec /qn /norestart /x {2A0F2CC5-3065-492C-8380-B03AA7106B1A}
 
 :: Dell Protected Workspace 2.3.15835
 start /wait msiexec /qn /norestart /x {DDDAF4A7-8B7D-4088-AECC-6F50E594B4F5}
@@ -1532,6 +1539,11 @@ start /wait msiexec /qn /norestart /x {2970697F-2A11-4588-8B7F-97322D1CCF3C}
 start /wait msiexec /qn /norestart /x {03B8AA32-F23C-4178-B8E6-09ECD07EAA47}
 start /wait msiexec /qn /norestart /x {10144CFE-D76C-4CFA-81A1-37A1642349A3}
 
+:: Epson Software Updater
+start /wait msiexec /qn /norestart /x {A3B308B9-BE96-4334-816F-3D82B19A7DE2}
+start /wait msiexec /qn /norestart /x {B307472F-7BD9-4040-9255-CE6D6A1196A3}
+start /wait msiexec /qn /norestart /x {E1BAD1BA-C0E8-4018-9281-E7D2C6B07474}
+
 :: ESC Home Page Plugin
 start /wait msiexec /qn /norestart /x {E738A392-F690-4A9D-808E-7BAF80E0B398}
 
@@ -1655,6 +1667,9 @@ start /wait msiexec /qn /norestart /x {403996EB-2DCE-4C43-A2B8-2B956880772D}
 :: HP Auto 1.0.12935.3667
 start /wait msiexec /qn /norestart /x {CB7D766C-879F-4800-BB09-3D29E306EF63}
 
+:: HP Boot Optimizer
+start /wait msiexec /qn /norestart /x {1341D838-719C-4A05-B50F-49420CA1B4BB}
+
 :: HP BufferChm
 start /wait msiexec /qn /norestart /x {FA0FF682-CC70-4C57-93CD-E276F3E7537E}
 start /wait msiexec /qn /norestart /x {2EEA7AA4-C203-4b90-A34F-19FB7EF1C81C}
@@ -1722,10 +1737,18 @@ start /wait msiexec /qn /norestart /x {A0B9F8DF-C949-45ed-9808-7DC5C0C19C81}
 start /wait msiexec /qn /norestart /x {03A7C57A-B2C8-409b-92E5-524A0DFD0DD3}
 start /wait msiexec /qn /norestart /x {0EF5BEA9-B9D3-46d7-8958-FB69A0BAEACC}
 
-:: HP Customer Experience Enhancements
+:: HP Customer Experience Enhancements / HP Advisor / HP Customer Feedback / HP Launch Box
 start /wait msiexec /qn /norestart /x {07FA4960-B038-49EB-891B-9F95930AA544}
 start /wait msiexec /qn /norestart /x {C9EF1AAF-B542-41C8-A537-1142DA5D4AEC}
 start /wait msiexec /qn /norestart /x {07F6DC37-0857-4B68-A675-4E35989E85E3}
+start /wait msiexec /qn /norestart /x {07FA4960-B038-49EB-891B-9F95930AA544}
+start /wait msiexec /qn /norestart /x {73A43E42-3658-4DD9-8551-FACDA3632538}
+start /wait msiexec /qn /norestart /x {AB5E289E-76BF-4251-9F3F-9B763F681AE0}
+start /wait msiexec /qn /norestart /x {9DBA770F-BF73-4D39-B1DF-6035D95268FC}
+start /wait msiexec /qn /norestart /x {BF1E75D0-E7AF-4BEA-9FBC-567F0C54BDF9}
+start /wait msiexec /qn /norestart /x {C27C82E4-9C53-4D76-9ED3-A01A3D5EE679}
+start /wait msiexec /qn /norestart /x {C9EF1AAF-B542-41C8-A537-1142DA5D4AEC}
+start /wait msiexec /qn /norestart /x {57A5AEC1-97FC-474D-92C4-908FCC2253D4}
 
 :: HP CustomerResearchQFolder
 start /wait msiexec /qn /norestart /x {7206B668-FEE0-455B-BB1F-9B5A2E0EC94A}
@@ -1815,6 +1838,7 @@ start /wait msiexec /qn /norestart /x {AF9E97C1-7431-426D-A8D5-ABE40995C0B1}
 
 :: HP Energy Star
 start /wait msiexec /qn /norestart /x {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
+start /wait msiexec /qn /norestart /x {0FA995CC-C849-4755-B14B-5404CC75DC24}
 
 :: HP ENVY 4500 series Help
 start /wait msiexec /qn /norestart /x {95BECC50-22B4-4FCA-8A2E-BF77713E6D3A}
@@ -1901,6 +1925,11 @@ start /wait msiexec /qn /norestart /x {7910018D-02CF-4410-A7E5-CF5C10D05B7F}
 start /wait msiexec /qn /norestart /x {8A27C0FE-87C7-4169-BF5A-05BF94F70A54}
 start /wait msiexec /qn /norestart /x {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
+:: HP Product Improvement Study for HP Deskjet 2540 series
+start /wait msiexec /qn /norestart /x {446CCB22-B632-4A1D-BF84-DA8DB0575F98}
+start /wait msiexec /qn /norestart /x {C927FC7E-4061-44AC-BE09-496AF6BAC131}
+start /wait msiexec /qn /norestart /x {4B3264AA-951A-4A6B-B837-125224261F12}
+
 :: HP Odometer 2.10.0000
 start /wait msiexec /qn /norestart /x {B899AE89-9B09-4F11-B299-A1209CAB8D00}
 
@@ -1961,7 +1990,8 @@ start /wait msiexec /qn /norestart /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD}
 start /wait msiexec /qn /norestart /x {8704FEEF-A6A8-4E7E-B124-BD6122C66E2C}
 start /wait msiexec /qn /norestart /x {E35A3B13-78CD-4967-8AC8-AA9FDA693EDE}
 
-:: HP Product Detection 11.14.0006
+:: HP Product Detection
+start /wait msiexec /qn /norestart /x {A436F67F-687E-4736-BD2B-537121A804CF}
 start /wait msiexec /qn /norestart /x {424CECC6-CEB1-4A5F-9A42-ADE64F035DEB}
 
 :: HP ProtectTools GUIDs. Too many to list, Google each GUID for more information
@@ -1993,6 +2023,9 @@ start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
 
 :: HP QuickTransfer
 start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
+
+:: HP QuickWeb
+start /wait msiexec /qn /norestart /x {BB4FC2AD-DF12-4EE1-8AA7-2C0A26B5E2FB}
 
 :: HP Recovery Manager
 start /wait msiexec /qn /norestart /x {528AB81B-D65A-4AB0-A2B6-82B51A087D01}
@@ -2132,6 +2165,9 @@ start /wait msiexec /qn /norestart /x {6BBA26E9-AB03-4FE7-831A-3535584CA002}
 start /wait msiexec /qn /norestart /x {292F0F52-B62D-4E71-921B-89A682402201}
 start /wait msiexec /qn /norestart /x {0F7C2E47-089E-4d23-B9F7-39BE00100776}
 start /wait msiexec /qn /norestart /x {AC13BA3A-336B-45a4-B3FE-2D3058A7B533}
+
+:: HP Total Care Advisor
+start /wait msiexec /qn /norestart /x {f32502b5-5b64-4882-bf61-77f23edcac4f}
 
 :: HP TouchSmart Browser, Calendar, Canvas, Clock, Notes, RSS, Tutorials, Twitter and Weather
 start /wait msiexec /qn /norestart /x {4127C2C0-0AC7-4947-9CC1-AACBEFC6EC02}
@@ -2348,6 +2384,9 @@ start /wait msiexec /qn /norestart /x {C270821D-2479-D0F4-1BD1-7BBAF6762A98}
 :: Kaspersky Lab Network Agent
 start /wait msiexec /qn /norestart /x {786A9F7E-CFEC-451F-B3C4-22EB11550FD8}
 
+:: KnowHow ReadMe (currys/PCWorld bloat)
+start /wait msiexec /qn /norestart /x {8AFC7125-0E25-47AA-8444-9DA7940ABBC4}
+
 :: KODAK Share Button App
 start /wait msiexec /qn /norestart /x {DE9B51D7-C575-4587-A848-DE95CD7F7684}
 
@@ -2531,6 +2570,9 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 :: McAfee WebAdvisor
 start /wait msiexec /qn /norestart /x {35ED3F83-4BDC-4c44-8EC6-6A8301C7413A}
 
+:: McAfee Virtual Technician
+start /wait msiexec /qn /norestart /x {8F1A20DC-251D-47B0-91B7-DCA2523EE6C9}
+
 :: Media Gallery
 start /wait msiexec /qn /norestart /x {115B60D5-BBDB-490E-AF2E-064D37A3CE01}
 
@@ -2546,6 +2588,9 @@ start /wait msiexec /qn /norestart /x {986E003C-E56D-5A47-110E-D3C81F0E8535}
 ::start /wait msiexec /qn /norestart /x {B8A9EB6B-E41A-4B69-B996-3BFCFA743E5C}
 ::start /wait msiexec /qn /norestart /x {E20B2752-0909-4B28-B8A9-A9BE519CA1A1}
 ::start /wait msiexec /qn /norestart /x {22F9A831-CA56-4406-85FE-47FFB0472804}
+
+:: Microsoft: Feedback Tool by Microsoft
+start /wait msiexec /qn /norestart /x {13A5E785-5197-4EAD-8EE3-D660271E49BC}
 
 :: Microsoft Online Services Sign-in Assistant
 start /wait msiexec /qn /norestart /x {5D62CA9E-C68A-4BED-A1E9-7D38D9DDC2DB}
@@ -2616,8 +2661,14 @@ start /wait msiexec /qn /norestart /x {3D36105D-D6C2-413A-9355-7370E8D9125B}
 :: MSN Toolbar Platform
 start /wait msiexec /qn /norestart /x {C9D43B38-34AD-4EC2-B696-46F42D49D174}
 
+:: MyEpson Portal
+start /wait msiexec /qn /norestart /x {3361D415-BA35-4143-B301-661991BA6219}
+
 :: My Way Search Assistant
 start /wait msiexec /qn /norestart /x {05F1B866-2372-4E82-9AA8-C64FB11CEF8B}
+
+:: Nero: Welcome App (Nero)
+start /wait msiexec /qn /norestart /x {828175FA-7307-4DBF-95AD-9CEE086B6F45}
 
 :: NetTALK DUO Wifi Management Tool
 start /wait msiexec /qn /norestart /x {15D27BA3-6CCD-4848-8925-07EF083492AD}
@@ -2803,9 +2854,13 @@ start /wait msiexec /qn /norestart /x {0C7FDF6A-C463-173A-7957-74042481E593}
 :: SkyFontsT 4.3.0.0
 start /wait msiexec /qn /norestart /x {E11D4FE9-718A-D54C-9C19-A13CA89B9E18}
 
+:: Sky Broadband Browser Branding
+start /wait msiexec /qn /norestart /x {5BBD0D3F-E4B2-4EE4-806A-07A95D4E2683}
+
 :: Skype Click 2 Call
 start /wait msiexec /qn /norestart /x {981029E0-7FC9-4CF3-AB39-6F133621921A}
 start /wait msiexec /qn /norestart /x {5EE47864-CF84-4629-86A6-50BEFF406BE5}
+start /wait msiexec /qn /norestart /x {B6CF2967-C81E-40C0-9815-C05774FEF120}
 
 :: Skype Toolbars (various versions)
 start /wait msiexec /qn /norestart /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701}
@@ -2925,6 +2980,9 @@ start /wait msiexec /qn /norestart /x {5DDAFB4B-C52E-468A-9E23-3B0CEEB671BF}
 start /wait msiexec /qn /norestart /x {0899D75A-C2FC-42EA-A702-5B9A5F24EAD5}
 start /wait msiexec /qn /norestart /x {9FF95DA2-7DA1-4228-93B7-DED7EC02B6B2}
 
+:: Sony VAIO Update
+start /wait msiexec /qn /norestart /x {5BEE8F1F-BD32-4553-8107-500439E43BD7}
+
 :: Sony VCCx64, VCCx86, VIx64, and VIx86
 start /wait msiexec /qn /norestart /x {549AD5FB-F52D-4307-864A-C0008FB35D96}
 start /wait msiexec /qn /norestart /x {DF184496-1CA2-4D07-92E7-0BD251D7DEF0}
@@ -2947,7 +3005,7 @@ start /wait msiexec /qn /norestart /x {B8991D99-88FD-41F2-8C32-DB70278D5C30}
 start /wait msiexec /qn /norestart /x {612C34C7-5E90-47D8-9B5C-0F717DD82726}
 start /wait msiexec /qn /norestart /x {C30E30A6-0AB5-470A-AB67-D322938F5429}
 
-:: Spybot - Search & Destroy
+:: Spybot - Search & Destroy. "You either die a hero, or live long enough to see yourself become the villain."
 start /wait msiexec /qn /norestart /x {B4092C6D-E886-4CB2-BA68-FE5A88D31DE6}
 
 :: Sql Server Customer Experience Improvement Program (various versions)
