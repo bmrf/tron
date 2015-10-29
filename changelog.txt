@@ -14,6 +14,75 @@ Version number legend:
 
 
 
+
+
+########################
+# v7.1.0 // 2015-10-xx #
+########################
+tron.bat                         v7.1.0
+
+
+STAGE 0: Prep
+ . rkill                         v2.8.2.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.5
+ * McAfee Stinger                v12.1.0.1773
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+STAGE 1: Tempclean
+ * CCLeaner                      v5.11.5408
+ . BleachBit                     v1.8
+ . TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+    * Massive overhaul by /u/Chimaera12. Many incorrect entries removed and new entries added
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+ . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+
+STAGE 5: Patch
+ . 7-Zip                         v9.38         (multi-language)
+ . Adobe Flash Player            v19.0.0.226   (language ignored)
+ . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u66          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.1.4
+ . Autoruns                      v13.4
+ . BlueScreenView                v1.55
+ * ComboFix                      v15.10.26.1
+ . Junkware Removal Tool         v7.6.4.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+
 ########################
 # v7.0.1 // 2015-10-21 #
 ########################
@@ -78,7 +147,7 @@ STAGE 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 
 ########################
