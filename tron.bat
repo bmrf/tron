@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.1.0 / stage_4_repair:telemetry: Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks to /u/jwhispersc
+:: Version:       7.1.0 + stage_2_de-bloat:toolbars: Add new toolbars_BHOs_to_target_by_GUID.bat file, with 978 entries. Major thanks to /u/Chimaera12 for his work on this
+::                      / stage_2_de-bloat:oem:      Move all stage 2: de-bloat files out of \oem\ subdirectory directly into \stage_2_de-bloat\. Much of the work of this section isn't OEM-specific
+::                      / stage_4_repair:telemetry:  Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks to /u/jwhispersc
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -153,7 +155,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=7.1.0
-set SCRIPT_DATE=2015-10-xx
+set SCRIPT_DATE=2015-11-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -324,7 +326,7 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
-:: PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_3_de-bloat)
+:: PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if /i %RESUME_DETECTED%==yes (
@@ -1056,20 +1058,28 @@ if /i %SKIP_DEBLOAT%==yes (
 call :log "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
 
 
-:: JOB: Remove crapware programs, phase 1 (by specific GUID)
+:: JOB: Remove crapware programs, phase 1: by specific GUID
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by specific GUID)..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat"
-if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat"
+if /i %DRY_RUN%==no call stage_2_de-bloat\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove crapware programs, phase 2 (wildcard by name)
+:: JOB: Remove crapware programs, phase 2: wildcard by name
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by name)..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+call :log "%CUR_DATE% %TIME%    Done."
+
+
+:: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
+title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
+call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3, toolbars by specific GUID..."
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat"
+if /i %DRY_RUN%==no call stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 
 
