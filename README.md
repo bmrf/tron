@@ -426,8 +426,14 @@ Master script that launches all the other tools. It performs a lot of actions on
   ```
   \tron\resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
   ```
+  
+3. **Toolbar & BHOs** (by GUID): Use WMI to attempt to remove specific list of GUIDs in this file: 
+  
+  ```
+  \resources\stage_3_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+  ```
 
-3. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update)
+4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update)
 
 
 ## STAGE 3: Disinfect
