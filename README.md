@@ -323,7 +323,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 
 ## Tron-internal prep jobs
-(These are all executed even if Tron is canceled before running)
+(These are executed even if Tron is canceled before running)
 
 1. **Detect Windows version**: Determines quite a few things in the script, such as which versions of various commands get executed
 
