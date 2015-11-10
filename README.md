@@ -119,13 +119,9 @@ More details about this function are in the list of all Tron actions at the bott
 
 # SAFE MODE
 
-In versions of Windows prior to 8, you could [follow these instructions](http://windows.microsoft.com/en-us/windows/start-computer-safe-mode); basically it involves pressing F8 after restarting your computer.
+Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
 
-However from Windows 8 onward the process is a bit different. Microsoft, in their long-standing tradition of breaking useful, heavily-used functionality for no reason, changed how you get into Safe Mode, disabling the traditional F8 method. Tron re-enables the F8 method as part of it's prep tasks (before actually running), but here's how to manually re-enable the old-style boot menu that supports the F8 key. From an admin command prompt, run this command:
-
-    bcdedit /set {default} bootmenupolicy legacy
-
-Reboot and you should now be able to use F8 to select Safe Mode. Note that this command is the same one Tron runs, so if you launch Tron to the menu and then exit, you'll accomplish the same thing.
+When Tron launches it will briefly check if the computer is in Safe Mode with Networking, and if not it will prompt you to automatically reboot into it.
 
 
 # EMAIL REPORT
