@@ -41,7 +41,7 @@ I got tired of running these utilities manually and decided to just script every
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
-Tron will briefly check for a newer version when it starts up and notify you if one is found.
+Tron will briefly check for a newer version when it starts up and notify you if one is available.
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
