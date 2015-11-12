@@ -55,61 +55,61 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
     Optional flags (can be combined):
 
-    -a   Automatic mode (no welcome screen or prompts; implies -e)
+     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
-    -c   Config dump (display current config. Can be used with other
-         flags to see what WOULD happen, but script will never execute
-         if this flag is used)
+     -c   Config dump (display current config. Can be used with other
+          flags to see what WOULD happen, but script will never execute
+          if this flag is used)
 
-    -d   Dry run (run through script without executing any jobs)
+     -d   Dry run (run through script without executing any jobs)
     
-    -dev Override OS detection (allow running on unsupported Windows versions)
+     -dev Override OS detection (allow running on unsupported Windows versions)
 
-    -e   Accept EULA (suppress disclaimer warning screen)
+     -e   Accept EULA (suppress disclaimer warning screen)
 
-    -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
+     -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
 
-    -m   Preserve default Metro apps (don't remove them)
+     -m   Preserve default Metro apps (don't remove them)
 
-    -o   Power off after running (overrides -r)
+     -o   Power off after running (overrides -r)
 
-    -p   Preserve power settings (don't reset to Windows default)
+     -p   Preserve power settings (don't reset to Windows default)
 
-    -r   Reboot automatically (auto-reboot 15 seconds after completion)
+     -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
-    -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
+     -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
-    -sb  Skip de-bloat (OEM bloatware removal; implies -m)
+     -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 
-    -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+     -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 
-    -se  Skip Event Log clear (don't clear Windows Event Logs)
+     -se  Skip Event Log clear (don't clear Windows Event Logs)
 
-    -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
+     -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 
-    -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
+     -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 
-    -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
+     -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 
-    -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
+     -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 
-    -spr Skip page file reset (don't set to "Let Windows manage the page file")
+     -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
-    -srr Skip registry permissions reset (saves time if you're in a hurry)
+     -srr Skip registry permissions reset (saves time if you're in a hurry)
 
-    -ss  Skip Sophos Anti-Virus (SAV) scan
+     -ss  Skip Sophos Anti-Virus (SAV) scan
 
-    -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
+     -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
 
-    -sw  Skip Windows Updates (do not attempt to run Windows Update)
+     -sw  Skip Windows Updates (do not attempt to run Windows Update)
 
-    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
+     -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 
-    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
+     -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 
     Misc flags (must be used alone):
 
-    -h   Display help text
+     -h   Display help text
 
 
 \* There is no -UPM flag
