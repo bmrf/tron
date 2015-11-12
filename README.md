@@ -53,6 +53,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
     tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
               -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
+Optional flags (can be combined):
+
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
     -c   Config dump (display current config. Can be used with other
@@ -66,8 +68,6 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -e   Accept EULA (suppress disclaimer warning screen)
 
     -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-
-    -h   Display help text
 
     -m   Preserve default Metro apps (don't remove them)
 
@@ -106,6 +106,11 @@ Command-line use is fully supported. All flags are optional and can be combined.
     -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 
     -x   Self-destruct. Tron deletes itself after running and leaves logs intact
+
+Misc flags (must be used alone):
+
+    -h   Display help text
+
 
 \* There is no -UPM flag
 
