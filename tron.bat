@@ -4,9 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.1.0 + stage_2_de-bloat:toolbars: Add new toolbars_BHOs_to_target_by_GUID.bat file, with 978 entries. Major thanks to /u/Chimaera12 for his work on this
+::
+:: Version:       7.1.1 * subtool updates
+::                7.1.0 + stage_2_de-bloat:toolbars: Add 'toolbars_BHOs_to_target_by_GUID.bat' with 978 entries. Major thanks to /u/Chimaera12 for his work on this
 ::                      / stage_2_de-bloat:oem:      Move all stage 2: de-bloat files out of \oem\ subdirectory directly into \stage_2_de-bloat\. Much of the work of this section isn't OEM-specific
 ::                      / stage_4_repair:telemetry:  Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks to /u/jwhispersc
+::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
@@ -154,8 +157,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.1.0
-set SCRIPT_DATE=2015-11-xx
+set SCRIPT_VERSION=7.1.1
+set SCRIPT_DATE=2015-11-12
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1931,7 +1934,7 @@ exit /B
 :: Thanks to /u/douglas_swehla for helping here
 :: Since no new variable names are defined, there's no need for SETLOCAL.
 :: The %1 reference contains the first argument passed to the function. When the
-:: whole argument string is wrapped in double quotes, it is sent as on argument.
+:: whole argument string is wrapped in double quotes, it is sent as an argument.
 :: The tilde syntax (%~1) removes the double quotes around the argument.
 :log
 echo:%~1 >> "%LOGPATH%\%LOGFILE%"
