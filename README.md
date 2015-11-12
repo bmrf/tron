@@ -50,10 +50,10 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
-              -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk -sm 
+              -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
-Optional flags (can be combined):
+    Optional flags (can be combined):
 
     -a   Automatic mode (no welcome screen or prompts; implies -e)
 
@@ -107,7 +107,7 @@ Optional flags (can be combined):
 
     -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 
-Misc flags (must be used alone):
+    Misc flags (must be used alone):
 
     -h   Display help text
 
