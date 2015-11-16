@@ -4,11 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-::
-:: Version:       7.1.1 * subtool updates
-::                7.1.0 + stage_2_de-bloat:toolbars: Add 'toolbars_BHOs_to_target_by_GUID.bat' with 978 entries. Major thanks to /u/Chimaera12 for his work on this
-::                      / stage_2_de-bloat:oem:      Move all stage 2: de-bloat files out of \oem\ subdirectory directly into \stage_2_de-bloat\. Much of the work of this section isn't OEM-specific
-::                      / stage_4_repair:telemetry:  Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks to /u/jwhispersc
+:: Version:       7.2.0 * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
+::                      + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -157,8 +154,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.1.1
-set SCRIPT_DATE=2015-11-12
+set SCRIPT_VERSION=7.2.0
+set SCRIPT_DATE=2015-11-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1112,7 +1109,6 @@ if /i %TARGET_METRO%==yes (
 			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 		) else (
 			REM Windows 10 version
-
 			:: Kill forced OneDrive integration
 			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
 			%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" 2>&1 >nul 2>&1
@@ -1122,10 +1118,10 @@ if /i %TARGET_METRO%==yes (
 			reg Delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 			takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
 			icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rd /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rd /s /q "%UserProfile%\OneDrive" /Q /S >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rd /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rd /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rmdir /s /q "%UserProfile%\OneDrive" /Q /S >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			
 			REM "Get Office"
 			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename –like "*officehub*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
@@ -1408,13 +1404,13 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
 	call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
 	if /i %DRY_RUN%==no (
-		REM Normally I try to embed everything directly, but it was quite a bit of code so I put it in an external script to avoid bloating tron.bat too much
+		REM Normally I try to embed everything directly, but it was quite a bit of code so it's in an external script to avoid bloating tron.bat too much
 		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 ) 
 
-:: Spawn temporary variable to check for Win7 and 8. This is an ugly hack but at least it works
+:: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
 set RUN_7_OR_8_TELEM=no
 if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
@@ -1466,6 +1462,11 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		wusa /uninstall /kb:2902907 /quiet /norestart
 		wusa /uninstall /kb:2922324 /quiet /norestart
 
+		
+		REM :::::::::::::::::::::::::::::::::::::::::::::
+		REM BLOCK BAD UPDATES
+		start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324
+				
 
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM SCHEDULED TASKS
