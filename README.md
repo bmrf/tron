@@ -31,7 +31,7 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-1. [Boot into Safe Mode with Network Support](#safe-mode). Safe Mode is not required but is strongly recommended.
+1. [Boot into Safe Mode with Network Support](#safe-mode). Safe Mode is not required but is strongly recommended. If you skip this step Tron will prompt you to automatically reboot into Safe Mode.
 
 2. Copy `tron.bat` and the `\resources` folder to the target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron does not work if you don't it run as an Administrator)
 
