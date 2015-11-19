@@ -1124,43 +1124,43 @@ if /i %TARGET_METRO%==yes (
 			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			
 			REM "Get Office"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*officehub*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*officehub*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *officehub* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Get Skype"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*getstarted*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*getstarted*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *getstarted* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Groove Music"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*zunemusic*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*zunemusic*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *zunemusic* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Money / Bing Finance"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*bingfinance*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingfinance*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *bingfinance* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Movies & TV / Zune Video"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*zunevideo*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*zunevideo*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *zunevideo* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "News / Bing News"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*bingnews*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingnews*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *bingnews* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Phone Companion"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*windowsphone*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*windowsphone*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *windowsphone* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Sports / Bing Sports"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*bingsports*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingsports*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *bingsports* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 			REM "Windows Feedback"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*windowsfeedback*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*windowsfeedback*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *windowsfeedback* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 			
 			REM "Xbox"
-			powershell "Get-AppXProvisionedPackage –online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
+			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage –online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 		)
 	)
