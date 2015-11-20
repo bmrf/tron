@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.2.0 + stage_2_de-bloat:metro:    Add modern_apps_to_target_by_name.ps1, called during Windows 10 metro de-bloat. Thanks to /u/danodemano
+:: Version:       7.2.0 + stage_2_de-bloat:metro:    Add OEM_modern_apps_to_target_by_name.ps1, called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks to /u/danodemano
 ::                      ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
 ::                      * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
 ::                      + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
@@ -268,7 +268,7 @@ pushd resources
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
 
-:: PREP: Detect the version of Windows we're on. This determines a few things later in the script, such as which versions of SFC and powercfg.exe we run, as well as whether or not to attempt removal of Windows 8/8.1 metro apps
+:: PREP: Detect the version of Windows we're on. This determines a few things later on
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 
@@ -286,7 +286,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 		echo    Tron from the command-line with -dev flag.
 		echo.
 		echo    Keep in mind that by doing this you're effectively
-		echo    becoming a beta tester!
+		echo    waiving your already non-existent warranty!
 		echo.
 		pause
 		goto eof
@@ -347,7 +347,7 @@ if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
 	:: Notify and jump
 	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
-	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to resume-looping where we keep trying to resume
+	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
 	:: even if a reboot didn't happen
 	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
 	goto %RESUME_STAGE%
@@ -519,7 +519,7 @@ if /i %CONFIG_DUMP%==yes (
 )
 
 
-:: PREP: Act on autorun flag. Skips safe mode checks, admin rights check, and EULA check. I assume if you use the auto flag (-a) you know what you're doing
+:: PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
 if /i %AUTORUN%==yes goto execute_jobs
 
 
@@ -530,8 +530,6 @@ if /i %AUTORUN%==yes goto execute_jobs
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
 	fsutil dirty query %systemdrive% >NUL
-	:: Previous method
-	::net session >nul 2>&1
 	if /i not !ERRORLEVEL!==0 (
 		color cf
 		cls
@@ -723,9 +721,26 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 :: EXECUTE JOBS ::
 ::::::::::::::::::
 :execute_jobs
+:: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong
+if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
+
+
+:: Last check to see if we're in autorun (-a) mode and NOT in Safe Mode. If true, reboot.
+if /i %AUTORUN%==yes (
+	if /i not "%SAFE_MODE%"=="yes" (
+		call :log "%CUR_DATE% %TIME% ! Autorun flag was used, but we're not in Safe Mode. Rebooting in 10 seconds."
+		if /i %DRY_RUN%==no ( 
+			bcdedit /set {default} safeboot network
+			shutdown -r -f -t 10
+			pause
+			exit
+		)
+	)
+)
+
 
 :: Make log file and directories if they don't already exist
-for %%D in ("%LOGPATH%","%QUARANTINE%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
+for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
     if not exist %%D mkdir %%D
 )
 
@@ -734,25 +749,24 @@ for %%D in ("%LOGPATH%","%QUARANTINE%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%"
 if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
 
 
-:: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
-
-
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
 :: Create log header
-cls
-call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
-call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
-call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
-call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
-call :log "                          Command-line flags: %*"
-call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-call :log "-------------------------------------------------------------------------------"
+if /i %RESUME_DETECTED%==no (
+::	cls
+	call :log "-------------------------------------------------------------------------------"
+	call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
+	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
+	call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+	call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
+	call :log "                          Command-line flags: %*"
+	call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+	call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+	call :log "-------------------------------------------------------------------------------"
+)
+
 
 
 :::::::::::::::::::
@@ -774,6 +788,7 @@ for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
 		call :log "%CUR_DATE% %TIME% ! WARNING! SMART check indicates at least one drive with %%i status"
 		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure, be careful"
 		call :log "%CUR_DATE% %TIME%   running disk-intensive operations like defrag."
+		call :log "%CUR_DATE% %TIME%   Recommend you back up the system BEFORE running Tron."
 		)
 )
 endlocal disabledelayedexpansion
@@ -1170,8 +1185,8 @@ if /i %TARGET_METRO%==yes (
 			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 			
-			REM Call /u/danodemano's script to do the rest of the Modern App removal
-			powershell -noexit -noprofile -executionpolicy bypass -file ".\stage_2_de-bloat\modern_apps_to_target_by_name.ps1"
+			REM Call /u/danodemano's script to do removal of OEM Modern App's
+			powershell -noprofile -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
 			
 		)
 	)
@@ -1801,6 +1816,7 @@ if /i %DRY_RUN%==no (
 
 		REM Cleanup
 		del /f /q %TEMP%\temp.txt 2>NUL
+		del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
