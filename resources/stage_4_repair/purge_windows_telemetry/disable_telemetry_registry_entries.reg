@@ -9,6 +9,10 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection]
 "AllowTelemetry"=dword:00000000
 
+; Keylogger
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener]
+"Start"=dword:00000000
+
 ; Wifi sense; this is a nasty one privacy-wise
 [hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager]
 "wifisensecredshared"=dword:00000000
