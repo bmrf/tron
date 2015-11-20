@@ -330,6 +330,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 ## Tron-internal prep jobs
 (These are executed even if Tron is canceled before running)
 
+0. **Detect TEMP execution**: Detect if we're running from the TEMP directory and prevent Tron from running if so. TEMP is one of the first places to get wiped when Tron starts so we cannot run from there
+
 1. **Detect Windows version**: Determines quite a few things in the script, such as which versions of various commands get executed
 
 2. **Unsupported OS blocker**: Throws an alert message if running on an unsupported OS then exits. Use Tron's `-dev` flag to override this behavior and allow running on unsupported Windows versions.
