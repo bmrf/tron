@@ -1,24 +1,27 @@
-There are three files in this directory that determine what Tron targets for bloatware removal:
+There are four files in this directory that determine what Tron targets for bloatware removal:
 
 1. programs_to_target_by_name.txt
 2. programs_to_target_by_GUID.bat
 3. toolbars_BHOs_to_target_by_GUID.bat
+4. modern_apps_to_target_by_name.ps1
 
-Insert program NAMES, one per line, into the text file 'programs_to_target_by_name.txt'
-Tron will TRY to uninstall any program whose name matches one of the names in this file.
-Don't put any special characters around the name (quotes, commas, etc). Spaces are fine.
-Tron uses WMI queries inside a batch file, so the wildcard character is double-percent (%%).
+You can customize any of these files to tweak what Tron targets for removal.
 
-Example:
 
+# programs_to_target_by_name.txt
+
+ Insert program NAMES, one per line, into the file. Tron will try to uninstall any program
+ whose name matches one of the names in this file. Don't put any special characters around 
+ the name (quotes, commas, etc). Spaces are fine. Tron uses WMI queries inside a batch file,
+ so the wildcard character is double-percent (%%).
+
+Example list:
     Cyberlink%%
     Dell Getting Started Guide%%
     Dell Video%%
     %%Toolbar%%
 
-The scanner will iterate through the list of programs, one by one, and try to uninstall any program matching that entry. 
-
-In this example:
+So in this example:
 	
 	Dell%%
 
@@ -26,9 +29,27 @@ In this example:
 
 
 
-You can also list specific GUIDs to target in the "programs_to_target_by_GUID.bat" and "toolbars_BHOs_to_target_by_GUID.bat" files.
-These files are batch files (not flat text) and get called by Tron during stage 2.
-The reason they're batch instead of plain text is so you can put comments over each GUID describing what it is.
+#  programs_to_target_by_GUID.bat
+
+ List specific GUIDs to target, one per line. This file is batch (not flat text). The reason it's
+ batch instead of plain text is so you can put comments over each GUID describing what it is.
+ 
+
+ 
+#  toolbars_BHOs_to_target_by_GUID.bat
+
+ List specific GUIDs to target, one per line. This file is batch instead of plain text as well.
+ It's separate from programs_to_target_by_GUID.bat just for organization; Tron executes both files
+ the same way.
+ 
+ 
+ 
+#  modern_apps_to_target_by_name.ps1
+
+ This is a Powershell script listing pre-loaded OEM "Modern" apps. Add any Windows 10 "Modern" apps
+ you want to remove to this list.
+
+
 
 
  !! NOTE !!
