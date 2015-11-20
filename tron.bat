@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.2.0 * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
+:: Version:       7.2.0 + stage_2_de-bloat:metro:    Add modern_apps_to_target_by_name.ps1, called during Windows 10 metro de-bloat. Thanks to /u/danodemano
+::                      ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
+::                      * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
 ::                      + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
@@ -1103,11 +1105,16 @@ if /i %TARGET_METRO%==yes (
 		net start AppXSVC >nul 2>&1
 		REM Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
+		
+		REM Do the removal
 		if /i not "%WIN_VER:~0,9%"=="Windows 1" (
+			
 			REM Windows 8/8.1 version
 			powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+		
 		) else (
+		
 			REM Windows 10 version
 			:: Kill forced OneDrive integration
 			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -1162,6 +1169,10 @@ if /i %TARGET_METRO%==yes (
 			REM "Xbox"
 			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+			
+			REM Call /u/danodemano's script to do the rest of the Modern App removal
+			powershell -noexit -noprofile -executionpolicy bypass -file ".\stage_2_de-bloat\modern_apps_to_target_by_name.ps1"
+			
 		)
 	)
 )
