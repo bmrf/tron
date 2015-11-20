@@ -15,3 +15,6 @@
 ;Enjoy! /u/cuddlychops06
 ;
 ;ADD EXCLUSIONS BELOW:
+caffeine
+sihost
+SearchUI
