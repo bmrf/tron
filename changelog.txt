@@ -16,6 +16,86 @@ Version number legend:
 
 
 ########################
+# v7.2.0 // 2015-11-20 #
+########################
+tron.bat                         v7.2.0
+ + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
+ + tron.bat:prep:             Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
+ ! tron.bat:runlocation:      Fix detection of running from TEMP folder
+ * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
+ * stage_1_prep:SMART:        Turn screen yellow if SMART errors are detected. This is just to alert the user something is amiss
+ + stage_2_de-bloat:metro:    Add OEM_modern_apps_to_target_by_name.ps1, called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks to /u/danodemano
+ - stage_2_de-bloat:metro:    Remove line that deletes users OneDrive folder. We still remove OneDrive, but at least now we're not nuking user files. This is a half-fix until I figure out how to check if OneDrive is actually in use or not.
+ ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
+ * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
+ + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
+
+STAGE 0: Prep
+ . rkill                         v2.8.2.0
+ * ProcessKiller                 v2.0.0-TRON
+    + whitelist.txt: Add the following entries: caffeine, sihost, SearchUI. Should fix Windows 10 Start Menu breaking. Thanks to /u/cuddlychops06
+ . TDSS Killer                   v3.1.0.5
+ * McAfee Stinger                v12.1.0.1808
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+STAGE 1: Tempclean
+ . CCLeaner                      v5.11.5408
+ . BleachBit                     v1.8
+ . TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.1.0
+
+STAGE 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+	- Remove AVG 2014%% wildcard entry
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+ + \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1   //  Sub-script to remove OEM (non-Microsoft) Modern Apps. Thanks to /u/danodemano
+ + \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Added but not called (currently unused)
+
+STAGE 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . Malwarebytes Anti-Malware     v2.1.8.1057
+
+STAGE 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+ . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+
+STAGE 5: Patch
+ * 7-Zip                         v15.11         (multi-language)
+ . Adobe Flash Player            v19.0.0.245   (language ignored)
+ . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u66          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+STAGE 6: Optimize
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+STAGE 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+STAGE 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v5.0.2.1
+ . Autoruns                      v13.5
+ . BlueScreenView                v1.55
+ * ComboFix                      v15.11.17.1
+ * Junkware Removal Tool         v8.0.0.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+
+########################
 # v7.1.1 // 2015-11-12 #
 ########################
 tron.bat                         v7.1.1
@@ -38,6 +118,7 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -107,6 +188,7 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     * Massive overhaul by /u/Chimaera12. Many incorrect entries removed and new entries added
+ + \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
