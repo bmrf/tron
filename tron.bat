@@ -4,8 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.2.0 * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
+:: Version:       7.2.0 + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
+::                      + tron.bat:prep:             Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
+::                      ! tron.bat:runlocation:      Fix detection of running from TEMP folder
+::                      * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
+::                      * stage_1_prep:SMART:        Turn screen yellow if SMART errors are detected. This is just to alert the user something is amiss
 ::                      + stage_2_de-bloat:metro:    Add OEM_modern_apps_to_target_by_name.ps1, called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks to /u/danodemano
+::                      - stage_2_de-bloat:metro:    Remove line that deletes users OneDrive folder. We still remove OneDrive, but at least now we're not nuking user files. This is a half-fix until I figure out how to check if OneDrive is actually in use or not.
 ::                      ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
 ::                      * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
 ::                      + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
@@ -158,10 +163,12 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=7.2.0
-set SCRIPT_DATE=2015-11-xx
+set SCRIPT_DATE=2015-11-20
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
+set ERRORS_DETECTED=no
+set WARNINGS_DETECTED=no
 set CONFIG_DUMP=no
 set REPO_URL=https://www.bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
@@ -185,7 +192,7 @@ if /i "%1"=="-resume" set RESUME_DETECTED=yes
 
 
 :: Make sure we're not running from the %TEMP% directory
-if "%~dp0"=="%TEMP%\" (
+if "%~dp0"=="%TEMP%\tron\" (
 	color 0c
 	cls
 	echo.
@@ -789,7 +796,9 @@ for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
 		call :log "%CUR_DATE% %TIME% ! WARNING! SMART check indicates at least one drive with %%i status"
 		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure, be careful"
 		call :log "%CUR_DATE% %TIME%   running disk-intensive operations like defrag."
-		call :log "%CUR_DATE% %TIME%   Recommend you back up the system BEFORE running Tron."
+		call :log "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
+		set WARNINGS_DETECTED=yes
+		color 0e
 		)
 )
 endlocal disabledelayedexpansion
@@ -1142,7 +1151,6 @@ if /i %TARGET_METRO%==yes (
 			takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
 			icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rmdir /s /q "%UserProfile%\OneDrive" /Q /S >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			
@@ -1187,8 +1195,8 @@ if /i %TARGET_METRO%==yes (
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 			
 			REM Call /u/danodemano's script to do removal of OEM Modern App's
-			powershell -noprofile -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
-			
+			REM powershell -noprofile -noexit -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
+			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
 		)
 	)
 )
@@ -1817,7 +1825,6 @@ if /i %DRY_RUN%==no (
 
 		REM Cleanup
 		del /f /q %TEMP%\temp.txt 2>NUL
-		del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
@@ -1838,15 +1845,16 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove resume-related files, registry entry, and boot flag
+:: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
-call :log "%CUR_DATE% %TIME%    Removing resume-support files and Safeboot flag..."
+call :log "%CUR_DATE% %TIME%    Cleaning up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+	del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -1893,8 +1901,10 @@ if /i %SELF_DESTRUCT%==yes (
 
 
 :: Display and log the job summary
-:: Turn the window green so we can see at a glance if it's done
-color 2F
+:: Color window based on run results so we can see at a glance if it's done
+color 27
+if /i %WARNINGS_DETECTED%==yes color 0e
+if /i %ERRORS_DETECTED%==yes color 0c
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
 call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
