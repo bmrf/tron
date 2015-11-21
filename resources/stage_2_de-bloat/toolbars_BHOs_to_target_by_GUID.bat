@@ -131,9 +131,6 @@ start /wait msiexec /qn /norestart /x {0bc6e3fa-78ef-4886-842c-5a1258c4455a}
 :: AhIeBho Class
 start /wait msiexec /qn /norestart /x {10384d0e-2bc1-48b6-844b-ad0e9e6d2511}
 
-:: AI RoboForm Toolbar
-start /wait msiexec /qn /norestart /x {724d43a0-0d85-11d4-9908-00400523e39a}
-
 :: AIM Toolbar
 start /wait msiexec /qn /norestart /x {DE9C389F-3316-41A7-809B-AA305ED9D922}
 start /wait msiexec /qn /norestart /x {61539ecd-cc67-4437-a03c-9aaccbd14326}
@@ -1117,9 +1114,6 @@ start /wait msiexec /qn /norestart /x {1E864EAC-892F-4A60-8C17-63123FD5731C}
 
 :: Kurulum Toolbar
 start /wait msiexec /qn /norestart /x {a2d8f477-f908-478d-a77a-5d934a922bc0}
-
-:: LastPass Toolbar
-start /wait msiexec /qn /norestart /x {9f6b5cc3-5c7b-4b5c-97af-19dec1e380e5}
 
 :: LazyTruth
 start /wait msiexec /qn /norestart /x {35E0D123-1F22-9AE6-F973-B7ECA46E8BFE}
