@@ -201,8 +201,9 @@ if "%~dp0"=="%TEMP%\tron\" (
 	echo  Tron is running from the Windows TEMP directory. Tron
 	echo  cannot run from the TEMP directory as it's one of the
 	echo  first places to get wiped when Tron starts. Run Tron
-	echo  from another location ^(directly from the Desktop is
-	echo  the recommended location^).
+	echo  directly from your Desktop. Example of correct path:
+	echo.
+	echo   %USERPROFILE%\Desktop\tron\tron.bat
 	echo.
 	echo  Tron will now quit.
 	echo.
