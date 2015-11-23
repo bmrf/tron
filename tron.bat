@@ -54,7 +54,7 @@
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
 SETLOCAL
-@echo off
+::@echo off
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 call :set_cur_date
 
@@ -228,7 +228,6 @@ call :parse_cmdline_args %*
 
 :: PREP: Execute help if requested
 if /i %HELP%==yes (
-	::cls
 	echo.
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
@@ -356,13 +355,11 @@ if /i %RESUME_DETECTED%==yes (
 )
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
-	:: Notify and jump
 	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
-	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
-	:: even if a reboot didn't happen
-	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
-	
-	:: We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
+	REM Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
+	REM even if a reboot didn't happen
+	REM reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
+	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
 )
