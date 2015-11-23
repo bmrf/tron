@@ -1,9 +1,10 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 1: Temp Cleanup stage. Is called by tron.bat and then returns control to tron.bat when finished
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly
+::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       0.9.0 + Initial write
+@echo off
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -11,17 +12,16 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	echo  ERROR
 	echo.
-	echo   Missing the LOGFILE variable from Tron.bat
 	echo   You cannot run this script directly - it must be 
 	echo   called from Tron.bat during a Tron run.
+	echo.
+	echo   Navigate to \resources and execute Tron.bat
 	echo.
 	pause
 	exit /b 1
 	)
 
-	
-	
-	
+
 
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN :: // Begin jobs
