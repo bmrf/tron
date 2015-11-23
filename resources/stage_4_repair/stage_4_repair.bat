@@ -6,6 +6,13 @@
 :: Version:       1.0.0 + Initial write
 @echo off
 
+
+:::::::::::::::::::::
+:: PREP AND CHECKS ::
+:::::::::::::::::::::
+set STAGE_4_SCRIPT_VERSION=1.0.0
+set STAGE_4_SCRIPT_DATE=2015-11-23
+
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
 	color 0c
@@ -19,7 +26,7 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	pause
 	exit /b 1
-	)
+)
 	
 	
 	
