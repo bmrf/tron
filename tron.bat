@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.2.0 + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
+:: Version:       7.2.1 ! tron.bat:prep:log_header:  Fix missing closing quote on one line of log header creation section
+::                7.2.0 + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
 ::                      + tron.bat:prep:             Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
 ::                      ! tron.bat:runlocation:      Fix detection of running from TEMP folder
 ::                      * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
@@ -162,8 +163,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.2.0
-set SCRIPT_DATE=2015-11-20
+set SCRIPT_VERSION=7.2.1
+set SCRIPT_DATE=2015-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
