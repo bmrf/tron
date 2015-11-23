@@ -291,7 +291,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 		echo    Tron does not support "%WIN_VER%" ^(yet^).
 		echo.
 		echo    If you want to override and run anyway, re-run
-		echo    Tron from the command-line with -dev flag.
+		echo    Tron from the command-line with the -dev flag.
 		echo.
 		echo    Keep in mind that by doing this you're effectively
 		echo    waiving your already non-existent warranty!
