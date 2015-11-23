@@ -4,17 +4,20 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.2.1 ! tron.bat:prep:log_header:  Fix missing closing quote on one line of log header creation section
-::                7.2.0 + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
-::                      + tron.bat:prep:             Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
-::                      ! tron.bat:runlocation:      Fix detection of running from TEMP folder
-::                      * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
-::                      * stage_1_prep:SMART:        Turn screen yellow if SMART errors are detected. This is just to alert the user something is amiss
-::                      + stage_2_de-bloat:metro:    Add OEM_modern_apps_to_target_by_name.ps1, called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks to /u/danodemano
-::                      - stage_2_de-bloat:metro:    Remove line that deletes users OneDrive folder. We still remove OneDrive, but at least now we're not nuking user files. This is a half-fix until I figure out how to check if OneDrive is actually in use or not.
-::                      ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
-::                      * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
-::                      + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
+:: Version:       7.2.1 ! tron.bat:prep:update_check: Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
+::                      ! tron.bat:prep:log_header:   Fix missing closing quote on one line of log header creation section
+::                      + tron.bat:prep:f8_key:       Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
+::                      / tron.bat.prep:f8_key:       Rename batch label from "win_ver_check" to "enable_f8_key_on_bootup"
+::                7.2.0 + tron.bat:prep:              Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
+::                      + tron.bat:prep:              Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
+::                      ! tron.bat:runlocation:       Fix detection of running from TEMP folder
+::                      * tron.bat:autorun:           If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks to /u/staticxtasy, /u/Chimaera12 and /u/ComputersByte
+::                      * stage_1_prep:SMART:         Turn screen yellow if SMART errors are detected. This is just to alert the user something is amiss
+::                      + stage_2_de-bloat:metro:     Add OEM_modern_apps_to_target_by_name.ps1, called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks to /u/danodemano
+::                      - stage_2_de-bloat:metro:     Remove line that deletes users OneDrive folder. We still remove OneDrive, but at least now we're not nuking user files. This is a half-fix until I figure out how to check if OneDrive is actually in use or not.
+::                      ! stage_4_telemetry:bugfix:   Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks to /u/cuddlychops06, /u/staticextasy, and /u/Chimaera12
+::                      * stage_4_telemetry:updates:  Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks to /u/sofakingdead for suggestion
+::                      + stage_4_telemetry:logging:  Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -204,7 +207,7 @@ if "%~dp0"=="%TEMP%\tron\" (
 	echo  first places to get wiped when Tron starts. Run Tron
 	echo  directly from your Desktop. Example of correct path:
 	echo.
-	echo   %USERPROFILE%\Desktop\tron\tron.bat
+	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
 	echo.
 	echo  Tron will now quit.
 	echo.
@@ -288,7 +291,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 	if /i %DEV_MODE%==no (
 		color 0c
 		echo.
-		echo  ^! ERROR 
+		echo  ^! ERROR
 		echo.
 		echo    Tron does not support "%WIN_VER%" ^(yet^).
 		echo.
@@ -345,11 +348,10 @@ if /i %RESUME_DETECTED%==yes (
 	REM Quick check for a faulty resume detection
 	if not exist tron_stage.txt (
 		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
-		REM Bail out
-		goto detect_win_ver
-		)
+		goto enable_f8_key_on_bootup
+	)
 
-	:: Otherwise read in the values from the previous run
+	REM Otherwise read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
 	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
 )
@@ -364,12 +366,10 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 
-:: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft disables it by default starting in Windows 8 and up)
-:: Read WIN_VER and run the scan if we're on some derivative of 8. We don't need to check for Server 2012 because it's set to "legacy" by default.
-:detect_win_ver
-if "%WIN_VER:~0,9%"=="Windows 8" (
-	bcdedit /set {default} bootmenupolicy legacy
-	)
+:: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
+:enable_f8_key_on_bootup
+if "%WIN_VER:~0,9%"=="Windows 8" bcdedit /set {default} bootmenupolicy legacy
+if "%WIN_VER:~0,9%"=="Windows 1" bcdedit /set {default} bootmenupolicy legacy
 
 
 :: PREP: Update check
@@ -388,8 +388,10 @@ if /i %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_DATE=%WORKING2%
 	)
 
+
 :: Reset window title since wget clobbers it
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+
 
 :: Notify if an update was found
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -425,7 +427,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k %TEMP%\sha256sums.txt "%USERPROFILE%\Desktop\Tron*.exe" | find /i "Files matched: 1"
+		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | find /i "Files matched: 1"
 		if !ERRORLEVEL!==0 (
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
 			echo.
@@ -443,7 +445,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			pause
 			REM Clean up after ourselves
 			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
-			del /f /q %TEMP%\sha256sums.txt
+			del /f /q "%TEMP%\sha256sums.txt"
 			exit
 		)
 	)
@@ -455,9 +457,10 @@ if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
 :skip_update_check
 
 
-
 :: PREP: Execute config dump if requested
 if /i %CONFIG_DUMP%==yes (
+	:: We need this set/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
+	SETLOCAL ENABLEDELAYEDEXPANSION
 	cls
 	echo.
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^) config dump
@@ -507,7 +510,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    SSD_DETECTED:           %SSD_DETECTED%
-	echo    TEMP:                   %TEMP%
+	echo    TEMP:                   !TEMP!
 	echo    TIME:                   %TIME%
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
 	echo    REPO_BTSYNC_KEY:        %REPO_BTSYNC_KEY%
@@ -519,12 +522,10 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
-	:: We need this set/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
-	SETLOCAL ENABLEDELAYEDEXPANSION
 	echo    WIN_VER:                !WIN_VER!
-	ENDLOCAL DISABLEDELAYEDEXPANSION
 	echo    WMIC:                   %WMIC%
 	echo.
+	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
 )
 
@@ -593,10 +594,7 @@ if /i not %EULA_ACCEPTED%==yes (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-::::::::::::::::::::::
-:: SAFE MODE CHECKS ::
-::::::::::::::::::::::
-:: Check if we're in safe mode
+:: PREP: Check if we're in safe mode
 SETLOCAL ENABLEDELAYEDEXPANSION
 set CHOICE=y
 if /i not "%SAFE_MODE%"=="yes" (
@@ -628,7 +626,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
-:: Check if we have network support
+:: PREP: Check if we have network support
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 	color 0e
 	cls
@@ -651,9 +649,7 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
-::::::::::::::::::::
-:: WELCOME SCREEN ::
-::::::::::::::::::::
+:: PREP: Welcome screen
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfection tools           *
@@ -697,9 +693,7 @@ echo.
 pause
 
 
-::::::::::::::::::::::::
-:: EMAIL CONFIG CHECK ::
-::::::::::::::::::::::::
+:: PREP: Email report check
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
@@ -727,6 +721,7 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 
+
 ::::::::::::::::::
 :: EXECUTE JOBS ::
 ::::::::::::::::::
@@ -735,11 +730,11 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
 
 
-:: Last check to see if we're in autorun (-a) mode and NOT in Safe Mode. If true, reboot.
+:: Check if autorun (-a) flag was used but we're NOT in Safe Mode. If true, reboot.
 if /i %AUTORUN%==yes (
 	if /i not "%SAFE_MODE%"=="yes" (
 		call :log "%CUR_DATE% %TIME% ! Autorun flag was used, but we're not in Safe Mode. Rebooting in 10 seconds."
-		if /i %DRY_RUN%==no ( 
+		if /i %DRY_RUN%==no (
 			bcdedit /set {default} safeboot network
 			shutdown -r -f -t 10
 			pause
@@ -791,7 +786,7 @@ if /i not "%*"=="" echo %*> tron_flags.txt
 
 :: JOB: Run a quick SMART check and notify if there are any drives with problems
 setlocal enabledelayedexpansion
-%WMIC% diskdrive get status > %TEMP%\tron_smart_results.txt
+%WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
 	findstr /C:"%%i" %TEMP%\tron_smart_results.txt
 	if !ERRORLEVEL!==0 (
@@ -839,7 +834,7 @@ call :log "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call :log "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager
+call :log "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -863,10 +858,10 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Disable mode and disable screen saver
 if /i %DRY_RUN%==no (
-		call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
-		title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
-		start "" stage_0_prep\caffeine\caffeine.exe -noicon
-		call :log "%CUR_DATE% %TIME%    Done."
+	call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
+	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
+	start "" stage_0_prep\caffeine\caffeine.exe -noicon
+	call :log "%CUR_DATE% %TIME%    Done."
 )
 
 
@@ -897,13 +892,16 @@ call :log "%CUR_DATE% %TIME%    Done."
 :: JOB: Check WMI and repair if necessary
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
 call :log "%CUR_DATE% %TIME%    Checking WMI health..."
-if /i %DRY_RUN%==yes goto skip_repair_wmi
-%WMIC% timezone >NUL
-if /i not %ERRORLEVEL%==0 (
-    call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Running WMI repair. This will take time, please be patient..."
-	call stage_0_prep\repair_wmi\repair_wmi.bat
+setlocal enabledelayedexpansion
+if /i %DRY_RUN%==no (
+	%WMIC% timezone >NUL
+	if /i not !ERRORLEVEL!==0 (
+		call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
+		call :log "              This will take time, please be patient..."
+		call stage_0_prep\repair_wmi\repair_wmi.bat
 	)
-:skip_repair_wmi
+)
+setlocal disabledelayedexpansion
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -918,9 +916,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
 call :log "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
 call :log "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
-if /i %DRY_RUN%==no (
-	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
-	)
+if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -929,7 +925,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
 call :log "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
 if /i %DRY_RUN%==no (
 	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
-	:: Copy TDSSKiller log into the main Tron log
+	:: Dump TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
 	)
@@ -938,8 +934,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Purge oldest shadow copies
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
-:: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
-:: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
+:: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
+:: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
@@ -961,7 +957,7 @@ call :log "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%
 if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
-	)
+)
 call :log "%CUR_DATE% %TIME%    Done."
 call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
 
@@ -1132,16 +1128,16 @@ if /i %TARGET_METRO%==yes (
 		net start AppXSVC >nul 2>&1
 		REM Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
-		
+
 		REM Do the removal
 		if /i not "%WIN_VER:~0,9%"=="Windows 1" (
-			
+
 			REM Windows 8/8.1 version
 			powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-		
+
 		) else (
-		
+
 			REM Windows 10 version
 			:: Kill forced OneDrive integration
 			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -1155,7 +1151,7 @@ if /i %TARGET_METRO%==yes (
 			rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			
+
 			REM "Get Office"
 			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*officehub*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *officehub* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
@@ -1191,11 +1187,11 @@ if /i %TARGET_METRO%==yes (
 			REM "Windows Feedback"
 			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*windowsfeedback*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *windowsfeedback* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-			
+
 			REM "Xbox"
 			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-			
+
 			REM Call /u/danodemano's script to do removal of OEM Modern App's
 			REM powershell -noprofile -noexit -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
 			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
@@ -1445,7 +1441,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
-) 
+)
 
 :: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
 set RUN_7_OR_8_TELEM=no
@@ -1457,10 +1453,10 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	if /i %DRY_RUN%==no (
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM UPDATES
-		
+
 		REM Compatibility update for Windows 7 (is a scanner)
 		wusa /uninstall /kb:2977759 /quiet /norestart
-		
+
 		REM Compatibility update for Windows 7
 		wusa /uninstall /kb:2952664 /quiet /norestart
 
@@ -1469,10 +1465,10 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 
 		REM New update client for Windows 7
 		wusa /uninstall /kb:3083710 /quiet /norestart
-		
+
 		REM New update client for Windows 8/8.1
 		wusa /uninstall /kb:3083711 /quiet /norestart
-		
+
 		REM Update that enables you to upgrade from Windows 7 to a later version of Windows
 		wusa /uninstall /kb:2990214 /quiet /norestart
 
@@ -1499,11 +1495,11 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		wusa /uninstall /kb:2902907 /quiet /norestart
 		wusa /uninstall /kb:2922324 /quiet /norestart
 
-		
+
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM BLOCK BAD UPDATES
 		start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324
-				
+
 
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM SCHEDULED TASKS
