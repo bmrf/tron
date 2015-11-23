@@ -1,14 +1,14 @@
-There are four files in this directory that determine what Tron targets for bloatware removal:
+There are four files in these sub-directories that determine what Tron targets for bloatware removal:
 
-1. programs_to_target_by_name.txt
-2. programs_to_target_by_GUID.bat
-3. toolbars_BHOs_to_target_by_GUID.bat
-4. OEM_modern_apps_to_target_by_name.ps1
+1. \oem\programs_to_target_by_name.txt
+2. \oem\programs_to_target_by_GUID.bat
+3. \oem\toolbars_BHOs_to_target_by_GUID.bat
+4. \metro\metro_OEM_modern_apps_to_target_by_name.ps1
 
 You can customize any of these files to tweak what Tron targets for removal.
 
 
-# programs_to_target_by_name.txt
+# \oem\programs_to_target_by_name.txt
 
  Insert program NAMES, one per line, into the file. Tron will try to uninstall any program
  whose name matches one of the names in this file. Don't put any special characters around 
@@ -24,14 +24,14 @@ Example list:
 So in this example,  Dell%%  would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
 
 
-#  programs_to_target_by_GUID.bat
+#  \oem\programs_to_target_by_GUID.bat
 
  List specific GUIDs to target, one per line. This file is batch (not flat text). The reason it's
  batch instead of plain text is so you can put comments over each GUID describing what it is.
  
 
  
-#  toolbars_BHOs_to_target_by_GUID.bat
+#  \oem\toolbars_BHOs_to_target_by_GUID.bat
 
  List specific GUIDs to target, one per line. This file is batch instead of plain text as well.
  It's separate from programs_to_target_by_GUID.bat just for organization; Tron executes both files
@@ -39,7 +39,7 @@ So in this example,  Dell%%  would catch and attempt to remove both "Dell Gettin
  
  
  
-#  OEM_modern_apps_to_target_by_name.ps1
+#  \metro\metro_OEM_modern_apps_to_target_by_name.ps1
 
  This is a Powershell script listing pre-loaded OEM "Modern" apps. Add any Windows 10 "Modern" apps
  you want to remove to this list.
