@@ -3,7 +3,7 @@ There are four files in this directory that determine what Tron targets for bloa
 1. programs_to_target_by_name.txt
 2. programs_to_target_by_GUID.bat
 3. toolbars_BHOs_to_target_by_GUID.bat
-4. modern_apps_to_target_by_name.ps1
+4. OEM_modern_apps_to_target_by_name.ps1
 
 You can customize any of these files to tweak what Tron targets for removal.
 
@@ -21,12 +21,7 @@ Example list:
     Dell Video%%
     %%Toolbar%%
 
-So in this example:
-	
-	Dell%%
-
-...would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
-
+So in this example,  Dell%%  would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
 
 
 #  programs_to_target_by_GUID.bat
@@ -44,7 +39,7 @@ So in this example:
  
  
  
-#  modern_apps_to_target_by_name.ps1
+#  OEM_modern_apps_to_target_by_name.ps1
 
  This is a Powershell script listing pre-loaded OEM "Modern" apps. Add any Windows 10 "Modern" apps
  you want to remove to this list.
