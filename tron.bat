@@ -12,6 +12,11 @@
 ::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
 ::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
 ::                      / tron.bat.prep:f8_key:        Rename outdated batch label "win_ver_check" to "enable_f8_key_on_bootup"
+::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run. 
+::                                                     This is to make sure it's running if we pick up where we left off at some point later than Stage 0
+::                                                     (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
+::                      * stage_0_prep:caffeine:       Only launch Caffeine if it isn't running. The only scenario where this should happen is if we're resuming an interrupted run and picking up in Stage 0
+::                      / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -56,7 +61,7 @@ call :set_cur_date
 
 
 :::::::::::::::
-:: VARIABLES :: ---------------- These are the defaults. Change them if you want ------------------- ::
+:: VARIABLES :: ----------------- These are the defaults. Change them if you want -------------------- ::
 :::::::::::::::
 :: Rules for variables:
 ::  * NO quotes!                    (bad:  "c:\directory\path"       )
@@ -356,6 +361,9 @@ if /i %RESUME_DETECTED%==yes (
 	:: Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
 	:: even if a reboot didn't happen
 	::reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
+	
+	:: We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
+	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
 )
 
@@ -854,6 +862,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 if /i %DRY_RUN%==no (
 	call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
+	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
+	start "" stage_0_prep\caffeine\caffeine.exe -appexit
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	call :log "%CUR_DATE% %TIME%    Done."
 )
@@ -1070,9 +1080,7 @@ if %PRESERVE_POWER_SCHEME%==yes (
 		if /i "%WIN_VER:~0,9%"=="Microsoft" %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
 		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
-		REM Shut down Caffeine which has kept the system awake during the Tron run
-		stage_0_prep\caffeine\caffeine.exe -appexit
-	)
+)
 call :log "%CUR_DATE% %TIME%    Done."
 )
 
@@ -1154,6 +1162,9 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
+
+:: JOB: Shut down Caffeine which has kept the system awake during the Tron run
+stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
