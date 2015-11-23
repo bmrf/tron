@@ -4,11 +4,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.3.0 * Tron project:               Move code for Stages 1-6 into their own sub-scripts in each job's respective directory. This should help modularize Tron and make it easier to work on subsections. Tron.bat now calls those job's sub-scripts instead of embedding their code directly
-::                      ! tron.bat:prep:update_check: Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
-::                      ! tron.bat:prep:log_header:   Fix missing closing quote on one line of log header creation section
-::                      + tron.bat:prep:f8_key:       Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
-::                      / tron.bat.prep:f8_key:       Rename batch label from "win_ver_check" to "enable_f8_key_on_bootup"
+:: Version:       7.3.0 * Tron project modularization: Move code for Stages 1-6 into their own sub-scripts in each job's respective directory. Tron.bat 
+::                                                     was getting pretty large and this made it harder to work on it, so moving various stages code into
+::                                                     their own scripts should help simplify things and make it easier to find issues in a particular section.
+::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
+::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
+::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
+::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
+::                      / tron.bat.prep:f8_key:        Rename outdated batch label "win_ver_check" to "enable_f8_key_on_bootup"
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
