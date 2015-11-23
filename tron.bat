@@ -768,7 +768,7 @@ if /i %RESUME_DETECTED%==no (
 	call :log "-------------------------------------------------------------------------------"
 	call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
 	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
-	call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%
+	call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call :log "                          Command-line flags: %*"
 	call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
