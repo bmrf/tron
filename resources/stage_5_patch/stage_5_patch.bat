@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       0.9.0 + Initial write
+:: Version:       1.0.0 + Initial write
 @echo off
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
