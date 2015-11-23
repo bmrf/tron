@@ -15,7 +15,7 @@
 ::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run. 
 ::                                                     This is to make sure it's running if we pick up where we left off at some point later than Stage 0
 ::                                                     (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
-::                      * stage_0_prep:caffeine:       Only launch Caffeine if it isn't running. The only scenario where this should happen is if we're resuming an interrupted run and picking up in Stage 0
+::                      ! stage_0_prep:caffeine:       Make sure not to launch two Caffeine instances. The only scenario where this should happen is if we're resuming an interrupted run and picking up in Stage 0
 ::                      / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
@@ -863,7 +863,7 @@ if /i %DRY_RUN%==no (
 	call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
-	start "" stage_0_prep\caffeine\caffeine.exe -appexit
+	taskkill /im "caffeine.exe" > nul 2>&1
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	call :log "%CUR_DATE% %TIME%    Done."
 )
