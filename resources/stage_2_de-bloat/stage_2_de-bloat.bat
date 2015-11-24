@@ -37,25 +37,25 @@ if /i "%LOGFILE%"=="" (
 :: JOB: Remove crapware programs, phase 1: by specific GUID
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by specific GUID)..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat"
-if /i %DRY_RUN%==no call stage_2_de-bloat\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat"
+if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 2: wildcard by name
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by name)..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\programs_to_target_by_name.txt"
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3, toolbars by specific GUID..."
-call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat"
-if /i %DRY_RUN%==no call stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
+call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat"
+if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -145,7 +145,7 @@ if /i %TARGET_METRO%==yes (
 
 			REM Call /u/danodemano's script to do removal of OEM Modern App's
 			REM powershell -noprofile -noexit -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
-			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
+			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_OEM_modern_apps_to_target_by_name.ps1"
 		)
 	)
 )
