@@ -167,7 +167,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=7.3.0
+set SCRIPT_VERSION=8.0.0
 set SCRIPT_DATE=2015-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -235,7 +235,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
-	echo                    -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -576,7 +576,7 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  *                                                                       *
 	echo  * Tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
-	echo  * ^(MBAM, KVRT, etc^) are bound by their respective licenses. It is        *
+	echo  * ^(MBAM, KVRT, etc^) are bound by their respective licenses. It is       *
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
 	echo  * tools in whatever environment you're in.                              *
 	echo  *                                                                       *
@@ -608,7 +608,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 	echo  in "Safe Mode with Networking" in order to download
 	echo  Windows and anti-virus definition updates.
 	echo.
-	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n]
+	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
 	if /i "!CHOICE!"=="y" (
 		echo.
 		echo  Rebooting system to Safe Mode in 7 seconds...
@@ -692,6 +692,7 @@ if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
 echo.
 :welcome_screen_trailer
 pause
+cls
 
 
 :: PREP: Email report check
