@@ -79,7 +79,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
-if /i %SKIP_KASPERSKY_SCAN%==no (
+if /i %SKIP_KASPERSKY_SCAN%==yes (
 	call :log "%CUR_DATE% %TIME% ! SKIP_KASPERSKY_SCAN (-sk) set. Skipping KVRT scan."
 ) else (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
