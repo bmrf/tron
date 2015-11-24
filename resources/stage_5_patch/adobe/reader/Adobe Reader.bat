@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1-TRON + Create BINARY_VERSION and PATCH_VERSION variables to make updates easier
+:: Version:       1.0.2-TRON ! Suppress output on desktop shortcut deletion
+::                1.0.1-TRON + Create BINARY_VERSION and PATCH_VERSION variables to make updates easier
 ::                1.0.0-TRON + Initial build for Tron, modified from PDQ Deploy pack installer version
 ::                             Remove many items not necessary for Tron
 ::                             Script inherits log parameters when called by Tron
@@ -20,8 +21,8 @@ set FLAGS=/sAll /rs /msi /qb- /norestart EULA_ACCEPT=YES REMOVE_PREVIOUS=YES
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2015-10-14
+set SCRIPT_VERSION=1.0.2-TRON
+set SCRIPT_UPDATED=2015-11-24
 pushd %~dp0
 
 
@@ -45,8 +46,8 @@ sc delete AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q C:\windows\tasks\Adobe*.job >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Delete the desktop icons
-if exist "%PUBLIC%\Desktop\Adobe Reader XI.lnk" del /s /q "%PUBLIC%\Desktop\Adobe Reader XI.lnk"
-if exist "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" del /s /q "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk"
+if exist "%PUBLIC%\Desktop\Adobe Reader XI.lnk" del /s /q "%PUBLIC%\Desktop\Adobe Reader XI.lnk" >NUL
+if exist "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" del /s /q "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" >NUL
 
 :: Delete the Start Menu icon
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" del /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" >NUL
