@@ -1,4 +1,4 @@
-# Thanks to /u/danodemano
+# Thanks to /u/kronflux
 # Modified for use with Tron by /u/vocatus on reddit.com/r/TronScript
 $ErrorActionPreference = "SilentlyContinue"
 
