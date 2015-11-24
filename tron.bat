@@ -9,6 +9,7 @@
 ::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
 ::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly. This is just the initial
 ::                                                     breakout; I'll likely continue shunting other chunks of code (prep section is a good candidate) into sub-scripts.
+::                                                     This also lays the groundwork for future highly-requested features, such as skip-to-stage, etc
 ::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
 ::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
 ::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
