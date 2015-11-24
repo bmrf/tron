@@ -4,10 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       7.3.0 * Tron project modularization: Move code for Stages 1-6 into their own sub-scripts in each job's respective directory. Tron.bat 
-::                                                     was getting pretty large and this made it harder to work on it, so moving various stages code into
-::                                                     their own scripts should help simplify things and make it easier to find issues in a particular section.
-::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
+:: Version:       8.0.0 * Tron modularization project: Move code for Stages 1-6 into their own sub-scripts in each job's respective directory. Tron.bat 
+::                                                     was getting pretty large and more difficult to work on, so moving the various stage's code into their
+::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
+::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly. This is just the initial
+::                                                     breakout; I'll likely continue shunting other chunks of code (prep section is a good candidate) into sub-scripts.
 ::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
 ::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
 ::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
@@ -15,7 +16,7 @@
 ::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run. 
 ::                                                     This is to make sure it's running if we pick up where we left off at some point later than Stage 0
 ::                                                     (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
-::                      ! stage_0_prep:caffeine:       Make sure not to launch two Caffeine instances. The only scenario where this should happen is if we're resuming an interrupted run and picking up in Stage 0
+::                      ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
 ::                      / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
