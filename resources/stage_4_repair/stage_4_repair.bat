@@ -260,14 +260,12 @@ call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 :skip_telem_removal
 
 
-
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
-call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused binaries..."
-:: Thanks to reddit.com/user/nommaddave
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+	call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused binaries..."
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
+	call :log "%CUR_DATE% %TIME%    Done."
 )
-call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Network repair (minor). Thanks to /u/chinpopocortez
