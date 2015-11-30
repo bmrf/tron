@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::
 :: STAGE 4: Repair :: // Begin jobs
 :::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_4_repair begin..."
 
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
@@ -297,7 +297,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_4_repair complete."
 
 
 
