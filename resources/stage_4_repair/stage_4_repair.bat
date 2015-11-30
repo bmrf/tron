@@ -11,7 +11,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_4_SCRIPT_VERSION=1.0.0
-set STAGE_4_SCRIPT_DATE=2015-12-xx
+set STAGE_4_SCRIPT_DATE=2015-11-30
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
