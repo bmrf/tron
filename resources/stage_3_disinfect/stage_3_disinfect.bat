@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::::::
 :: STAGE 3: Disinfect :: // Begin jobs
 ::::::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_3_disinfect begin..."
 
 
 REM :: JOB: RogueKiller
@@ -114,7 +114,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_3_disinfect complete."
 
 
 
