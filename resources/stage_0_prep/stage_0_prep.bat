@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::
 :: STAGE 0: PREP :: // Begin jobs
 :::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_0_prep begin..."
 
 
 
@@ -80,7 +80,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Disable mode and disable screen saver
 if /i %DRY_RUN%==no (
-	call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
+	call :log "%CUR_DATE% %TIME%    Launch job "Temporariliy disable system sleep and screensaver'..."
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
 	taskkill /im "caffeine.exe" > nul 2>&1
@@ -115,7 +115,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Check WMI and repair if necessary
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
-call :log "%CUR_DATE% %TIME%    Checking WMI health..."
+call :log "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
 setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no (
 	%WMIC% timezone >NUL
@@ -131,7 +131,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Backup registry
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
-call :log "%CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"..."
+call :log "%CUR_DATE% %TIME%    Launch job: 'Back up registry' to "%LOGPATH%"..."
 if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
 call :log "%CUR_DATE% %TIME%    Done."
 
@@ -163,7 +163,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
-		call :log "%CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Win7 and up)..."
+		call :log "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
@@ -188,7 +188,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_0_prep complete."
 
 
 
