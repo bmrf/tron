@@ -11,7 +11,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_1_SCRIPT_VERSION=1.0.0
-set STAGE_1_SCRIPT_DATE=2015-11-23
+set STAGE_1_SCRIPT_DATE=2015-12-xx
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -33,6 +33,8 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN :: // Begin jobs
 ::::::::::::::::::::::::
+call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
+
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
@@ -126,6 +128,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 
+:: Stage complete
+call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
 
 
 
