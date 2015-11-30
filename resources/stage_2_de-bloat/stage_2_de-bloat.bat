@@ -55,7 +55,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
-call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3, toolbars by specific GUID..."
+call :log "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (toolbars by specific GUID)..."
 call :log "%CUR_DATE% %TIME%    Customize here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat"
 if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call :log "%CUR_DATE% %TIME%    Done."
