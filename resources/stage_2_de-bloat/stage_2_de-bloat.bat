@@ -155,7 +155,7 @@ if /i %TARGET_METRO%==yes (
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_2_de-bloat complete."
 
 
 
