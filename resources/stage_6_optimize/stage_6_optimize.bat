@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 :: STAGE 6: Optimize :: // Begin jobs
 :::::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_6_optimize begin..."
 
 
 :: JOB: Reset the system page file settings
@@ -71,7 +71,7 @@ if "%SSD_DETECTED%"=="yes" (
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_6_optimize complete."
 
 
 
@@ -84,3 +84,4 @@ call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
 echo:%~1 >> "%LOGPATH%\%LOGFILE%"
 echo:%~1
 goto :eof
+	
