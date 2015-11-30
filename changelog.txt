@@ -54,7 +54,7 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
-    - Remove AI RoboForm Toolbar
+	- Remove AI RoboForm Toolbar
 	- Remove LastPass Toolbar
 
 - Remove LastPass Toolbar
