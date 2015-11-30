@@ -56,6 +56,8 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
     - Remove AI RoboForm Toolbar
 	- Remove LastPass Toolbar
+
+- Remove LastPass Toolbar
  . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
 
@@ -133,7 +135,8 @@ STAGE 1: Tempclean
 
 STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
-	- Remove AVG 2014%% wildcard entry
+
+- Remove AVG 2014%% wildcard entry
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
  + \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1   //  Sub-script to remove OEM (non-Microsoft) Modern Apps. Thanks to /u/danodemano
@@ -633,10 +636,14 @@ STAGE 1: Tempclean
  . CCLeaner                      v5.09.5343
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.7-TRON
-	* Merge nemchik's pull request to delete .blf and.regtrans-ms files
-	* Merge nemchik's pull request to purge Flash and Java temp locations
-	* Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
-	! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
+
+* Merge nemchik's pull request to delete .blf and.regtrans-ms files
+
+* Merge nemchik's pull request to purge Flash and Java temp locations
+
+* Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
+
+! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
  . USB Device Cleanup            v1.1.0
 
 STAGE 2: De-bloat
@@ -709,7 +716,8 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
     - Remove HP%% wildcard to prevent killing HP printer drivers
-	+ Add additional entries based on user feedback
+
++ Add additional entries based on user feedback
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     + Add significant amount of specific HP entries to compensate for HP%% wildcard removal
     + Greatly expand list based on user feedback
@@ -848,9 +856,12 @@ STAGE 2: De-bloat
     + Add "SocialSafe"
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     + Add many additional entries, based on this thread:
-	     https://www.reddit.com/r/TronScript/comments/3iw0qx/guid_dump/cuksslt
-	  Full change list:
-	     https://github.com/bmrf/tron/commit/11cea132dc24d0bd8f4f2fff2cf718c7d71ffe53
+
+     https://www.reddit.com/r/TronScript/comments/3iw0qx/guid_dump/cuksslt
+
+  Full change list:
+
+     https://github.com/bmrf/tron/commit/11cea132dc24d0bd8f4f2fff2cf718c7d71ffe53
 
 STAGE 3: Disinfect
  * Sophos Virus Removal Tool     v2.5.4, update defs
@@ -1973,7 +1984,8 @@ STAGE 1: Tempclean
 STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target_by_name.txt
     + Add quite a few entries, thanks to /u/mnbitcoin
-	* Remove all specific HP sub-entries (HP Advisor, HP Setup, etc) and collapse into simply "HP%%"
+
+* Remove all specific HP sub-entries (HP Advisor, HP Setup, etc) and collapse into simply "HP%%"
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
     + Add quite a few entries, thanks to /u/tuxedo_jack
 
@@ -3461,8 +3473,10 @@ tron.bat                         v3.4.0
 STAGE 0: Prep
  . Rkill                         v2.6.8.0
  + TDSS Killer                   v3.0.0.40
-	` Add to Tron; remove from manual tools. Thanks to /u/cuddlychops06
-	` Quarantines %LOGPATH%\tron_quarantined_files by default
+
+` Add to Tron; remove from manual tools. Thanks to /u/cuddlychops06
+
+` Quarantines %LOGPATH%\tron_quarantined_files by default
 
 STAGE 1: Tempclean
  . CCLeaner                      v4.17.4808
@@ -3619,7 +3633,8 @@ STAGE 1: Tempclean
 STAGE 2: Disinfect
  * Sophos Virus Removal Tool     v2.5.3, update defs and engine
     / Disable using the Windows service method to scan in config.xml. Was causing it to stall
-	/ Enable scanning of archives in config.xml
+
+/ Enable scanning of archives in config.xml
  * Vipre Rescue Scanner          v7.0.7.8, update defs
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
