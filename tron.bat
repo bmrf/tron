@@ -735,7 +735,7 @@ if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunO
 :: Check if autorun (-a) flag was used but we're NOT in Safe Mode. If true, reboot.
 if /i %AUTORUN%==yes (
 	if /i not "%SAFE_MODE%"=="yes" (
-		call :log "%CUR_DATE% %TIME% ! Autorun flag was used, but we're not in Safe Mode. Rebooting in 10 seconds."
+		call :log "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 10 seconds."
 		if /i %DRY_RUN%==no (
 			bcdedit /set {default} safeboot network
 			shutdown -r -f -t 10
@@ -764,7 +764,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 if /i %RESUME_DETECTED%==no (
 ::	cls
 	call :log "-------------------------------------------------------------------------------"
-	call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
+	call :log "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
 	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 	call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
@@ -904,7 +904,7 @@ call stage_6_optimize\stage_6_optimize.bat
 :stage_7_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_7_wrap-up>tron_stage.txt
-call :log "%CUR_DATE% %TIME%   stage_7_wrap-up jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
 
 
 
