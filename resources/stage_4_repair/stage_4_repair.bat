@@ -264,7 +264,7 @@ call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	call :log "%CUR_DATE% %TIME%    Running DISM cleanup against unused binaries..."
+	call :log "%CUR_DATE% %TIME%    Launch job 'Run DISM cleanup against unused binaries'..."
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
 	call :log "%CUR_DATE% %TIME%    Done."
 )
