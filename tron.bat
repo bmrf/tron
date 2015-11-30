@@ -4,17 +4,16 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.0.0 * Tron modularization project: Move code for Stages 1-6 into their own sub-scripts in each job's respective directory. Tron.bat 
+:: Version:       8.0.0 * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
 ::                                                     was getting pretty large and more difficult to work on, so moving the various stage's code into their
 ::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
-::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly. This is just the initial
-::                                                     breakout; I'll likely continue shunting other chunks of code (prep section is a good candidate) into sub-scripts.
+::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
 ::                                                     This also lays the groundwork for future highly-requested features, such as skip-to-stage, etc
 ::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
 ::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
-::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8.
+::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8
 ::                      / tron.bat.prep:f8_key:        Rename outdated batch label "win_ver_check" to "enable_f8_key_on_bootup"
-::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run. 
+::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run
 ::                                                     This is to make sure it's running if we pick up where we left off at some point later than Stage 0
 ::                                                     (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
 ::                      ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
@@ -608,7 +607,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 	echo  in "Safe Mode with Networking" in order to download
 	echo  Windows and anti-virus definition updates.
 	echo.
-	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
+	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n]
 	if /i "!CHOICE!"=="y" (
 		echo.
 		echo  Rebooting system to Safe Mode in 7 seconds...
@@ -854,7 +853,7 @@ title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call :log "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."	
+	call :log "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
