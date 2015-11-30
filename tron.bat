@@ -19,7 +19,7 @@
 ::                      ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
 ::                      / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 ::
-:: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
+:: Usage:         Run this script in aSafe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
 ::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
@@ -1038,9 +1038,9 @@ if /i %SELF_DESTRUCT%==yes (
 
 :: Display and log the job summary
 :: Color window based on run results so we can see at a glance if it's done
-color 27
-if /i %WARNINGS_DETECTED%==yes color 0e
-if /i %ERRORS_DETECTED%==yes color 0c
+color 2f
+if /i %WARNINGS_DETECTED%==yes color e0
+if /i %ERRORS_DETECTED%==yes color cf
 call :log "-------------------------------------------------------------------------------"
 call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
 call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
@@ -1097,7 +1097,6 @@ if /i %SELF_DESTRUCT%==yes (
 :end_and_skip_shutdown
 if /i %NO_PAUSE%==no pause
 ENDLOCAL
-color
 exit /B
 :: That's all, folks
 
@@ -1158,4 +1157,3 @@ for %%i in (%*) do (
 	)
 goto :eof
 :eof
-color
