@@ -22,7 +22,7 @@ if /i "%LOGFILE%"=="" (
 	echo   You cannot run this script directly - it must be 
 	echo   called from Tron.bat during a Tron run.
 	echo.
-	echo   Navigate to \resources and execute Tron.bat
+	echo   Navigate to Tron's root folder and execute Tron.bat
 	echo.
 	pause
 	exit /b 1
@@ -84,4 +84,3 @@ call :log "%CUR_DATE% %TIME%   stage_6_optimize complete."
 echo:%~1 >> "%LOGPATH%\%LOGFILE%"
 echo:%~1
 goto :eof
-	
