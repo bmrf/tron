@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN :: // Begin jobs
 ::::::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_1_tempclean begin..."
 
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
@@ -129,7 +129,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_1_tempclean complete."
 
 
 
