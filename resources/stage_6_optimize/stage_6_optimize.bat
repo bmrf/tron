@@ -19,7 +19,7 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	echo  ERROR
 	echo.
-	echo   You cannot run this script directly - it must be 
+	echo   You cannot run this script directly - it must be
 	echo   called from Tron.bat during a Tron run.
 	echo.
 	echo   Navigate to Tron's root folder and execute Tron.bat
@@ -27,9 +27,9 @@ if /i "%LOGFILE%"=="" (
 	pause
 	exit /b 1
 )
-	
-	
-	
+
+
+
 :::::::::::::::::::::::
 :: STAGE 6: Optimize :: // Begin jobs
 :::::::::::::::::::::::
@@ -61,10 +61,8 @@ if "%SSD_DETECTED%"=="yes" (
 	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call :log "%CUR_DATE% %TIME%    Done."
 )
-	
-	
-:stage_6_optimize_end
 
+:stage_6_optimize_end
 
 
 
