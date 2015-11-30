@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
+:: Version:       1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
+::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
 ::                           + Add logging and -v flag (VERBOSE) support
 ::                           / Change Scheduled Tasks cleanup to use "/disable" flag instead of "/delete" in case those jobs are needed later on
 ::                1.0.3-TRON - Remove "Kill forced OneDrive integration" and move it to Windows 10 Metro de-bloat section of main Tron.bat
@@ -32,8 +33,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.4-TRON
-set SCRIPT_UPDATED=2015-11-16
+set SCRIPT_VERSION=1.0.5-TRON
+set SCRIPT_UPDATED=2015-11-30
 
 
 :::::::::::::
@@ -177,83 +178,83 @@ start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_wind
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
 if %VERBOSE%==yes (
-	schtasks /disable /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-	schtasks /disable /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-	schtasks /disable /F /TN "\Microsoft\Windows\Autochk\Proxy"
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-	schtasks /disable /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-	schtasks /disable /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
-	schtasks /disable /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-	schtasks /disable /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser"
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\aitagent"
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\programdataupdater"
-	schtasks /disable /f /tn "\Microsoft\Windows\autochk\proxy"
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator"
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask"
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip"
-	schtasks /disable /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector"
-	schtasks /disable /f /tn "\Microsoft\Windows\maintenance\winsat"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\activateWindowssearch"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\configureinternettimeservice"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ehdrminit"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\installplayready"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\mcupdate"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ocuractivate"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ocurdiscovery"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscovery">nul 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pvrrecoverytask"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pvrscheduletask"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\registersearch"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\reindexsearchroot"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask"
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\updaterecordpath"
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
+	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
+	schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
+	schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
+	schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
+	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser"
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\aitagent"
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\programdataupdater"
+	schtasks /delete /f /tn "\Microsoft\Windows\autochk\proxy"
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator"
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask"
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip"
+	schtasks /delete /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector"
+	schtasks /delete /f /tn "\Microsoft\Windows\maintenance\winsat"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\activateWindowssearch"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\configureinternettimeservice"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ehdrminit"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\installplayready"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\mcupdate"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ocuractivate"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ocurdiscovery"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscovery">nul 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrrecoverytask"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrscheduletask"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\registersearch"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\reindexsearchroot"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask"
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath"
 ) else (
-	schtasks /disable /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Autochk\Proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\PI\Sqm-Tasks" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\aitagent" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\application experience\programdataupdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\autochk\proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\maintenance\winsat" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\activateWindowssearch" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\configureinternettimeservice" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ehdrminit" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\installplayready" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\mcupdate" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ocuractivate" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\ocurdiscovery" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscovery">> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pvrrecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\pvrscheduletask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\registersearch" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\reindexsearchroot" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	schtasks /disable /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\aitagent" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\application experience\programdataupdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\autochk\proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\maintenance\winsat" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\activateWindowssearch" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\configureinternettimeservice" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ehdrminit" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\installplayready" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\mcupdate" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ocuractivate" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\ocurdiscovery" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscovery">> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrrecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrscheduletask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\registersearch" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\reindexsearchroot" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 
