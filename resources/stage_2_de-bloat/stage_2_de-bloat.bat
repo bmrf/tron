@@ -11,7 +11,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_2_SCRIPT_VERSION=1.0.0
-set STAGE_2_SCRIPT_DATE=2015-11-23
+set STAGE_2_SCRIPT_DATE=2015-12-xx
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -33,6 +33,8 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 :: STAGE 2: De-Bloat :: // Begin jobs
 :::::::::::::::::::::::
+call :log "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
+
 
 :: JOB: Remove crapware programs, phase 1: by specific GUID
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
@@ -151,6 +153,9 @@ if /i %TARGET_METRO%==yes (
 )
 
 
+
+:: Stage complete
+call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
 
 
 
