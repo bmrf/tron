@@ -71,7 +71,7 @@ STAGE 4: Repair
  . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
 
 STAGE 5: Patch
- * 7-Zip                         v15.11         (multi-language)
+ * 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u66          (language ignored)
