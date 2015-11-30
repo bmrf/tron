@@ -279,7 +279,7 @@ if %VERBOSE%==yes (
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc
-	sc disable Wecsvc
+	sc config Wecsvc start= disabled
 
 	:: Xbox Live services
 	sc stop XblAuthManager
@@ -307,7 +307,7 @@ if %VERBOSE%==yes (
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc disable Wecsvc >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config Wecsvc start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Xbox Live services
 	sc stop XblAuthManager >> "%LOGPATH%\%LOGFILE%" 2>&1
