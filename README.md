@@ -314,7 +314,7 @@ Hope this is helpful to other PC techs,
 
 – Vocatus
 
-If you feel overly charitable:
+If you feel overly charitable, bitcoin donations are accepted at this address:
 ```
 1LSJ9qDzuHyRx6FfbUmHVSii4sLU3sx2TF
 ```
