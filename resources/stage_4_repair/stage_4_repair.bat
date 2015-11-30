@@ -11,7 +11,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_4_SCRIPT_VERSION=1.0.0
-set STAGE_4_SCRIPT_DATE=2015-11-23
+set STAGE_4_SCRIPT_DATE=2015-12-xx
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -33,6 +33,8 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::
 :: STAGE 4: Repair :: // Begin jobs
 :::::::::::::::::::::
+call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
+
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
@@ -294,8 +296,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 
-
-
+:: Stage complete
+call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
 
 
 
