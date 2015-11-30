@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::
 :: STAGE 5: Patch :: // Begin jobs
 ::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs begin..."
+call :log "%CUR_DATE% %TIME%   stage_5_patch begin..."
 
 
 :: Prep task: enable MSI installer in Safe Mode
@@ -160,7 +160,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
+call :log "%CUR_DATE% %TIME%   stage_5_patch complete."
 
 
 
