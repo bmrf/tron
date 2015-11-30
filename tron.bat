@@ -775,26 +775,14 @@ if /i %RESUME_DETECTED%==no (
 )
 
 
-
-:::::::::::::::::::
-:: STAGE 0: PREP ::
-:::::::::::::::::::
-:stage_0_prep
-:: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
-:: Don't stamp anything to the flags file if no CLI flags were used
-echo stage_0_prep>tron_stage.txt
-if /i not "%*"=="" echo %*> tron_flags.txt
-
-
-:: JOB: Run a quick SMART check and notify if there are any drives with problems
+:: PREP: Run a quick SMART check and notify if there are any drives with problems
 setlocal enabledelayedexpansion
 %WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
 	findstr /C:"%%i" %TEMP%\tron_smart_results.txt
 	if !ERRORLEVEL!==0 (
 		call :log "%CUR_DATE% %TIME% ! WARNING! SMART check indicates at least one drive with %%i status"
-		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure, be careful"
-		call :log "%CUR_DATE% %TIME%   running disk-intensive operations like defrag."
+		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
 		call :log "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
 		set WARNINGS_DETECTED=yes
 		color 0e
@@ -803,7 +791,7 @@ for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
 endlocal disabledelayedexpansion
 
 
-:: JOB: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
+:: PREP: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
@@ -814,156 +802,19 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 )
 
 title TRON v%SCRIPT_VERSION% [stage_0_prep]
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs begin..."
 
 
-:: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
-:: Note, there is a (stupid) limitation in Windows 8 and up that will only let you create
-:: one restore point every 24 hours. If you create another one, it deletes the previous one.
-:: So unfortunately we can't take a before/after pair.
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
-		call :log "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
-		if /i %DRY_RUN%==no (
-			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		)
-	)
-)
-call :log "%CUR_DATE% %TIME%    OK."
 
-
-:: JOB: rkill
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
-call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call :log "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager"
-if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
-	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	del "%TEMP%\tron_rkill.log" 2>NUL
-	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
-	)
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
-call :log "%CUR_DATE% %TIME%    Generating pre-run system profile..."
-if /i %DRY_RUN%==no (
-	:: Get list of installed programs
-	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
-	:: Get list of all files on system
-	stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
-)
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Disable mode and disable screen saver
-if /i %DRY_RUN%==no (
-	call :log "%CUR_DATE% %TIME%    Disabling sleep and screensaver temporarily..."
-	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
-	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
-	taskkill /im "caffeine.exe" > nul 2>&1
-	start "" stage_0_prep\caffeine\caffeine.exe -noicon
-	call :log "%CUR_DATE% %TIME%    Done."
-)
-
-
-:: JOB: ProcessKiller
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
-call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
-pushd stage_0_prep\processkiller
-if /i %DRY_RUN%==no start "" /wait ProcessKiller.exe /silent
-popd
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Set system clock via NTP
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
-call :log "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
-if /i %DRY_RUN%==no (
-	:: Make sure time service is started, also force us to allow starting it in Safe Mode
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
-	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /config /syncfromflags:manual /manualpeerlist:"2.pool.ntp.org time.windows.com time.nist.gov" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
-)
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Check WMI and repair if necessary
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
-call :log "%CUR_DATE% %TIME%    Checking WMI health..."
-setlocal enabledelayedexpansion
-if /i %DRY_RUN%==no (
-	%WMIC% timezone >NUL
-	if /i not !ERRORLEVEL!==0 (
-		call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
-		call :log "              This will take time, please be patient..."
-		call stage_0_prep\repair_wmi\repair_wmi.bat
-	)
-)
-setlocal disabledelayedexpansion
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Backup registry
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
-call :log "%CUR_DATE% %TIME%    Backing up registry to "%LOGPATH%"..."
-if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: McAfee Stinger
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
-call :log "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
-call :log "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
-if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: TDSS Killer
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
-call :log "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
-if /i %DRY_RUN%==no (
-	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
-	:: Dump TDSSKiller log into the main Tron log
-	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
-	del "%TEMP%\tdsskiller.log" 2>NUL
-	)
-call :log "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: Purge oldest shadow copies
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
-:: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
-:: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
-:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	if /i not "%WIN_VER:~0,9%"=="Windows V" (
-		call :log "%CUR_DATE% %TIME%    Purging oldest Shadow Copy set (Win7 and up)..."
-		if /i %DRY_RUN%==no (
-			:: Force allow us to start VSS service in Safe Mode
-			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
-			net start VSS >nul 2>&1
-			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
-		)
-		call :log "%CUR_DATE% %TIME%    Done."
-	)
-)
-
-
-:: JOB: Reduce SysRestore space
-title TRON v%SCRIPT_VERSION% [stage_0_prep] [System Restore Modifications]
-call :log "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%%% of disk..."
-if /i %DRY_RUN%==no (
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
-)
-call :log "%CUR_DATE% %TIME%    Done."
-call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
+:::::::::::::::::::
+:: STAGE 0: PREP ::
+:::::::::::::::::::
+:stage_0_prep
+:: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
+:: Don't stamp anything flags file if no CLI flags were used
+echo stage_0_prep>tron_stage.txt
+if /i not "%*"=="" echo %*> tron_flags.txt
+echo.
+call stage_0_prep\stage_0_prep.bat
 
 
 
@@ -974,9 +825,7 @@ call :log "%CUR_DATE% %TIME%   stage_0_prep jobs complete."
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_1_tempclean>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs begin..."
 call stage_1_tempclean\stage_1_tempclean.bat
-call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
 
 
 
@@ -988,12 +837,10 @@ call :log "%CUR_DATE% %TIME%   stage_1_tempclean jobs complete."
 echo stage_2_de-bloat>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
-	call :log "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."	
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
 	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs..."
 )
-call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
 
 
 
@@ -1005,12 +852,10 @@ call :log "%CUR_DATE% %TIME%   stage_2_de-bloat jobs complete."
 echo stage_3_disinfect>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
-	call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs begin..."
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
 	call :log "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."	
 )
-call :log "%CUR_DATE% %TIME%   stage_3_disinfect jobs complete."
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
 call :set_cur_date
@@ -1024,9 +869,7 @@ call :set_cur_date
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_4_repair>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_4_repair]
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs begin..."
 call stage_4_repair\stage_4_repair.bat
-call :log "%CUR_DATE% %TIME%   stage_4_repair jobs complete."
 
 :: Set current date again, since Stage 4 can take quite a while to run
 call :set_cur_date
@@ -1040,9 +883,7 @@ call :set_cur_date
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_5_patch>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_5_patch]
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs begin..."
 call stage_5_patch\stage_5_patch.bat
-call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
 
 
 
@@ -1053,9 +894,7 @@ call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_6_optimize>tron_stage.txt
 title TRON v%SCRIPT_VERSION% [stage_6_optimize]
-call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs begin..."
 call stage_6_optimize\stage_6_optimize.bat
-call :log "%CUR_DATE% %TIME%   stage_6_optimize jobs complete."
 
 
 
