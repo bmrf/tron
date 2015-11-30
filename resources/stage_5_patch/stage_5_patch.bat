@@ -11,7 +11,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_5_SCRIPT_VERSION=1.0.0
-set STAGE_5_SCRIPT_DATE=2015-11-23
+set STAGE_5_SCRIPT_DATE=2015-12-xx
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -33,6 +33,8 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::
 :: STAGE 5: Patch :: // Begin jobs
 ::::::::::::::::::::
+call :log "%CUR_DATE% %TIME%   stage_5_patch jobs begin..."
+
 
 :: Prep task: enable MSI installer in Safe Mode
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Prep]
@@ -157,7 +159,8 @@ call :log "%CUR_DATE% %TIME%    Done."
 
 
 
-
+:: Stage complete
+call :log "%CUR_DATE% %TIME%   stage_5_patch jobs complete."
 
 
 
