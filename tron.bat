@@ -1,4 +1,4 @@
-:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC (all Windows versions XP and up are supported)
+:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC. All Windows versions XP and up are supported
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
@@ -9,6 +9,7 @@
 ::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
 ::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
 ::                                                     This also lays the groundwork for future highly-requested features, such as skip-to-stage, etc
+::                      ! tron.bat:prep:smart_check:   Fix faulty SMART check and add case-insensitivity to error code search
 ::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
 ::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
 ::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8
@@ -72,10 +73,10 @@ call :set_cur_date
 
 :: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
 :: If you want a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
-::   set LOGPATH=%SystemDrive%\Logs\tron\%computername%_%DTS%
+::   set LOGPATH=%SystemDrive%\Logs\tron\%COMPUTERNAME%_%DTS%
 set LOGPATH=%SystemDrive%\Logs\tron
 
-:: Master log file. To differentiate logfiles if you're doing multiple runs, you can set this to something like:
+:: Master log file. To differentiate logfiles if you're doing multiple runs, you can do something like:
 ::  set LOGFILE=tron_%COMPUTERNAME%_%DTS%.log
 set LOGFILE=tron.log
 
@@ -775,19 +776,20 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
-setlocal enabledelayedexpansion
 %WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
+setlocal enabledelayedexpansion
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
-	findstr /C:"%%i" %TEMP%\tron_smart_results.txt
+	find /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1
 	if !ERRORLEVEL!==0 (
-		call :log "%CUR_DATE% %TIME% ! WARNING! SMART check indicates at least one drive with %%i status"
+		call :log "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 		call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
 		call :log "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
-		set WARNINGS_DETECTED=yes
 		color 0e
-		)
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set WARNINGS_DETECTED=yes&& goto smart_check_complete
+	)
 )
 endlocal disabledelayedexpansion
+:smart_check_complete
 
 
 :: PREP: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
