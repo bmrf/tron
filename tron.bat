@@ -792,7 +792,7 @@ endlocal disabledelayedexpansion
 :smart_check_complete
 
 
-:: PREP: Set the system to permanently boot into Safe Mode in case we interrupted by a reboot
+:: PREP: Set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
