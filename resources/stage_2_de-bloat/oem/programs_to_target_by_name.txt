@@ -87,7 +87,6 @@ freemakeTB Toolbar
 FromDocToPDF Internet Explorer Toolbar
 FromDocToPDF Toolbar
 GetSavin
-Glary Utilities 4.6
 HD-Total-%%
 HP%%Assistant%%
 HP%%Documentation%%
