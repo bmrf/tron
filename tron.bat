@@ -812,7 +812,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :::::::::::::::::::
 :stage_0_prep
 :: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
-:: Don't stamp anything flags file if no CLI flags were used
+:: Don't stamp anything to the flags file if no CLI flags were used
 echo stage_0_prep>tron_stage.txt
 if /i not "%*"=="" echo %*> tron_flags.txt
 echo.
