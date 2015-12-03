@@ -28,7 +28,10 @@ stage_2_de-bloat.bat             v1.0.0
 
 stage_3_disinfect.bat            v1.0.0
 
-stage_4_repair.bat               v1.0.0
+stage_4_repair.bat               v1.0.1
+ + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+ + Enable telemetry removal on Server 2012 platforms
+ ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
 
 stage_5_patch.bat                v1.1.0
  * Only patch each program if it already exists on the system. Thanks to /u/Tech604
