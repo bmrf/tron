@@ -358,7 +358,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-Note: `-resume` is an internal flag and not meant to be used by a human at the command-line. If you use it, things will break and I will laugh at you.
+   Note: `-resume` is an internal flag and not meant to be used by a human at the command-line. If you use it, things will break and I will laugh at you.
 
 2. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
