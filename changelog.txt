@@ -15,11 +15,108 @@ Version number legend:
 
 
 
+########################
+# v8.0.1 // 2015-12-xx #
+########################
+tron.bat                         v8.0.1
+
+stage_0_prep.bat                 v1.0.0
+
+stage_1_tempclean.bat            v1.0.0
+
+stage_2_de-bloat.bat             v1.0.0
+
+stage_3_disinfect.bat            v1.0.0
+
+stage_4_repair.bat               v1.0.0
+
+stage_5_patch.bat                v1.0.0
+
+stage_6_optimize.bat             v1.0.0
+
+
+Stage 0: Prep
+ . rkill                         v2.8.2.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.5
+ * McAfee Stinger                v12.1.0.1822
+ . erunt                         v1.1j
+ . caffeine                      v1.6.0.0
+
+Stage 1: Tempclean
+ * CCLeaner                      v5.12.5431
+ . BleachBit                     v1.8
+ . TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.1.0
+
+Stage 2: De-bloat
+ . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
+ . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
+ . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
+
+Stage 3: Disinfect
+ * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Malwarebytes Anti-Malware     v2.2.0.1024
+
+Stage 4: Repair
+ . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
+ . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+
+Stage 5: Patch
+ . 7-Zip                         v15.11        (multi-language)
+ . Adobe Flash Player            v19.0.0.245   (language ignored)
+ . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u66          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+Stage 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+Stage 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.2.2
+ . Autoruns                      v13.5
+ . BlueScreenView                v1.55
+ . ComboFix                      v15.11.27.1
+ . Junkware Removal Tool         v8.0.1.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
 
 ########################
-# v8.0.0 // 2015-12-xx #
+# v8.0.0 // 2015-12-02 #
 ########################
 tron.bat                         v8.0.0
+ * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
+                                was getting pretty large and more difficult to work on, so moving the various stage's code into their
+                                own scripts should help simplify things and make it easier to find issues in a particular section.
+                                Tron.bat now calls those job's sub-scripts instead of embedding their code directly
+                                This also lays the groundwork for future highly-requested features, such as skip-to-stage, etc
+ ! tron.bat:prep:smart_check:   Fix faulty SMART check and add case-insensitivity to error code search
+ ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
+ ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
+ + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8
+ / tron.bat.prep:f8_key:        Rename outdated batch label "win_ver_check" to "enable_f8_key_on_bootup"
+ * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run
+                                This is to make sure it's running if we pick up where we left off at some point later than Stage 0
+                                (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
+ ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
+ / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 
 stage_0_prep.bat                 v1.0.0 // Initial creation of stage-specific sub-scripts
 
@@ -40,12 +137,12 @@ Stage 0: Prep
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
- * McAfee Stinger                v12.1.0.1808
+ * McAfee Stinger                v12.1.0.1822
  . erunt                         v1.1j
  . caffeine                      v1.6.0.0
 
 Stage 1: Tempclean
- . CCLeaner                      v5.11.5408
+ * CCLeaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -57,7 +154,6 @@ Stage 2: De-bloat
 	- Remove AI RoboForm Toolbar
 	- Remove LastPass Toolbar
 
-- Remove LastPass Toolbar
  . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
 
@@ -71,7 +167,7 @@ Stage 4: Repair
  . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
 
 Stage 5: Patch
- * 7-Zip                         v15.11        (multi-language)
+ . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u66          (language ignored)
@@ -86,11 +182,11 @@ Stage 7: Wrap-up
 
 Stage 8: Manual tools
  . ADSSpy                        v1.11.0.0
- * AdwCleaner                    v5.0.2.1
+ * AdwCleaner                    v5.0.2.2
  . Autoruns                      v13.5
  . BlueScreenView                v1.55
- * ComboFix                      v15.11.17.1
- * Junkware Removal Tool         v8.0.0.0
+ * ComboFix                      v15.11.27.1
+ * Junkware Removal Tool         v8.0.1.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
  . PC Hunter                     v1.35 x86
