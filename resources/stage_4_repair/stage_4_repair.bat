@@ -5,6 +5,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
 ::                      + Enable telemetry removal on Server 2012 platforms
+::                      ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
 ::                1.0.0 + Initial write
 @echo off
 
@@ -156,11 +157,8 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
 	call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
-	if /i %DRY_RUN%==no (
-		REM Normally I try to embed everything directly, but it was quite a bit of code so it's in an external script to avoid bloating tron.bat too much
-		if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
-call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+	if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
 :: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
