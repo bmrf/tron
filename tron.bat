@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.0.0 * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
+:: Version:       8.0.1 some stuff
+::                8.0.0 * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
 ::                                                     was getting pretty large and more difficult to work on, so moving the various stage's code into their
 ::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
 ::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
@@ -167,8 +168,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.0.0
-set SCRIPT_DATE=2015-12-02
+set SCRIPT_VERSION=8.0.1
+set SCRIPT_DATE=2015-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
