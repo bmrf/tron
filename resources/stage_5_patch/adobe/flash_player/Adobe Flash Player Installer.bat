@@ -12,7 +12,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=19.0.0.207
+set BINARY_VERSION=19.0.0.245
 set FLAGS=ALLUSERS=1 /q /norestart
 
 
@@ -59,9 +59,12 @@ del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Updater.job" >> "%LOGP
 
 :: Delete the annoying Acrobat tray icon
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
-	taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
+
+taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+
+del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+
+)
 
 :: Return exit code to SCCM/PDQ Deploy/etc
 exit /B %EXIT_CODE%
