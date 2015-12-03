@@ -3,15 +3,16 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 + Initial write
+:: Version:       1.1.0 * Check for existing installation of all programs before installing. If not detected, don't patch that program. Thanks to /u/Tech64
+::                1.0.0 + Initial write
 @echo off
 
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.0.0
-set STAGE_5_SCRIPT_DATE=2015-11-30
+set STAGE_5_SCRIPT_VERSION=1.1.0
+set STAGE_5_SCRIPT_DATE=2015-12-03
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -43,7 +44,7 @@ if /i %DRY_RUN%==no (
 	net start msiserver >nul 2>&1
 )
 
-:: Check for skip patches (-sp) flag or variable and skip if used
+:: Prep task: check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
 	call :log "%CUR_DATE% %TIME% ! SKIP_PATCHES (-sp) set. Skipping app patches."
 	goto skip_patches
@@ -51,78 +52,99 @@ if /i %SKIP_PATCHES%==yes (
 
 
 :: JOB: 7-Zip
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
-:: Call the 7-Zip installer, which detects system architecture and installs appropriate version
-if /i %DRY_RUN%==no (
+:: spawn 7ZIP_DETECTED variable, flip it if an existing 7-Zip installation is detected
+set 7ZIP_DETECTED=no
+if exist "%ProgramFiles(x86)%\7-Zip" set 7ZIP_DETECTED=yes
+if exist "%ProgramFiles%\7-Zip" set 7ZIP_DETECTED=yes
+if %7ZIP_DETECTED%==yes (
+	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
+	call :log "%CUR_DATE% %TIME%    7-Zip detected, updating..."
+	call :log "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
 	setlocal
-	call "stage_5_patch\7-Zip\7-Zip Installer.bat"
+	if /i %DRY_RUN%==no call "stage_5_patch\7-Zip\7-Zip Installer.bat"	
 	endlocal
+	call :log "%CUR_DATE% %TIME%    Done."
 )
-call :log "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Adobe Flash Player
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'..."
-setlocal
-if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player Installer.bat"
-endlocal
-call :log "%CUR_DATE% %TIME%    Done."
+:: spawn FLASH_DETECTED variable, flip it if an existing Flash installation is detected
+set FLASH_DETECTED=no
+if exist "%windir%\SysWOW64\Macromed\Flash" set FLASH_DETECTED=yes
+if exist "%windir%\System32\Macromed\Flash" set FLASH_DETECTED=yes
+if %FLASH_DETECTED%==yes (
+	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
+	call :log "%CUR_DATE% %TIME%    Adobe Flash detected, updating..."
+	call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'..."
+	setlocal
+	if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player Installer.bat"
+	endlocal
+	call :log "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: Adobe Reader
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
-setlocal
-if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\Adobe Reader.bat"
-endlocal
-
-call :log "%CUR_DATE% %TIME%    Done."
+if exist "%ProgramFiles(x86)%\Adobe\Reader*" (
+	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
+	call :log "%CUR_DATE% %TIME%    Adobe Reader detected, updating..."
+	call :log "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
+	setlocal
+	if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\Adobe Reader.bat"
+	endlocal
+	call :log "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: Java Runtime update
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
-call :log "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
-call :log "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
-if /i %DRY_RUN%==yes goto skip_jre_update
-:: Okay, so all JRE runtimes (series 4-8) use product GUIDs, with certain numbers that increment with each new update (e.g. Update 25)
-:: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
-:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
-:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+:: spawn JAVA_DETECTED variable, flip it if an existing JRE installation is detected
+:: We don't need to worry about architecture because the JRE installer script handles that
+set JAVA_DETECTED=no
+if exist "%ProgramFiles(x86)%\Java\jre*" set JAVA_DETECTED=yes
+if exist "%ProgramFiles%\Java\jre*" set JAVA_DETECTED=yes
+if %JAVA_DETECTED%==yes (
+	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
+	call :log "%CUR_DATE% %TIME%    Java Runtime detected, updating..."
+	call :log "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
+	call :log "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
+	if /i %DRY_RUN%==no (
+		:: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
+		:: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
+		:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
+		:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
-:: JRE 8
-:: We skip JRE 8 because the JRE 8 update script automatically removes older versions, no need to do it twice
+		:: JRE 8
+		:: Skip JRE 8 because the JRE 8 update script automatically removes older versions of 8, no need to do it twice
 
-:: JRE 7
-call :log "%CUR_DATE% %TIME%    JRE 7..."
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		:: JRE 7
+		call :log "%CUR_DATE% %TIME%    JRE 7..."
+		%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-:: JRE 6
-call :log "%CUR_DATE% %TIME%    JRE 6..."
-:: 1st line is for updates 23-xx, after 64-bit runtimes were introduced.
-:: 2nd line is for updates 1-22, before Oracle released 64-bit JRE 6 runtimes
-%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
-%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
+		:: JRE 6
+		call :log "%CUR_DATE% %TIME%    JRE 6..."
+		:: 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
+		:: 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
+		%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-:: JRE 5
-call :log "%CUR_DATE% %TIME%    JRE 5..."
-%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
+		:: JRE 5
+		call :log "%CUR_DATE% %TIME%    JRE 5..."
+		%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-:: JRE 4
-call :log "%CUR_DATE% %TIME%    JRE 4..."
-%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>NUL
+		:: JRE 4
+		call :log "%CUR_DATE% %TIME%    JRE 4..."
+		%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-call :log "%CUR_DATE% %TIME%    Done."
+		call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: Install the latest version
-call :log "%CUR_DATE% %TIME%    Installing latest JRE..."
-setlocal
-call "stage_5_patch\java\jre\jre-8-installer.bat"
-endlocal
+		:: Install the latest version
+		call :log "%CUR_DATE% %TIME%    Installing latest JRE..."
+		setlocal
+		call "stage_5_patch\java\jre\jre-8-installer.bat"
+		endlocal
+	)
+)
 
-:skip_jre_update
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -137,7 +159,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
 	call :log "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set to "%SKIP_WINDOWS_UPDATES%", skipping Windows Updates."
+	call :log "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set. Skipping Windows Updates."
 )
 
 
