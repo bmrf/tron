@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 * Check for existing installation of all programs before installing. If not detected, don't patch that program. Thanks to /u/Tech64
+:: Version:       1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
 ::                1.0.0 + Initial write
 @echo off
 
