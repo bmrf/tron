@@ -3,15 +3,17 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 + Initial write
+:: Version:       1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+::                      + Enable telemetry removal on Server 2012 platforms
+::                1.0.0 + Initial write
 @echo off
 
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.0
-set STAGE_4_SCRIPT_DATE=2015-11-30
+set STAGE_4_SCRIPT_VERSION=1.0.1
+set STAGE_4_SCRIPT_DATE=2015-12-03
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -19,7 +21,7 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	echo  ERROR
 	echo.
-	echo   You cannot run this script directly - it must be 
+	echo   You cannot run this script directly - it must be
 	echo   called from Tron.bat during a Tron run.
 	echo.
 	echo   Navigate to Tron's root folder and execute Tron.bat
@@ -27,9 +29,9 @@ if /i "%LOGFILE%"=="" (
 	pause
 	exit /b 1
 )
-	
-	
-	
+
+
+
 :::::::::::::::::::::
 :: STAGE 4: Repair :: // Begin jobs
 :::::::::::::::::::::
@@ -165,24 +167,19 @@ call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 set RUN_7_OR_8_TELEM=no
 if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
-
+if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no (
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM UPDATES
 
-		REM Compatibility update for Windows 7 (is a scanner)
-		wusa /uninstall /kb:2977759 /quiet /norestart
-
-		REM Compatibility update for Windows 7
-		wusa /uninstall /kb:2952664 /quiet /norestart
+		REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
+		REM Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
+		wusa /uninstall /kb:3112336 /quiet /norestart
 
 		REM Compatibility update for Windows 8.1 and Windows 8
 		wusa /uninstall /kb:2976978 /quiet /norestart
-
-		REM New update client for Windows 7
-		wusa /uninstall /kb:3083710 /quiet /norestart
 
 		REM New update client for Windows 8/8.1
 		wusa /uninstall /kb:3083711 /quiet /norestart
@@ -206,6 +203,15 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		REM Enable upgrade from Windows 8.1 to Windows 10
 		wusa /uninstall /kb:3044374 /quiet /norestart
 
+		REM Compatibility update for Windows 7 (is a scanner)
+		wusa /uninstall /kb:2977759 /quiet /norestart
+
+		REM Compatibility update for Windows 7
+		wusa /uninstall /kb:2952664 /quiet /norestart
+		
+		REM New update client for Windows 7
+		wusa /uninstall /kb:3083710 /quiet /norestart
+		
 		REM Description of the update for Windows Activation Technologies
 		wusa /uninstall /kb:971033 /quiet /norestart
 
