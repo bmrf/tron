@@ -31,7 +31,7 @@ stage_3_disinfect.bat            v1.0.0
 stage_4_repair.bat               v1.0.0
 
 stage_5_patch.bat                v1.1.0
- * Check for existing installation of all programs before installing. If not detected, don't patch that program. Thanks to /u/Tech64
+ * Only patch each program if it already exists on the system. Thanks to /u/Tech64
 
 stage_6_optimize.bat             v1.0.0
 
