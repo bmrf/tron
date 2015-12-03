@@ -11,7 +11,7 @@
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
-:: Package to install. Do not use trailing slashes (\)
+:: Package to install
 set BINARY_VERSION=19.0.0.245
 set FLAGS=ALLUSERS=1 /q /norestart
 
@@ -68,3 +68,4 @@ del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOG
 
 :: Return exit code to SCCM/PDQ Deploy/etc
 exit /B %EXIT_CODE%
+  
