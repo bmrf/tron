@@ -119,7 +119,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_2_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
-More details about this function are in the list of all Tron actions at the bottom of this document.
+More details about this function can be found in the list of all actions Tron performs at the bottom of this document.
 
 
 # SAFE MODE
@@ -148,7 +148,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set LOGPATH=%SystemDrive%\Logs\tron
   ```
 
-- To change the name of Tron's master log file, edit this line:
+- To change the name of the master log file, edit this line:
   ```
   set LOGFILE=tron.log
   ```
@@ -298,7 +298,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 
 # INTEGRITY
 
-In each release, the file `\tron\integrity_verification\checksums.txt` contains SHA-256 hashes of *every* file included in Tron, and is signed with my PGP key (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
+In each release, the file `\tron\integrity_verification\checksums.txt` contains SHA-256 hashes of *every* file included in Tron, and is signed with [my PGP key](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
 
 
 # LICENSE
@@ -315,16 +315,17 @@ Hope this is helpful to other PC techs,
 – Vocatus
 
 If you feel overly charitable, bitcoin donations are accepted at this address:
+
 ```
 1LSJ9qDzuHyRx6FfbUmHVSii4sLU3sx2TF
 ```
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply to crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or [on GitHub and just read the code](https://github.com/bmrf/tron/blob/master/tron.bat). Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. However, barring that, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
 
 ## tron.bat
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script
+Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under `\tron\resources`.
 
 
 ## Tron-internal prep jobs
@@ -334,21 +335,21 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Unsupported OS blocker**: Throws an alert message if running on an unsupported OS then exits. Use Tron's `-dev` flag to override this behavior and allow running on unsupported Windows versions.
+2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions.
 
-3. **Detect SSD**: Detect solid state hard drives. If found, tron skips the **Stage 5 defrag**
+3. **Detect SSD**: Detect solid state hard drives. If found, tron sets the `SSD_DETECTED` variable and skips **Stage 5 defrag**
 
 4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
 5. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
 
-6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8/8.1 only; enabled by default on Server 2012/2012 R2)
+6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8 and up only; enabled by default on Server 2012/2012 R2)
 
 7. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not
+9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
 
 10. **Make log directories**: Create the master log directory and sub-directories if they don't exist
 
@@ -357,20 +358,22 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
-2. **SMART check**: Run a quick SMART disk health check and notify if any drives don't report "OK" for their status
+Note: `-resume` is an internal flag and not meant to be used by a human at the command-line. If you use it, things will break and I will laugh at you.
 
-3. **Create System Restore point**: Windows Vista and up only; client OS's only (not supported on Server OS's). Tron creates a system restore snapshot before beginning operations
+2. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
-4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will exclude any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+3. **Create System Restore point**: Tron creates a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
 
-5. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. Specifically, it kills everything in userland with the exception of the following processes: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+
+5. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
 6. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command:
    ```
    bcdedit /set {default} safeboot network
    ```
 
-7. **Set system time via NTP**: Sync the system clock to time.nist.gov, 3.pool.ntp.org and time.windows.com
+7. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
 
 8. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
@@ -392,7 +395,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-13. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Using Tron's `-p` flag prevents resetting power settings to Windows default.
+13. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Using the `-p` flag prevents resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
@@ -438,55 +441,55 @@ Master script that launches all the other tools. It performs a lot of actions on
   \resources\stage_3_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
   ```
 
-4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update)
+4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps.
 
 
 ## STAGE 3: Disinfect
 
-1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall while waiting for user input. Using Tron's `-sa` or `-sm` flags skip this component
+1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Using the `-sa` or `-sm` flags skip this component
 
-2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Using Tron's `-sa` or `-sk` flags skip this component
+2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Using the `-sa` or `-sk` flags skip this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Using Tron's `-v` flag gives more verbose output. Using Tron's `-sa` or `-ss` flags skip this component
+3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Using the `-v` flag gives more verbose output. Using the `-sa` or `-ss` flags skip this component
 
 
 ## STAGE 4: Repair
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using Tron's `-srr` flag skips this operation
+2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using the `-srr` flag skips this operation
 
-3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using Tron's `-sfr` flag skips this operation
+3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using the `-sfr` flag skips this operation
 
 4. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
-5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
+5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
 
-6. **Windows "telemetry" purge**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. Tron removes these specific KB updates from Win 7/8/8.1: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features. Go over the code in `\tron\resources\stage_4_repair\purge_windows_telemetry\` to see exactly what is removed and disabled. Using Tron's `-str` flag skips this component
+6. **Windows "telemetry" purge**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. Tron removes these specific KB updates from Win 7/8/8.1: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features. Go over the code in `\tron\resources\stage_4_repair\purge_windows_telemetry\` to see exactly what is removed and disabled. Using the `-str` flag skips this component
 
-7. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`,	`netsh interface ip delete arpcache`, `netsh winsock reset catalog`
+7. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`, `netsh interface ip delete arpcache`, `netsh winsock reset catalog`
 
 8. **File extension repair**: Tron repairs most default file extensions with a batch file that loops through a series of registry files stored in `\tron\resources\stage_4_repair\repair_file_extensions\`
 
 
 ## STAGE 5: Patch
-Tron installs or updates these programs:
+Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
-1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using Tron's `-sp` flag skips this component
+1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using the `-sp` flag skips this component
 
-2. **Adobe Flash Player**: Used by YouTube and various other sites. Using Tron's `-sp` flag skips this component
+2. **Adobe Flash Player**: Used by YouTube and various other sites. Using the `-sp` flag skips this component
 
-3. **Adobe Reader**: Standard PDF reader. Using Tron's `-sp` flag skips this component
+3. **Adobe Reader**: Standard PDF reader. Using the `-sp` flag skips this component
 
-4. **Java Runtime Environment**: I hate Java, but it is still widely used so we at least get the system on the latest version. Using Tron's `-sp` flag skips this component
+4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Using the `-sp` flag skips this component
 
-5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`
+5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Using the `-sw` flag skips this component
 
-6. **DISM base reset**: Recompile the "Windows Image Store" after we finished purging old files from it earlier. Windows 8 and up only
+6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store) after we finished purging old files from it earlier. Windows 8 and up only. Note that any Windows Updates installed *prior* to this point will become "baked in" (uninstallable)
 
 
 ## STAGE 6: Optimize
@@ -497,14 +500,12 @@ Tron installs or updates these programs:
 
     Using the `-spr` flag skips this action
 
-2. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot
-
-3. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter
+2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD. Using the `-sd` flag forces Tron to ALWAYS skip defrag
 
 
 ## STAGE 7: Wrap-up
 
-1. **email_report**: Sends an email report with log file when Tron finishes. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
+1. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
 2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
@@ -523,7 +524,7 @@ Tron does not run these automatically because most of them don't support command
 
 6. **[PCHunter](http://www.majorgeeks.com/files/details/pc_hunter.html)**: Tool to scan for rootkits and other malicious items. Replaces gmer
 
-7. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp files and random junkware remover
+7. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp file and random junkware remover
 
 8. **[Net Adapter Repair](http://www.bleepingcomputer.com/download/netadapter-repair-all-in-one/)**: Utility to repair most aspects of Windows network connections
 
