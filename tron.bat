@@ -777,7 +777,7 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
-wmic diskdrive get status | for %%i in (OK,Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
+wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
     find /i "%%i" && (
         call :log "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
         call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
