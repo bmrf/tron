@@ -80,7 +80,9 @@ Stage 5: Patch
  . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
- . Java Runtime Environment      8u66          (language ignored)
+ * Java Runtime Environment      8u66          (language ignored)
+     * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
+
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
