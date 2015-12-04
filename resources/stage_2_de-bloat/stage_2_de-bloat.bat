@@ -156,16 +156,3 @@ if /i %TARGET_METRO%==yes (
 
 :: Stage complete
 call log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat complete."
-
-
-
-
-
-:::::::::::::::
-:: FUNCTIONS ::
-:::::::::::::::
-:: We have to duplicate the log function since it doesn't get inherited from tron.bat when the script is called
-:log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
-goto :eof

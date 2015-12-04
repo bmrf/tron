@@ -139,15 +139,3 @@ call log.bat "%CUR_DATE% %TIME%    Done."
 
 :: Stage complete
 call log.bat "%CUR_DATE% %TIME%   stage_1_tempclean complete."
-
-
-
-
-:::::::::::::::
-:: FUNCTIONS ::
-:::::::::::::::
-:: We have to duplicate the log function since it doesn't get inherited from tron.bat when the script is called
-:log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
-goto :eof

@@ -115,15 +115,3 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 
 :: Stage complete
 call log.bat "%CUR_DATE% %TIME%   stage_3_disinfect complete."
-
-
-
-
-:::::::::::::::
-:: FUNCTIONS ::
-:::::::::::::::
-:: We have to duplicate the log function since it doesn't get inherited from tron.bat when the script is called
-:log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
-goto :eof
