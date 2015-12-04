@@ -3226,9 +3226,6 @@ start /wait msiexec /qn /norestart /x {d9662777-5f30-4b0a-8bf9-d051ae8d4276}
 start /wait msiexec /qn /norestart /x {e12e20f3-0206-463b-9ebe-ef1a23768e00}
 start /wait msiexec /qn /norestart /x {e6b22ecf-c476-4fb0-899f-edb6b6da269d}
 
-:: Windows 7 USB/DVD Download Tool
-start /wait msiexec /qn /norestart /x {CCF298AF-9CE1-4B26-B251-486E98A34789}
-
 :: Windows 7 Upgrade Advisor
 start /wait msiexec /qn /norestart /x {AAF91344-2808-4D6B-9242-FBE5AF79D60A}
 
