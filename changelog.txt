@@ -19,7 +19,7 @@ Version number legend:
 # v8.1.0 // 2015-12-04 #
 ########################
 tron.bat                         v8.1.0
- * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if the VERBOSE (-v) flag is used. This way we don't lose any output
+ * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 
 stage_0_prep.bat                 v1.0.0
 
