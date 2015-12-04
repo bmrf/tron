@@ -3,15 +3,18 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 + Initial write
+:: Version:       1.0.1 * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
+::                      * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now displays ALL Bleachbit output to console and log file if -v is used. Thanks to /u/Forcen
+::                      - misc:      Remove unecessary window title reset after Tempfilecleanup
+::                1.0.0 + Initial write
 @echo off
 
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.0.0
-set STAGE_1_SCRIPT_DATE=2015-11-30
+set STAGE_1_SCRIPT_VERSION=1.0.1
+set STAGE_1_SCRIPT_DATE=2015-12-04
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -49,8 +52,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [TempFileCleanup]
 call :log "%CUR_DATE% %TIME%    Launch job 'TempFileCleanup'..."
 if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
-:: Reset window title since TempFileCleanup clobbers it
-title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
 call :log "%CUR_DATE% %TIME%    Done."
 
 
@@ -58,8 +59,9 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call :log "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
+	if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner."
 	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 12 >NUL
+	ping 127.0.0.1 -n 15 >NUL
 	)
 call :log "%CUR_DATE% %TIME%    Done."
 
@@ -68,10 +70,17 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [BleachBit]
 call :log "%CUR_DATE% %TIME%    Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
-	if %VERBOSE%==yes stage_1_tempclean\bleachbit\bleachbit_console.exe -p --preset
-	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset -c >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 12 >NUL
+	
+	if %VERBOSE%==yes (
+		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
+		:: Thanks Windows Batch for not having a TEE or equivalent
+		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
+		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
+	
+	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	ping 127.0.0.1 -n 12 >NUL
+)
 call :log "%CUR_DATE% %TIME%    Done."
 
 

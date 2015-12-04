@@ -2702,9 +2702,6 @@ start /wait msiexec /qn /norestart /x {EEE31B2B-F517-4BD2-8F92-57E4AE938BA3}
 :: Nuance PDF Viewer Plus
 start /wait msiexec /qn /norestart /x {042A6F10-F770-4886-A502-B795DCF2D3B5}
 
-:: NVIDIA HD Audio Driver
-start /wait msiexec /qn /norestart /x {B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
-
 :: Office 2013 C2R Suite
 start /wait msiexec /qn /norestart /x {90150000-0138-0409-0000-0000000FF1CE}
 if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" start /wait msiexec /qn /norestart /x "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi"
@@ -3228,9 +3225,6 @@ start /wait msiexec /qn /norestart /x {d54b04b0-458e-4fb3-b570-8f386efd3d02}
 start /wait msiexec /qn /norestart /x {d9662777-5f30-4b0a-8bf9-d051ae8d4276}
 start /wait msiexec /qn /norestart /x {e12e20f3-0206-463b-9ebe-ef1a23768e00}
 start /wait msiexec /qn /norestart /x {e6b22ecf-c476-4fb0-899f-edb6b6da269d}
-
-:: Windows 7 USB/DVD Download Tool
-start /wait msiexec /qn /norestart /x {CCF298AF-9CE1-4B26-B251-486E98A34789}
 
 :: Windows 7 Upgrade Advisor
 start /wait msiexec /qn /norestart /x {AAF91344-2808-4D6B-9242-FBE5AF79D60A}

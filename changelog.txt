@@ -16,13 +16,17 @@ Version number legend:
 
 
 ########################
-# v8.0.1 // 2015-12-xx #
+# v8.1.0 // 2015-12-04 #
 ########################
-tron.bat                         v8.0.1
+tron.bat                         v8.1.0
+ * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 
 stage_0_prep.bat                 v1.0.0
 
-stage_1_tempclean.bat            v1.0.0
+stage_1_tempclean.bat            v1.0.1
+ * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
+ * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now displays ALL Bleachbit output to console and log if -v is used. Thanks to /u/forcen
+ - misc:      Remove unecessary window title reset after Tempfilecleanup
 
 stage_2_de-bloat.bat             v1.0.0
 
@@ -45,7 +49,7 @@ Stage 0: Prep
  . TDSS Killer                   v3.1.0.5
  * McAfee Stinger                v12.1.0.1822
  . erunt                         v1.1j
- . caffeine                      v1.6.0.0
+ * caffeine                      v1.6.1.0
 
 Stage 1: Tempclean
  * CCLeaner                      v5.12.5431
@@ -57,6 +61,9 @@ Stage 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+     - Remove "NVIDIA HD Audio Driver." Thanks to /u/sofakingdead
+	 - Remove "Windows 7 USB/DVD Download Tool." Thanks to /u/sofakingdead
+
  . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
 
@@ -73,7 +80,9 @@ Stage 5: Patch
  . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
- . Java Runtime Environment      8u66          (language ignored)
+ * Java Runtime Environment      8u66          (language ignored)
+     * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
+
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
@@ -85,10 +94,10 @@ Stage 7: Wrap-up
 
 Stage 8: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v5.0.2.2
+ * AdwCleaner                    v5.0.2.3
  . Autoruns                      v13.5
  . BlueScreenView                v1.55
- . ComboFix                      v15.11.27.1
+ * ComboFix                      v15.12.3.1
  . Junkware Removal Tool         v8.0.1.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64

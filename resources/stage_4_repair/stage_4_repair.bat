@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+:: Version:       1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
+::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
 ::                      + Enable telemetry removal on Server 2012 platforms
 ::                      ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
 ::                1.0.0 + Initial write
@@ -13,8 +14,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.1
-set STAGE_4_SCRIPT_DATE=2015-12-03
+set STAGE_4_SCRIPT_VERSION=1.0.2
+set STAGE_4_SCRIPT_DATE=2015-12-04
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -220,7 +221,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM BLOCK BAD UPDATES
-		start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324
+		start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324 3112336
 
 
 		REM :::::::::::::::::::::::::::::::::::::::::::::

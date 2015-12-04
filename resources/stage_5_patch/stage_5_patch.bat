@@ -106,11 +106,11 @@ if %JAVA_DETECTED%==yes (
 	call :log "%CUR_DATE% %TIME%    Java Runtime detected, updating..."
 	call :log "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
 	call :log "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
-	if /i %DRY_RUN%==no (
-		:: EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
-		:: This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
-		:: Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
-		:: type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
+	if /i "%DRY_RUN%"=="no" (
+		REM EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
+		REM This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
+		REM Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
+		REM type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
 		:: JRE 8
 		:: Skip JRE 8 because the JRE 8 update script automatically removes older versions of 8, no need to do it twice
@@ -146,7 +146,7 @@ if %JAVA_DETECTED%==yes (
 )
 
 call :log "%CUR_DATE% %TIME%    Done."
-
+echo off
 
 :: JOB: Skip point for if -sp (skip patches) flag was used
 :skip_patches

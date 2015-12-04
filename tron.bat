@@ -4,22 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.0.1 some stuff
-::                8.0.0 * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
-::                                                     was getting pretty large and more difficult to work on, so moving the various stage's code into their
-::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
-::                                                     Tron.bat now calls those job's sub-scripts instead of embedding their code directly
-::                                                     This also lays the groundwork for future highly-requested features, such as skip-to-stage, etc
-::                      ! tron.bat:prep:smart_check:   Fix faulty SMART check and add case-insensitivity to error code search
-::                      ! tron.bat:prep:update_check:  Add quotes around %TEMP% reference in hasheep calculation to prevent crashing on usernames with parentheses in them
-::                      ! tron.bat:prep:log_header:    Fix missing closing quote on a line of the log header creation section
-::                      + tron.bat:prep:f8_key:        Add enabling of F8 key to select bootup method on Windows 10. Was previously only enabled on Windows 8
-::                      / tron.bat.prep:f8_key:        Rename outdated batch label "win_ver_check" to "enable_f8_key_on_bootup"
-::                      * tron.bat:prep:resume:        Launch Caffeine directly from the Resume checks if we detect we're resuming from an interrupted run
-::                                                     This is to make sure it's running if we pick up where we left off at some point later than Stage 0
-::                                                     (where Caffeine is normally launched). Thanks to /u/NinjaInSpace for finding this obscure bug condition
-::                      ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
-::                      / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
+:: Version:       8.1.0  * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 ::
 :: Usage:         Run this script in aSafe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -53,7 +38,7 @@
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
-::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
+::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
 SETLOCAL
@@ -168,8 +153,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.0.1
-set SCRIPT_DATE=2015-12-xx
+set SCRIPT_VERSION=8.1.0
+set SCRIPT_DATE=2015-12-04
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -761,9 +746,13 @@ if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
+:: Expand the scrollback buffer if VERBOSE (-v) was used. This way we don't lose any output on the screen
+:: We'll also display a message below, since using the mode command flushes the scrollback and we don't want to lose the header
+if /i %VERBOSE%==yes mode con:lines=9000
+
+
 :: Create log header
 if /i %RESUME_DETECTED%==no (
-::	cls
 	call :log "-------------------------------------------------------------------------------"
 	call :log "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
 	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
@@ -776,7 +765,11 @@ if /i %RESUME_DETECTED%==no (
 )
 
 
-:: PREP: Run a quick SMART check and notify if there are any drives with problems
+:: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
+if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
+
+
+:: Run a quick SMART check and notify if there are any drives with problems
 wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
     find /i "%%i" && (
         call :log "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
@@ -799,8 +792,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	call :log "%CUR_DATE% %TIME%    Done."
 )
 
-title TRON v%SCRIPT_VERSION% [stage_0_prep]
-
 
 
 :::::::::::::::::::
@@ -811,6 +802,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :: Don't stamp anything to the flags file if no CLI flags were used
 echo stage_0_prep>tron_stage.txt
 if /i not "%*"=="" echo %*> tron_flags.txt
+title TRON v%SCRIPT_VERSION% [stage_0_prep]
 echo.
 call stage_0_prep\stage_0_prep.bat
 
@@ -837,7 +829,7 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
-	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs..."
+	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2..."
 )
 
 
