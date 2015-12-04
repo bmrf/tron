@@ -1,7 +1,7 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.6.2-TRON - Remove LOGPATH variable and switch to using inherited RAW_LOGS variable from Tron
+:: History:       1.6.2-TRON - Remove LOGPATH variable and use inherited RAW_LOGS variable from Tron
 ::                1.6.1-TRON / Branch into Tron-specific version
 ::                           * Switch to version-agnostic installation, will now detect system architecture and run appropriate installer
 ::                1.0.0      + Initial write
