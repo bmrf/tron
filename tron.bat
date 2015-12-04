@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.0.1 some stuff
+:: Version:       8.0.1 * tron.bat:prep:verbose:       Automatically expand the scrollback buffer to 9000 if the VERBOSE (-v) flag is used. This way we don't lose any output
 ::                8.0.0 * Tron modularization project: Move code for Stages 0-6 into their own sub-scripts in each job's respective directory. Tron.bat
 ::                                                     was getting pretty large and more difficult to work on, so moving the various stage's code into their
 ::                                                     own scripts should help simplify things and make it easier to find issues in a particular section.
@@ -53,7 +53,7 @@
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
-::                If you don't like the defaults and don't want to use the command-line, edit the variables below to change the script defaults.
+::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
 SETLOCAL
@@ -761,9 +761,13 @@ if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
+:: Expand the scrollback buffer if VERBOSE (-v) was used. This way we don't lose any output on the screen
+:: We'll also display a message below, since using the mode command flushes the scrollback and we don't want to lose the header
+if /i %VERBOSE%==yes mode con:lines=9000
+
+
 :: Create log header
 if /i %RESUME_DETECTED%==no (
-::	cls
 	call :log "-------------------------------------------------------------------------------"
 	call :log "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
 	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
@@ -776,7 +780,11 @@ if /i %RESUME_DETECTED%==no (
 )
 
 
-:: PREP: Run a quick SMART check and notify if there are any drives with problems
+:: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
+if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% ! VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
+
+
+:: Run a quick SMART check and notify if there are any drives with problems
 %WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
 setlocal enabledelayedexpansion
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
@@ -803,8 +811,6 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	call :log "%CUR_DATE% %TIME%    Done."
 )
 
-title TRON v%SCRIPT_VERSION% [stage_0_prep]
-
 
 
 :::::::::::::::::::
@@ -815,6 +821,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep]
 :: Don't stamp anything to the flags file if no CLI flags were used
 echo stage_0_prep>tron_stage.txt
 if /i not "%*"=="" echo %*> tron_flags.txt
+title TRON v%SCRIPT_VERSION% [stage_0_prep]
 echo.
 call stage_0_prep\stage_0_prep.bat
 
@@ -841,7 +848,7 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
-	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2 jobs..."
+	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2..."
 )
 
 
