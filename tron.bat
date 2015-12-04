@@ -766,7 +766,7 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
-if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% ! VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
+if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
 
 
 :: Run a quick SMART check and notify if there are any drives with problems
