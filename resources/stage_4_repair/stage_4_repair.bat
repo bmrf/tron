@@ -37,12 +37,12 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::
 :: STAGE 4: Repair :: // Begin jobs
 :::::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_4_repair begin..."
+call log.bat "%CUR_DATE% %TIME%   stage_4_repair begin..."
 
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
-call :log "%CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 and up)'..."
+call log.bat "%CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 and up)'..."
 if /i %DRY_RUN%==yes goto skip_dism_image_check
 
 :: Read WIN_VER and run the scan if we're on 8 or above
@@ -66,88 +66,88 @@ if "%WIN_VER:~0,9%"=="Windows 1" (
 if /i not %ERRORLEVEL%==0 (
 	title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
 	if "%WIN_VER:~0,19%"=="Windows Server 2012" (
-		call :log "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
+		call log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
 		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
 		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 		)
 	if "%WIN_VER:~0,9%"=="Windows 8" (
-		call :log "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
+		call log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
 		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
 		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 		)
 	if "%WIN_VER:~0,9%"=="Windows 1" (
-		call :log "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
+		call log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
 		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
 		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 	) else (
-		call :log "%CUR_DATE% %TIME%    DISM: No image corruption detected."
+		call log.bat "%CUR_DATE% %TIME%    DISM: No image corruption detected."
 	)
 )
 
 :skip_dism_image_check
-call :log "%CUR_DATE% %TIME%    Done."
+call log.bat "%CUR_DATE% %TIME%    Done."
 
 
 
 :: JOB: Reset registry permissions
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
-	call :log "%CUR_DATE% %TIME%    Resetting registry permissions..."
-	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
-	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
+	call log.bat "%CUR_DATE% %TIME%    Resetting registry permissions..."
+	call log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
+	call log.bat "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
-	call :log "%CUR_DATE% %TIME%    Done."
+	call log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET (-srr) set. Skipping registry and file permissions reset"
+	call log.bat "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET (-srr) set. Skipping registry and file permissions reset"
 )
 
 
 :: JOB: Reset filesystem permissions
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
-	call :log "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
-	call :log "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
-	call :log "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
+	call log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
+	call log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
+	call log.bat "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_file_permissions.bat"
-	call :log "%CUR_DATE% %TIME%    Done."
+	call log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
-	call :log "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET (-sfr) set. Skipping registry and file permissions reset"
+	call log.bat "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET (-sfr) set. Skipping registry and file permissions reset"
 )
 
 
 :: JOB: System File Checker (SFC) scan
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
-call :log "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
+call log.bat "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
 if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
 if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
 %SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 :skip_sfc
-call :log "%CUR_DATE% %TIME%    Done."
+call log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: chkdsk the system drive
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
-call :log "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
-call :log "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
+call log.bat "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
+call log.bat "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
 if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if /i not %ERRORLEVEL%==0 (
-	call :log "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
+	call log.bat "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
 	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
 ) else (
-	call :log "%CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
+	call log.bat "%CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
 	)
-call :log "%CUR_DATE% %TIME%    Done."
+call log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Kill Microsoft telemetry (user tracking)
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
-	call :log "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling Microsoft telemetry (user tracking) instead of purging"
+	call log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling Microsoft telemetry (user tracking) instead of purging"
 	REM Only disable telemetry, don't completely purge it
 	reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 	regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
@@ -156,10 +156,10 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 
 :: Windows 10 version
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
-	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
-	call :log "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
+	call log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
+	call log.bat "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
 	if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+	call log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
 :: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
@@ -168,7 +168,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
-	call :log "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
+	call log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no (
 		REM :::::::::::::::::::::::::::::::::::::::::::::
 		REM UPDATES
@@ -261,7 +261,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		regedit /S stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
 
 	)
-call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+call log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
 :skip_telem_removal
@@ -269,40 +269,40 @@ call :log "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	call :log "%CUR_DATE% %TIME%    Launch job 'Run DISM cleanup against unused binaries'..."
+	call log.bat "%CUR_DATE% %TIME%    Launch job 'Run DISM cleanup against unused binaries'..."
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
-	call :log "%CUR_DATE% %TIME%    Done."
+	call log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
 :: JOB: Network repair (minor). Thanks to /u/chinpopocortez
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
-call :log "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
+call log.bat "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
 if /i %DRY_RUN%==no (
 	ipconfig /flushdns >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: Below command probably not necessary, but just in case there are dodgy static ARP entries
 	netsh interface ip delete arpcache >> "%LOGPATH%\%LOGFILE%" 2>&1
 	netsh winsock reset catalog >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Repair file extensions. Thanks to /u/chinpopocortez
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [repair file extensions]
-call :log "%CUR_DATE% %TIME%    Launch job 'Repair file extensions'..."
+call log.bat "%CUR_DATE% %TIME%    Launch job 'Repair file extensions'..."
 if /i %DRY_RUN%==no (
 	setlocal
 	call stage_4_repair\repair_file_extensions\repair_file_extensions.bat
 	endlocal
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call log.bat "%CUR_DATE% %TIME%    Done."
 
 
 
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_4_repair complete."
+call log.bat "%CUR_DATE% %TIME%   stage_4_repair complete."
 
 
 
