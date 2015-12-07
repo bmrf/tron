@@ -119,7 +119,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_2_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
-More details about this function can be found in the list of all actions Tron performs at the bottom of this document.
+More details about this function can be found in the [list of all actions Tron performs](#full-tron-description) at the bottom of this document.
 
 
 # SAFE MODE
