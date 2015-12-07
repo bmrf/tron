@@ -322,10 +322,10 @@ If you feel overly charitable, bitcoin donations are accepted at this address:
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
 
 ## tron.bat
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under `\tron\resources`.
+Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under `\tron\resources`, e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
 
 
 ## Tron-internal prep jobs
@@ -364,7 +364,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 3. **Create System Restore point**: Tron creates a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
 
-4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt`
 
 5. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
