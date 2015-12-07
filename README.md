@@ -308,7 +308,7 @@ Tron and any included subscripts and `.reg` files I've written are free to use/r
 
 # OTHER
 
-I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I respond pretty quickly most days.
+I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I typically respond in a day or less.
 
 Hope this is helpful to other PC techs,
 
@@ -325,7 +325,7 @@ If you feel overly charitable, bitcoin donations are accepted at this address:
 The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
 
 ## tron.bat
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under `\tron\resources`, e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
+Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under the `\resources` folder. e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
 
 
 ## Tron-internal prep jobs
