@@ -124,9 +124,9 @@ More details about this function can be found in the list of all actions Tron pe
 
 # SAFE MODE
 
-Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
-
 When Tron launches it will briefly check if the computer is in Safe Mode with Networking, and if not it will prompt you to automatically reboot into it.
+
+Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
 
 
 # EMAIL REPORT
