@@ -62,7 +62,7 @@ Stage 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
      - Remove "NVIDIA HD Audio Driver." Thanks to /u/sofakingdead
-	 - Remove "Windows 7 USB/DVD Download Tool." Thanks to /u/sofakingdead
+     - Remove "Windows 7 USB/DVD Download Tool." Thanks to /u/sofakingdead
 
  . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
