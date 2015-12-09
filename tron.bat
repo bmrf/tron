@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.1.0  * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
+:: Version:       8.1.1 / tron.bat:prep:              Move pushd \resources command up a few lines to be run the same time as the other pushd commands
+::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
+::                8.1.0 * tron.bat:prep:verbose:      Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 ::
 :: Usage:         Run this script in aSafe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -153,8 +155,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.1.0
-set SCRIPT_DATE=2015-12-04
+set SCRIPT_VERSION=8.1.1
+set SCRIPT_DATE=2015-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -204,10 +206,12 @@ if "%~dp0"=="%TEMP%\tron\" (
 )
 
 
-:: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
+:: PREP: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
-:: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
+:: PREP: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
+:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
+pushd resources
 
 
 :: PREP: Parse command-line arguments (functions are at bottom of script)
@@ -257,10 +261,6 @@ if /i %HELP%==yes (
 	echo.
 	exit /b 0
 	)
-
-
-:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
-pushd resources
 
 
 :: PREP: Force WMIC location in case the system PATH is messed up
@@ -433,7 +433,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			REM Clean up after ourselves
 			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 			del /f /q "%TEMP%\sha256sums.txt"
-			exit
+			exit /b 1
 		)
 	)
 	color 0f
