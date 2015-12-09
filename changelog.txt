@@ -39,7 +39,7 @@ stage_6_optimize.bat             v1.0.0
 Stage 0: Prep
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
- . TDSS Killer                   v3.1.0.5
+ * TDSS Killer                   v3.1.0.7
  . McAfee Stinger                v12.1.0.1822
  . erunt                         v1.1j
  . caffeine                      v1.6.1.0
