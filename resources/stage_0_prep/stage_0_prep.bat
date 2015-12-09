@@ -33,7 +33,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::
 :: STAGE 0: PREP :: // Begin jobs
 :::::::::::::::::::
-call :log "%CUR_DATE% %TIME%   stage_0_prep begin..."
+call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 
 
 
@@ -44,63 +44,63 @@ call :log "%CUR_DATE% %TIME%   stage_0_prep begin..."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
-		call :log "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
+		call functions\log.bat "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
 		if /i %DRY_RUN%==no (
 			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
 )
-call :log "%CUR_DATE% %TIME%    OK."
+call functions\log.bat "%CUR_DATE% %TIME%    OK."
 
 
 :: JOB: rkill
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [rkill]
-call :log "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call :log "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
+call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
 	)
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Get pre-Tron system state (installed programs, complete file list)
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
-call :log "%CUR_DATE% %TIME%    Generating pre-run system profile..."
+call functions\log.bat "%CUR_DATE% %TIME%    Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
 	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
 	:: Get list of all files on system
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Disable mode and disable screen saver
 if /i %DRY_RUN%==no (
-	call :log "%CUR_DATE% %TIME%    Launch job "Temporariliy disable system sleep and screensaver'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job "Temporariliy disable system sleep and screensaver'..."
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
 	taskkill /im "caffeine.exe" > nul 2>&1
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
-	call :log "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
 :: JOB: ProcessKiller
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
-call :log "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
 pushd stage_0_prep\processkiller
 if /i %DRY_RUN%==no start "" /wait ProcessKiller.exe /silent
 popd
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Set system clock via NTP
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
-call :log "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
 	:: Make sure time service is started, also force us to allow starting it in Safe Mode
 	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -110,50 +110,50 @@ if /i %DRY_RUN%==no (
 	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Check WMI and repair if necessary
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
-call :log "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
 setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no (
 	%WMIC% timezone >NUL
 	if /i not !ERRORLEVEL!==0 (
-		call :log "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
-		call :log "              This will take time, please be patient..."
+		call functions\log.bat "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
+		call functions\log.bat "              This will take time, please be patient..."
 		call stage_0_prep\repair_wmi\repair_wmi.bat
 	)
 )
 setlocal disabledelayedexpansion
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Backup registry
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
-call :log "%CUR_DATE% %TIME%    Launch job: 'Back up registry' to "%LOGPATH%"..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Back up registry' to "%LOGPATH%"..."
 if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: McAfee Stinger
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
-call :log "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
-call :log "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
+call functions\log.bat "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: TDSS Killer
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
-call :log "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
 if /i %DRY_RUN%==no (
 	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Dump TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
 	)
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Purge oldest shadow copies
@@ -163,42 +163,29 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	if /i not "%WIN_VER:~0,9%"=="Windows V" (
-		call :log "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
+		call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
 		if /i %DRY_RUN%==no (
 			:: Force allow us to start VSS service in Safe Mode
 			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
 			net start VSS >nul 2>&1
 			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
 		)
-		call :log "%CUR_DATE% %TIME%    Done."
+		call functions\log.bat "%CUR_DATE% %TIME%    Done."
 	)
 )
 
 
 :: JOB: Reduce SysRestore space
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [System Restore Modifications]
-call :log "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%%% of disk..."
+call functions\log.bat "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%%% of disk..."
 if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 
 
 :: Stage complete
-call :log "%CUR_DATE% %TIME%   stage_0_prep complete."
-
-
-
-
-
-:::::::::::::::
-:: FUNCTIONS ::
-:::::::::::::::
-:: We have to duplicate the log function since it doesn't get inherited from tron.bat when the script is called
-:log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
-goto :eof
+call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep complete."
