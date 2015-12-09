@@ -66,7 +66,7 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Get pre-Tron system state (installed programs, complete file list). Thanks to /u/Reverent for building this section
+:: JOB: Get pre-Tron system state (installed programs, complete file list)
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
 call :log "%CUR_DATE% %TIME%    Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
