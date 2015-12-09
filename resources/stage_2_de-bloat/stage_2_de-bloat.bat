@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.1.0 * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
+::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
@@ -11,7 +12,7 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.0.1
+set STAGE_2_SCRIPT_VERSION=1.1.0
 set STAGE_2_SCRIPT_DATE=2015-12-09
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
@@ -87,17 +88,18 @@ if /i %TARGET_METRO%==yes (
 		if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 
 			REM Windows 8/8.1 version
+			REM In Windows 8/8.1 we can blast ALL AppX/Metro/"Modern App" apps because unlike in Windows 10, the "core" apps (calculator, paint, etc) aren't in the "modern" format
 			powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
 			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 
 		) else (
 
 			REM Windows 10 version
-			:: Kill forced OneDrive integration
+			REM Kill forced OneDrive integration
 			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
-			%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" 2>&1 >nul 2>&1
-			%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" 2>&1
-			:: These keys are orphaned after the OneDrive uninstallation and can be safely removed
+			%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+			%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+			REM These keys are orphaned after the OneDrive uninstallation and can be safely removed
 			reg delete "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 			reg delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 			takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -106,49 +108,9 @@ if /i %TARGET_METRO%==yes (
 			rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
 
-			REM "Get Office"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*officehub*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *officehub* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Get Skype"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*getstarted*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *getstarted* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Groove Music"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*zunemusic*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *zunemusic* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Money / Bing Finance"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingfinance*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *bingfinance* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Movies & TV / Zune Video"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*zunevideo*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *zunevideo* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "News / Bing News"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingnews*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *bingnews* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Phone Companion"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*windowsphone*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *windowsphone* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Sports / Bing Sports"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*bingsports*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *bingsports* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Windows Feedback"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*windowsfeedback*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *windowsfeedback* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM "Xbox"
-			powershell "Get-AppXProvisionedPackage -online | where-object {$_.packagename -like "*xboxapp*"} | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage *xboxapp* -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
-
-			REM Call /u/danodemano's script to do removal of OEM Modern App's
-			REM powershell -noprofile -noexit -executionpolicy bypass -file ".\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1"
-			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_OEM_modern_apps_to_target_by_name.ps1"
+			REM Call the external PowerShell scripts to do removal of Microsoft and 3rd party OEM Modern Apps
+			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
+			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
 		)
 	)
 )
