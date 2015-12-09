@@ -275,7 +275,7 @@ if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 )
 
 
-:: JOB: Network repair (minor). Thanks to /u/chinpopocortez
+:: JOB: Network repair (minor)
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
 call :log "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
 if /i %DRY_RUN%==no (
@@ -287,7 +287,7 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Repair file extensions. Thanks to /u/chinpopocortez
+:: JOB: Repair file extensions
 title TRON v%SCRIPT_VERSION% [stage_4_repair] [repair file extensions]
 call :log "%CUR_DATE% %TIME%    Launch job 'Repair file extensions'..."
 if /i %DRY_RUN%==no (
