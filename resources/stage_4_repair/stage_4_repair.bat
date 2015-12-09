@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
+:: Version:       1.0.3 - Remove interal log function and switch to Tron's external logging function. Thanks to github:nemchik
+::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
 ::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
 ::                      + Enable telemetry removal on Server 2012 platforms
 ::                      ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
@@ -14,8 +15,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.2
-set STAGE_4_SCRIPT_DATE=2015-12-04
+set STAGE_4_SCRIPT_VERSION=1.0.3
+set STAGE_4_SCRIPT_DATE=2015-12-09
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
