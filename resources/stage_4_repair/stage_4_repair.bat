@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.3 - Remove interal log function and switch to Tron's external logging function. Thanks to github:nemchik
+::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
 ::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
 ::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
 ::                      + Enable telemetry removal on Server 2012 platforms
@@ -258,8 +259,8 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM 2>NUL
 
 		REM Disable telemetry via master registry key
-		reg import stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
-		regedit /S stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry_registry_entries.reg >nul 2>&1
+		reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+		regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 
 	)
 call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
