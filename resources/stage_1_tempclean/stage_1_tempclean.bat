@@ -127,7 +127,7 @@ call :log "%CUR_DATE% %TIME%    Done."
 title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
 call :log "%CUR_DATE% %TIME%    Launch job 'Clear Windows Update cache'..."
 if /i %DRY_RUN%==no (
-	:: Allow us to start the service in Safe Mode. Thanks to /u/GrizzlyWinter
+	:: Allow us to start the service in Safe Mode
 	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\WUAUSERV" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
 	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%" 2>&1
