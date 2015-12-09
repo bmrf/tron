@@ -1,5 +1,6 @@
-# Thanks to /u/kronflux
-# Modified for use with Tron by /u/vocatus on reddit.com/r/TronScript
+# Script to remove a lot of the pre-loaded 3rd-party Metro "modern app" bloatware
+# Initial creation by /u/kronflux
+# Modified for use with the Tron project by /u/vocatus on reddit.com/r/TronScript
 $ErrorActionPreference = "SilentlyContinue"
 
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*06DAC6F6.StumbleUpon*"}).PackageFullName
@@ -63,26 +64,6 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*KindleforWindows8*
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MAGIX.MusicMakerJam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*McAfee*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*McAfeeInc.05.McAfeeSecurityAdvisorforASUS*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.3DBuilder*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.BingTranslator*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.BioEnrollment*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.FreshPaint*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.Getstarted*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MicrosoftJackpot*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MicrosoftJigsaw*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MicrosoftMahjong*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MicrosoftSolitaireCollection*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MicrosoftSudoku*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MovieMoments*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.SkypeApp*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.SkypeWiFi*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.Studios.Wordament*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.Taptiles*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.Windows.CloudExperienceHost*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.WindowsFeedback*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.ZuneVideo*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MicrosoftMahjong*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MicrosoftSolitaireCollection*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MobileFileExplorer*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MusicMakerJam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*NAVER.LINEwin8*"}).PackageFullName
@@ -90,11 +71,11 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Netflix*"}).Packag
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*PinballFx2*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*PublicationsInternational.iCookbookSE*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*RandomSaladGamesLLC.GinRummyProforHP*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*SkypeApp*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*sMedioforHP.sMedio360*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*SymantecCorporation.NortonStudio*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*TelegraphMediaGroupLtd.TheTelegraphforLenovo*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*toolbar*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*TheNewYorkTimes.NYTCrossword*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*TripAdvisorLLC.TripAdvisorHotelsFlightsRestaurants*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*TuneIn.TuneInRadio*"}).PackageFullName
@@ -102,9 +83,6 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*UptoElevenDigitalS
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Weather.TheWeatherChannelforHP*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Weather.TheWeatherChannelforLenovo*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*WildTangentGames*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Windows.ContactSupport*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*YouSendIt.HighTailForLenovo*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ZinioLLC.Zinio*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ZuneMusic*"}).PackageFullName
-remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ZuneVideo*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*zuukaInc.iStoryTimeLibrary*"}).PackageFullName
