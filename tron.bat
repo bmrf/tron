@@ -770,19 +770,15 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) o
 
 
 :: Run a quick SMART check and notify if there are any drives with problems
-%WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
-setlocal enabledelayedexpansion
-for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
-	find /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1
-	if !ERRORLEVEL!==0 (
-		call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
-		call functions\log.bat "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
-		call functions\log.bat "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
-		color 0e
-		ENDLOCAL DISABLEDELAYEDEXPANSION && set WARNINGS_DETECTED=yes&& goto smart_check_complete
-	)
+wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do @(
+    find /i "%%i" >nul && (
+        call log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
+        call log.bat "%CUR_DATE% %TIME% SMART errors can mean a drive is close to failure"
+        call log.bat "%CUR_DATE% %TIME% Recommend you back the system up BEFORE running Tron."
+        color 0e
+        set WARNINGS_DETECTED=yes&& goto smart_check_complete
+    )
 )
-endlocal disabledelayedexpansion
 :smart_check_complete
 
 
@@ -982,7 +978,6 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-	del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
