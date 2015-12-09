@@ -295,7 +295,6 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 
 :: PREP: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-:: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
@@ -318,7 +317,6 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: PREP: Get free space on the system drive and stash it for comparison later
-:: Thanks to Stack Overflow user Aacini in this post: http://stackoverflow.com/a/20392479/1347428
 :freespace_check
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
@@ -959,7 +957,7 @@ if /i %DRY_RUN%==no (
 call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\""
 
 
-:: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
+:: JOB: Collect misc logs and deposit them in the log folder
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Collect logs]
 call :log "%CUR_DATE% %TIME%    Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
@@ -1100,7 +1098,6 @@ exit /B
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-:: Thanks to /u/douglas_swehla for helping here
 :: Since no new variable names are defined, there's no need for SETLOCAL.
 :: The %1 reference contains the first argument passed to the function. When the
 :: whole argument string is wrapped in double quotes, it is sent as an argument.
@@ -1118,7 +1115,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
 
-:: Parse CLI arguments and flip the appropriate variables. Thanks to /u/douglas_swehla for conversion to function
+:: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
