@@ -119,14 +119,14 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
 If the script is interrupted e.g. from a crash or a forced reboot (often encountered during stage_2_de-bloat), it will attempt to resume from the last stage successfully started. Tron accomplishes this by creating a `RunOnce` registry key for the current user at the beginning of Stage 0 (e.g. when jobs start executing), and deleting it at the end of the script if everything finished without interruption.
 
-More details about this function can be found in the list of all actions Tron performs at the bottom of this document.
+More details about this function can be found in the [list of all actions Tron performs](#full-tron-description) at the bottom of this document.
 
 
 # SAFE MODE
 
-Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
-
 When Tron launches it will briefly check if the computer is in Safe Mode with Networking, and if not it will prompt you to automatically reboot into it.
+
+Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
 
 
 # EMAIL REPORT
@@ -308,7 +308,7 @@ Tron and any included subscripts and `.reg` files I've written are free to use/r
 
 # OTHER
 
-I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I respond pretty quickly most days.
+I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I typically respond in a day or less.
 
 Hope this is helpful to other PC techs,
 
@@ -322,10 +322,10 @@ If you feel overly charitable, bitcoin donations are accepted at this address:
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply crack open `Tron.bat` with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
 
 ## tron.bat
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under `\tron\resources`.
+Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under the `\resources` folder. e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
 
 
 ## Tron-internal prep jobs
@@ -364,7 +364,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 3. **Create System Restore point**: Tron creates a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
 
-4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` from being closed
+4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt`
 
 5. **ProcessKiller**: Utility provided by /u/cuddlychops06 which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
@@ -520,7 +520,7 @@ Tron does not run these automatically because most of them don't support command
 
 4. **[autoruns](https://technet.microsoft.com/en-us/sysinternals/bb963902.aspx)**: Examine and remove programs that run at startup
 
-5. **[ComboFix](http://www.combofix.org/)**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 7 (no Win8 or above)
+5. **[ComboFix](http://www.bleepingcomputer.com/download/combofix/)**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 7 (no Win8 or above)
 
 6. **[PCHunter](http://www.majorgeeks.com/files/details/pc_hunter.html)**: Tool to scan for rootkits and other malicious items. Replaces gmer
 

@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
+:: Version:       1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
+::                1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
 ::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
 ::                           + Add logging and -v flag (VERBOSE) support
 ::                           / Change Scheduled Tasks cleanup to use "/disable" flag instead of "/delete" in case those jobs are needed later on
@@ -33,8 +34,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.5-TRON
-set SCRIPT_UPDATED=2015-11-30
+set SCRIPT_VERSION=1.0.6-TRON
+set SCRIPT_UPDATED=2015-12-09
 
 
 :::::::::::::
@@ -44,7 +45,7 @@ set SCRIPT_UPDATED=2015-11-30
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
 :: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense ...
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	taskkill /f /im gwx.exe /t
 	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
 	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
@@ -78,7 +79,7 @@ if %VERBOSE%==yes (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	:: 02/22 - kb 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet
 	:: 03/22 - kb 2922324 (https://support.microsoft.com/en-us/kb/2922324)
@@ -177,7 +178,7 @@ start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_wind
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
 	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
@@ -260,7 +261,7 @@ if %VERBOSE%==yes (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
 	sc stop Diagtrack
 	sc delete Diagtrack
@@ -322,7 +323,7 @@ if %VERBOSE%==yes (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	reg import %~dp0disable_telemetry_registry_entries.reg
 	reg import disable_telemetry_registry_entries.reg
 	regedit /S %~dp0disable_telemetry_registry_entries.reg
@@ -344,7 +345,7 @@ if %VERBOSE%==yes (
 
 :: Run this commend to clear persistent routes only, takes effect at reboot. This will undo all the below changes
 ::reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
-if %VERBOSE%==yes (
+if "%VERBOSE%"=="yes" (
 	:: a-0001.a-msedge.net
 	route -p add 204.79.197.200/32 0.0.0.0
 	:: a23-218-212-69.deploy.static.akamaitechnologies.com

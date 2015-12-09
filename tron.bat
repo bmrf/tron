@@ -4,9 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.1.0  * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
+:: Version:       8.1.1 / tron.bat:prep:              Move pushd \resources command up a few lines to be run the same time as the other pushd commands
+::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
+::                      / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
+::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
+::                8.1.0 * tron.bat:prep:verbose:      Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 ::
-:: Usage:         Run this script in aSafe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
+:: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL command-line flags (can be combined, none are required):
 ::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
@@ -153,8 +157,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.1.0
-set SCRIPT_DATE=2015-12-04
+set SCRIPT_VERSION=8.1.1
+set SCRIPT_DATE=2015-12-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -204,10 +208,12 @@ if "%~dp0"=="%TEMP%\tron\" (
 )
 
 
-:: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
+:: PREP: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
-:: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
+:: PREP: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
+:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
+pushd resources
 
 
 :: PREP: Parse command-line arguments (functions are at bottom of script)
@@ -259,10 +265,6 @@ if /i %HELP%==yes (
 	)
 
 
-:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
-pushd resources
-
-
 :: PREP: Force WMIC location in case the system PATH is messed up
 set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
@@ -295,7 +297,6 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 
 :: PREP: Detect Solid State hard drives (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-:: Big time thanks to reddit.com/user/Suddenly_Engineer and reddit.com/user/Aberu for helping with this
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
@@ -318,7 +319,6 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: PREP: Get free space on the system drive and stash it for comparison later
-:: Thanks to Stack Overflow user Aacini in this post: http://stackoverflow.com/a/20392479/1347428
 :freespace_check
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
 :: GB version
@@ -343,7 +343,7 @@ if /i %RESUME_DETECTED%==yes (
 )
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
-	call :log "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
+	call functions\log.bat "%CUR_DATE% %TIME% ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
 	REM Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
 	REM even if a reboot didn't happen
 	REM reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
@@ -433,7 +433,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			REM Clean up after ourselves
 			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 			del /f /q "%TEMP%\sha256sums.txt"
-			exit
+			exit /b 1
 		)
 	)
 	color 0f
@@ -721,7 +721,7 @@ if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunO
 :: Check if autorun (-a) flag was used but we're NOT in Safe Mode. If true, reboot.
 if /i %AUTORUN%==yes (
 	if /i not "%SAFE_MODE%"=="yes" (
-		call :log "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 10 seconds."
+		call functions\log.bat "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 10 seconds."
 		if /i %DRY_RUN%==no (
 			bcdedit /set {default} safeboot network
 			shutdown -r -f -t 10
@@ -753,28 +753,28 @@ if /i %VERBOSE%==yes mode con:lines=9000
 
 :: Create log header
 if /i %RESUME_DETECTED%==no (
-	call :log "-------------------------------------------------------------------------------"
-	call :log "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
-	call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
-	call :log "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
-	call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
-	call :log "                          Command-line flags: %*"
-	call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-	call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-	call :log "-------------------------------------------------------------------------------"
+	call functions\log.bat "-------------------------------------------------------------------------------"
+	call functions\log.bat "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
+	call functions\log.bat "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
+	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
+	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
+	call functions\log.bat "                          Command-line flags: %*"
+	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+	call functions\log.bat "-------------------------------------------------------------------------------"
 )
 
 
 :: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
-if /i %VERBOSE%==yes call :log "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
+if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
 
 
 :: Run a quick SMART check and notify if there are any drives with problems
-wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
-    find /i "%%i" && (
-        call :log "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
-        call :log "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
-        call :log "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
+wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do @(
+    find /i "%%i" >nul && (
+        call log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
+        call log.bat "%CUR_DATE% %TIME% SMART errors can mean a drive is close to failure"
+        call log.bat "%CUR_DATE% %TIME% Recommend you back the system up BEFORE running Tron."
         color 0e
         set WARNINGS_DETECTED=yes&& goto smart_check_complete
     )
@@ -786,10 +786,10 @@ wmic diskdrive get status | for %%i in (Error,Degraded,Unknown,PredFail,Service,
 :: We undo this at the end of the script. Only works on Vista and up
 if /i not "%WIN_VER:~0,9%"=="Microsoft" (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
-	call :log "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
-	call :log "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
+	call functions\log.bat "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
 	if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
-	call :log "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
@@ -829,7 +829,7 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
-	call :log "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2..."
+	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2..."
 )
 
 
@@ -844,7 +844,7 @@ title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call :log "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."
+	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -894,29 +894,29 @@ call stage_6_optimize\stage_6_optimize.bat
 :stage_7_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_7_wrap-up>tron_stage.txt
-call :log "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
+call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
 
 
 
 :: JOB: Reset power settings to Windows defaults
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
 if %PRESERVE_POWER_SCHEME%==yes (
-	call :log "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping Windows power settings reset."
+	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping Windows power settings reset."
 ) else (
-	call :log "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
 	if %DRY_RUN%==no (
 		REM Check for Windows XP/2k3
 		if /i "%WIN_VER:~0,9%"=="Microsoft" %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
 		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
 :: JOB: Get post-Tron system state (installed programs, complete file list) and generate the summary logs
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
-call :log "%CUR_DATE% %TIME%    Calculating post-run results for summary logs..."
+call functions\log.bat "%CUR_DATE% %TIME%    Calculating post-run results for summary logs..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
 	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
@@ -952,12 +952,12 @@ if /i %DRY_RUN%==no (
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
-call :log "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\""
+call functions\log.bat "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY_LOGS%\""
 
 
-:: JOB: Collect misc logs and deposit them in the log folder. Thanks to /u/swtester
+:: JOB: Collect misc logs and deposit them in the log folder
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Collect logs]
-call :log "%CUR_DATE% %TIME%    Saving misc logs to "%RAW_LOGS%\"..."
+call functions\log.bat "%CUR_DATE% %TIME%    Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
 	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
 	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%RAW_LOGS%" >NUL
@@ -966,19 +966,19 @@ if /i %DRY_RUN%==no (
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%RAW_LOGS%\"
 )
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
-call :log "%CUR_DATE% %TIME%    Cleaning up..."
+call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-call :log "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Calculate saved disk space
@@ -996,33 +996,33 @@ stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call :log "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
+call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
 
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
-	call :log "%CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible."
+	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible."
 ) else (
-	call :log "%CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
+	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
 	)
 
 
 :: Check if shutdown was requested
-if /i %AUTO_SHUTDOWN%==yes call :log "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
+if /i %AUTO_SHUTDOWN%==yes call functions\log.bat "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
 
 
 :: Pretend to send the email report. We don't actually send the report since we need the log trailer which is created below,
 :: so we just pretend to send it then actually send it after the log trailer has been created
 if /i %EMAIL_REPORT%==yes (
-	call :log "%CUR_DATE% %TIME%   Email report requested. Sending report now..."
+	call functions\log.bat "%CUR_DATE% %TIME%   Email report requested. Sending report now..."
 	ping localhost -n 5 >NUL
-	call :log "%CUR_DATE% %TIME%   Done."
+	call functions\log.bat "%CUR_DATE% %TIME%   Done."
 )
 
 
 :: Check if self-destruct was set
 if /i %SELF_DESTRUCT%==yes (
-	call :log "%CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye..."
+	call functions\log.bat "%CUR_DATE% %TIME% ! Self-destruct selected. De-rezzing self. Goodbye..."
 )
 
 
@@ -1031,21 +1031,21 @@ if /i %SELF_DESTRUCT%==yes (
 color 2f
 if /i %WARNINGS_DETECTED%==yes color e0
 if /i %ERRORS_DETECTED%==yes color cf
-call :log "-------------------------------------------------------------------------------"
-call :log "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
-call :log "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
-call :log "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
-call :log "                          Command-line flags: %*"
-call :log "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call :log "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
-call :log "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
-call :log "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
-call :log "                          Logfile: %LOGPATH%\%LOGFILE%"
-call :log ""
-call :log "     * If you see negative disk space don't panic. Due to how some of Tron's"
-call :log "       functions work, actual disk space reclaimed will not be visible until"
-call :log "       after a reboot."
-call :log "-------------------------------------------------------------------------------"
+call functions\log.bat "-------------------------------------------------------------------------------"
+call functions\log.bat "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
+call functions\log.bat "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
+call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
+call functions\log.bat "                          Command-line flags: %*"
+call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
+call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
+call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
+call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
+call functions\log.bat ""
+call functions\log.bat "     * If you see negative disk space don't panic. Due to how some of Tron's"
+call functions\log.bat "       functions work, actual disk space reclaimed will not be visible until"
+call functions\log.bat "       after a reboot."
+call functions\log.bat "-------------------------------------------------------------------------------"
 
 
 :: JOB: Actually send the email report if it was requested
@@ -1057,9 +1057,9 @@ if /i %EMAIL_REPORT%==yes (
 		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
-			call :log "%CUR_DATE% %TIME%   Done."
+			call functions\log.bat "%CUR_DATE% %TIME%   Done."
 		) else (
-			call :log "%CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings."
+			call functions\log.bat "%CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings."
 		)
 	)
 )
@@ -1095,16 +1095,6 @@ exit /B
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-:: Thanks to /u/douglas_swehla for helping here
-:: Since no new variable names are defined, there's no need for SETLOCAL.
-:: The %1 reference contains the first argument passed to the function. When the
-:: whole argument string is wrapped in double quotes, it is sent as an argument.
-:: The tilde syntax (%~1) removes the double quotes around the argument.
-:log
-echo:%~1 >> "%LOGPATH%\%LOGFILE%"
-echo:%~1
-goto :eof
-
 
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
@@ -1113,7 +1103,7 @@ set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
 
-:: Parse CLI arguments and flip the appropriate variables. Thanks to /u/douglas_swehla for conversion to function
+:: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
