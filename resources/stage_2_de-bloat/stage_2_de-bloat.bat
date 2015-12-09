@@ -61,7 +61,7 @@ if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.ba
 call :log "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove default Metro apps (Windows 8 and up). Thanks to https://keybase.io/exabrial
+:: JOB: Remove default Metro apps (Windows 8 and up)
 title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: This command will re-install ALL default Windows 10 apps:
 :: Get-AppxPackage -AllUsers| Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
