@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
+:: Version:       1.1.1 - Remove interal log function and switch to Tron's external logging function. Thanks to github:nemchik
+::                1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
 ::                1.0.0 + Initial write
 @echo off
 
@@ -11,8 +12,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.0
-set STAGE_5_SCRIPT_DATE=2015-12-03
+set STAGE_5_SCRIPT_VERSION=1.1.1
+set STAGE_5_SCRIPT_DATE=2015-12-09
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
