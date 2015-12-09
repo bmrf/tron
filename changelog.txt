@@ -20,23 +20,9 @@ Version number legend:
 ########################
 tron.bat                         v8.1.1
 
-stage_0_prep.bat                 v1.0.0
-
-stage_1_tempclean.bat            v1.0.1
-
-stage_2_de-bloat.bat             v1.0.0
-
-stage_3_disinfect.bat            v1.0.0
-
-stage_4_repair.bat               v1.0.2
- ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
-
-stage_5_patch.bat                v1.1.0
-
-stage_6_optimize.bat             v1.0.0
-
 
 Stage 0: Prep
+ . stage_0_prep.bat              v1.0.0
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  * TDSS Killer                   v3.1.0.7
@@ -45,28 +31,38 @@ Stage 0: Prep
  . caffeine                      v1.6.1.0
 
 Stage 1: Tempclean
+ . stage_1_tempclean.bat         v1.0.1
  . CCLeaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
 
 Stage 2: De-bloat
- . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
- . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
- . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
- . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
- . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
+ * stage_2_de-bloat.bat             v1.1.0
+    * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
+
+ . \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt
+ . \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
+ * \resources\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ + \resources\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+    + New; move all Microsoft-specific Modern apps into this script
 
 Stage 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . stage_3_disinfect.bat         v1.0.0
+ . Sophos Virus Removal Tool     v2.5.4
+ . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.2.0.1024
 
 Stage 4: Repair
- . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . stage_4_repair.bat            v1.0.2
+    ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
+ . subinacl.exe                  v5.2.3790.1180
+ . Repair file extensions        v1.0.0
 
 Stage 5: Patch
+ . stage_5_patch.bat             v1.1.0
  . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
@@ -74,6 +70,7 @@ Stage 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
+ . stage_6_optimize.bat          v1.0.0
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
@@ -105,29 +102,8 @@ Stage 8: Manual tools
 tron.bat                         v8.1.0
  * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 
-stage_0_prep.bat                 v1.0.0
-
-stage_1_tempclean.bat            v1.0.1
- * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
- * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now display ALL Bleachbit output to console and log if -v is used. Thanks to /u/forcen
- - misc:      Remove unnecessary window title reset after Tempfilecleanup
-
-stage_2_de-bloat.bat             v1.0.0
-
-stage_3_disinfect.bat            v1.0.0
-
-stage_4_repair.bat               v1.0.1
- + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
- + Enable telemetry removal on Server 2012 platforms
- ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
-
-stage_5_patch.bat                v1.1.0
- * Only patch each program if it already exists on the system. Thanks to /u/Tech604
-
-stage_6_optimize.bat             v1.0.0
-
-
 Stage 0: Prep
+ . stage_0_prep.bat              v1.0.0
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
@@ -136,40 +112,56 @@ Stage 0: Prep
  * caffeine                      v1.6.1.0
 
 Stage 1: Tempclean
+stage_1_tempclean.bat            v1.0.1
+    * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
+    * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now display ALL Bleachbit output to console and log if -v is used. Thanks to /u/forcen
+    - misc:      Remove unnecessary window title reset after Tempfilecleanup
+
  * CCLeaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
 
 Stage 2: De-bloat
+ . stage_2_de-bloat.bat           v1.0.0
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
- . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
-     - Remove "NVIDIA HD Audio Driver." Thanks to /u/sofakingdead
-	 - Remove "Windows 7 USB/DVD Download Tool." Thanks to /u/sofakingdead
+ * \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+    - Remove "NVIDIA HD Audio Driver." Thanks to /u/sofakingdead
+    - Remove "Windows 7 USB/DVD Download Tool." Thanks to /u/sofakingdead
 
  . \resources\stage_2_de-bloat\OEM_modern_apps_to_target_by_name.ps1
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
 
 Stage 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ . stage_3_disinfect.bat         v1.0.0
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  * Malwarebytes Anti-Malware     v2.2.0.1024
 
 Stage 4: Repair
+ * stage_4_repair.bat            v1.0.1
+    + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+    + Enable telemetry removal on Server 2012 platforms
+    ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
+
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 Stage 5: Patch
+ * stage_5_patch.bat             v1.1.0
+    * Only patch each program if it already exists on the system. Thanks to /u/Tech604
+
  . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
  * Java Runtime Environment      8u66          (language ignored)
-     * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
+    * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
 
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
+ . stage_6_optimize.bat          v1.0.0
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
@@ -215,22 +207,8 @@ tron.bat                         v8.0.0
  ! stage_0_prep:caffeine:       Add code to prevent launching two Caffeine instances. The only scenario where this would happen is if we're resuming an interrupted run in Stage 0
  / stage_7_wrap-up:caffeine:    Move shutdown of caffeine closer to end of script instead of in power settings reset section
 
-stage_0_prep.bat                 v1.0.0 // Initial creation of stage-specific sub-scripts
-
-stage_1_tempclean.bat            v1.0.0
-
-stage_2_de-bloat.bat             v1.0.0
-
-stage_3_disinfect.bat            v1.0.0
-
-stage_4_repair.bat               v1.0.0
-
-stage_5_patch.bat                v1.0.0
-
-stage_6_optimize.bat             v1.0.0
-
-
 Stage 0: Prep
+ + stage_0_prep.bat              v1.0.0
  . rkill                         v2.8.2.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.5
@@ -239,15 +217,17 @@ Stage 0: Prep
  . caffeine                      v1.6.0.0
 
 Stage 1: Tempclean
+ + stage_1_tempclean.bat         v1.0.0
  * CCLeaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
 
 Stage 2: De-bloat
+ + stage_2_de-bloat.bat          v1.0.0
  . \resources\stage_2_de-bloat\programs_to_target_by_name.txt
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
- . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+ * \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
 	- Remove AI RoboForm Toolbar
 	- Remove LastPass Toolbar
 
@@ -255,15 +235,18 @@ Stage 2: De-bloat
  . \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Not called (currently unused)
 
 Stage 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ + stage_3_disinfect.bat         v1.0.0
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 Stage 4: Repair
+ + stage_4_repair.bat            v1.0.0
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 Stage 5: Patch
+ + stage_5_patch.bat             v1.0.0
  . 7-Zip                         v15.11        (multi-language)
  . Adobe Flash Player            v19.0.0.245   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
@@ -271,6 +254,7 @@ Stage 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
+ + stage_6_optimize.bat          v1.0.0
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
@@ -336,13 +320,13 @@ STAGE 2: De-bloat
  + \resources\stage_2_de-bloat\misc_other_programs_to_target.bat       //  Added but not called (currently unused)
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 STAGE 5: Patch
  * 7-Zip                         v15.11         (multi-language)
@@ -403,13 +387,13 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
@@ -473,13 +457,13 @@ STAGE 2: De-bloat
  + \resources\stage_2_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
@@ -540,13 +524,13 @@ STAGE 2: De-bloat
    * Minor additions/removals
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
  . subinacl.exe                  v5.2.3790.1180  // used for file and registry permissions reset
- . Repair file extensions        v1.0.0          // Repair broken file extensions. Thanks to /u/cuddlychops06
+ . Repair file extensions        v1.0.0
 
 STAGE 5: Patch
  . 7-Zip                         v9.38         (multi-language)
@@ -611,8 +595,8 @@ STAGE 2: De-bloat
  * \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -691,8 +675,8 @@ STAGE 2: De-bloat
     - Remove some incorrect entries based on user feedback
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -762,8 +746,8 @@ STAGE 2: De-bloat
     * significant updates from various users
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -845,8 +829,8 @@ STAGE 2: De-bloat
     * Massive updates to the list. Huge, huge thanks to /u/fezzgig for providing hundreds of GUID dumps, and thanks to /u/Sir_Brags_A_Lot, /u/BrentNewland, /u/Satiex, /u/captainrv, /u/rodgersayshi, /u/RoninResearcher, /u/dancsi, /u/Aarinfel, /u/Sartanen, /u/TheDreamerofWorlds, /u/staticextasy, and any others I missed as well.
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -916,8 +900,8 @@ STAGE 2: De-bloat
     + Greatly expand list based on user feedback
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -983,8 +967,8 @@ STAGE 2: De-bloat
  . \resources\stage_2_de-bloat\programs_to_target_by_GUID.bat
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1057,8 +1041,8 @@ STAGE 2: De-bloat
      https://github.com/bmrf/tron/commit/11cea132dc24d0bd8f4f2fff2cf718c7d71ffe53
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1124,8 +1108,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  - RogueKiller                   v10.9.4.0       //   Removed due to the RogueKiller developers time-bombing it :(
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1191,8 +1175,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.9.4.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1263,8 +1247,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.9.4.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1330,8 +1314,8 @@ STAGE 3: Disinfect
  * RogueKiller                   v10.9.4.0
    RogueKiller version update should hopefully fix the insane log size issue. Thanks to /u/penfifteenth, /u/Whtnoiz, /u/rodgersayshi, /u/CycloStorm, /u/afr33sl4ve, /u/cuddlychops06 and /u/ComputersByte for helping with the issue
 
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1397,8 +1381,8 @@ STAGE 3: Disinfect
  * RogueKiller                   v10.9.3.0
    RogueKiller version update should hopefully fix the insane log size issue. Thanks to /u/penfifteenth, /u/Whtnoiz, /u/rodgersayshi, /u/CycloStorm, /u/afr33sl4ve, /u/cuddlychops06 and /u/ComputersByte for helping with the issue
 
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1467,8 +1451,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.9.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1531,8 +1515,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.9.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  * Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1598,8 +1582,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.8.7.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  * Malwarebytes Anti-Malware     v2.1.8.1057
 
 STAGE 4: Repair
@@ -1665,8 +1649,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.8.6.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.6.1022
 
 STAGE 4: Repair
@@ -1727,8 +1711,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.8.4.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.6.1022
 
 STAGE 4: Repair
@@ -1794,8 +1778,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.8.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.6.1022
 
 STAGE 4: Repair
@@ -1854,8 +1838,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.6.10.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  * Malwarebytes Anti-Malware     v2.1.6.1022
 
 STAGE 4: Repair
@@ -1936,7 +1920,7 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.10.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
@@ -2000,7 +1984,7 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.10.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
@@ -2060,7 +2044,7 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.8.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
@@ -2121,8 +2105,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.8.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
 STAGE 4: Patch
@@ -2184,8 +2168,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.7.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Kaspersky Virus Removal Tool  v15.0.19.0, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
 STAGE 4: Patch
@@ -2259,7 +2243,7 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.5.7.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
+ * Sophos Virus Removal Tool     v2.5.4
  + Kaspersky Virus Removal Tool  v15.0.19.0
  - Vipre Rescue Scanner          REMOVED
  . Malwarebytes Anti-Malware     v2.1.4.1018
@@ -2343,8 +2327,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.7.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.1.4.1018
 
 STAGE 4: Patch
@@ -2400,8 +2384,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.5.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  * Malwarebytes Anti-Malware     v2.1.4.1018
 
 STAGE 4: Patch
@@ -2471,8 +2455,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.5.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2538,8 +2522,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.4.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2600,8 +2584,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.4.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2672,8 +2656,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.2.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2712,8 +2696,8 @@ tron.bat                         v4.7.1
  ! stage_0_prep:bugfix: Fix spelling error in help (-h) menu. Thanks to...someone, can't remember who. If it was you let me know and I'll add you to the change log
 
 STAGE 3: Disinfect
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
 
 STAGE 7: Manual tools
  * ComboFix                      v15.2.2.1
@@ -2748,8 +2732,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2807,8 +2791,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.2.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2875,8 +2859,8 @@ STAGE 2: De-bloat
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2933,8 +2917,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -2988,8 +2972,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.1.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -3060,8 +3044,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  * RogueKiller                   v10.1.0.0
- * Sophos Virus Removal Tool     v2.5.4, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.4
+ * Vipre Rescue Scanner          v7.0.7.8
  * Malwarebytes Anti-Malware     v2.0.4.1028
 
 STAGE 4: Patch
@@ -3123,8 +3107,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -3192,8 +3176,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -3245,8 +3229,8 @@ Try to remove programs listed here: \resources\stage_2_de-bloat\programs_to_targ
 
 STAGE 3: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 4: Patch
@@ -3318,8 +3302,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 3: De-bloat
@@ -3373,8 +3357,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 3: De-bloat
@@ -3432,8 +3416,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3506,8 +3490,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  + RogueKiller                   v10.0.2.0
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  * Malwarebytes Anti-Malware     v2.0.3.1025
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3562,8 +3546,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3621,8 +3605,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3677,8 +3661,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3 and engine
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3724,8 +3708,8 @@ STAGE 1: Tempclean
  . TempFileCleanup               v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3 and engine
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3772,8 +3756,8 @@ STAGE 1: Tempclean
  * TempFileClean                 v3.4.4
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs and engine
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5.3 and engine
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3824,11 +3808,11 @@ STAGE 1: Tempclean
  + TempFileClean                 v3.4.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5.3, update defs and engine
+ * Sophos Virus Removal Tool     v2.5.3 and engine
     / Disable using the Windows service method to scan in config.xml. Was causing it to stall
 
 / Enable scanning of archives in config.xml
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3888,8 +3872,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -3938,8 +3922,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -4000,8 +3984,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -4049,8 +4033,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  - Emsisoft Commandline Scanner  v9.0.0.4183 -- REMOVED
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
@@ -4100,9 +4084,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
+ * Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat, programs specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -4151,9 +4135,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
+ * Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
@@ -4206,9 +4190,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
+ * Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat ( Specified in: \resources\stage_3_de-bloat\programs_to_target.txt )
@@ -4256,9 +4240,9 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
- * Emsisoft Commandline Scanner  v9.0.0.4183, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
+ * Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
 STAGE 3: De-bloat
@@ -4317,8 +4301,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  . Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
@@ -4437,8 +4421,8 @@ STAGE 1: Tempclean
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
- * Sophos Virus Removal Tool     v2.5, update defs
- * Vipre Rescue Scanner          v7.0.7.8, update defs
+ * Sophos Virus Removal Tool     v2.5
+ * Vipre Rescue Scanner          v7.0.7.8
  + Emsisoft Commandline Scanner  v9.0.0.4183
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
 
@@ -4519,8 +4503,8 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- * Sophos Virus Removal Tool     v2.5, update defs 2014-07-16
- * Vipre Rescue Scanner          v7.0.7.8, update defs 2014-07-16
+ * Sophos Virus Removal Tool     v2.5 2014-07-16
+ * Vipre Rescue Scanner          v7.0.7.8 2014-07-16
 
 STAGE 3: De-bloat
 Specified in: \resources\stage_3_de-bloat\programs_to_target.txt
@@ -4600,7 +4584,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-Malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, update defs 2014-07-15
+ . Sophos Virus Removal Tool     v2.5 2014-07-15
  . Vipre Rescue Scanner          v7.0.7.8
 
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
@@ -4679,7 +4663,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012.exe
- . Sophos Virus Removal Tool     v2.5, update defs 2014-07-14
+ . Sophos Virus Removal Tool     v2.5 2014-07-14
  . Vipre Rescue Scanner          v7.0.7.8
 
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
@@ -4753,7 +4737,7 @@ STAGE 1: Tempclean
 
 STAGE 2: Disinfect
  . Malwarebytes Anti-malware     v2.0.2.1012
- . Sophos Virus Removal Tool     v2.5, update defs 2014-07-10
+ . Sophos Virus Removal Tool     v2.5 2014-07-10
  . Vipre Rescue Scanner          v7.0.7.8
 
 STAGE 3: De-bloat target keywords (%% = any number of characters wildcard)
