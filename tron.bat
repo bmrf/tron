@@ -6,8 +6,8 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       8.1.1 / tron.bat:prep:              Move pushd \resources command up a few lines to be run the same time as the other pushd commands
 ::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
-::                      / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to /u/ixnyne
-::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to /u/ixnyn
+::                      / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
+::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
 ::                8.1.0 * tron.bat:prep:verbose:      Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
