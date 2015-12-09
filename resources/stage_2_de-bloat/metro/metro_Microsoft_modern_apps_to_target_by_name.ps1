@@ -56,5 +56,5 @@ $PackagesToRemove = (
 
 	
 # Do the removal
-Get-AppxProvisionedPackage -Online | Where-Object Name -In $PackagesToRemove | Remove-ProvisionedAppxPackage -Online | Out-Null
+Get-AppxProvisionedPackage -Online | Where-Object Name -In $PackagesToRemove | Remove-AppxProvisionedPackage -Online | Out-Null
 Get-AppxPackage –AllUsers | Where-Object Name -In $PackagesToRemove | Remove-AppxPackage | Out-Null
