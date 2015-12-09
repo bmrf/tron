@@ -33,33 +33,33 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 :: STAGE 6: Optimize :: // Begin jobs
 :::::::::::::::::::::::
-call log.bat "%CUR_DATE% %TIME%   stage_6_optimize begin..."
+call functions\log.bat "%CUR_DATE% %TIME%   stage_6_optimize begin..."
 
 
 :: JOB: Reset the system page file settings
 title TRON v%SCRIPT_VERSION% [stage_6_optimize] [pageFileReset]
 if /i %SKIP_PAGEFILE_RESET%==yes (
-	call log.bat "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset."
 ) else (
-	call log.bat "%CUR_DATE% %TIME%    Resetting page file settings to Windows defaults..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Resetting page file settings to Windows defaults..."
 	if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
-	call log.bat "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 :: Check if SKIP_DEFRAG was used
 if "%SKIP_DEFRAG%"=="yes" (
-	call log.bat "%CUR_DATE% %TIME% !  SKIP_DEFRAG (-sd) set. Skipping defrag."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_DEFRAG (-sd) set. Skipping defrag."
 	goto stage_6_optimize_end
 	)
 
 :: JOB: Defrag the system drive
 if "%SSD_DETECTED%"=="yes" (
-	call log.bat "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
+	call functions\log.bat "%CUR_DATE% %TIME%    Solid State hard drive detected. Skipping job 'Defrag %SystemDrive%'."
 ) else (
 	title TRON v%SCRIPT_VERSION% [stage_6_optimize] [Defrag]
-	call log.bat "%CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'..."
 	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
-	call log.bat "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 :stage_6_optimize_end
@@ -69,4 +69,4 @@ if "%SSD_DETECTED%"=="yes" (
 
 
 :: Stage complete
-call log.bat "%CUR_DATE% %TIME%   stage_6_optimize complete."
+call functions\log.bat "%CUR_DATE% %TIME%   stage_6_optimize complete."
