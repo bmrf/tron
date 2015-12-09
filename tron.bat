@@ -1098,10 +1098,6 @@ exit /B
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-:: Since no new variable names are defined, there's no need for SETLOCAL.
-:: The %1 reference contains the first argument passed to the function. When the
-:: whole argument string is wrapped in double quotes, it is sent as an argument.
-:: The tilde syntax (%~1) removes the double quotes around the argument.
 
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
