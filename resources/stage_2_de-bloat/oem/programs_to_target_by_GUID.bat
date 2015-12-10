@@ -1586,6 +1586,10 @@ start /wait msiexec /qn /norestart /x {A3C599FA-2CDD-43DB-B062-09A52CA9BFC6}
 :: FlashCatch browser plugin
 start /wait msiexec /qn /norestart /x {A0AB2980-1FDD-4b6c-940C-FC87C84F05B7}
 
+:: Fooz Kids
+start /wait msiexec /qn /norestart /x {13C0A937-797F-847A-7FF5-010EAC327493}
+start /wait msiexec /qn /norestart /x {8D68CE08-9A14-4B7B-9857-3C646A2F34C7}
+
 :: Fruits
 start /wait msiexec /qn /norestart /x {AA39BFDE-71E5-46A6-A10B-44C2F45A341E}
 
@@ -2692,6 +2696,8 @@ start /wait msiexec /qn /norestart /x {90150000-008F-0000-1000-0000000FF1CE}
 
 :: Microsoft Search Enhancement Pack
 start /wait msiexec /qn /norestart /x {4CBA3D4C-8F51-4D60-B27E-F6B641C571E7}
+start /wait msiexec /qn /norestart /x {1CAC7A41-583B-4483-9FA5-3E5465AFF8C2}
+start /wait msiexec /qn /norestart /x {F0E12BBA-AD66-4022-A453-A1C8A0C4D570}
 
 :: Microsoft Tablet PC Tutorials for Microsoft Windows XP SP2 1.7
 start /wait msiexec /qn /norestart /x {F2BF3E35-8AF4-4DFF-8C07-C3B05B8E2126}
@@ -2965,16 +2971,19 @@ start /wait msiexec /qn /norestart /x {E50FC5DB-7CBD-407D-A46E-0C13E45BC386}
 
 :: Sony OOBE
 start /wait msiexec /qn /norestart /x {18894D16-5448-4BF9-A128-F7E937322F91}
+start /wait msiexec /qn /norestart /x {1B500D37-E7CF-480B-8054-8A563594EC4E}
 
 :: Sony PlayMemories Home
 start /wait msiexec /qn /norestart /x {E03CD71A-F595-49DF-9ADC-0CFC93B1B211}
 start /wait msiexec /qn /norestart /x {886C0C18-F905-49B2-90BA-EFC0FEDF27C6}
+start /wait msiexec /qn /norestart /x {1E5C7043-09C5-4974-A69F-A5271FD82BBC}
 
 :: Sony Quick Web Access
 start /wait msiexec /qn /norestart /x {13EC74A6-4707-4D26-B9B9-E173403F3B08}
 
 :: Sony Reader for PC (Flagged as malware by some scanners)
 start /wait msiexec /qn /norestart /x {CF5B430D-C563-4EE6-803D-A8A133DFCE5E}
+start /wait msiexec /qn /norestart /x {11CBB0F5-989E-4B16-AE7E-D569AC4BF241}
 
 :: Sony Remote Play with Playstation(R)3
 start /wait msiexec /qn /norestart /x {D56DA747-5FDB-4AD5-9A6A-3481C0ED44BD}
