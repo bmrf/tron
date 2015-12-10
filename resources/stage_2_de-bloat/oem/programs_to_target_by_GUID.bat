@@ -34,6 +34,10 @@ start /wait msiexec /qn /norestart /x {FCD6D60F-AF2B-49E3-ABC4-A4C96B56225D}
 
 :: Acer Care Center
 start /wait msiexec /qn /norestart /x {A424844F-CDB3-45E2-BB77-1DDE4A091E76}
+start /wait msiexec /qn /norestart /x {1AF41E84-3408-499A-8C93-8891F0612719}
+
+:: Acer DriverSetupUtility
+start /wait msiexec /qn /norestart /x {2B51C83A-465D-4EA9-9CDC-1ED95ED09AC6}
 
 :: Acer Launch Manager
 start /wait msiexec /qn /norestart /x {C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
@@ -46,6 +50,7 @@ start /wait msiexec /qn /norestart /x {91F52DE4-B789-42B0-9311-A349F10E5479}
 
 :: Acer Quick Access
 start /wait msiexec /qn /norestart /x {C1FA525F-D701-4B31-9D32-504FC0CF0B98}
+start /wait msiexec /qn /norestart /x {E3678E72-78E3-4F91-A9FB-913876FF6DA2}
 
 :: Acer Recovery Management // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {07F2005A-8CAC-4A4B-83A2-DA98A722CA61}
@@ -1303,6 +1308,9 @@ start /wait msiexec /qn /norestart /x {C39A4E1F-9AF1-4FE1-A80E-A5B867FABB42}
 :: Dell Driver Reset Tool 1.02.0000
 start /wait msiexec /qn /norestart /x {55E79447-F6B0-46CB-9F58-F82DAC9C2286}
 
+:: Dell Edoc Viewer
+start /wait msiexec /qn /norestart /x {8EBA8727-ADC2-477B-9D9A-1A1836BE4E05}
+
 :: Dell Feature Enhancement Pack 2.2.1
 start /wait msiexec /qn /norestart /x {98CB551E-EDB1-4535-82A6-E3258597F64E}
 
@@ -1642,6 +1650,9 @@ start /wait msiexec /qn /norestart /x {5BAA8884-F661-464B-B5B2-5C6C632BFC21}
 start /wait msiexec /qn /norestart /x {6F340107-F9AA-47C6-B54C-C3A19F11553F}
 start /wait msiexec /qn /norestart /x {06FCC605-92A1-4A1C-B7D1-85E5778290A4}
 
+:: Hewlett-Packard Asset Agent for Health Check
+start /wait msiexec /qn /norestart /x {669D4A35-146B-4314-89F1-1AC3D7B88367}
+
 :: HP 3.00.xxxx (various versions)
 start /wait msiexec /qn /norestart /x {2F518061-89DB-4AF0-9A7A-2BF73B60E6F0}
 start /wait msiexec /qn /norestart /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2}
@@ -1679,8 +1690,9 @@ start /wait msiexec /qn /norestart /x {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
 :: HP Advisor 3.4.10262.3295
 start /wait msiexec /qn /norestart /x {403996EB-2DCE-4C43-A2B8-2B956880772D}
 
-:: HP Auto 1.0.12935.3667
+:: HP Auto
 start /wait msiexec /qn /norestart /x {CB7D766C-879F-4800-BB09-3D29E306EF63}
+start /wait msiexec /qn /norestart /x {CC4D56B7-6F18-470B-8734-ABCD75BCF4F1}
 
 :: HP Boot Optimizer
 start /wait msiexec /qn /norestart /x {1341D838-719C-4A05-B50F-49420CA1B4BB}
@@ -1851,6 +1863,10 @@ start /wait msiexec /qn /norestart /x {846B5DED-DC8C-4E1A-B5B4-9F5B39A0CACE}
 start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 start /wait msiexec /qn /norestart /x {AF9E97C1-7431-426D-A8D5-ABE40995C0B1}
 
+:: HP Easy Setup - Frontend
+start /wait msiexec /qn /norestart /x {40F7AED3-0C7D-4582-99F6-484A515C73F2}
+::"%ProgramFiles%\InstallShield Installation Information\{40F7AED3-0C7D-4582-99F6-484A515C73F2}\setup.exe" -l0x9  -removeonly
+
 :: HP Energy Star
 start /wait msiexec /qn /norestart /x {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
 start /wait msiexec /qn /norestart /x {0FA995CC-C849-4755-B14B-5404CC75DC24}
@@ -1876,8 +1892,20 @@ start /wait msiexec /qn /norestart /x {60F90886-FAEE-4768-9817-093AB0F30540}
 :: HP FWUpdateEDO2
 start /wait msiexec /qn /norestart /x {415FA9AD-DA10-4ABE-97B6-5051D4795C90}
 
+:: HP Games
+:: These two FOR loops should catch ALL HP games, in theory at least
+:: Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+for /r "%ProgramFiles%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
+for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
+
 :: HP GPBaseService2 (popups)
 start /wait msiexec /qn /norestart /x {BB3447F6-9553-4AA9-960E-0DB5310C5779}
+
+:: HP Insight Diagnostics Online Edition for Windows 9.3.0
+start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
+
+:: HP Launch Box
+start /wait msiexec /qn /norestart /x {9CAB2212-0732-4827-8EC4-61D8EF0AA65B}
 
 :: HP misc Help, eDocs and User Guide GUIDs (various versions for various products; most of these should be caught in the wildcard scan)
 start /wait msiexec /qn /norestart /x {11C9A461-DD9D-4C71-85A4-6DCE7F99CC44}
@@ -1915,8 +1943,8 @@ start /wait msiexec /qn /norestart /x {6357D25F-A9C9-4CC7-A1FB-0DCF344E7C40}
 start /wait msiexec /qn /norestart /x {1F670068-9589-4DC7-8FE4-1D0D13AF2526}
 start /wait msiexec /qn /norestart /x {E1AE0CB7-1333-4728-8520-CB3F88A252B4}
 
-:: HP Insight Diagnostics Online Edition for Windows 9.3.0
-start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
+:: HP Picasso Media Center Add-In
+start /wait msiexec /qn /norestart /x {55979C41-7D6A-49CC-B591-64AC1BBE2C8B}
 
 :: HP MarketResearch
 start /wait msiexec /qn /norestart /x {95D08F4E-DFC2-4ce3-ACB7-8C8E206217E9}
@@ -2229,6 +2257,7 @@ start /wait msiexec /qn /norestart /x {2EA3D6B2-157E-4112-A3AB-BF17E16661C3}
 start /wait msiexec /qn /norestart /x {6ECB39BD-73C2-44DD-B1A0-898207C58D8B}
 start /wait msiexec /qn /norestart /x {962CB079-85E6-405F-8704-1C62365AE46F}
 start /wait msiexec /qn /norestart /x {904822F1-6C7D-4B91-B936-6A1C0810544C}
+start /wait msiexec /qn /norestart /x {8C6027FD-53DC-446D-BB75-CACD7028A134}
 
 :: HP USB Docking Video (wtf?)
 start /wait msiexec /qn /norestart /x {B0069CFA-5BB9-4C03-B1C6-89CE290E5AFE}
@@ -2704,6 +2733,14 @@ start /wait msiexec /qn /norestart /x {48C0866E-57EB-444C-8371-8E4321066BC3}
 :: NETGEAR A6100 Genie 1.0.0.12
 start /wait msiexec /qn /norestart /x {56C049BE-79E9-4502-BEA7-9754A3E60F9B}
 
+:: Nitro Pro 8
+start /wait msiexec /qn /norestart /x {2269F0D5-DE47-4313-9003-BB6357919314}
+start /wait msiexec /qn /norestart /x {392C767D-4EE2-49B5-A3B4-A4C3AB6DC145}
+start /wait msiexec /qn /norestart /x {6E7DFD3E-2E89-4F35-B4F2-D3301A4AD190}
+
+:: Nitro Pro 9
+start /wait msiexec /qn /norestart /x {70B831B7-A8EE-4C5F-8F34-F383D24B3A04}
+
 :: Norton 360 // Internet Security // Online Backup
 start /wait msiexec /qn /norestart /x {E4FC1ED9-E20C-4621-B834-03C388278DD8}
 start /wait msiexec /qn /norestart /x {63A6E9A9-A190-46D4-9430-2DB28654AFD8}
@@ -2806,6 +2843,9 @@ start /wait msiexec /qn /norestart /x {21E47F47-C9A7-4454-BA48-388327B0EA00}
 start /wait msiexec /qn /norestart /x {7770E71B-2D43-4800-9CB3-5B6CAAEBEBEA}
 start /wait msiexec /qn /norestart /x {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
 start /wait msiexec /qn /norestart /x {AAECF7BA-E83B-4A10-87EA-DE0B333F8734} 
+
+:: Rhapsody Player Engine
+start /wait msiexec /qn /norestart /x {2DFF31F9-7893-4922-AF66-C9A1EB4EBB31}
 
 :: Roxio GUIDs; too many to list, Google for individual GUIDs if a Roxio program you want to keep is getting removed
 start /wait msiexec /qn /norestart /x {9D6DFAD6-09E5-445E-A4B5-A388FEEBD90D}
@@ -2993,6 +3033,9 @@ start /wait msiexec /qn /norestart /x {C8544A9A-76BE-4F82-811E-979799AE493B}
 
 :: Sony VAIOCareLearnContents
 start /wait msiexec /qn /norestart /x {05959BC8-751E-43B1-A427-233DA743E179}
+
+:: Sony VAIO Messenger
+start /wait msiexec /qn /norestart /x {2BD4D073-FF7E-46C6-B916-02F1AF376300}
 
 :: Sony VAIO OOB (out of box experience)
 start /wait msiexec /qn /norestart /x {D9777637-33B7-47A9-800C-F6A2CD4EB0FE}
@@ -3218,6 +3261,9 @@ start /wait msiexec /qn /norestart /x {9C618A4D-5428-41B7-8A25-36B311FF8C77}
 start /wait msiexec /qn /norestart /x {7AE43D6C-B3F1-448D-AD84-1CDC7AC6EBC7}
 start /wait msiexec /qn /norestart /x {79966948-BECF-4CB1-A79F-E76C830A17D2}
 
+:: WeatherBug Gadget
+start /wait msiexec /qn /norestart /x {209CDA54-D390-46A2-A97C-7BF61734418D}
+
 :: WildTangent GUIDs. Thanks to /u/mnbitcoin
 start /wait msiexec /qn /norestart /x {2FA94A64-C84E-49d1-97DD-7BF06C7BBFB2}
 start /wait msiexec /qn /norestart /x {EE691BD9-2B2C-6BFB-6389-ABAF5AD2A4A1}
@@ -3257,6 +3303,16 @@ start /wait msiexec /qn /norestart /x {D07A61E5-A59C-433C-BCBD-22025FA2287B}
 
 :: Windows Live MIME IFilter
 start /wait msiexec /qn /norestart /x {DA54F80E-261C-41A2-A855-549A144F2F59}
+
+:: Windows Live Remote Client
+start /wait msiexec /qn /norestart /x {847B0532-55E3-4AAF-8D7B-E3A1A7CD17E5}
+start /wait msiexec /qn /norestart /x {B750FA38-7AB0-42CB-ACBB-E7DBE9FF603F}
+start /wait msiexec /qn /norestart /x {DF6D988A-EEA0-4277-AAB8-158E086E439B}
+
+:: Windows Live Remote Service
+start /wait msiexec /qn /norestart /x {5E2CD4FB-4538-4831-8176-05D653C3E6D4}
+start /wait msiexec /qn /norestart /x {656DEEDE-F6AC-47CA-A568-A1B4E34B5760}
+start /wait msiexec /qn /norestart /x {E02A6548-6FDE-40E2-8ED9-119D7D7E641F}
 
 :: Windows Live Sign-in Assistant
 start /wait msiexec /qn /norestart /x {CE52672C-A0E9-4450-8875-88A221D5CD50}
