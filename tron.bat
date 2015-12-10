@@ -4,11 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.2.0 / tron.bat:prep:              Move pushd \resources command up a few lines to be run the same time as the other pushd commands
+:: Version:       8.2.0 / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
 ::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
-::                      / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
+::                      / tron.bat:function:log:      Remove internal log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
 ::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
-::                8.1.0 * tron.bat:prep:verbose:      Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -144,9 +143,11 @@ set SELF_DESTRUCT=no
 
 
 
+
 :: --------------------------------------------------------------------------------------------------- ::
 :: ----------------- Don't edit anything below this line lest you awaken the Balrog ------------------ ::
 :: --------------------------------------------------------------------------------------------------- ::
+
 
 
 
@@ -158,7 +159,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=8.2.0
-set SCRIPT_DATE=2015-12-xx
+set SCRIPT_DATE=2015-12-10
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -594,7 +595,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 	echo  in "Safe Mode with Networking" in order to download
 	echo  Windows and anti-virus definition updates.
 	echo.
-	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n]
+	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
 	if /i "!CHOICE!"=="y" (
 		echo.
 		echo  Rebooting system to Safe Mode in 7 seconds...
@@ -755,7 +756,7 @@ if /i %VERBOSE%==yes mode con:lines=9000
 if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "-------------------------------------------------------------------------------"
 	call functions\log.bat "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
-	call functions\log.bat "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
+	call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call functions\log.bat "                          Command-line flags: %*"
@@ -1038,7 +1039,7 @@ if /i %WARNINGS_DETECTED%==yes color e0
 if /i %ERRORS_DETECTED%==yes color cf
 call functions\log.bat "-------------------------------------------------------------------------------"
 call functions\log.bat "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
-call functions\log.bat "                          OS: %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
+call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line flags: %*"
 call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
