@@ -16,10 +16,13 @@ Version number legend:
 
 
 ########################
-# v8.1.1 // 2015-12-xx #
+# v8.2.0 // 2015-12-xx #
 ########################
-tron.bat                         v8.1.1
-
+tron.bat                         v8.2.0
+ / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
+ * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
+ / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
+ * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
 
 Stage 0: Prep
  . stage_0_prep.bat              v1.0.0
@@ -39,15 +42,20 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  * stage_2_de-bloat.bat             v1.1.0
-    * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
+     * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
 
  . \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt
- . \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
- . \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
+ * \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+     * Add significant number of entries, mostly related to Sony VAIO, Lenovo, and WildTangent Games bloat. Thanks to /u/kronflux
+     / Move a few toolbar entries to the toolbar/BHO list
+
+ * \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
+     + Import a few toolbar entires from the by_GUID list
+
  . \resources\stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
  * \resources\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
  + \resources\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
-    + New; move all Microsoft-specific Modern apps into this script
+     + New; move all Microsoft-specific Modern apps into this script
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat         v1.0.0
@@ -57,7 +65,7 @@ Stage 3: Disinfect
 
 Stage 4: Repair
  . stage_4_repair.bat            v1.0.2
-    ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
+     ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
  . subinacl.exe                  v5.2.3790.1180
  . Repair file extensions        v1.0.0
 
