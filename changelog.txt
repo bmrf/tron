@@ -16,20 +16,20 @@ Version number legend:
 
 
 ########################
-# v8.2.0 // 2015-12-xx #
+# v8.2.0 // 2015-12-10 #
 ########################
 tron.bat                         v8.2.0
  / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
  * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
- / tron.bat:function:log:      Remove log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
+ / tron.bat:function:log:      Remove internal log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
  * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
 
 Stage 0: Prep
  . stage_0_prep.bat              v1.0.0
- . rkill                         v2.8.2.0
+ * rkill                         v2.8.3.0
  . ProcessKiller                 v2.0.0-TRON
  * TDSS Killer                   v3.1.0.7
- . McAfee Stinger                v12.1.0.1822
+ * McAfee Stinger                v12.1.0.1831
  . erunt                         v1.1j
  . caffeine                      v1.6.1.0
 
@@ -50,7 +50,7 @@ Stage 2: De-bloat
      / Move a few toolbar entries to the toolbar/BHO list
 
  * \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
-     + Import a few toolbar entires from the by_GUID list
+     + Import a few toolbar entries from the by_GUID list
 
  . \resources\stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
  * \resources\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
@@ -71,8 +71,8 @@ Stage 4: Repair
 
 Stage 5: Patch
  . stage_5_patch.bat             v1.1.0
- . 7-Zip                         v15.11        (multi-language)
- . Adobe Flash Player            v19.0.0.245   (language ignored)
+ * 7-Zip                         v15.12        (multi-language)
+ * Adobe Flash Player            v20.0.0.228   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u66          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
@@ -87,10 +87,10 @@ Stage 7: Wrap-up
 
 Stage 8: Manual tools
  . ADSSpy                        v1.11.0.0
- . AdwCleaner                    v5.0.2.3
+ * AdwCleaner                    v5.0.2.4
  . Autoruns                      v13.5
  . BlueScreenView                v1.55
- . ComboFix                      v15.12.3.1
+ * ComboFix                      v15.12.7.1
  . Junkware Removal Tool         v8.0.1.0
  . Net Adapter Repair            v1.2
  . PC Hunter                     v1.35 x64
