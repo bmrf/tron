@@ -190,15 +190,6 @@ start /wait msiexec /qn /norestart /x {7D44F1E8-968F-48D8-A966-2890A2CFFC6F}
 :: Ashampoo Burning Studio FREE v.1.14.5
 start /wait msiexec /qn /norestart /x {91B33C97-91F8-FFB3-581B-BC952C901685}
 
-:: Ask Toolbar
-start /wait msiexec /qn /norestart /x {4F524A2D-5637-006A-76A7-A758B70C0300}
-start /wait msiexec /qn /norestart /x {86D4B82A-ABED-442A-BE86-96357B70F4FE}
-start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C2201}
-start /wait msiexec /qn /norestart /x {4F524A2D-5637-006A-76A7-A758B70C0F01}
-start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
-start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C0A00}
-start /wait msiexec /qn /norestart /x {4F564F32-5637-2D53-4154-A758B70C0300}
-
 :: Ask Search App by Ask
 start /wait msiexec /qn /norestart /x {43C423D9-E6D6-4607-ADC9-EBB54F690C57}
 start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C1500}
