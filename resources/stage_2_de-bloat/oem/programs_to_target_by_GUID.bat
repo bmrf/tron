@@ -241,9 +241,6 @@ start /wait msiexec /qn /norestart /x {D381FF29-7CFB-4D4E-B92A-C4EDDC696614}
 :: ASUS WinFlash
 start /wait msiexec /qn /norestart /x {FFCF82EC-895F-4AC8-925E-3412FE25EF62}
 
-:: Avery Toolbar
-start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
-
 :: AVG // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: start /wait msiexec /qn /norestart /x {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
 
@@ -1628,9 +1625,6 @@ start /wait msiexec /qn /norestart /x {0EFDF2F9-836D-4EB7-A32D-038BD3F1FB2A}
 :: Fujitsu System Extension Utility 2.1.1.0
 start /wait msiexec /qn /norestart /x {DED08875-D1AE-4E66-BE84-BB746019B9F9}
 
-:: GamingHarbor Toolbar
-start /wait msiexec /qn /norestart /x {F4D99A13-F63A-4FC1-8799-CFFDB78DDFB3}
-
 :: Garmin Elevated Installer; known to cause popups and crash frequently
 start /wait msiexec /qn /norestart /x {D4D065E1-3ABF-41D0-B385-FC6F027F4D00}
 start /wait msiexec /qn /norestart /x {4694981D-8031-4526-90BE-E5F7FB80CBB8}
@@ -1652,11 +1646,6 @@ start /wait msiexec /qn /norestart /x {597A58EC-42D6-4940-8739-FB94491B013C}
 
 :: GeekBuddy
 start /wait msiexec /qn /norestart /x {17004FB0-9CFD-43DC-BB2D-E2BA612D98D0}
-
-:: Google Toolbar for Internet Explorer
-start /wait msiexec /qn /norestart /x {18455581-E099-4BA8-BC6B-F34B2F06600C}
-start /wait msiexec /qn /norestart /x {2318C2B1-4965-11d4-9B18-009027A5CD4F}
-start /wait msiexec /qn /norestart /x {12ADFB82-D5A3-43E4-B2F4-FCD9B690315B}
 
 :: Google Update Helper
 start /wait msiexec /qn /norestart /x {60EC980A-BDA2-4CB6-A427-B07A5498B4CA}
@@ -3001,9 +2990,6 @@ start /wait msiexec /qn /norestart /x {5BBD0D3F-E4B2-4EE4-806A-07A95D4E2683}
 start /wait msiexec /qn /norestart /x {981029E0-7FC9-4CF3-AB39-6F133621921A}
 start /wait msiexec /qn /norestart /x {5EE47864-CF84-4629-86A6-50BEFF406BE5}
 start /wait msiexec /qn /norestart /x {B6CF2967-C81E-40C0-9815-C05774FEF120}
-
-:: Skype Toolbars (various versions)
-start /wait msiexec /qn /norestart /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701}
 
 :: SlimCleaner Plus  //  SlimDrivers
 start /wait msiexec /qn /norestart /x {0C0F368E-17C4-4F28-9F1B-B1DA1D96CF7A}
