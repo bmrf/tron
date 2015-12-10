@@ -1671,6 +1671,11 @@ start /wait msiexec /qn /norestart /x {BC741628-0AFC-405C-8946-DD46D1005A0A}
 start /wait msiexec /qn /norestart /x {254C37AA-6B72-4300-84F6-98A82419187E}
 start /wait msiexec /qn /norestart /x {CBB639E0-B534-4827-97B5-CA1A4CA985B5}
 
+:: HP Active Support Library
+start /wait msiexec /qn /norestart /x {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
+::%ProgramFiles%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
+::%ProgramFiles(x86)%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
+
 :: HP Advisor 3.4.10262.3295
 start /wait msiexec /qn /norestart /x {403996EB-2DCE-4C43-A2B8-2B956880772D}
 
@@ -2178,6 +2183,7 @@ start /wait msiexec /qn /norestart /x {AC13BA3A-336B-45a4-B3FE-2D3058A7B533}
 
 :: HP Total Care Advisor
 start /wait msiexec /qn /norestart /x {f32502b5-5b64-4882-bf61-77f23edcac4f}
+start /wait msiexec /qn /norestart /x {0DDA7620-4F8B-43B3-8828-CA5EE292FA3B}
 
 :: HP TouchSmart Browser, Calendar, Canvas, Clock, Notes, RSS, Tutorials, Twitter and Weather
 start /wait msiexec /qn /norestart /x {4127C2C0-0AC7-4947-9CC1-AACBEFC6EC02}
@@ -2549,6 +2555,9 @@ start /wait msiexec /qn /norestart /x {86091EC1-DD17-4814-A54B-0A634CB8D82C}
 :: Snap.Do (browser hijacker)
 start /wait msiexec /qn /norestart /x {CC6F61A9-A55E-4D04-A674-7A498CD8B809}
 
+:: Snapfish Picture Mover
+start /wait msiexec /qn /norestart /x {029B5901-1F27-4347-9923-E8ACC8F54E15}
+
 :: SSN Librarian (some sketchy Russian program)
 start /wait msiexec /qn /norestart /x {1D425886-3FE1-41AA-8D7A-E432CE29A4AE}
 
@@ -2670,6 +2679,11 @@ start /wait msiexec /qn /norestart /x {3D36105D-D6C2-413A-9355-7370E8D9125B}
 
 :: MSN Toolbar Platform
 start /wait msiexec /qn /norestart /x {C9D43B38-34AD-4EC2-B696-46F42D49D174}
+
+:: muvee autoProducer 6.0
+start /wait msiexec /qn /norestart /x {14AF024E-2E3B-49D0-A175-D1C1A06B155A}
+:: %ProgramFiles%\InstallShield Installation Information\{14AF024E-2E3B-49D0-A175-D1C1A06B155A}\setup.exe -runfromtemp -l0x0009 -removeonly
+:: %ProgramFiles(x86)%\InstallShield Installation Information\{14AF024E-2E3B-49D0-A175-D1C1A06B155A}\setup.exe -runfromtemp -l0x0009 -removeonly
 
 :: MyEpson Portal
 start /wait msiexec /qn /norestart /x {3361D415-BA35-4143-B301-661991BA6219}
@@ -2793,7 +2807,9 @@ start /wait msiexec /qn /norestart /x {7770E71B-2D43-4800-9CB3-5B6CAAEBEBEA}
 start /wait msiexec /qn /norestart /x {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
 start /wait msiexec /qn /norestart /x {AAECF7BA-E83B-4A10-87EA-DE0B333F8734} 
 
-:: Roxio GUIDs; too many to list, Google individual GUID if a Roxio program you want to keep is getting removed
+:: Roxio GUIDs; too many to list, Google for individual GUIDs if a Roxio program you want to keep is getting removed
+start /wait msiexec /qn /norestart /x {9D6DFAD6-09E5-445E-A4B5-A388FEEBD90D}
+start /wait msiexec /qn /norestart /x {11F93B4B-48F0-4A4E-AE77-DFA96A99664B}
 start /wait msiexec /qn /norestart /x {098122AB-C605-4853-B441-C0A4EB359B75}
 start /wait msiexec /qn /norestart /x {537BF16E-7412-448C-95D8-846E85A1D817}
 start /wait msiexec /qn /norestart /x {60B2315F-680F-4EB3-B8DD-CCDC86A7CCAB}
@@ -3234,6 +3250,13 @@ start /wait msiexec /qn /norestart /x {2B30D5CA-7A2D-4BAE-9654-8015995960C1}
 
 :: Windows Live Family Safety // Disabled by Vocatus for Tron (some family systems may be using this)
 ::start /wait msiexec /qn /norestart /x {5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
+
+:: Windows Live Language Selector
+start /wait msiexec /qn /norestart /x {180C8888-50F1-426B-A9DC-AB83A1989C65}
+start /wait msiexec /qn /norestart /x {D07A61E5-A59C-433C-BCBD-22025FA2287B}
+
+:: Windows Live MIME IFilter
+start /wait msiexec /qn /norestart /x {DA54F80E-261C-41A2-A855-549A144F2F59}
 
 :: Windows Live Sign-in Assistant
 start /wait msiexec /qn /norestart /x {CE52672C-A0E9-4450-8875-88A221D5CD50}
