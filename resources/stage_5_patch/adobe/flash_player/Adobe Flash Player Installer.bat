@@ -11,8 +11,8 @@
 :::::::::::::::
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
-:: Package to install
-set BINARY_VERSION=19.0.0.245
+:: Package to install. Do not use trailing slashes (\)
+set BINARY_VERSION=20.0.0.228
 set FLAGS=ALLUSERS=1 /q /norestart
 
 
@@ -61,7 +61,7 @@ del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Updater.job" >> "%LOGP
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
 	taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-)
+	)
 
-:: Return exit code to SCCM/PDQ Deploy/etc
+:: Return exit code to SCCM/PDQ Deploy/Tron/etc
 exit /B %EXIT_CODE%
