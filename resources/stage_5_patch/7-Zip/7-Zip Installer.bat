@@ -21,7 +21,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=9.38
+set BINARY_VERSION=15.12
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
@@ -73,7 +73,12 @@ for %%i in (001,7z,arj,bz2,bzip2,cab,cpio,deb,dmg,fat,gz,gzip,hfs,iso,lha,lzh,lz
 	)
 goto finished
 
+
+
 :finished
+:: Delete the Start Menu icons
+if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\7-Zip" rmdir /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\7-Zip"
+
 :: Pop back to original directory. This isn't necessary in stand-alone runs of the script, but is needed when being called from another script
 popd
 
