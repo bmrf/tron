@@ -1,7 +1,6 @@
 :: Batch file to uninstall a specific list of toolbars, BHO, Trojans by GUID
 :: Called by Tron in Stage 2: De-bloat
 :: Initial list by reddit.com/user/Chimaera12, modifications for use in Tron by reddit.com/user/vocatus
-:: This list is for Browser Hijack Objects, Toolbars and Trojans not bloat.
 @echo off
 
 
@@ -317,6 +316,7 @@ start /wait msiexec /qn /norestart /x {8E5E2654-AD2D-48bf-AC2D-D17F00898D06}
 
 :: Avery Toolbar
 start /wait msiexec /qn /norestart /x {41565256-3700-A76A-76A7-7A786E7484D7}
+start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
 
 :: AVG Web TuneUp Toolbar
 start /wait msiexec /qn /norestart /x {95B7759C-8C7F-4BF1-B163-73684A933233}
@@ -864,6 +864,9 @@ start /wait msiexec /qn /norestart /x {6F282B65-56BF-4BD1-A8B2-A4449A05863D}
 start /wait msiexec /qn /norestart /x {7ffa5f54-1c4f-46de-8576-c271a0dd482f}
 start /wait msiexec /qn /norestart /x {a813911c-202d-4343-a0f2-5906d512fec5}
 
+:: GamingHarbor Toolbar
+start /wait msiexec /qn /norestart /x {F4D99A13-F63A-4FC1-8799-CFFDB78DDFB3}
+
 :: GamingWonderland Toolbar
 start /wait msiexec /qn /norestart /x {a899079d-206f-43a6-be6a-07e0fa648ea0}
 
@@ -902,6 +905,7 @@ start /wait msiexec /qn /norestart /x {DBEA1034-5882-4A88-8033-81C4EF0CFA29}
 start /wait msiexec /qn /norestart /x {2CCBABCB-6427-4A55-B091-49864623C43F}
 start /wait msiexec /qn /norestart /x {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 start /wait msiexec /qn /norestart /x {DB87BFA2-A2E3-451E-8E5A-C89982D87CBF}
+start /wait msiexec /qn /norestart /x {12ADFB82-D5A3-43E4-B2F4-FCD9B690315B}
 
 :: GoSave extension
 start /wait msiexec /qn /norestart /x {64A4ABCA-CF3D-C548-2DC4-72A55DC5882A}
@@ -1817,6 +1821,7 @@ start /wait msiexec /qn /norestart /x {6C9B756D-B313-0B9A-29C4-0D41CFAFE000}
 
 :: Skype Toolbars
 start /wait msiexec /qn /norestart /x {981029E0-7FC9-4CF3-AB39-6F133621921A}
+start /wait msiexec /qn /norestart /x {6D1221A9-17BF-4EC0-81F2-27D30EC30701}
 
 :: SlimCleaner Plus
 start /wait msiexec /qn /norestart /x {BA219F82-20BF-49AD-A279-E2D69D3B9D3F}
