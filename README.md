@@ -534,8 +534,6 @@ Tron does not run these automatically because most of them don't support command
 
 11. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-12. **[TempFileCleaner](http://addpcs.com/software/tfc/)**: OldTimer utility for cleaning temp files
+12. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
 
-13. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
-
-14. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
+13. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
