@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.0.2 ! Fix typo in log message
+::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
@@ -11,8 +12,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.1
-set STAGE_0_SCRIPT_DATE=2015-12-09
+set STAGE_0_SCRIPT_VERSION=1.0.2
+set STAGE_0_SCRIPT_DATE=2015-12-13
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -81,7 +82,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Disable mode and disable screen saver
 if /i %DRY_RUN%==no (
-	call functions\log.bat "%CUR_DATE% %TIME%    Launch job "Temporariliy disable system sleep and screensaver'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Temporarily disable system sleep and screensaver'..."
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
 	taskkill /im "caffeine.exe" > nul 2>&1
