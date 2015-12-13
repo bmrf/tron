@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.2.0 / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
+:: Version:       8.2.1 + tron.bat:find:              Create new %FIND% variable with hard-coded path to find. Prevents getting confused when GnuWin32 tools are installed. Thanks to /u/hyperblaster
+::                      * tron.bat:find:              Replace all system PATH-dependent calls to "find.exe" to reference new %FIND% variable
+::                8.2.0 / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
 ::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
 ::                      / tron.bat:function:log:      Remove internal log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
 ::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
@@ -176,6 +178,7 @@ set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set SAFE_MODE=no
+set FIND=%SystemRoot%\System32\find.exe
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 :: Stuff related to resuming from an interrupted run
@@ -301,19 +304,19 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "Solid State" >NUL
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Solid State" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "SSD" >NUL
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SSD" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "RAID" >NUL
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "RAID" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | find /i "SandForce" >NUL
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 ENDLOCAL DISABLEDELAYEDEXPANSION
@@ -321,7 +324,7 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 :: PREP: Get free space on the system drive and stash it for comparison later
 :freespace_check
-for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
 :: MB version
@@ -415,7 +418,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | find /i "Files matched: 1"
+		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
 		if !ERRORLEVEL!==0 (
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
 			echo.
@@ -774,7 +777,7 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) o
 %WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
 setlocal enabledelayedexpansion
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
-	find /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1
+	%FIND% /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1
 	if !ERRORLEVEL!==0 (
 		call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 		call functions\log.bat "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
@@ -929,7 +932,7 @@ if /i %DRY_RUN%==no (
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
 	:: Parse everything
 		REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
-		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | find /i /v "$RECYCLE" | find /i /v "AppData\" | find /i /v "ntuser.dat" > %TEMP%\temp.txt
+		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" > %TEMP%\temp.txt
 		for /f "tokens=1 delims=," %%a in (%TEMP%\temp.txt) do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
 
 		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
@@ -989,7 +992,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Calculate saved disk space
 title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
-for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| find /i "avail free"') do set bytes=%%a
+for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
 :: MB version
