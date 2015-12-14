@@ -412,7 +412,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 3. **[BleachBit](http://bleachbit.sourceforge.net/)**: BleachBit utility. Used to clean temp files before running AV scanners
 
-4. **TempFileCleanup.bat**: Script I wrote to clean some areas that other tools seem to miss
+4. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)**: Script I wrote to clean some areas that other tools seem to miss
 
 5. **[DriveCleanup.exe](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Clean unused/not present USB device drivers. Utility from [Uwe Sieber](http://www.uwe-sieber.de/)
 
