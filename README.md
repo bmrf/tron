@@ -389,7 +389,7 @@ Master script that launches all the other tools. It performs a lot of actions on
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-11. **[erunt](http://www.larshederer.homepage.t-online.de/erunt/)**: Used to backup the registry before beginning a Tron run
+11. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
 
 12. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
