@@ -362,7 +362,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 2. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
-3. **Create System Restore point**: Tron creates a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
+3. **Create System Restore point**: Create a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
 
 4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt`
 
@@ -375,9 +375,9 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 7. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
 
-8. **Check and repair WMI**: Check the WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+8. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-9. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save its HTML log to Tron's %LOGPATH%. Tron executes Stinger as follows:
+9. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
@@ -391,7 +391,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 11. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
 
-12. **VSS purge**: Purges oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+12. **VSS purge**: Purge oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
 13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
@@ -406,7 +406,7 @@ Master script that launches all the other tools. It performs a lot of actions on
   rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
   ```
   
-  Runs on IE versions 7 and up
+  Executes only on Internet Explorer v7 and up
 
 2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners
 
@@ -414,11 +414,15 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 4. **TempFileCleanup.bat**: Script I wrote to clean some areas that other tools seem to miss
 
-5. **[DriveCleanup.exe](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Cleans unused/not present USB device drivers. Utility from Uwe Sieber
+5. **[DriveCleanup.exe](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Clean unused/not present USB device drivers. Utility from [Uwe Sieber](http://www.uwe-sieber.de/)
 
-6. **Clear Windows event logs**: Backs up Windows event logs by default to the LOGPATH directory, then clears all log files
+6. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
 
-7. **Clear Windows Update cache**: Purges uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space
+7. **Clear Windows Update cache**: Purge uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space. Accomplished via this command:
+    
+    ```
+    rmdir /s /q %windir%\softwaredistribution\download
+    ```
 
 
 ## STAGE 2: De-bloat
@@ -438,7 +442,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 3. **Toolbar & BHOs** (by GUID): Use WMI to attempt to remove specific list of GUIDs in this file: 
   
   ```
-  \resources\stage_3_de-bloat\toolbars_BHOs_to_target_by_GUID.bat
+  \tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
   ```
 
 4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps.
