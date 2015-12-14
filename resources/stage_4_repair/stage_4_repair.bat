@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 - Remove interal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
 ::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
 ::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
