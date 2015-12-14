@@ -325,6 +325,9 @@ If you feel overly charitable, bitcoin donations are accepted at this address:
 The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
 
 ## tron.bat
+
+[link to code](https://github.com/bmrf/tron/blob/master/tron.bat)
+
 Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under the `\resources` folder. e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
 
 
@@ -356,6 +359,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 0: Prep
 
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/stage_0_prep.bat)
+
 1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
    Note: `-resume` is an internal flag and not meant to be used by a human at the command-line. If you use it, things will break and I will laugh at you.
@@ -364,7 +369,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 3. **Create System Restore point**: Create a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
 
-4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt`
+4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` ([link](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/processkiller/whitelist.txt))
 
 5. **ProcessKiller**: Utility provided by [/u/cuddlychops06](https://www.reddit.com/user/cuddlychops06) which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
@@ -400,6 +405,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 1: Tempclean
 
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)
+
 1. **Internet Explorer cleanup**: Runs built-in Windows tool to clean and reset Internet Explorer:
 
   ```
@@ -427,6 +434,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 2: De-bloat
 
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/stage_2_de-bloat.bat)
+
 1. **OEM de-bloat** (by name): Use WMI to attempt to uninstall any program listed in this file:
 
   ```
@@ -450,6 +459,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 3: Disinfect
 
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)
+
 1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Using the `-sa` or `-sm` flags skip this component
 
 2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Using the `-sa` or `-sk` flags skip this component
@@ -462,6 +473,8 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 
 ## STAGE 4: Repair
+
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/stage_4_repair.bat)
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
@@ -481,6 +494,9 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 
 ## STAGE 5: Patch
+
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)
+
 Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
 1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using the `-sp` flag skips this component
@@ -498,6 +514,8 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 ## STAGE 6: Optimize
 
+[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_6_optimize/stage_6_optimize.bat)
+
 1. **Page file reset**: Reset the system page file settings to "let Windows manage the page file." Accomplished via this command:
 
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
@@ -509,12 +527,15 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 ## STAGE 7: Wrap-up
 
+*stage-specific code in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
+
 1. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
 2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
 ## STAGE 8: Manual tools
-Tron does not run these automatically because most of them don't support command-line use, or are only useful in special cases.
+
+Tron does not run these automatically because most do not support command-line use, or are only useful in special cases.
 
 1. **[ADSSpy](http://www.bleepingcomputer.com/download/ads-spy/)**: Scans for hidden NTFS Alternate Data Streams
 
