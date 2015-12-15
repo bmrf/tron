@@ -178,7 +178,7 @@ set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set SAFE_MODE=no
-:: PREP: Force WMIC location in case the system PATH is messed up
+:: Force the location of some variables in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
