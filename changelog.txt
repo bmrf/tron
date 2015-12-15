@@ -20,7 +20,9 @@ Version number legend:
 tron.bat                         v8.2.1
 
 Stage 0: Prep
- . stage_0_prep.bat              v1.0.0
+ * stage_0_prep.bat              v1.0.2
+     ! Fix typo in log message
+
  . rkill                         v2.8.3.0
  . ProcessKiller                 v2.0.0-TRON
  . TDSS Killer                   v3.1.0.7
@@ -29,7 +31,9 @@ Stage 0: Prep
  . caffeine                      v1.6.1.0
 
 Stage 1: Tempclean
- . stage_1_tempclean.bat         v1.0.1
+ * stage_1_tempclean.bat         v1.0.2
+     - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+
  . CCLeaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
@@ -46,18 +50,24 @@ Stage 2: De-bloat
 
 Stage 3: Disinfect
  * stage_3_disinfect.bat         v1.0.2
-    * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticxtasy
+     * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticxtasy
+ 
  . Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.2.0.1024
 
 Stage 4: Repair
- . stage_4_repair.bat            v1.0.2
+ * stage_4_repair.bat            v1.0.3
+     - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+     ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
+ 
  . subinacl.exe                  v5.2.3790.1180
  . Repair file extensions        v1.0.0
 
 Stage 5: Patch
- . stage_5_patch.bat             v1.1.0
+ * stage_5_patch.bat             v1.1.1
+     - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+ 
  . 7-Zip                         v15.12        (multi-language)
  . Adobe Flash Player            v20.0.0.228   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
@@ -65,7 +75,9 @@ Stage 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
- . stage_6_optimize.bat          v1.0.0
+ * stage_6_optimize.bat          v1.0.1
+     - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+	 
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
