@@ -178,6 +178,8 @@ set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set SAFE_MODE=no
+:: PREP: Force WMIC location in case the system PATH is messed up
+set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
@@ -267,10 +269,6 @@ if /i %HELP%==yes (
 	echo.
 	exit /b 0
 	)
-
-
-:: PREP: Force WMIC location in case the system PATH is messed up
-set WMIC=%SystemRoot%\system32\wbem\wmic.exe
 
 
 :: PREP: Detect the version of Windows we're on. This determines a few things later on
