@@ -45,7 +45,8 @@ Stage 2: De-bloat
  . stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
- . stage_3_disinfect.bat         v1.0.0
+ * stage_3_disinfect.bat         v1.0.2
+    * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticxtasy
  . Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.2.0.1024
