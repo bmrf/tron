@@ -41,7 +41,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_1_tempclean begin..."
 
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% geq 6.0 (
 	title TRON v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'..."
 	if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
