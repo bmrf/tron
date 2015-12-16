@@ -274,6 +274,7 @@ if /i %HELP%==yes (
 :: PREP: Detect the version of Windows we're on. This determines a few things later on
 set WIN_VER=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
 :: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail.
