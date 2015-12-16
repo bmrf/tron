@@ -77,7 +77,7 @@ REM if exist %SystemDrive%\$Windows.~WS (
 :: First block handles XP/2k3, second block handles Vista and up
 :: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
 :: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
-if /i "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% lss 6.0 (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
 		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
@@ -149,13 +149,13 @@ del /F /S /Q "%WINDIR%\TEMP\*" 2>NUL
 :: JOB: Root drive garbage (usually C drive)
 rmdir /S /Q %SystemDrive%\Temp 2>NUL
 for %%i in (bat,txt,log,jpg,jpeg,tmp,bak,backup,exe) do (
-			del /F /Q "%SystemDrive%\*.%%i" 2>NUL
-		)
+	del /F /Q "%SystemDrive%\*.%%i" 2>NUL
+)
 
 :: JOB: Remove files left over from installing Nvidia/ATI/AMD/Dell/Intel/HP drivers
 for %%i in (NVIDIA,ATI,AMD,Dell,Intel,HP) do (
-			rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
-		)
+	rmdir /S /Q "%SystemDrive%\%%i" 2>NUL
+)
 
 :: JOB: Clear additional unneeded files from NVIDIA driver installs
 if exist "%ProgramFiles%\Nvidia Corporation\Installer2" rmdir /s /q "%ProgramFiles%\Nvidia Corporation\Installer2"
@@ -198,11 +198,11 @@ rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell 2>NUL
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
 :: JOB: Windows XP/2k3: "guided tour" annoyance
-if /i "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% lss 6.0 (
 	del %WINDIR%\system32\dllcache\tourstrt.exe 2>NUL
 	del %WINDIR%\system32\dllcache\tourW.exe 2>NUL
 	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
-	)
+)
 
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
@@ -227,12 +227,11 @@ if %ERRORLEVEL%==0 (
 	echo.
 	echo    Done.
 	echo.
-	)
+)
 
 :: JOB: Windows CBS logs
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
-echo %WIN_VER% | findstr /i /c:"server" >NUL
-if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* 2>NUL
+echo %WIN_VER% | findstr /i /c:"server" >NUL && del /F /Q %WINDIR%\Logs\CBS\* 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
 :: Really we should use a tool that deletes their corresponding registry entries, but oh well.
@@ -240,8 +239,7 @@ if not %ERRORLEVEL%==0 del /F /Q %WINDIR%\Logs\CBS\* 2>NUL
 ::  0. Check Windows version.
 ::    We simply look for "Microsoft" in the version name, because only versions prior to Vista had the word "Microsoft" as part of their version name
 ::    Everything after XP/2k3 drops the "Microsoft" prefix
-echo %WIN_VER% | findstr /i /c:"Microsoft" >NUL
-if %ERRORLEVEL%==0 (
+if %WIN_VER_NUM% lss 6.0 (
 	:: 1. If we made it here we're doing the cleanup. Notify user and log it.
 	echo.
 	echo  ! Windows XP/2003 detected.

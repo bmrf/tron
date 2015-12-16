@@ -69,9 +69,7 @@ title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: Get-AppxPackage -AllUsers| Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 
 :: Version checks
-if "%WIN_VER:~0,9%"=="Windows 8" set TARGET_METRO=yes
-if "%WIN_VER:~0,9%"=="Windows 1" set TARGET_METRO=yes
-if "%WIN_VER:~0,18%"=="Windows Server 201" set TARGET_METRO=yes
+if %WIN_VER_NUM% geq 6.2 set TARGET_METRO=yes
 if /i %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %DRY_RUN%==no net start AppXSVC >nul 2>&1
 if /i %TARGET_METRO%==yes (

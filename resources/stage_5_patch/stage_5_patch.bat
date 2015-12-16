@@ -169,12 +169,10 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 if /i %DRY_RUN%==no (
-	if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-		if /i not "%WIN_VER:~0,11%"=="Windows V" (
-			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log" >nul 2>&1
-			type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
-			del /f /q "%LOGPATH%\tron_dism_base_reset.log"
-		)
+	if %WIN_VER_NUM% geq 6.1 (
+		Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log" >nul 2>&1
+		type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+		del /f /q "%LOGPATH%\tron_dism_base_reset.log"
 	)
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
