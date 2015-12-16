@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.2.1 + tron.bat:find:              Create new %FIND% variable with hard-coded path to find.exe. Prevents getting confused when GnuWin32 tools are installed. Thanks to /u/hyperblaster
+:: Version:       8.2.1 + tron.bat:variable:          Add new WIN_VER_NUM variable to allow for easier version checking in a few places. Thanks to github:nemchick
+::                      + tron.bat:find:              Create new %FIND% variable with hard-coded path to find.exe. Prevents getting confused when GnuWin32 tools are installed. Thanks to /u/hyperblaster
 ::                      * tron.bat:find:              Replace all system PATH-dependent calls to "find.exe" to reference new %FIND% variable
 ::                8.2.0 / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
 ::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
@@ -273,6 +274,7 @@ if /i %HELP%==yes (
 
 :: PREP: Detect the version of Windows we're on. This determines a few things later on
 set WIN_VER=undetected
+set WIN_VER_NUM=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
