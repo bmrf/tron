@@ -113,6 +113,7 @@ if /i %TARGET_METRO%==yes (
 			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
 		)
 	)
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
