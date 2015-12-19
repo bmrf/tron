@@ -954,7 +954,7 @@ if /i %DRY_RUN%==no (
 
 		REM If the parsed file is the same as the original, we can assume nothing was removed, so just echo that into the file
 		fc /b %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
-		if !ERRORLEVEL!==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
+		if %ERRORLEVEL%==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
 
 		REM Cleanup
 		del /f /q %TEMP%\temp.txt 2>NUL
