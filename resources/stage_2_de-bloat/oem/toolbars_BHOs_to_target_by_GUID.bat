@@ -1273,6 +1273,7 @@ start /wait msiexec /qn /norestart /x {10000000-1000-1000-1000-100000000000}
 
 :: Microsoft Live Search Toolbar
 start /wait msiexec /qn /norestart /x {1E61ED7C-7CB8-49d6-B9E9-AB4C880C8414}
+start /wait msiexec /qn /norestart /x {7FC8C210-A319-4835-A87D-B935EFB4C148}
 
 :: midicair Toolbar
 start /wait msiexec /qn /norestart /x {77f8c945-4b74-4bd6-a073-e0d1997edce8}
