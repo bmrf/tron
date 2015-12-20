@@ -1177,6 +1177,7 @@ start /wait msiexec /qn /norestart /x {6DAF8CDC-9B04-413B-A0F2-BCC13CF8A5BF}
 start /wait msiexec /qn /norestart /x {2A87D48D-3FDF-41fd-97CD-A1E370EFFFE2}
 start /wait msiexec /qn /norestart /x {40BF1E83-20EB-11D8-97C5-0009C5020658}
 start /wait msiexec /qn /norestart /x {34D95765-2D5A-470F-A39F-BC9DEAAAF04F}
+start /wait msiexec /qn /norestart /x {40BF1E83-20EB-11D8-97C5-0009C5020658}
 
 :: CyberLink PowerDVD // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {D6E853EC-8960-4D44-AF03-7361BB93227C}
@@ -1566,6 +1567,7 @@ start /wait msiexec /qn /norestart /x {10144CFE-D76C-4CFA-81A1-37A1642349A3}
 start /wait msiexec /qn /norestart /x {A3B308B9-BE96-4334-816F-3D82B19A7DE2}
 start /wait msiexec /qn /norestart /x {B307472F-7BD9-4040-9255-CE6D6A1196A3}
 start /wait msiexec /qn /norestart /x {E1BAD1BA-C0E8-4018-9281-E7D2C6B07474}
+start /wait msiexec /qn /norestart /x {FA7EE274-7370-43B7-9A45-A39B17CCCDC5}
 
 :: ESC Home Page Plugin
 start /wait msiexec /qn /norestart /x {E738A392-F690-4A9D-808E-7BAF80E0B398}
@@ -1659,6 +1661,10 @@ start /wait msiexec /qn /norestart /x {06FCC605-92A1-4A1C-B7D1-85E5778290A4}
 
 :: Hewlett-Packard Asset Agent for Health Check
 start /wait msiexec /qn /norestart /x {669D4A35-146B-4314-89F1-1AC3D7B88367}
+
+:: HP
+start /wait msiexec /qn /norestart /x {B2EE25B9-5B00-4ACF-94F0-92433C28C39E}
+start /wait msiexec /qn /norestart /x {3023EBDA-BF1B-4831-B347-E5018555F26E}
 
 :: HP 3.00.xxxx (various versions)
 start /wait msiexec /qn /norestart /x {2F518061-89DB-4AF0-9A7A-2BF73B60E6F0}
@@ -1960,6 +1966,11 @@ start /wait msiexec /qn /norestart /x {D360FA88-17C8-4F14-B67F-13AAF9607B12}
 :: HP MediaSmart SmartMenu
 start /wait msiexec /qn /norestart /x {5A5F45AE-0250-4C34-9D89-F10BDDEE665F}
 start /wait msiexec /qn /norestart /x {A3B64280-DE4C-40F0-86BB-CCB2A6056BA2}
+start /wait msiexec /qn /norestart /x {88E60521-1E4E-4785-B9F1-1798A4BD0C30}
+start /wait msiexec /qn /norestart /x {9DEF9686-CCB2-47B7-BF83-B49EA21FA016}
+
+:: HP MediaSmart DVD
+start /wait msiexec /qn /norestart /x {DCCAD079-F92C-44DA-B258-624FC6517A5A}
 
 :: HP MediaSmart/TouchSmart Netflix (various versions)
 start /wait msiexec /qn /norestart /x {34FF930E-DBF9-4858-BAB5-BAC957BF616E}
@@ -2091,6 +2102,9 @@ start /wait msiexec /qn /norestart /x {D1E8F2D7-7794-4245-B286-87ED86C1893C}
 start /wait msiexec /qn /norestart /x {C0C9A493-51CB-4F3F-A296-5B5E410C338E}
 start /wait msiexec /qn /norestart /x {D1E7D876-6B86-4B35-A93D-15B0D6C43EAF}
 start /wait msiexec /qn /norestart /x {C2E428EB-116E-41C0-9E84-B22DE9CCA42F}
+
+:: HP Remote Solution
+start /wait msiexec /qn /norestart /x {C611CF88-969D-43E6-A877-D6D6439DD081}
 
 :: HP Rescue and Recovery
 start /wait msiexec /qn /norestart /x {C81D8576-F1B1-4E3A-9DC3-DF1B664962F0}
