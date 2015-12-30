@@ -162,7 +162,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=8.2.1
-set SCRIPT_DATE=2015-12-xx
+set SCRIPT_DATE=2015-12-30
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
