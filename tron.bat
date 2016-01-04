@@ -161,8 +161,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.2.1
-set SCRIPT_DATE=2015-12-30
+set SCRIPT_VERSION=8.3.0
+set SCRIPT_DATE=2016-01-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -321,7 +321,7 @@ for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	REM This is a failsafe if drive information cannot be read. See issue #59 on GitHub.
+	:: Failsafe for drives that can't be read. Re: issue #59 on GitHub
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
@@ -669,7 +669,11 @@ echo  ***********************************************************************
 echo  Current settings (run tron.bat -c to dump full config):
 echo    Log location:            %LOGPATH%\%LOGFILE%
 if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
-if "%SSD_DETECTED%"=="yes" (echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^) ) else (echo    SSD detected?            %SSD_DETECTED%)
+if /i not "%SSD_DETECTED%"=="no" (
+		echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^)
+	) else (
+		echo    SSD detected?            %SSD_DETECTED%
+	)
 if "%SAFE_MODE%"=="no" (
 		echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
 	) else (
