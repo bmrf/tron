@@ -4,13 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.2.1 + tron.bat:variable:          Add new WIN_VER_NUM variable to allow for easier version checking in a few places. Thanks to github:nemchick
-::                      + tron.bat:find:              Create new %FIND% variable with hard-coded path to find.exe. Prevents getting confused when GnuWin32 tools are installed. Thanks to /u/hyperblaster
-::                      * tron.bat:find:              Replace all system PATH-dependent calls to "find.exe" to reference new %FIND% variable
-::                8.2.0 / tron.bat:prep:              Move "pushd \resources" command up a few lines to be run the same time as the other pushd commands
-::                      * tron.bat:prep:check_update: Exit with error code 1 if a download fails the SHA256 integrity check
-::                      / tron.bat:function:log:      Remove internal log function and move it into \resources\functions\log.bat. Thanks to github:nemchik
-::                      * tron.bat:function:log:      Convert all calls to :log to now call functions\log.bat due to new logging system. Thanks to github:nemchik
+:: Version:       8.3.0 * some stuff
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
