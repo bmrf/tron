@@ -320,6 +320,11 @@ for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	REM This is a failsafe if drive information cannot be read. See issue #59 on GitHub.
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	)
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
