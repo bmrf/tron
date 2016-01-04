@@ -48,38 +48,16 @@ call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Dism Windows image chec
 if /i %DRY_RUN%==yes goto skip_dism_image_check
 
 :: Read WIN_VER and run the scan if we're on 8 or above
-if "%WIN_VER:~0,19%"=="Windows Server 2012" (
+if %WIN_VER_NUM% geq 6.2 (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
 	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
 	del /f /q "%LOGPATH%\tron_dism.log"
-	)
-if "%WIN_VER:~0,9%"=="Windows 8" (
-	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
-	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
-	del /f /q "%LOGPATH%\tron_dism.log"
-	)
-if "%WIN_VER:~0,9%"=="Windows 1" (
-	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
-	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
-	del /f /q "%LOGPATH%\tron_dism.log"
-	)
+)
 
 :: If we detect errors try to repair them
 if /i not %ERRORLEVEL%==0 (
 	title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
-	if "%WIN_VER:~0,19%"=="Windows Server 2012" (
-		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
-		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
-		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
-		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
-		)
-	if "%WIN_VER:~0,9%"=="Windows 8" (
-		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
-		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
-		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
-		type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
-		)
-	if "%WIN_VER:~0,9%"=="Windows 1" (
+	if %WIN_VER_NUM% geq 6.2 (
 		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
 		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%LOGPATH%\tron_dism.log"
@@ -125,7 +103,7 @@ title TRON v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
 if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
-if /i not "%WIN_VER:~0,9%"=="Microsoft" %SystemRoot%\System32\sfc.exe /scannow
+if %WIN_VER_NUM% geq 6.0 %SystemRoot%\System32\sfc.exe /scannow
 %SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 :skip_sfc
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -270,7 +248,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 
 
 :: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% geq 6.0 (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Run DISM cleanup against unused binaries'..."
 	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."

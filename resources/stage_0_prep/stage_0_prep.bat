@@ -44,8 +44,8 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 :: one restore point every 24 hours. If you create another one, it deletes the previous one.
 :: So unfortunately we can't take a before/after pair.
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	if /i not "%WIN_VER:~0,14%"=="Windows Server" (
+if %WIN_VER_NUM% geq 6.0 (
+	echo %WIN_VER% | findstr /i /c:"server" >NUL || (
 		call functions\log.bat "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
 		if /i %DRY_RUN%==no (
 			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -163,17 +163,15 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
 :: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
-	if /i not "%WIN_VER:~0,9%"=="Windows V" (
-		call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
-		if /i %DRY_RUN%==no (
-			:: Force allow us to start VSS service in Safe Mode
-			reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
-			net start VSS >nul 2>&1
-			vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
-		)
-		call functions\log.bat "%CUR_DATE% %TIME%    Done."
+if %WIN_VER_NUM% geq 6.1 (
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
+	if /i %DRY_RUN%==no (
+		:: Force allow us to start VSS service in Safe Mode
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
+		net start VSS >nul 2>&1
+		vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
 	)
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
