@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
+:: Version:       1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
+::                1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
 ::                1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
 ::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
 ::                           + Add logging and -v flag (VERBOSE) support
@@ -18,7 +19,7 @@
 ::                           - Remove incorrect pushd %SystemDrive at head of script
 ::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
 ::                1.0.0-TRON + Initial write
-SETLOCAL
+@SETLOCAL
 
 
 :::::::::::::::
@@ -34,8 +35,32 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.6-TRON
-set SCRIPT_UPDATED=2015-12-09
+set SCRIPT_VERSION=1.0.7-TRON
+set SCRIPT_UPDATED=2016-01-05
+
+:: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
+if /i "%LOGPATH%"=="" (
+	set LOGPATH=%SystemDrive%\Logs
+	set LOGFILE=windows_10_telemetry_removal.log
+	set VERBOSE=no
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
+)
+	
+:: Make sure we're on Win10
+if %WIN_VER_NUM% leq 9.9 (
+	color 0c
+	echo.
+	echo  ERROR
+	echo.
+	echo   This script is only for Windows 10 and above.
+	echo.
+	echo   Aborting.
+	echo.
+	pause
+	color
+	exit /b 1
+)
+
 
 
 :::::::::::::
@@ -44,7 +69,7 @@ set SCRIPT_UPDATED=2015-12-09
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
-:: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense ...
+:: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
 if "%VERBOSE%"=="yes" (
 	taskkill /f /im gwx.exe /t
 	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
@@ -171,9 +196,14 @@ if "%VERBOSE%"=="yes" (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES FROM RE-INSTALLING
-::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 2902907 2922324 2952664 2976978 2977759 2990214 3012973 3014460 3015249 3021917 3022345 3035583 3044374 3050265 3050267 3065987 3068708 3075249 3075851 3075853 3080149
-start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2902907 2922324 2952664 2976978 2977759 2990214 3012973 3014460 3015249 3021917 3022345 3035583 3044374 3050265 3050267 3065987 3068708 3075249 3075851 3075853 3080149
 
+:: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
+pushd stage_4_repair\purge_windows_telemetry 2>NUL
+
+::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 2902907 2922324 2952664 2976978 2977759 2990214 3012973 3014460 3015249 3021917 3022345 3035583 3044374 3050265 3050267 3065987 3068708 3075249 3075851 3075853 3080149
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 2902907 2922324 2952664 2976978 2977759 2990214 3012973 3014460 3015249 3021917 3022345 3035583 3044374 3050265 3050267 3065987 3068708 3075249 3075851 3075853 3080149
+
+popd
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -338,12 +368,12 @@ if "%VERBOSE%"=="yes" (
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-:: NULL ROUTE BAD HOSTS ...
+:: NULL ROUTE BAD HOSTS
 
-:: Run this command to flush ALL routes IMMEDIATELY (you'll need to reboot or do an ipconfig /release & ipconfig /renew to get a new default route)
+:: Run this command to flush ALL routes IMMEDIATELY. It will delete your default route so you'll need to reboot or do an ipconfig /release & ipconfig /renew to get back online
 ::route -f
 
-:: Run this commend to clear persistent routes only, takes effect at reboot. This will undo all the below changes
+:: Run this command to clear persistent routes only, takes effect at reboot. This will undo all the below changes
 ::reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
 if "%VERBOSE%"=="yes" (
 	:: a-0001.a-msedge.net
