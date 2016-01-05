@@ -43,8 +43,8 @@
 ::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
-SETLOCAL
 @echo off
+@SETLOCAL
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 call :set_cur_date
 
