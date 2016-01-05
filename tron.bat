@@ -343,7 +343,7 @@ if /i %RESUME_DETECTED%==yes (
 		goto enable_f8_key_on_bootup
 	)
 
-	REM Otherwise read in the values from the previous run
+	REM Read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
 	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
 )
