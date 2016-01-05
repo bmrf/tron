@@ -157,6 +157,7 @@ start /wait msiexec /qn /norestart /x {503F672D-6C84-448A-8F8F-4BC35AC83441}
 start /wait msiexec /qn /norestart /x {5D2B5E19-C333-4519-3D32-AAB8EEE9ACA4}
 start /wait msiexec /qn /norestart /x {D42B82F2-116E-8588-D868-5E98EF9B0CF8}
 start /wait msiexec /qn /norestart /x {FEA214BD-EE6F-B3B9-FE9E-80D2B14849D5}
+start /wait msiexec /qn /norestart /x {CF84CD21-FC52-857E-AF41-9DEE9C76D245}
 
 :: AMD OEM Application Profile
 start /wait msiexec /qn /norestart /x {C89A97B6-F991-EBB5-77B7-927BCF420EBE}
@@ -1129,6 +1130,15 @@ start /wait msiexec /qn /norestart /x {FE59DF1D-F3DC-2B06-DF69-257890B220E3}
 start /wait msiexec /qn /norestart /x {FEFF81BF-B911-6755-FBDE-09547BDFD0A2}
 start /wait msiexec /qn /norestart /x {FF10AC4D-3349-99DA-3E58-5197CEA1D833}
 start /wait msiexec /qn /norestart /x {FFCF34B9-A0B1-2E2B-7D7E-8FAB4A781CC9}
+start /wait msiexec /qn /norestart /x {37DBC990-C514-3821-D6FB-12E0745AA990}
+start /wait msiexec /qn /norestart /x {D9CBA021-DB41-9736-923F-52E3E426912D}
+start /wait msiexec /qn /norestart /x {31BC0B51-0676-A531-3940-1818B609EEA7}
+start /wait msiexec /qn /norestart /x {504819D1-3C0A-2695-0007-BBDFA5936D68}
+start /wait msiexec /qn /norestart /x {69DF4822-9B16-CE04-7587-22E09FB5FD1D}
+start /wait msiexec /qn /norestart /x {968C0E92-6DA9-5784-9A0B-1061D0CB2C14}
+start /wait msiexec /qn /norestart /x {9DB45EC2-90E7-642D-7CF9-5AC2FBDC14F7}
+start /wait msiexec /qn /norestart /x {AA0E1433-8F16-AA01-E8E9-E6408579D0D8}
+start /wait msiexec /qn /norestart /x {11BC8F83-7260-65EB-3E0A-FA7AC894B42D}
 
 :: CITIZEN bloatware (printer)
 start /wait msiexec /qn /norestart /x {546D97C7-9DF6-4A2D-BE02-2C0B25FFE1E3}
@@ -2531,7 +2541,10 @@ start /wait msiexec /qn /norestart /x {3963D1D4-8723-4EE4-9694-D1078BB26B75}
 :: Lenovo OneKey Recovery // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {46F4D124-20E5-4D12-BE52-EC177A7A4B42}
 
-:: Lenovo Onekey Theater
+:: Levovo OneKey Optimizer
+start /wait msiexec /qn /norestart /x {D5D573DC-D989-4769-9B56-D6A7EA503D7F}
+
+:: Lenovo OneKey Theater
 start /wait msiexec /qn /norestart /x {91CC5BAE-A098-40D3-A43B-C0DC7CE263FE}
 
 :: Lenovo Patch Utility
@@ -2539,6 +2552,9 @@ start /wait msiexec /qn /norestart /x {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43}
 
 :: Lenovo PhoneCompanion
 start /wait msiexec /qn /norestart /x {0F82EA83-B0C5-4AB9-9695-DFE92C5FD57B}
+
+:: Lenovo Photo Master
+start /wait msiexec /qn /norestart /x {BC94C56A-3649-420C-8756-2ADEBE399D33}
 
 :: Lenovo Quick Control
 start /wait msiexec /qn /norestart /x {4855C42F-5197-4AAD-A50D-5066D2CC4647}
@@ -2731,6 +2747,7 @@ start /wait msiexec /qn /norestart /x {90160000-008F-0000-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-008C-0000-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-008C-0409-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {90160000-007E-0000-1000-0000000FF1CE}
+start /wait msiexec /qn /norestart /x {90160000-008C-0407-0000-0000000FF1CE}
 
 :: Microsoft Office 2003 Web Components
 start /wait msiexec /qn /norestart /x {90120000-00A4-0409-0000-0000000FF1CE}
