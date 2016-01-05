@@ -44,7 +44,7 @@
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
 @echo off
-@SETLOCAL
+SETLOCAL
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 call :set_cur_date
 
