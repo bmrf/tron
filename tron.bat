@@ -360,8 +360,7 @@ if /i %RESUME_DETECTED%==yes (
 
 :: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
 :enable_f8_key_on_bootup
-if "%WIN_VER:~0,9%"=="Windows 8" bcdedit /set {default} bootmenupolicy legacy
-if "%WIN_VER:~0,9%"=="Windows 1" bcdedit /set {default} bootmenupolicy legacy
+if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
 
 
 :: PREP: Update check
@@ -797,7 +796,7 @@ endlocal disabledelayedexpansion
 
 :: PREP: Set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
-if /i not "%WIN_VER:~0,9%"=="Microsoft" (
+if %WIN_VER_NUM% geq 6.0 (
 	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
 	call functions\log.bat "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
@@ -919,7 +918,7 @@ if %PRESERVE_POWER_SCHEME%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
 	if %DRY_RUN%==no (
 		REM Check for Windows XP/2k3
-		if /i "%WIN_VER:~0,9%"=="Microsoft" %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
+		if %WIN_VER_NUM% lss 6.0 %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
 		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
 )
