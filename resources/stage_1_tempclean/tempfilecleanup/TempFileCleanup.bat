@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
+:: Version:       1.0.8-TRON / Switch to use of WIN_VER_NUM variable (inherited from Tron.bat). Note that this breaks standalone run functionality
+::                1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
 ::                           * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
 ::                           ! Move IE ClearMyTracksByProcess to Vista and up section (does not run on XP/2003)
@@ -11,7 +12,7 @@
 ::                1.0.3-TRON + Add removal of "HKCU\SOFTWARE\Classes\Local Settings\Muicache". Thanks to /u/TheDevilsAdvocat
 ::                1.0.2-TRON * Add removal of C:\HP folder
 ::                1.0.1-TRON - Remove OS version calculation, since we inherit this from Tron
-::                1.0.0-TRON * Stripped out many things not necessary for Tron
+::                1.0.0-TRON * Strip out many things not necessary for Tron
 ::                           - Removed logging (Tron handles logging)
 SETLOCAL
 
@@ -30,8 +31,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.7-TRON
-set SCRIPT_UPDATED=2015-09-22
+set SCRIPT_VERSION=1.0.8-TRON
+set SCRIPT_UPDATED=2016-01-05
 
 
 ::::::::::::::::::::::::::
@@ -74,9 +75,6 @@ REM if exist %SystemDrive%\$Windows.~WS (
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-:: First block handles XP/2k3, second block handles Vista and up
-:: Read 9 characters into the WIN_VER variable. Only versions of Windows older than Vista had "Microsoft" as the first part of their title,
-:: so if we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3.
 if %WIN_VER_NUM% lss 6.0 (
 	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
 		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
