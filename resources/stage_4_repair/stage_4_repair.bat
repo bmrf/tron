@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
+::                1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
 ::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
 ::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
@@ -16,8 +17,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.3
-set STAGE_4_SCRIPT_DATE=2015-12-09
+set STAGE_4_SCRIPT_VERSION=1.0.4
+set STAGE_4_SCRIPT_DATE=2016-01-05
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -142,108 +143,16 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
-:: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
+:: Spawn temporary variable to check for Win7 and 8. Ugly but at least it works
 set RUN_7_OR_8_TELEM=no
 if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
-	if /i %DRY_RUN%==no (
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM UPDATES
-
-		REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
-		REM Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
-		wusa /uninstall /kb:3112336 /quiet /norestart
-
-		REM Compatibility update for Windows 8.1 and Windows 8
-		wusa /uninstall /kb:2976978 /quiet /norestart
-
-		REM New update client for Windows 8/8.1
-		wusa /uninstall /kb:3083711 /quiet /norestart
-
-		REM Update that enables you to upgrade from Windows 7 to a later version of Windows
-		wusa /uninstall /kb:2990214 /quiet /norestart
-
-		REM Customer Experience and Diagnostic Telemetry-related updates
-		wusa /uninstall /kb:3022345 /quiet /norestart
-		wusa /uninstall /kb:3068708 /quiet /norestart
-		wusa /uninstall /kb:3080149 /quiet /norestart
-		wusa /uninstall /kb:3021917 /quiet /norestart
-
-		REM Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
-		wusa /uninstall /kb:3075249 /quiet /norestart
-		wusa /uninstall /kb:3015249 /quiet /norestart
-
-		REM "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
-		wusa /uninstall /kb:3035583 /quiet /norestart
-
-		REM Enable upgrade from Windows 8.1 to Windows 10
-		wusa /uninstall /kb:3044374 /quiet /norestart
-
-		REM Compatibility update for Windows 7 (is a scanner)
-		wusa /uninstall /kb:2977759 /quiet /norestart
-
-		REM Compatibility update for Windows 7
-		wusa /uninstall /kb:2952664 /quiet /norestart
-		
-		REM New update client for Windows 7
-		wusa /uninstall /kb:3083710 /quiet /norestart
-		
-		REM Description of the update for Windows Activation Technologies
-		wusa /uninstall /kb:971033 /quiet /norestart
-
-		REM Descriptions not available, update was pulled by Microsoft
-		wusa /uninstall /kb:2902907 /quiet /norestart
-		wusa /uninstall /kb:2922324 /quiet /norestart
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM BLOCK BAD UPDATES
-		start "" /b /wait cscript.exe "stage_4_repair\purge_windows_telemetry\block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324 3112336
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM SCHEDULED TASKS
-		schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-		schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-		schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
-		schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-		schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-		schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
-		schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-		schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM SERVICES
-		REM Diagnostic Tracking
-		sc stop Diagtrack >nul 2>&1
-		sc delete Diagtrack >nul 2>&1
-
-		REM Remote Registry (disable only)
-		sc config remoteregistry start= disabled >nul 2>&1
-		sc stop remoteregistry >nul 2>&1
-
-
-		REM :::::::::::::::::::::::::::::::::::::::::::::
-		REM MISC
-		REM Kill pending tracking reports
-		if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
-		echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
-		echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM 2>NUL
-
-		REM Disable telemetry via master registry key
-		reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-		regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-
-	)
-call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
+	if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_7-8-81_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
-
 :skip_telem_removal
 
 
