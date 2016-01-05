@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.3.0 * some stuff
+:: Version:       8.3.0 * stage_0_prep:ssd_detect: Add failsafe if we can't read the drive info (default to SSD_DETECTED=yes). Thanks to github:RB14060
+::                      ! stage_7_wrap-up:logs:    Fix problem where removed program list would list ALL programs if no programs were removed. Thanks to github:RB14060
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
