@@ -158,7 +158,7 @@ set SELF_DESTRUCT=no
 cls
 color 0f
 set SCRIPT_VERSION=8.3.0
-set SCRIPT_DATE=2016-01-xx
+set SCRIPT_DATE=2016-01-07
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1018,7 +1018,7 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
-	)
+)
 
 
 :: Check if shutdown was requested
