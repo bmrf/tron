@@ -164,7 +164,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 )
 
 
-:: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will become uninstallable)
+:: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will no longer be uninstallable)
 :: Windows 8/2012 and up only
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
