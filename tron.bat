@@ -1022,7 +1022,7 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 
 
 :: Check if shutdown was requested
-if /i %AUTO_SHUTDOWN%==yes call functions\log.bat "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds.
+if /i %AUTO_SHUTDOWN%==yes call functions\log.bat "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds."
 
 
 :: Pretend to send the email report. We don't actually send the report since we need the log trailer which is created below,
