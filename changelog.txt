@@ -12,7 +12,92 @@ Version number legend:
   | regular release or feature change
   major release or feature change
 
-  
+
+
+########################
+# v8.4.0 // 2016-01-08 #
+########################
+tron.bat                         v8.4.0
+ + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
+ + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
+
+Stage 0: Prep
+ . stage_0_prep.bat              v1.0.2
+ . rkill                         v2.8.3.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.7
+ . McAfee Stinger                v12.1.0.1853
+ . erunt                         v1.1j
+ . caffeine                      v1.6.1.0
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat         v1.0.2
+ . CCLeaner                      v5.13.5460
+ . BleachBit                     v1.10
+ . TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.1.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat             v1.1.0
+ . stage_2_de-bloat\oem\programs_to_target_by_name.txt
+ . stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+ . stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
+ . stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
+ . stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ ! stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+    ! Remove incorrect Windows Store entry from the target list. Thanks to /u/regypt and /u/KnifeyGavin
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat         v1.0.2
+ . Sophos Virus Removal Tool     v2.5.4
+ . Kaspersky Virus Removal Tool  v15.0.19.0
+ . Malwarebytes Anti-Malware     v2.2.0.1024
+
+Stage 4: Repair
+ * stage_4_repair.bat            v1.0.5
+    - Remove redundant Dism image store cleanup (move to Stage 5)
+
+ . subinacl.exe                  v5.2.3790.1180
+ . Repair file extensions        v1.0.0
+
+Stage 5: Patch
+ * stage_5_patch.bat             v1.1.2
+    + Import Windows Vista/2008 Dism component cleanup from Stage 4
+	+ Implement support for -sdc switch (SKIP_DISM_CLEANUP)
+
+ . 7-Zip                         v15.12        (multi-language)
+ . Adobe Flash Player            v20.0.0.267   (language ignored)
+ . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment      8u66          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat          v1.0.1
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.19.0.982
+
+Stage 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+Stage 8: Manual tools
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.2.8
+ . Autoruns                      v13.51
+ . BlueScreenView                v1.55
+ . ComboFix                      v16.1.7.1
+ . Junkware Removal Tool         v8.0.1.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ . VirusTotal uploader tool      v2.2
+
+
+
 ########################
 # v8.3.0 // 2016-01-07 #
 ########################
@@ -92,7 +177,7 @@ Stage 8: Manual tools
  . Tron Reset Tool               v1.0.0
  . UserBenchMark                 v2.6.0.0
  . VirusTotal uploader tool      v2.2
- 
+
 
 
 ########################
@@ -135,7 +220,7 @@ Stage 2: De-bloat
 Stage 3: Disinfect
  * stage_3_disinfect.bat         v1.0.2
      * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticxtasy
- 
+
  . Sophos Virus Removal Tool     v2.5.4
  . Kaspersky Virus Removal Tool  v15.0.19.0
  . Malwarebytes Anti-Malware     v2.2.0.1024
@@ -144,14 +229,14 @@ Stage 4: Repair
  * stage_4_repair.bat            v1.0.3
      - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
- 
+
  . subinacl.exe                  v5.2.3790.1180
  . Repair file extensions        v1.0.0
 
 Stage 5: Patch
  * stage_5_patch.bat             v1.1.1
      - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
- 
+
  . 7-Zip                         v15.12        (multi-language)
  * Adobe Flash Player            v20.0.0.267   (language ignored)
  . Adobe Reader                  v11.0.13      (English-only; replace with your language version if necessary)
@@ -161,7 +246,7 @@ Stage 5: Patch
 Stage 6: Optimize
  * stage_6_optimize.bat          v1.0.1
      - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
-	 
+
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
