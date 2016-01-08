@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 / Move Windows Vista/2008 Dism component cleanup from Stage 4 to Stage 5
+:: Version:       1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
 ::                1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
 ::                1.0.0 + Initial write
