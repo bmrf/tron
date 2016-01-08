@@ -6,6 +6,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
 ::                      + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
+::                      - tron.bat:variable:      Remove SSD_DETECTED variable and re-implement all checks that force a defrag skip to use the SKIP_DEFRAG variable instead
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -300,45 +301,44 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 
 
 :: PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
-:: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-set SSD_DETECTED=no
+:: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Solid State" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SSD" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "RAID" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VMware" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VBOX" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "XENSRC" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "PVDISK" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
+:: Failsafe for drives that can't be read. Re: issue #59 on GitHub
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	:: Failsafe for drives that can't be read. Re: issue #59 on GitHub
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_error&& goto freespace_check
 	)
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
@@ -521,7 +521,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    HELP:                   %HELP%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
-	echo    SSD_DETECTED:           %SSD_DETECTED%
 	echo    TEMP:                   !TEMP!
 	echo    TIME:                   %TIME%
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
@@ -683,24 +682,25 @@ echo  ***********************************************************************
 :: So ugly
 echo  Current settings (run tron.bat -c to dump full config):
 echo    Log location:            %LOGPATH%\%LOGFILE%
-if "%AUTO_REBOOT_DELAY%"=="0" (echo    Auto-reboot delay:       disabled) else (echo    Auto-reboot delay:      %AUTO_REBOOT_DELAY% seconds)
-if /i not "%SSD_DETECTED%"=="no" (
-		echo    SSD detected?            %SSD_DETECTED% ^(defrag skipped^)
-	) else (
-		echo    SSD detected?            %SSD_DETECTED%
-	)
-if "%SAFE_MODE%"=="no" (
-		echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
-	) else (
-		if "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
-		if "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
-	)
-if /i not "%SKIP_DEFRAG%"=="no" (
-	echo  ! SKIP_DEFRAG set^; skipping stage 5 defrag
+if "%AUTO_REBOOT_DELAY%"=="0" (
+	echo    Auto-reboot delay:       disabled
+) else (
+	echo    Auto-reboot delay:       %AUTO_REBOOT_DELAY% seconds
+)
+if /i "%SKIP_DEFRAG%"=="yes_ssd" echo    Skip defrag?             %SKIP_DEFRAG% ^(SSD detected^)
+if /i "%SKIP_DEFRAG%"=="yes_vm" echo    Skip defrag?             %SKIP_DEFRAG% ^(VM detected^)
+if /i "%SKIP_DEFRAG%"=="yes_error" echo    Skip defrag?             %SKIP_DEFRAG% ^(error reading disk stats^)
+if /i "%SKIP_DEFRAG%"=="yes" echo    Skip defrag?             %SKIP_DEFRAG% ^(user set^)
+if /i "%SKIP_DEFRAG%"=="no" echo    Skip defrag?             %SKIP_DEFRAG%
+if /i "%SAFE_MODE%"=="no" echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
+if /i "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
+if /i "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
+if /i "%SKIP_DEFRAG:~0,3%"=="yes" (
 	echo    Runtime estimate:        4-6 hours
-	goto welcome_screen_trailer
-	)
-if "%SSD_DETECTED%"=="yes" (echo    Runtime estimate:        4-6 hours) else (echo    Runtime estimate:        7-9 hours)
+) else (
+	echo    Runtime estimate:        7-9 hours
+)
+
 if /i %DRY_RUN%==yes echo  ! DRY_RUN set; will not execute any jobs
 if /i %DEV_MODE%==yes echo  ! DEV_MODE set; unsupported OS detection overridden
 if /i %UNICORN_POWER_MODE%==on echo  !! UNICORN POWER MODE ACTIVATED !!
