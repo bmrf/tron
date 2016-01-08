@@ -20,6 +20,7 @@ Version number legend:
 tron.bat                         v8.4.0
  + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
  + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
+ - tron.bat:variable:      Remove SSD_DETECTED variable and re-implement all checks that force a defrag skip to use the SKIP_DEFRAG variable instead
 
 Stage 0: Prep
  . stage_0_prep.bat              v1.0.2
@@ -72,7 +73,9 @@ Stage 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
- . stage_6_optimize.bat          v1.0.1
+ * stage_6_optimize.bat          v1.0.2
+    + Implement support for multiple SKIP_DEFRAG variable values
+
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
@@ -142,6 +145,7 @@ Stage 3: Disinfect
 Stage 4: Repair
  * stage_4_repair.bat            v1.0.4
     - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
+
  . subinacl.exe                  v5.2.3790.1180
  . Repair file extensions        v1.0.0
 
@@ -154,7 +158,9 @@ Stage 5: Patch
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
- . stage_6_optimize.bat          v1.0.1
+ * stage_6_optimize.bat          v1.0.2
+    + Add support for multiple SKIP_DEFRAG variable values
+
  . smartctl                      v6.4.0 2015-06-04 r4109
  . Defraggler                    v2.19.0.982
 
