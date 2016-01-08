@@ -50,8 +50,8 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be combined. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr -sk -sm 
-              -sp -spr -srr -ss -str -sw -v -x] | [-h]
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr -sk
+              -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
     Optional flags (can be combined):
 
@@ -82,6 +82,8 @@ Command-line use is fully supported. All flags are optional and can be combined.
      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 
      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+     
+     -sdc Skip DISM component (SxS store) cleanup
 
      -se  Skip Event Log clear (don't clear Windows Event Logs)
 
@@ -231,6 +233,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To always skip defrag, regardless whether `C:\` is an SSD or not, change this to `yes`:
   ```
   set SKIP_DEFRAG=no
+  ```
+  
+- To skip DISM component (SxS store) cleanup, change this to `yes`:
+  ```
+  set SKIP_DISM_CLEANUP=no
   ```
 
 - To skip Windows Event Log clearing, change this to `yes`:
@@ -400,7 +407,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-13. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Using the `-p` flag prevents resetting power settings to Windows default.
+13. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
@@ -454,22 +461,22 @@ Master script that launches all the other tools. It performs a lot of actions on
   \tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
   ```
 
-4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps.
+4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sb` switch (skip *all* de-bloat actions) or `-m` switch (skip only Metro de-bloat) to skip this action
 
 
 ## STAGE 3: Disinfect
 
 [link to code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)
 
-1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Using the `-sa` or `-sm` flags skip this component
+1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
 
-2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Using the `-sa` or `-sk` flags skip this component
+2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Using the `-v` flag gives more verbose output. Using the `-sa` or `-ss` flags skip this component
+3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
 
 
 ## STAGE 4: Repair
@@ -478,15 +485,15 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Using the `-srr` flag skips this operation
+2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Use the `-srr` flag skips this operation
 
-3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Using the `-sfr` flag skips this operation
+3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Use the `-sfr` flag skips this operation
 
 4. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
 5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
 
-6. **Windows "telemetry" purge**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. Tron removes these specific KB updates from Win 7/8/8.1: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features. Go over the code in `\tron\resources\stage_4_repair\purge_windows_telemetry\` to see exactly what is removed and disabled. Using the `-str` flag skips this component
+6. **Windows "telemetry" purge**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. Tron removes these specific KB updates from Win 7/8/8.1: 2952664, 2976978, 2990214, 3021917, 3022345, 3068708, 3080149, 3075249, 3035583, 3044374, 971033. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features. Go over the code in `\tron\resources\stage_4_repair\purge_windows_telemetry\` to see exactly what is removed and disabled. Use the `-str` switch to skip this action
 
 7. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`, `netsh interface ip delete arpcache`, `netsh winsock reset catalog`
 
@@ -499,17 +506,17 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
-1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Using the `-sp` flag skips this component
+1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Use the `-sp` switch to skip this action
 
-2. **Adobe Flash Player**: Used by YouTube and various other sites. Using the `-sp` flag skips this component
+2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sp` switch to skip this action
 
-3. **Adobe Reader**: Standard PDF reader. Using the `-sp` flag skips this component
+3. **Adobe Reader**: Standard PDF reader. Use the `-sp` switch to skip this action
 
-4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Using the `-sp` flag skips this component
+4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sp` switch to skip this action
 
-5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Using the `-sw` flag skips this component
+5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-sw` switch to skip this action
 
-6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store) after we finished purging old files from it earlier. Windows 8 and up only. Note that any Windows Updates installed *prior* to this point will become "baked in" (uninstallable)
+6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
 
 
 ## STAGE 6: Optimize
@@ -520,9 +527,9 @@ Tron updates these programs if they exist on the system. If a program does not e
 
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-    Using the `-spr` flag skips this action
+    Use the `-spr` flag skips this action
 
-2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD. Using the `-sd` flag forces Tron to ALWAYS skip defrag
+2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD. Use the `-sd` flag forces Tron to ALWAYS skip defrag
 
 
 ## STAGE 7: Wrap-up
