@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.1.2 / Move Windows Vista/2008 Dism component cleanup from Stage 4 to Stage 5
+::                1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
 ::                1.0.0 + Initial write
 @echo off
@@ -12,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.1
-set STAGE_5_SCRIPT_DATE=2015-12-09
+set STAGE_5_SCRIPT_VERSION=1.1.2
+set STAGE_5_SCRIPT_DATE=2016-01-08
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -158,6 +159,7 @@ title TRON v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
+	ping 127.0.0.1 -n 10 >nul
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set. Skipping Windows Updates."
@@ -169,10 +171,17 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 if /i %DRY_RUN%==no (
+	:: 7/2008R2 and up
 	if %WIN_VER_NUM% geq 6.1 (
-		Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\tron_dism_base_reset.log" >nul 2>&1
-		type "%LOGPATH%\tron_dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
-		del /f /q "%LOGPATH%\tron_dism_base_reset.log"
+		Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\dism_base_reset.log" >nul 2>&1
+		type "%LOGPATH%\dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+		del /f /q "%LOGPATH%\dism_base_reset.log"
+	)
+	:: Vista version
+	if %WIN_VER_NUM% equ 6.0 (
+		Dism /online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\dism_base_reset.log" >nul 2>&1
+		type "%LOGPATH%\dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
+		del /f /q "%LOGPATH%\dism_base_reset.log"
 	)
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
