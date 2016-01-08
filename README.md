@@ -346,7 +346,7 @@ Master script that launches everything else. It performs many actions on its own
 
 2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions.
 
-3. **Detect SSD**: Detect solid state hard drives. If an SSD is found, the system disk is a virtual drive, OR the system drive can't be read by `smartctl`, Tron sets the `SSD_DETECTED` variable to `yes` and skips **Stage 5 defrag**
+3. **Detect SSD**: Detect solid state hard drives. If an SSD is found, the system disk is a virtual drive, OR the system drive can't be read by `smartctl`, Tron sets the `SKIP_DEFRAG` variable to `yes_ssd` and skips **Stage 5 defrag**
 
 4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
