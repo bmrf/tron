@@ -159,8 +159,10 @@ echo off
 title TRON v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
-	if /i %DRY_RUN%==no wuauclt /detectnow /updatenow
-	ping 127.0.0.1 -n 15 >nul
+	if /i %DRY_RUN%==no (
+		wuauclt /detectnow /updatenow
+		ping 127.0.0.1 -n 15 >nul
+	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set. Skipping Windows Updates."
