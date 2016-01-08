@@ -4,9 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.3.0 * tron.bat:                Implement use of cleaner WIN_VER_NUM when checking OS versions (vs messier WIN_VER checks). Thanks to github:nemchik
-::                      * stage_0_prep:ssd_detect: Add failsafe if we can't read the drive info (default to SSD_DETECTED=yes). Thanks to github:RB14060
-::                      ! stage_7_wrap-up:logs:    Fix problem where removed program list would list ALL programs if no programs were removed. Thanks to github:RB14060
+:: Version:       8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
+::                      + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -27,6 +26,7 @@
 ::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
 ::                      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+::                      -sdc Skip DISM component (SxS store) cleanup
 ::                      -se  Skip Event Log clearing
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
@@ -99,6 +99,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
 :: SKIP_DEBLOAT           (-sb)  = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
+:: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM component (SxS store) cleanup
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_FILEPERMS_RESET   (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
@@ -124,6 +125,7 @@ set AUTO_REBOOT_DELAY=0
 set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
+set SKIP_DISM_CLEANUP=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_FILEPERMS_RESET=no
 set SKIP_KASPERSKY_SCAN=no
@@ -157,8 +159,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.3.0
-set SCRIPT_DATE=2016-01-07
+set SCRIPT_VERSION=8.4.0
+set SCRIPT_DATE=2016-01-08
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -229,7 +231,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -se -sfr
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr
 	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
@@ -248,6 +250,7 @@ if /i %HELP%==yes (
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
 	echo    -sb  Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -sdc Skip DISM component ^(SxS store^) cleanup
 	echo    -se  Skip Event Log clearing
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
@@ -296,7 +299,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 )
 
 
-:: PREP: Detect Solid State hard drives (determines if post-run defrag executes or not)
+:: PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SSD_DETECTED variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 set SSD_DETECTED=no
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -314,6 +317,22 @@ for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
 	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	)
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VMware" >NUL
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	)
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VBOX" >NUL
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	)
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "XENSRC" >NUL
+	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
+	)
+for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "PVDISK" >NUL
 	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SSD_DETECTED=yes&& goto freespace_check
 	)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
@@ -479,6 +498,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
+	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
@@ -654,7 +674,7 @@ echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
 echo  *  4 Repair:    Reg and File Perms reset/chkdsk/SFC/telemetry removal *
-echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, reset DISM base      *
+echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
 echo  *                                                                     *
@@ -1135,6 +1155,7 @@ for %%i in (%*) do (
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
+	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
