@@ -366,7 +366,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 0: Prep
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/stage_0_prep.bat)
+*[link to Stage 0 code](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/stage_0_prep.bat)*
 
 1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
 
@@ -412,7 +412,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 1: Tempclean
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)
+*[link to Stage 1 code](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)*
 
 1. **Internet Explorer cleanup**: Runs built-in Windows tool to clean and reset Internet Explorer:
 
@@ -441,7 +441,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 2: De-bloat
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/stage_2_de-bloat.bat)
+*[link to Stage 2 code](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/stage_2_de-bloat.bat)*
 
 1. **OEM de-bloat** (by name): Use WMI to attempt to uninstall any program listed in this file:
 
@@ -461,12 +461,12 @@ Master script that launches all the other tools. It performs a lot of actions on
   \tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
   ```
 
-4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sb` switch (skip *all* de-bloat actions) or `-m` switch (skip only Metro de-bloat) to skip this action
+4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sb` switch (skip *all* de-bloat) or `-m` switch (skip only Metro de-bloat) to skip this action
 
 
 ## STAGE 3: Disinfect
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)
+*[link to Stage 3 code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)*
 
 1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
 
@@ -481,7 +481,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 4: Repair
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/stage_4_repair.bat)
+*[link to Stage 4 code](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/stage_4_repair.bat)*
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
@@ -502,7 +502,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 ## STAGE 5: Patch
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)
+*[link to STage 5 code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)*
 
 Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
@@ -521,7 +521,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 ## STAGE 6: Optimize
 
-[link to code](https://github.com/bmrf/tron/blob/master/resources/stage_6_optimize/stage_6_optimize.bat)
+*[link to Stage 6 code](https://github.com/bmrf/tron/blob/master/resources/stage_6_optimize/stage_6_optimize.bat)*
 
 1. **Page file reset**: Reset the system page file settings to "let Windows manage the page file." Accomplished via this command:
 
@@ -534,7 +534,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 ## STAGE 7: Wrap-up
 
-*stage-specific code in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
+*stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
 1. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
