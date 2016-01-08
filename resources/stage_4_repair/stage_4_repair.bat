@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 - Remove redundant Dism image store cleanup (code is also run in Stage 5)
+:: Version:       1.0.5 - Remove redundant Dism image store cleanup (move to Stage 5)
 ::                1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
 ::                1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
