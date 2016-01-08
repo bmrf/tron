@@ -36,7 +36,6 @@ $PackagesToRemove = (
 	'Microsoft.WindowsFeedback',              # 'Feedback' functionality
 	'Microsoft.MovieMoments',                 # imported from stage_2_de-bloat.bat
 	'Microsoft.WindowsPhone',                 # 'Phone Companion' app
-	'Microsoft.WindowsStore',                 # Windows Store
 	'Microsoft.XboxApp',                      # Xbox junk, unfortunately 'Microsoft.XboxGameCallableUI' and 'Microsoft.XboxIdentityProvider' can't be removed
 	'Microsoft.ZuneMusic',                    # 'Groove Music' app
 	'Microsoft.ZuneVideo',                    # Groove Music
@@ -52,7 +51,9 @@ $PackagesToRemove = (
 	# 'Microsoft.WindowsCamera' # Camera app
 	# 'Microsoft.WindowsMaps' # Maps app
 	# 'Microsoft.WindowsSoundRecorder' # Sound Recorder app
-	# Microsoft.MicrosoftSolitaireCollection
+	# 'Microsoft.MicrosoftSolitaireCollection' # self explanatory
+	# 'Microsoft.WindowsStore', # Windows Store
+	
 
 	
 # Do the removal
