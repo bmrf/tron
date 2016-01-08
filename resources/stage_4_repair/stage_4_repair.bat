@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
+:: Version:       1.0.5 - Remove redundant Dism image store cleanup (code is also run in Stage 5)
+::                1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
 ::                1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
 ::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
@@ -17,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.4
-set STAGE_4_SCRIPT_DATE=2016-01-05
+set STAGE_4_SCRIPT_VERSION=1.0.5
+set STAGE_4_SCRIPT_DATE=2016-01-08
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -154,14 +155,6 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 :skip_telem_removal
-
-
-:: JOB: DISM cleanup. After this no updates or service packs can be uninstalled (new updates/SP's can still be installed)
-if %WIN_VER_NUM% geq 6.0 (
-	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Run DISM cleanup against unused binaries'..."
-	if /i %DRY_RUN%==no Dism /Online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\tron_dism.log"
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
-)
 
 
 :: JOB: Network repair (minor)
