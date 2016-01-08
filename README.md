@@ -8,7 +8,6 @@
 I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up/disinfect a Windows machine.
 
 # CONTENTS
-
 1. [Usage Summary](#use)
 
 2. [Command-Line Use](#command-line-use)
@@ -347,7 +346,7 @@ Master script that launches all the other tools. It performs a lot of actions on
 
 2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions.
 
-3. **Detect SSD**: Detect solid state hard drives. If one is found, OR the system drive cannot be read by `smartctl`, Tron sets the `SSD_DETECTED` variable to `yes` and skips **Stage 5 defrag**
+3. **Detect SSD**: Detect solid state hard drives. If an SSD is found, the system disk is a virtual drive, OR the system drive can't be read by `smartctl`, Tron sets the `SSD_DETECTED` variable to `yes` and skips **Stage 5 defrag**
 
 4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
