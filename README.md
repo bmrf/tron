@@ -334,7 +334,7 @@ The best way to see what Tron does is simply crack open `Tron.bat` or one of the
 
 *[link to code](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
-Master script that launches all the other tools. It performs a lot of actions on its own, but for any task we can't perform directly, we call an external utility or script. Each stage Tron runs (e.g. Stage 1: Tempclean) has its own master script that Tron calls sequentially. The sub-stage scripts can be found in each stages subdirectory under the `\resources` folder. e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
+Master script that launches everything else. It performs many actions on its own, but for any task not performed directly, we call an external utility or script. Each stage (e.g. Stage 1: Tempclean) has its own master script that Tron calls in sequence. Sub-stage scripts can be found in each stages subdirectory under the `\resources` folder. e.g. `\tron\resources\stage_1_tempclean\stage_1_tempclean.bat`
 
 
 ## Tron-internal prep jobs
