@@ -37,7 +37,7 @@ if %WIN_VER_NUM% gtr 6.3 (
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 7, 8 and 8.1
-	echo   (server variants included).
+	echo   ^(server variants included^).
 	echo.
 	echo   Aborting.
 	echo.
@@ -51,7 +51,7 @@ if %WIN_VER_NUM% leq 6.0 (
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 7, 8 and 8.1
-	echo   (server variants included).
+	echo   ^(server variants included^).
 	echo.
 	echo   Aborting.
 	echo.
