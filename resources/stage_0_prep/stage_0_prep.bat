@@ -105,7 +105,7 @@ title TRON v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
 	:: Make sure time service is started, also force us to allow starting it in Safe Mode
-	reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if %SAFE_MODE%==yes reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /config /syncfromflags:manual /manualpeerlist:"2.pool.ntp.org time.windows.com time.nist.gov" >> "%LOGPATH%\%LOGFILE%" 2>&1
