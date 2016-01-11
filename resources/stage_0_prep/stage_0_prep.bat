@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 ! Fix typo in log message
+:: Version:       1.0.3 / Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
+::                1.0.2 ! Fix typo in log message
 ::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
@@ -12,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.2
-set STAGE_0_SCRIPT_DATE=2015-12-13
+set STAGE_0_SCRIPT_VERSION=1.0.3
+set STAGE_0_SCRIPT_DATE=2016-01-11
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -134,7 +135,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Backup registry
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Back up registry' to "%LOGPATH%"..."
-if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\tron_registry_backup" /noconfirmdelete /noprogresswindow
+if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\registry_backup" /noconfirmdelete /noprogresswindow
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
