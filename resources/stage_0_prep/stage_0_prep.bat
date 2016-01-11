@@ -64,7 +64,7 @@ if /i %DRY_RUN%==no (
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
-	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
@@ -154,7 +154,7 @@ if /i %DRY_RUN%==no (
 	:: Dump TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
-	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
