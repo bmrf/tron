@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
+:: Version:       8.4.1 / tron.bat:prep:safemode: Don't set system to boot into Safe Mode w/ Networking if the system isn't already running in Safe Mode
+::                8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
 ::                      + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
 ::                      - tron.bat:variable:      Remove SSD_DETECTED variable and re-implement all checks that force a defrag skip to use the SKIP_DEFRAG variable instead
 ::
@@ -815,14 +816,16 @@ endlocal disabledelayedexpansion
 :smart_check_complete
 
 
-:: PREP: Set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
+:: PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
-if %WIN_VER_NUM% geq 6.0 (
-	title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
-	call functions\log.bat "%CUR_DATE% %TIME%    Enabling Safe Mode w/ Network on reboot (Vista and up only)..."
-	call functions\log.bat "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
-	if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+if /i "%SAFE_MODE%"=="yes" (
+	if %WIN_VER_NUM% geq 6.0 (
+		title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
+		call functions\log.bat "%CUR_DATE% %TIME%    Setting system to always boot to Safe Mode w/ Networking..."
+		call functions\log.bat "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
+		if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
+		call functions\log.bat "%CUR_DATE% %TIME%    Done."
+	)
 )
 
 
