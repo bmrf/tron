@@ -13,7 +13,7 @@
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
 set BINARY_VERSION=11.0.10
-set PATCH_VERSION=11.0.13
+set PATCH_VERSION=11.0.14
 set FLAGS=/sAll /rs /msi /qb- /norestart EULA_ACCEPT=YES REMOVE_PREVIOUS=YES
 
 
