@@ -6,7 +6,9 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
+:: Version:       1.0.8-TRON ! Fix critical bug where the check to prevent running the script on any Windows version besides 10 would check WIN_VER_NUM and find the version # to be 6.3 instead of 10
+::                           / Change "sc delete" commands to "sc config <servicename> start= disabled" for Xbox related services
+::                1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
 ::                1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
 ::                1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
 ::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
@@ -35,8 +37,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.7-TRON
-set SCRIPT_UPDATED=2016-01-05
+set SCRIPT_VERSION=1.0.8-TRON
+set SCRIPT_UPDATED=2016-01-11
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -47,12 +49,13 @@ if /i "%LOGPATH%"=="" (
 )
 	
 :: Make sure we're on Win10
-if %WIN_VER_NUM% leq 9.9 (
+:: Windows 10 stupidly reports its version number as 6.3 so we can't use WIN_VER_NUM. sigh
+if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 	color 0c
 	echo.
 	echo  ERROR
 	echo.
-	echo   This script is only for Windows 10 and above.
+	echo   This script is only for Windows 10.
 	echo.
 	echo   Aborting.
 	echo.
@@ -316,9 +319,9 @@ if "%VERBOSE%"=="yes" (
 	sc stop XblAuthManager
 	sc stop XblGameSave
 	sc stop XboxNetApiSvc
-	sc delete XblAuthManager
-	sc delete XblGameSave
-	sc delete XboxNetApiSvc
+	sc config XblAuthManager start= disabled
+	sc config XblGameSave start= disabled
+	sc config XboxNetApiSvc start= disabled
 ) else (
 	:: Diagnostic Tracking
 	sc stop Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -344,9 +347,9 @@ if "%VERBOSE%"=="yes" (
 	sc stop XblAuthManager >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc stop XblGameSave >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc stop XboxNetApiSvc >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc delete XblAuthManager >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc delete XblGameSave >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc delete XboxNetApiSvc >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblAuthManager start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblGameSave start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XboxNetApiSvc start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 
