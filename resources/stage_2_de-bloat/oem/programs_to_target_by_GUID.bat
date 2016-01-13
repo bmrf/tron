@@ -130,8 +130,9 @@ start /wait msiexec /qn /norestart /x {13A3A271-B2AA-486C-9AD5-F272079BB9B5}
 start /wait msiexec /qn /norestart /x {4C5E314A-31CA-4223-9A90-CE0C4D5800A4}
 start /wait msiexec /qn /norestart /x {B0D59FDC-FEAB-49A2-9B5A-E5E0A8F9D7E0}
 
-:: Amazon 1Button App 1.0.0.4
+:: Amazon 1Button App
 start /wait msiexec /qn /norestart /x {134E190A-CE2A-4436-BDEB-387CC36A96C9}
+start /wait msiexec /qn /norestart /x {EBCCD2B7-FCA9-4714-97A4-CBC48E544BB2}
 
 :: AMD Accelerated Video Transcoding // Drag-and-Drop Transcoding
 start /wait msiexec /qn /norestart /x {A6AFFBD8-D006-967F-51AF-0120F0261080}
@@ -1556,6 +1557,7 @@ start /wait msiexec /qn /norestart /x {EF7E931D-DC84-471B-8DB6-A83358095474}
 :: eBay Worldwide
 start /wait msiexec /qn /norestart /x {8549CF08-D327-4B73-9036-75564C0BBCFC}
 start /wait msiexec /qn /norestart /x {91589413-6675-4C27-8AFC-EFB9103B90A5}
+start /wait msiexec /qn /norestart /x {3DC26EA7-03E3-4353-9424-EEB7A34A7504}
 
 :: Energy Star // Energy Star Digital Logo
 start /wait msiexec /qn /norestart /x {465CA2B6-98AF-4E77-BE22-A908C34BB9EC}
@@ -2902,6 +2904,9 @@ start /wait msiexec /qn /norestart /x {11D08055-939C-432b-98C3-E072478A0CD7}
 start /wait msiexec /qn /norestart /x {18401E1E-1E44-461A-A4B2-E48B1A727818}
 start /wait msiexec /qn /norestart /x {A84A4FB1-D703-48DB-89E0-68B6499D2801}
 start /wait msiexec /qn /norestart /x {903679E8-44C8-4C07-9600-05C92654FC50}
+
+:: Qualcomm Atheros Setup
+start /wait msiexec /qn /norestart /x {18373B57-4FC3-4B1A-95B3-A7E5DCA577F7}
 
 :: QuickTime 7
 start /wait msiexec /qn /norestart /x {3D2CBC2C-65D4-4463-87AB-BB2C859C1F3E}
