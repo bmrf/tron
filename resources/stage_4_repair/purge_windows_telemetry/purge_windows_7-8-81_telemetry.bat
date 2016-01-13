@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1-TRON ! Fix crash error due to log file name containing "::" characters from a sloppy find/replace
+:: Version:       1.0.2-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
+::                1.0.1-TRON ! Fix crash error due to log file name containing "::" characters from a sloppy find/replace
 ::                1.0.0-TRON + Initial write
 @SETLOCAL
 
@@ -19,14 +20,15 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2016-01-09
+set SCRIPT_VERSION=1.0.2-TRON
+set SCRIPT_UPDATED=2016-01-13
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_7-8-81_telemetry_removal.log
 	set VERBOSE=no
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
 	
