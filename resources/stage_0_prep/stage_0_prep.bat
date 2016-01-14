@@ -48,7 +48,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 title TRON v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
 	echo "%WIN_VER%" | findstr /i /c:"server" >NUL || (
-		call functions\log.bat "%CUR_DATE% %TIME%    Attempting to create pre-run Restore Point (Vista and up only)..."
+		call functions\log.bat "%CUR_DATE% %TIME%    Creating pre-run Restore Point (Vista and up only)..."
 		if /i %DRY_RUN%==no (
 			powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
