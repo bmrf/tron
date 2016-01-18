@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 / OneDrive: Move code from Metro debloat to its own job
+:: Version:       1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
 ::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
 ::                      * OneDrive: Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
 ::                      * Metro: Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
