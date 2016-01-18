@@ -460,8 +460,9 @@ Master script that launches everything else. It performs many actions on its own
   \tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
   ```
 
-4. **Metro de-bloat**: Remove built-in Metro apps that no one uses (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, remove all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sb` switch (skip *all* de-bloat) or `-m` switch (skip only Metro de-bloat) to skip this action
+4. **Metro de-bloat**: Remove many built-in Metro apps that aren't commonly used (does NOT remove things like Calculator, Paint) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, removes all stock "Modern" apps. On Windows 10 and up, only removes a few specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sb` switch (skip *all* de-bloat) or `-m` switch (skip only Metro de-bloat) to skip this action
 
+5. **Remove OneDrive integration**: Remove forced OneDrive integration (Windows 10 only). Tron first checks if any files exist in the default OneDrive folder (`%USERPROFILE%\OneDrive\`) and skips removal if any are found. As a additional safety precaution, Tron leaves the OneDrive folder intact regardless whether OneDrive is removed or not.
 
 ## STAGE 3: Disinfect
 
