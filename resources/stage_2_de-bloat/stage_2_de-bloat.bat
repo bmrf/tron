@@ -3,11 +3,12 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 ! Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
-::                      / Move OneDrive removal from Metro debloat to its own job
-::                      * Don't remove OneDrive if any files are present in the default OneDrive folder
-::                      * Disable OneDrive links in Explorer side pane via registry keys, instead of deleting the keys entirely
-::                      - Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
+:: Version:       1.1.1 / OneDrive: Move code from Metro debloat to its own job
+::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
+::                      * OneDrive: Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
+::                      * Metro: Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
+::                      - Metro: Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
+::                      ! Metro: Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
 ::                1.1.0 * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
 ::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
