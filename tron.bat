@@ -4,7 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.4.1 / tron.bat:prep:safemode: Don't set system to boot into Safe Mode w/ Networking if the system isn't already running in Safe Mode
+:: Version:       8.4.4 * some stuff
+::                8.4.3 . No change, increment version number for changes in sub-scripts
+::                8.4.2 . No change, increment version number for changes in sub-scripts
+::                8.4.1 / tron.bat:prep:safemode: Don't set system to boot into Safe Mode w/ Networking at startup if the script wasn't launched from Safe Mode
 ::                8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
 ::                      + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
 ::                      - tron.bat:variable:      Remove SSD_DETECTED variable and re-implement all checks that force a defrag skip to use the SKIP_DEFRAG variable instead
@@ -161,8 +164,8 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 cls
 color 0f
-set SCRIPT_VERSION=8.4.0
-set SCRIPT_DATE=2016-01-08
+set SCRIPT_VERSION=8.4.4
+set SCRIPT_DATE=2016-01-xx
 title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
