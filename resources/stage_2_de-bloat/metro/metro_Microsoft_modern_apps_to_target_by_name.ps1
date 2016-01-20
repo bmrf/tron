@@ -7,10 +7,9 @@ $ErrorActionPreference = "SilentlyContinue"
 $PackagesToRemove = (
 	'Microsoft.3DBuilder',                    # '3DBuilder' app
 	'Microsoft.BingFinance',                  # 'Money' app - Financial news
-	'Microsoft.BingNews',                     # Generic news app
+	'Microsoft.BingNews',                     # 'Generic news' app
 	'Microsoft.BingSports',                   # 'Sports' app - Sports news
 	'Microsoft.BingTranslator',               # 'Translator' app - Bing Translate
-	'Microsoft.BingWeather',                  # 'Weather' app
 	'Microsoft.CommsPhone',                   # 'Phone' app
 	'Microsoft.ConnectivityStore',
 	'Windows.ContactSupport',
@@ -21,9 +20,8 @@ $PackagesToRemove = (
 	'Microsoft.Messaging',                    # 'Messaging' app
 	'Microsoft.MicrosoftJackpot',             # 'Jackpot' app
 	'Microsoft.MicrosoftOfficeHub',
-	'Microsoft.MicrosoftSolitaireCollection', # Solitaire collection
 	'Microsoft.Taptiles',                     # imported from stage_2_de-bloat.bat
-	'Microsoft.Office.OneNote',               # Onenote app
+	'Microsoft.Office.OneNote',               # 'Onenote' app
 	'Microsoft.Office.Sway',                  # 'Sway' app
 	'Microsoft.People',                       # 'People' app
 	'Microsoft.SkypeApp',                     # 'Get Skype' link
@@ -44,15 +42,17 @@ $PackagesToRemove = (
 )
 			
 # Inactive identifers
-	# 'Microsoft.Appconnector' # Not sure about this one
-	# 'Microsoft.BioEnrollment' # not sure about this one
-	# 'Microsoft.Windows.Photos' # Photos app
-	# 'Microsoft.WindowsCalculator' # Calculator app
-	# 'Microsoft.WindowsCamera' # Camera app
-	# 'Microsoft.WindowsMaps' # Maps app
-	# 'Microsoft.WindowsSoundRecorder' # Sound Recorder app
-	# 'Microsoft.MicrosoftSolitaireCollection' # self explanatory
-	# 'Microsoft.WindowsStore', # Windows Store
+	# 'Microsoft.Appconnector',					# Not sure about this one
+	# 'Microsoft.BioEnrollment',				# not sure about this one
+	# 'Microsoft.BingWeather',                  # 'Weather' app
+	# 'Microsoft.Windows.Photos',				# Photos app
+	# 'Microsoft.WindowsCalculator',			# Calculator app
+	# 'Microsoft.WindowsCamera',				# Camera app
+	# 'Microsoft.WindowsMaps',					# Maps app
+	# 'Microsoft.MicrosoftSolitaireCollection',	# Solitaire collection
+	# 'Microsoft.WindowsSoundRecorder',			# Sound Recorder app
+	# 'Microsoft.MicrosoftSolitaireCollection',	# self explanatory
+	# 'Microsoft.WindowsStore',					# Windows Store
 	
 
 	
