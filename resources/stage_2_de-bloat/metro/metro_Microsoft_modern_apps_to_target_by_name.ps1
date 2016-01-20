@@ -28,7 +28,6 @@ $PackagesToRemove = (
 	'Microsoft.SkypeWiFi',
 	'Microsoft.Studios.Wordament',            # imported from stage_2_de-bloat.bat
 	'Microsoft.MicrosoftSudoku',
-	'Microsoft.WindowsAlarms',                # 'Alarms and Clock' app
 	'microsoft.windowscommunicationsapps',    # 'Calendar and Mail' app
 	'Microsoft.Windows.CloudExperienceHost',  # 'Cloud Experience' sigh
 	'Microsoft.WindowsFeedback',              # 'Feedback' functionality
@@ -43,13 +42,14 @@ $PackagesToRemove = (
 			
 # Inactive identifers
 	# 'Microsoft.Appconnector',					# Not sure about this one
-	# 'Microsoft.BioEnrollment',				# not sure about this one
 	# 'Microsoft.BingWeather',                  # 'Weather' app
+	# 'Microsoft.BioEnrollment',				# not sure about this one
+	# 'Microsoft.MicrosoftSolitaireCollection',	# Solitaire collection
 	# 'Microsoft.Windows.Photos',				# Photos app
+	# 'Microsoft.WindowsAlarms',                # 'Alarms and Clock' app
 	# 'Microsoft.WindowsCalculator',			# Calculator app
 	# 'Microsoft.WindowsCamera',				# Camera app
 	# 'Microsoft.WindowsMaps',					# Maps app
-	# 'Microsoft.MicrosoftSolitaireCollection',	# Solitaire collection
 	# 'Microsoft.WindowsSoundRecorder',			# Sound Recorder app
 	# 'Microsoft.WindowsStore',					# Windows Store
 	
