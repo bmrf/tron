@@ -13,7 +13,7 @@ $PackagesToRemove = (
 	'Microsoft.CommsPhone',                   # 'Phone' app
 	'Microsoft.ConnectivityStore',
 	'Windows.ContactSupport',
-	'Microsoft.FreshPaint',                   # Canvas painting app
+	'Microsoft.FreshPaint',                   # 'Canvas' app
 	'Microsoft.Getstarted',                   # 'Get Started' link
 	'MicrosoftMahjong',                       # 'Mahjong' game
 	'Microsoft.MicrosoftJigsaw',
@@ -51,7 +51,6 @@ $PackagesToRemove = (
 	# 'Microsoft.WindowsMaps',					# Maps app
 	# 'Microsoft.MicrosoftSolitaireCollection',	# Solitaire collection
 	# 'Microsoft.WindowsSoundRecorder',			# Sound Recorder app
-	# 'Microsoft.MicrosoftSolitaireCollection',	# self explanatory
 	# 'Microsoft.WindowsStore',					# Windows Store
 	
 
