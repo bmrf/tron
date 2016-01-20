@@ -3,7 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
+:: Version:       1.1.2 * Metro: Add missing log message about use of -m flag
+::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
+::                1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
 ::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
 ::                      * OneDrive: Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
 ::                      * Metro: Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
@@ -18,8 +20,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.1
-set STAGE_2_SCRIPT_DATE=2016-01-18
+set STAGE_2_SCRIPT_VERSION=1.1.2
+set STAGE_2_SCRIPT_DATE=2016-01-20
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -106,26 +108,34 @@ if /i %TARGET_METRO%==yes (
 
 :: JOB: Remove forced OneDrive integration
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
+	if /i %PRESERVE_METRO_APPS%==yes (
+			call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) switch set. Skipping OneDrive removal."
+			goto skip_onedrive_removal
+		)
+		
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
 	for /F %%i in ('dir /b "%USERPROFILE%\OneDrive\*.*"') do (
 		call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
 		goto skip_onedrive_removal
 	)
 		call functions\log.bat "%CUR_DATE% %TIME%    OneDrive doesn't appear to be in use. Removing..."
-			taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
-			ping 127.0.0.1 -n 5 > NUL 2>&1
-			%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
-			%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
-			ping 127.0.0.1 -n 7 > NUL 2>&1
-			takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
-			icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			REM These two registry entries disable OneDrive links in the Explorer side pane
-			reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-			reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+			if %DRY_RUN%==no (
+				taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
+				ping 127.0.0.1 -n 5 > NUL 2>&1
+				%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+				%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+				ping 127.0.0.1 -n 7 > NUL 2>&1
+				takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
+				icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
+				rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				REM These two registry entries disable OneDrive links in the Explorer side pane
+				reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+				reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+			)
 		call functions\log.bat "%CUR_DATE% %TIME%   Done."
+	)
 )
 :skip_onedrive_removal
 
