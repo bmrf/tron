@@ -109,10 +109,10 @@ if /i %TARGET_METRO%==yes (
 :: JOB: Remove forced OneDrive integration
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	if /i %PRESERVE_METRO_APPS%==yes (
-			call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) switch set. Skipping OneDrive removal."
+			call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
 			goto skip_onedrive_removal
 		)
-		
+
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
 	for /F %%i in ('dir /b "%USERPROFILE%\OneDrive\*.*"') do (
 		call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
