@@ -49,7 +49,7 @@ if /i %DRY_RUN%==no (
 
 :: Prep task: check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_PATCHES (-sp) set. Skipping app patches."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PATCHES (-sp) set. Skipping app patches."
 	goto skip_patches
 )
 
