@@ -4,13 +4,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.4.4 * some stuff
-::                8.4.3 . No change, increment version number for changes in sub-scripts
-::                8.4.2 . No change, increment version number for changes in sub-scripts
-::                8.4.1 / tron.bat:prep:safemode: Don't set system to boot into Safe Mode w/ Networking at startup if the script wasn't launched from Safe Mode
-::                8.4.0 + tron.bat:prep:          Add new -sdc switch and associated SKIP_DISM_CLEANUP variable. Use this to skip DISM component (SxS store) cleanup. Thanks to /u/silentchasm
-::                      + tron.bat:ssd_detection: Add virtual disk detection. If found, skip Stage 5 defrag. Thanks to /u/fezzgig
-::                      - tron.bat:variable:      Remove SSD_DETECTED variable and re-implement all checks that force a defrag skip to use the SKIP_DEFRAG variable instead
+:: Version:       8.5.0 / tron.bat:switch:  Change -sb switch (skip debloat) to -sdb to match other switches
+::                                          Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
+::                      * tron.bat:         Grammar and log cleanup
+::                      * tron.bat:eula:    Reword the warning screen to be even MORE clear about the necessity of reading the instructions
+::                      + tron.bat:loading: Add "loading..." message while Tron is performing pre-run actions
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -29,9 +27,9 @@
 ::                      -p   Preserve power settings (don't reset to Windows default)
 ::                      -r   Reboot (auto-reboot 15 seconds after completion)
 ::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
-::                      -sb  Skip de-bloat (OEM bloatware removal; implies -m)
+::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
-::                      -sdc Skip DISM component (SxS store) cleanup
+::                      -sdc Skip DISM Cleanup (SxS component store deflation)
 ::                      -se  Skip Event Log clearing
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
@@ -48,7 +46,8 @@
 ::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
 ::
 ::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
-@echo off
+@echo off && cls
+echo. && echo   Loading...
 SETLOCAL
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 call :set_cur_date
@@ -102,9 +101,9 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
-:: SKIP_DEBLOAT           (-sb)  = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
+:: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
-:: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM component (SxS store) cleanup
+:: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM Cleanup (SxS component store deflation)
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_FILEPERMS_RESET   (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
@@ -162,11 +161,10 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-cls
 color 0f
-set SCRIPT_VERSION=8.4.4
-set SCRIPT_DATE=2016-01-xx
-title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+set SCRIPT_VERSION=8.5.0
+set SCRIPT_DATE=2016-01-22
+title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
 set ERRORS_DETECTED=no
@@ -236,7 +234,7 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sd -sdb -sdc -se -sfr
 	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
@@ -253,9 +251,9 @@ if /i %HELP%==yes (
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically ^(auto-reboot 15 seconds after completion^)
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
-	echo    -sb  Skip de-bloat ^(OEM bloatware removal; implies -m^)
+	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
-	echo    -sdc Skip DISM component ^(SxS store^) cleanup
+	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
 	echo    -se  Skip Event Log clearing
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
@@ -405,7 +403,7 @@ if /i %ERRORLEVEL%==0 (
 
 
 :: Reset window title since wget clobbers it
-title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 
 :: Notify if an update was found
@@ -582,11 +580,11 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
-	echo  * NOTE^^! By running Tron you accept COMPLETE responsibility for ANYTHING *
-	echo  * that happens. Although the chance of something bad happening due to   *
-	echo  * Tron is pretty remote, it's always a possibility, and Tron has ZERO   *
-	echo  * WARRANTY for ANY purpose. READ THE INSTRUCTIONS and understand what   *
-	echo  * Tron does, because you run it AT YOUR OWN RISK.                       *
+	echo  * HEY^^! READ THE INSTRUCTIONS and understand what Tron does, because it  *
+	echo  * it does a lot of stuff that, while not harmful, can be annoying if    *
+	echo  * you weren't expecting it. e.g. wiping temp files, cookies, etc. So if *
+	echo  * Tron does something you didn't expect and you didn't read the         *
+	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
 	echo  * Tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
@@ -594,8 +592,10 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
 	echo  * tools in whatever environment you're in.                              *
 	echo  *                                                                       *
-	echo  * BOTTOM LINE: there is NO WARRANTY, you are ON YOUR OWN, and anything  *
-	echo  * that happens, good or bad, is YOUR RESPONSIBILITY.                    *
+	echo  * BOTTOM LINE: By running Tron you accept complete responsibility for   *
+	echo  * anything that happens. There is NO WARRANTY, you run it at your OWN   *
+	echo  * RISK and anything that happens, good or bad, is YOUR RESPONSIBILITY.  *
+	echo  * If you don't agree to this then don't run Tron.                       *
 	echo  *************************************************************************
 	echo.
 	echo  Type I AGREE ^(all caps^) to accept this and go to the main menu, or
@@ -643,8 +643,8 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 
 :: PREP: Check if we have network support
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
-	color 0e
 	cls
+	color 0e
 	echo.
 	echo  NOTE
 	echo.
@@ -785,6 +785,7 @@ if /i %VERBOSE%==yes mode con:lines=9000
 
 
 :: Create log header
+cls
 if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "-------------------------------------------------------------------------------"
 	call functions\log.bat "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
@@ -823,7 +824,7 @@ endlocal disabledelayedexpansion
 :: We undo this at the end of the script. Only works on Vista and up
 if /i "%SAFE_MODE%"=="yes" (
 	if %WIN_VER_NUM% geq 6.0 (
-		title TRON v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
+		title Tron v%SCRIPT_VERSION% [stage_0_prep] [safeboot]
 		call functions\log.bat "%CUR_DATE% %TIME%    Setting system to always boot to Safe Mode w/ Networking..."
 		call functions\log.bat "%CUR_DATE% %TIME%    Will re-enable regular boot when Tron is finished."
 		if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
@@ -841,7 +842,7 @@ if /i "%SAFE_MODE%"=="yes" (
 :: Don't stamp anything to the flags file if no CLI flags were used
 echo stage_0_prep>tron_stage.txt
 if /i not "%*"=="" echo %*> tron_flags.txt
-title TRON v%SCRIPT_VERSION% [stage_0_prep]
+title Tron v%SCRIPT_VERSION% [stage_0_prep]
 echo.
 call stage_0_prep\stage_0_prep.bat
 
@@ -853,7 +854,7 @@ call stage_0_prep\stage_0_prep.bat
 :stage_1_tempclean
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_1_tempclean>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_1_tempclean]
+title Tron v%SCRIPT_VERSION% [stage_1_tempclean]
 call stage_1_tempclean\stage_1_tempclean.bat
 
 
@@ -864,11 +865,11 @@ call stage_1_tempclean\stage_1_tempclean.bat
 :stage_2_de-bloat
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_2_de-bloat>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat]
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
-	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sb) set, skipping Stage 2..."
+	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_DEBLOAT (-sdb) set, skipping Stage 2..."
 )
 
 
@@ -879,7 +880,7 @@ if /i %SKIP_DEBLOAT%==no (
 :stage_3_disinfect
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_3_disinfect>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect]
+title Tron v%SCRIPT_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
@@ -897,7 +898,7 @@ call :set_cur_date
 :stage_4_repair
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_4_repair>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_4_repair]
+title Tron v%SCRIPT_VERSION% [stage_4_repair]
 call stage_4_repair\stage_4_repair.bat
 
 :: Set current date again, since Stage 4 can take quite a while to run
@@ -911,7 +912,7 @@ call :set_cur_date
 :stage_5_patch
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_5_patch>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_5_patch]
+title Tron v%SCRIPT_VERSION% [stage_5_patch]
 call stage_5_patch\stage_5_patch.bat
 
 
@@ -922,7 +923,7 @@ call stage_5_patch\stage_5_patch.bat
 :stage_6_optimize
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_6_optimize>tron_stage.txt
-title TRON v%SCRIPT_VERSION% [stage_6_optimize]
+title Tron v%SCRIPT_VERSION% [stage_6_optimize]
 call stage_6_optimize\stage_6_optimize.bat
 
 
@@ -938,7 +939,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
 
 
 :: JOB: Reset power settings to Windows defaults
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
 if %PRESERVE_POWER_SCHEME%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping Windows power settings reset."
 ) else (
@@ -954,7 +955,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Get post-Tron system state (installed programs, complete file list) and generate the summary logs
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
 call functions\log.bat "%CUR_DATE% %TIME%    Calculating post-run results for summary logs..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
@@ -995,7 +996,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done. Summary logs are at "%SUMMARY
 
 
 :: JOB: Collect misc logs and deposit them in the log folder
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Collect logs]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Collect logs]
 call functions\log.bat "%CUR_DATE% %TIME%    Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
 	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
@@ -1009,7 +1010,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
 call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
@@ -1022,7 +1023,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Calculate saved disk space
-title TRON v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
@@ -1035,7 +1036,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
-title TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
+title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
 call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
 
 
@@ -1159,6 +1160,8 @@ for %%i in (%*) do (
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-sdb set SKIP_DEBLOAT=yes
+	REM below line for legacy compatibility. Will eventually be removed, use the new switch!!
 	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
