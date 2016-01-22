@@ -12,7 +12,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=20.0.0.228
+set BINARY_VERSION=20.0.0.286
 set FLAGS=ALLUSERS=1 /q /norestart
 
 
