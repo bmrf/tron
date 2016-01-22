@@ -1328,6 +1328,7 @@ start /wait msiexec /qn /norestart /x {98CB551E-EDB1-4535-82A6-E3258597F64E}
 :: Dell Foundation Services (various versions)
 start /wait msiexec /qn /norestart /x {8E80AF23-17B4-4611-B28E-68A114B23488}
 start /wait msiexec /qn /norestart /x {CF5E8D60-A1FD-4BF2-9EDD-EA8C05F784A9}
+start /wait msiexec /qn /norestart /x {91E2DDB6-DC13-4585-8A10-04C6AB6F87A4}
 
 :: Dell Games (Dell-branded WildTangent games)
 :: These two FOR loops should catch ALL Dell games, in theory at least
@@ -1340,6 +1341,7 @@ start /wait msiexec /qn /norestart /x {7B7D73E7-79D5-4133-AB7A-E27BB5F64725}
 
 :: Dell Help and Support
 start /wait msiexec /qn /norestart /x {A00269ED-FD88-4907-834B-60B70DCE82C5}
+start /wait msiexec /qn /norestart /x {E474CE8D-1D47-4C68-8845-F5DA9DE26D72}
 
 :: Dell Help and Support Customization (hidden)
 start /wait msiexec /qn /norestart /x {4E5563B6-DE0A-4F3B-A5D6-15789FD12D9B}
@@ -1375,14 +1377,16 @@ start /wait msiexec /qn /norestart /x {B96348BD-6B0D-42E3-80B1-FA6718067BFE}
 :: Dell PhotoStage 1.5.0.30
 start /wait msiexec /qn /norestart /x {E3BFEE55-39E2-4BE0-B966-89FE583822C1}
 
-:: Dell Power Manager 1.1.0
+:: Dell Power Manager
 start /wait msiexec /qn /norestart /x {E4335E82-17B3-460F-9E70-39D9BC269DB3}
+start /wait msiexec /qn /norestart /x {BF1F9D57-57A1-4E87-A8E8-41F2B2AD6F53}
 
 :: Dell Product Registration
 start /wait msiexec /qn /norestart /x {287348C8-8B47-4C36-AF28-441A3B7D8722}
 start /wait msiexec /qn /norestart /x {236F9DDF-B9BA-420A-9775-FBBA7B06475B}
 start /wait msiexec /qn /norestart /x {93870CD7-7A8D-4880-9BEF-95382F44E848}
 start /wait msiexec /qn /norestart /x {2A0F2CC5-3065-492C-8380-B03AA7106B1A}
+start /wait msiexec /qn /norestart /x {B96204EB-3051-4B4F-9534-ED13FE7095D1}
 
 :: Dell Protected Workspace 2.3.15835
 start /wait msiexec /qn /norestart /x {DDDAF4A7-8B7D-4088-AECC-6F50E594B4F5}
@@ -1447,6 +1451,9 @@ start /wait msiexec /qn /norestart /x {A9C61491-EF2F-4ED8-8E10-FB33E3C6B55A}
 
 :: Dell ControlVault Host Components Installer
 start /wait msiexec /qn /norestart /x {5A26B7C0-55B1-4DA8-A693-E51380497A5E}
+
+:: Dell Customer Connect
+start /wait msiexec /qn /norestart /x {124DE80C-9BFE-4D04-A8D9-69C5019DEEBF}
 
 :: Dell Datasafe Online
 start /wait msiexec /qn /norestart /x {7EC66A95-AC2D-4127-940B-0445A526AB2F}
@@ -1814,8 +1821,9 @@ start /wait msiexec /qn /norestart /x {7EF7CCB0-52BF-4947-BE6E-E47D586E8842}
 :: HP Deskjet 2510 series Setup Guide
 start /wait msiexec /qn /norestart /x {216C7F38-4BBC-4E9A-8392-C9FA21B54386}
 
-:: HP Deskjet 3050 J610 series Help 140.0.63.63
+:: HP Deskjet Series Help
 start /wait msiexec /qn /norestart /x {F7632A9B-661E-4FD9-B1A4-3B86BC99847F}
+start /wait msiexec /qn /norestart /x {97C1C98D-6AE5-4C71-9B00-EBBD9E014450}
 
 :: HP Destinations
 start /wait msiexec /qn /norestart /x {5E487136-B52E-4856-8F5F-FCDF5E5FC5EE}
@@ -1998,10 +2006,12 @@ start /wait msiexec /qn /norestart /x {7910018D-02CF-4410-A7E5-CF5C10D05B7F}
 start /wait msiexec /qn /norestart /x {8A27C0FE-87C7-4169-BF5A-05BF94F70A54}
 start /wait msiexec /qn /norestart /x {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
-:: HP Product Improvement Study for HP Deskjet 2540 series
+:: HP Product Improvement Study
 start /wait msiexec /qn /norestart /x {446CCB22-B632-4A1D-BF84-DA8DB0575F98}
 start /wait msiexec /qn /norestart /x {C927FC7E-4061-44AC-BE09-496AF6BAC131}
 start /wait msiexec /qn /norestart /x {4B3264AA-951A-4A6B-B837-125224261F12}
+start /wait msiexec /qn /norestart /x {791D3241-C6A4-417F-82E6-00543B6E5012}
+
 
 :: HP Odometer 2.10.0000
 start /wait msiexec /qn /norestart /x {B899AE89-9B09-4F11-B299-A1209CAB8D00}
@@ -2885,7 +2895,7 @@ start /wait msiexec /qn /norestart /x {15B1D4C6-A245-41CD-96E8-5C63E37DDBFF}
 start /wait msiexec /qn /norestart /x {26A67848-1222-4691-B5BA-7E026585886B}
 
 :: Playalot Games
-start /wait msiexec /qn /norestart /x {3A3532ED-A121-4297-AA4F-70B60E4BD631} 
+start /wait msiexec /qn /norestart /x {3A3532ED-A121-4297-AA4F-70B60E4BD631}
 
 :: PlayReady PC Runtime amd64 // x86
 start /wait msiexec /qn /norestart /x {BCA9334F-B6C9-4F65-9A73-AC5A329A4D04}
@@ -2943,7 +2953,7 @@ start /wait msiexec /qn /norestart /x {EA1FAE0F-2354-4E32-B423-ABAE8E358F91}
 start /wait msiexec /qn /norestart /x {21E47F47-C9A7-4454-BA48-388327B0EA00}
 start /wait msiexec /qn /norestart /x {7770E71B-2D43-4800-9CB3-5B6CAAEBEBEA}
 start /wait msiexec /qn /norestart /x {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
-start /wait msiexec /qn /norestart /x {AAECF7BA-E83B-4A10-87EA-DE0B333F8734} 
+start /wait msiexec /qn /norestart /x {AAECF7BA-E83B-4A10-87EA-DE0B333F8734}
 
 :: Rhapsody Player Engine
 start /wait msiexec /qn /norestart /x {2DFF31F9-7893-4922-AF66-C9A1EB4EBB31}
