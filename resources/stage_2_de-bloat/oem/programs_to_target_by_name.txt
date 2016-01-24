@@ -97,6 +97,7 @@ hpStatusAlerts%%
 HP%%Study%%
 HP%%Support%%
 HP%%Update%%
+HP%%Help%%
 IB Updater%%
 Iminent
 Inbox Toolbar
