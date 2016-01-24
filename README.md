@@ -36,7 +36,9 @@ I got tired of running these utilities manually and decided to just script every
 
 3. Wait anywhere from **3-10 hours** (yes, it takes that long)
 
-4. Reboot
+4. Side note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect
+
+5. Reboot
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
