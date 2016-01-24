@@ -1705,6 +1705,7 @@ start /wait msiexec /qn /norestart /x {F792E5B0-11C4-4C68-8A63-FB5F52749180}
 start /wait msiexec /qn /norestart /x {130E5108-547F-4482-91EE-F45C784E08C7}
 start /wait msiexec /qn /norestart /x {D79A02E9-6713-4335-9668-AAC7474C0C0E}
 start /wait msiexec /qn /norestart /x {54CE68A8-4F2D-4328-B1F7-D6C720405F7F}
+start /wait msiexec /qn /norestart /x {299625B9-6C69-462C-9CEA-8E06D878B1C5}
 
 :: HP 64 Bit HP CIO Components Installer
 start /wait msiexec /qn /norestart /x {FF21C3E6-97FD-474F-9518-8DCBE94C2854}
@@ -1719,8 +1720,9 @@ start /wait msiexec /qn /norestart /x {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
 ::%ProgramFiles%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
 ::%ProgramFiles(x86)%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
 
-:: HP Advisor 3.4.10262.3295
+:: HP Advisor
 start /wait msiexec /qn /norestart /x {403996EB-2DCE-4C43-A2B8-2B956880772D}
+start /wait msiexec /qn /norestart /x {40FB8D7C-6FF8-4AF2-BC8B-0B1DB32AF04B}
 
 :: HP Auto
 start /wait msiexec /qn /norestart /x {CB7D766C-879F-4800-BB09-3D29E306EF63}
@@ -1835,6 +1837,7 @@ start /wait msiexec /qn /norestart /x {2642BE09-1F9F-4E18-AAD4-0258B9BCE611}
 start /wait msiexec /qn /norestart /x {9EC0BE64-2C6C-428A-A4C2-E7EDF831B29A}
 start /wait msiexec /qn /norestart /x {DBCD5E64-7379-4648-9444-8A6558DCB614}
 start /wait msiexec /qn /norestart /x {BD7204BA-DD64-499E-9B55-6A282CDF4FA4}
+start /wait msiexec /qn /norestart /x {55B52830-024A-443E-AF61-61E1E71AFA1B}
 
 :: HP DeviceManagementQFolder
 start /wait msiexec /qn /norestart /x {AB5D51AE-EBC3-438D-872C-705C7C2084B0}
@@ -1896,6 +1899,9 @@ start /wait msiexec /qn /norestart /x {846B5DED-DC8C-4E1A-B5B4-9F5B39A0CACE}
 start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 start /wait msiexec /qn /norestart /x {AF9E97C1-7431-426D-A8D5-ABE40995C0B1}
 
+:: HP Drive Encryption for HP ProtectTools
+start /wait msiexec /qn /norestart /x {34E6F14D-68F9-486D-87BA-6AA8431F3F44}
+
 :: HP Easy Setup - Frontend
 start /wait msiexec /qn /norestart /x {40F7AED3-0C7D-4582-99F6-484A515C73F2}
 ::"%ProgramFiles%\InstallShield Installation Information\{40F7AED3-0C7D-4582-99F6-484A515C73F2}\setup.exe" -l0x9  -removeonly
@@ -1913,6 +1919,7 @@ start /wait msiexec /qn /norestart /x {6349342F-9CEF-4A70-995A-2CF3704C2603}
 start /wait msiexec /qn /norestart /x {22706ADC-74A1-43A0-ABAE-47F84966B909}
 start /wait msiexec /qn /norestart /x {2BF5E9CC-C55D-4B0F-ACAF-FFE77F333CD8}
 start /wait msiexec /qn /norestart /x {A351CC1B-C92C-4F37-8109-9F6D33ACF5EF}
+start /wait msiexec /qn /norestart /x {722A2876-B382-4AB5-8CC9-007FF5B28641}
 
 :: HP eSupportQFolder
 start /wait msiexec /qn /norestart /x {66E6CE0C-5A1E-430C-B40A-0C90FF1804A8}
@@ -2012,6 +2019,8 @@ start /wait msiexec /qn /norestart /x {C927FC7E-4061-44AC-BE09-496AF6BAC131}
 start /wait msiexec /qn /norestart /x {4B3264AA-951A-4A6B-B837-125224261F12}
 start /wait msiexec /qn /norestart /x {791D3241-C6A4-417F-82E6-00543B6E5012}
 
+:: HP Privacy Manager for HP ProtectTools
+start /wait msiexec /qn /norestart /x {D69F9215-B06A-4ADF-A464-E2607B2FA296}
 
 :: HP Odometer 2.10.0000
 start /wait msiexec /qn /norestart /x {B899AE89-9B09-4F11-B299-A1209CAB8D00}
@@ -2069,6 +2078,12 @@ start /wait msiexec /qn /norestart /x {988D55BB-08DE-43C9-8D16-3751361E2A79}
 :: HP PostScript Converter
 start /wait msiexec /qn /norestart /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD}
 
+:: HP Power Assistant
+start /wait msiexec /qn /norestart /x {3C33FD2E-6B21-4CD3-B41A-A7331D467617}
+
+:: HP Power Data
+start /wait msiexec /qn /norestart /x {42DBA167-C25D-49CE-BBAF-DEC25E737DA8}
+
 :: HP Power Manager
 start /wait msiexec /qn /norestart /x {8704FEEF-A6A8-4E7E-B124-BD6122C66E2C}
 start /wait msiexec /qn /norestart /x {E35A3B13-78CD-4967-8AC8-AA9FDA693EDE}
@@ -2092,6 +2107,7 @@ start /wait msiexec /qn /norestart /x {6D4839CB-28B4-4070-8CA7-612CA92CA3D0}
 start /wait msiexec /qn /norestart /x {29AB47F0-C5A3-401F-8A84-3324F2DC8E46}
 start /wait msiexec /qn /norestart /x {B0781FBD-8AD6-4658-A031-9815E1AC5047}
 start /wait msiexec /qn /norestart /x {55B30AF2-7331-4436-9318-D9EA45A42F79}
+start /wait msiexec /qn /norestart /x {B004600E-4A10-448B-8CDD-4ADB25A24042}
 
 :: hp psc 1200 series 1.10.0000
 start /wait msiexec /qn /norestart /x {C88F84E5-AE23-44BD-922C-2ABEACACAF7A}
@@ -2104,11 +2120,15 @@ start /wait msiexec /qn /norestart /x {E4A80DC6-8475-4AD9-9952-5E4437889563}
 start /wait msiexec /qn /norestart /x {6B7AB1ED-B64E-4545-A8E7-F9E071E12B6F}
 start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
 
+:: HP QuickLook
+start /wait msiexec /qn /norestart /x {24795E98-3D9E-4661-BA6F-BC6A4FB820CE}
+
 :: HP QuickTransfer
 start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
 
 :: HP QuickWeb
 start /wait msiexec /qn /norestart /x {BB4FC2AD-DF12-4EE1-8AA7-2C0A26B5E2FB}
+start /wait msiexec /qn /norestart /x {7861911B-4270-498A-8F7A-FCF0570F4877}
 
 :: HP Recovery Manager
 start /wait msiexec /qn /norestart /x {528AB81B-D65A-4AB0-A2B6-82B51A087D01}
@@ -2165,6 +2185,7 @@ start /wait msiexec /qn /norestart /x {20D6301E-0A14-4238-841D-45ECA567DB69}
 start /wait msiexec /qn /norestart /x {FC3C2B77-6800-48C6-A15D-9D1031130C16}
 start /wait msiexec /qn /norestart /x {34C821CA-6B55-44A0-8A9B-2EF471D6019E}
 start /wait msiexec /qn /norestart /x {6821D775-9303-46DD-977A-2D97CA18B054}
+start /wait msiexec /qn /norestart /x {2DA697D7-FED3-4DE2-A174-92A2A12F9688}
 
 :: HP Software Framework
 start /wait msiexec /qn /norestart /x {B6F5C6D8-C443-4B55-932F-AE11B5743FC4}
@@ -2172,6 +2193,7 @@ start /wait msiexec /qn /norestart /x {285F722C-0E45-47DE-B38E-5B3B10FA4A7C}
 start /wait msiexec /qn /norestart /x {95EEB814-D454-4176-A6B5-D708CB48064F}
 start /wait msiexec /qn /norestart /x {6663B59B-E9CE-44CA-8654-7BE9060D653D}
 start /wait msiexec /qn /norestart /x {DAE3B13B-5097-4EAE-BC26-C463377BD80E}
+start /wait msiexec /qn /norestart /x {DA200FDD-DE3D-4958-8465-C4FBC869544B}
 
 :: HP Software Setup
 start /wait msiexec /qn /norestart /x {65514800-1E09-48D6-B520-3DC70572E891}
@@ -2207,6 +2229,7 @@ start /wait msiexec /qn /norestart /x {7EF08127-4C30-4C05-8CEB-544F8A71C080}
 start /wait msiexec /qn /norestart /x {B1E569B6-A5EB-4C97-9F93-9ED2AA99AF0E}
 start /wait msiexec /qn /norestart /x {FB4BB287-37F9-4E27-9C4D-2D3882E08EFF}
 start /wait msiexec /qn /norestart /x {EE202411-2C26-49E8-9784-1BC1DBF7DE96}
+start /wait msiexec /qn /norestart /x {B60DCA15-56A3-4D2D-8747-22CF7D7B588B}
 
 :: HP Support Information
 start /wait msiexec /qn /norestart /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992}
@@ -2245,6 +2268,7 @@ start /wait msiexec /qn /norestart /x {456E4C16-227D-48E4-BA3B-52D1B15CB196}
 :: HP Theft Recovery
 start /wait msiexec /qn /norestart /x {B9A03B7B-E0FF-4FB3-BA83-762E58A1B0AA}
 start /wait msiexec /qn /norestart /x {B1CB7E99-4685-45CB-867E-2FB58EDA0A39}
+start /wait msiexec /qn /norestart /x {33C9F24B-1D92-4632-A915-81E3BB1D5D6B}
 
 :: HP "Toolbox" (hidden)
 start /wait msiexec /qn /norestart /x {A7D99092-CFCA-AF69-9B61-B4A8784B5F8C}
@@ -2309,6 +2333,7 @@ start /wait msiexec /qn /norestart /x {B0069CFA-5BB9-4C03-B1C6-89CE290E5AFE}
 :: HP UserGuide, UserProfileManager SDK Snap-in
 start /wait msiexec /qn /norestart /x {C23415D8-FE94-4F52-B5C4-0FFA2202C6D9}
 start /wait msiexec /qn /norestart /x {F07C2CF8-4C53-4EC3-8162-A6221E36EB88}
+start /wait msiexec /qn /norestart /x {8D4B1DDC-0CB5-4908-B740-A385C2F3B6A9}
 
 :: HP Utility Center
 start /wait msiexec /qn /norestart /x {B7B82520-8ECE-4743-BFD7-93B16C64B277}
@@ -2320,8 +2345,9 @@ start /wait msiexec /qn /norestart /x {D7670221-BF9B-4DFF-B26B-5BE55A87329F}
 :: HP Wallpaper 3.0.0.1
 start /wait msiexec /qn /norestart /x {11B83AD3-7A46-4C2E-A568-9505981D4C6F}
 
-:: HP Web Camera 1.0.0
+:: HP Web Camera
 start /wait msiexec /qn /norestart /x {C6363DC5-17A4-4E36-B701-9EC719390D48}
+start /wait msiexec /qn /norestart /x {C7AE4EC3-9C13-4213-8457-74D16B353F91}
 
 :: HP WebReg
 start /wait msiexec /qn /norestart /x {179C56A4-F57F-4561-8BBF-F911D26EB435}
@@ -2341,6 +2367,7 @@ start /wait msiexec /qn /norestart /x {92F7E378-0F27-4D1E-ACAE-2AA7E546D082}
 start /wait msiexec /qn /norestart /x {3082CB96-66E8-456D-8326-118A4F5DC0C6}
 start /wait msiexec /qn /norestart /x {CFD917BE-F1F6-410E-ABEC-9EC819507D0D}
 start /wait msiexec /qn /norestart /x {5601F151-A69F-4E30-8C60-37928124CD07}
+start /wait msiexec /qn /norestart /x {EC720706-3F19-4B7F-BDDD-E31D9B3921D2}
 
 :: Instant Housecall Specialist Sign-in
 start /wait msiexec /qn /norestart /x {4A89B7B3-EB5B-4B33-B7B4-99E69792C081}
