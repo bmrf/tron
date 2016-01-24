@@ -16,6 +16,7 @@ start /wait msiexec /qn /norestart /x {FB500000-0010-0000-0000-074957833700}
 :: Acer abDocs
 start /wait msiexec /qn /norestart /x {CA4FE8B0-298C-4E5D-A486-F33B126D6A0A}
 start /wait msiexec /qn /norestart /x {DCBF3379-246B-47E1-8173-639B63940838}
+start /wait msiexec /qn /norestart /x {DCBF3379-246B-47E1-8173-639B63940838}
 
 :: Acer abFiles
 start /wait msiexec /qn /norestart /x {13885028-098C-4799-9B71-27DAC96502D5}
@@ -38,6 +39,9 @@ start /wait msiexec /qn /norestart /x {1AF41E84-3408-499A-8C93-8891F0612719}
 
 :: Acer DriverSetupUtility
 start /wait msiexec /qn /norestart /x {2B51C83A-465D-4EA9-9CDC-1ED95ED09AC6}
+
+:: Acer Explorer Agent
+start /wait msiexec /qn /norestart /x {4D0F42CF-1693-43D9-BDC8-19141D023EE0}
 
 :: Acer Launch Manager
 start /wait msiexec /qn /norestart /x {C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
