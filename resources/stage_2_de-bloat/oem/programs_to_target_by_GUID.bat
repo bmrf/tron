@@ -1691,6 +1691,7 @@ start /wait msiexec /qn /norestart /x {912D30CF-F39E-4B31-AD9A-123C6B794EE2}
 start /wait msiexec /qn /norestart /x {F9569D00-4576-46C8-B6C7-207A4FD39745}
 
 :: HP 3D DriveGuard
+start /wait msiexec /qn /norestart /x {299625B9-6C69-462C-9CEA-8E06D878B1C5}
 start /wait msiexec /qn /norestart /x {E8D0E2B8-B64B-44BC-8E01-00DDACBDF78A}
 start /wait msiexec /qn /norestart /x {E5823036-6F09-4D0A-B05C-E2BAA129288A}
 start /wait msiexec /qn /norestart /x {0C57987A-A03A-4B95-A309-D23F78F406CA}
@@ -1908,6 +1909,7 @@ start /wait msiexec /qn /norestart /x {0FA995CC-C849-4755-B14B-5404CC75DC24}
 start /wait msiexec /qn /norestart /x {95BECC50-22B4-4FCA-8A2E-BF77713E6D3A}
 
 :: HP ESU for Microsoft Windows (Windows update hijacker)
+start /wait msiexec /qn /norestart /x {722A2876-B382-4AB5-8CC9-007FF5B28641}
 start /wait msiexec /qn /norestart /x {A5F1C701-E150-4A86-A7F8-9E9225C2AE52}
 start /wait msiexec /qn /norestart /x {6349342F-9CEF-4A70-995A-2CF3704C2603}
 start /wait msiexec /qn /norestart /x {22706ADC-74A1-43A0-ABAE-47F84966B909}
@@ -1941,6 +1943,7 @@ start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
 start /wait msiexec /qn /norestart /x {9CAB2212-0732-4827-8EC4-61D8EF0AA65B}
 
 :: HP misc Help, eDocs and User Guide GUIDs (various versions for various products; most of these should be caught in the wildcard scan)
+start /wait msiexec /qn /norestart /x {8D4B1DDC-0CB5-4908-B740-A385C2F3B6A9}
 start /wait msiexec /qn /norestart /x {11C9A461-DD9D-4C71-85A4-6DCE7F99CC44}
 start /wait msiexec /qn /norestart /x {B6B9006D-5A0A-4F17-B69A-42F48C1FC30C}
 start /wait msiexec /qn /norestart /x {445CC807-9384-47FA-A2B6-FFE970352B88}
@@ -2069,15 +2072,25 @@ start /wait msiexec /qn /norestart /x {988D55BB-08DE-43C9-8D16-3751361E2A79}
 :: HP PostScript Converter
 start /wait msiexec /qn /norestart /x {6E14E6D6-3175-4E1A-B934-CAB5A86367CD}
 
+:: HP Power Assistant
+start /wait msiexec /qn /norestart /x {3C33FD2E-6B21-4CD3-B41A-A7331D467617}
+
 :: HP Power Manager
 start /wait msiexec /qn /norestart /x {8704FEEF-A6A8-4E7E-B124-BD6122C66E2C}
 start /wait msiexec /qn /norestart /x {E35A3B13-78CD-4967-8AC8-AA9FDA693EDE}
+
+:: HP Power Data
+start /wait msiexec /qn /norestart /x {42DBA167-C25D-49CE-BBAF-DEC25E737DA8}
 
 :: HP Product Detection
 start /wait msiexec /qn /norestart /x {A436F67F-687E-4736-BD2B-537121A804CF}
 start /wait msiexec /qn /norestart /x {424CECC6-CEB1-4A5F-9A42-ADE64F035DEB}
 
 :: HP ProtectTools GUIDs. Too many to list, Google each GUID for more information
+start /wait msiexec /qn /norestart /x {B004600E-4A10-448B-8CDD-4ADB25A24042}
+start /wait msiexec /qn /norestart /x {34E6F14D-68F9-486D-87BA-6AA8431F3F44}
+start /wait msiexec /qn /norestart /x {D69F9215-B06A-4ADF-A464-E2607B2FA296}
+start /wait msiexec /qn /norestart /x {55B52830-024A-443E-AF61-61E1E71AFA1B}
 start /wait msiexec /qn /norestart /x {A40F60B1-F1E1-452E-96A5-FF97F9A2D102}
 start /wait msiexec /qn /norestart /x {EEAFE1E5-076B-430A-96D9-B567792AFA88}
 start /wait msiexec /qn /norestart /x {EEEB604C-C1A7-4f8c-B03F-56F9C1C9C45F}
@@ -2108,6 +2121,7 @@ start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
 start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
 
 :: HP QuickWeb
+start /wait msiexec /qn /norestart /x {7861911B-4270-498A-8F7A-FCF0570F4877}
 start /wait msiexec /qn /norestart /x {BB4FC2AD-DF12-4EE1-8AA7-2C0A26B5E2FB}
 
 :: HP Recovery Manager
@@ -2158,6 +2172,7 @@ start /wait msiexec /qn /norestart /x {DC635845-46D3-404B-BCB1-FC4A91091AFA}
 start /wait msiexec /qn /norestart /x {9D1DE902-8058-4555-A16A-FBFAA49587DB}
 
 :: HP SoftPaq Download Manager
+start /wait msiexec /qn /norestart /x {2DA697D7-FED3-4DE2-A174-92A2A12F9688}
 start /wait msiexec /qn /norestart /x {3F019647-AC80-4859-B023-42D9DA71953F}
 start /wait msiexec /qn /norestart /x {5B4F3B85-83F0-4BBF-9052-7A38B6B09634}
 start /wait msiexec /qn /norestart /x {46235FF7-2CBE-4A84-BEDA-87348D1F7850}
@@ -2167,6 +2182,7 @@ start /wait msiexec /qn /norestart /x {34C821CA-6B55-44A0-8A9B-2EF471D6019E}
 start /wait msiexec /qn /norestart /x {6821D775-9303-46DD-977A-2D97CA18B054}
 
 :: HP Software Framework
+start /wait msiexec /qn /norestart /x {DA200FDD-DE3D-4958-8465-C4FBC869544B}
 start /wait msiexec /qn /norestart /x {B6F5C6D8-C443-4B55-932F-AE11B5743FC4}
 start /wait msiexec /qn /norestart /x {285F722C-0E45-47DE-B38E-5B3B10FA4A7C}
 start /wait msiexec /qn /norestart /x {95EEB814-D454-4176-A6B5-D708CB48064F}
@@ -2186,6 +2202,7 @@ start /wait msiexec /qn /norestart /x {BC5DD87B-0143-4D14-AAE6-97109614DC6B}
 start /wait msiexec /qn /norestart /x {A36CD345-625C-4d6c-B3E2-76E1248CB451}
 
 :: HP Support Assistant (various versions)
+start /wait msiexec /qn /norestart /x {B60DCA15-56A3-4D2D-8747-22CF7D7B588B}
 start /wait msiexec /qn /norestart /x {8C696B4B-6AB1-44BC-9416-96EAC474CABE}
 start /wait msiexec /qn /norestart /x {61EB474B-67A6-47F4-B1B7-386851BAB3D0}
 start /wait msiexec /qn /norestart /x {4EDD5F10-3961-48C2-ACD9-63D5C125EA8F}
@@ -2322,6 +2339,7 @@ start /wait msiexec /qn /norestart /x {11B83AD3-7A46-4C2E-A568-9505981D4C6F}
 
 :: HP Web Camera 1.0.0
 start /wait msiexec /qn /norestart /x {C6363DC5-17A4-4E36-B701-9EC719390D48}
+start /wait msiexec /qn /norestart /x {C7AE4EC3-9C13-4213-8457-74D16B353F91}
 
 :: HP WebReg
 start /wait msiexec /qn /norestart /x {179C56A4-F57F-4561-8BBF-F911D26EB435}
@@ -2334,6 +2352,7 @@ start /wait msiexec /qn /norestart /x {06C4BA69-5210-4707-B5BE-E26D487E1854}
 start /wait msiexec /qn /norestart /x {14CF9AF8-10A6-4FA7-9E57-D22DBD644C77}
 
 :: HP Wireless Assistant // Wireless Button Driver // Wireless Hotspot
+start /wait msiexec /qn /norestart /x {EC720706-3F19-4B7F-BDDD-E31D9B3921D2}
 start /wait msiexec /qn /norestart /x {9AB1B6EC-AEA4-4D78-ADDB-0291BF7230F4}
 start /wait msiexec /qn /norestart /x {547607B0-3294-4ECA-8F5E-921404676CBB}
 start /wait msiexec /qn /norestart /x {13133E99-B0D5-4143-B832-AAD55C62A41C}
