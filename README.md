@@ -506,7 +506,7 @@ Master script that launches everything else. It performs many actions on its own
 
 ## STAGE 5: Patch
 
-*[link to STage 5 code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)*
+*[link to Stage 5 code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)*
 
 Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
