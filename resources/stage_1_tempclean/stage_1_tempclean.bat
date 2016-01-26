@@ -96,9 +96,12 @@ if %DRY_RUN%==no(
 	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
 		if %VERBOSE%==yes (
 			stage_1_tempclean\finddupe\finddupe.exe -v "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			stage_1_tempclean\finddupe\finddupe.exe -v "%USERPROFILES%\%%i\My Douments\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			stage_1_tempclean\finddupe\finddupe.exe -v -del "%USERPROFILES%\%%i\Downloads\**" 2>NUL
+			stage_1_tempclean\finddupe\finddupe.exe -v -del "%USERPROFILES%\%%i\My Documents\Downloads\**" 2>NUL
 		) else (
 			stage_1_tempclean\finddupe\finddupe.exe -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			stage_1_tempclean\finddupe\finddupe.exe -del "%USERPROFILES%\%%i\My Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
 	del /s /q "%TEMP%\userlist.txt" >nul 2>&1
