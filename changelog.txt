@@ -34,6 +34,7 @@ Stage 0: Prep
 Stage 1: Tempclean
  * stage_1_tempclean.bat         v1.1.0
     + Add function to delete duplicate files found in all user's Downloads folders. Thanks to /u/kronflux and /u/Lemminsky
+
  . CCLeaner                      v5.13.5460
  . BleachBit                     v1.10
  + finddupe.exe                  v1.23 // New; used to support deletion of duplicate files in Downloads folders
@@ -45,6 +46,7 @@ Stage 2: De-bloat
  . stage_2_de-bloat\oem\programs_to_target_by_name.txt
  * stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
     + Add additional HP entries. Thanks to /u/RockaiE
+    + Add additional HP entries. Thanks to /u/KingLinkTiger
 
  . stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
  . stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
