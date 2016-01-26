@@ -1760,6 +1760,8 @@ start /wait msiexec /qn /norestart /x {C918E3D8-208F-43DB-B346-6299D59336D7}
 start /wait msiexec /qn /norestart /x {A5E65B95-F016-474D-BC0D-6AF64412BBDF}
 
 :: HP Client Security Manager (various versions)
+start /wait msiexec /qn /norestart /x {39930586-2677-432B-B928-F970FB43F46F}
+start /wait msiexec /qn /norestart /x {3B46DFDA-6155-423B-BCBB-F1C267E4ADD9}
 start /wait msiexec /qn /norestart /x {3AF15EEA-8EDF-4393-BB6C-CF8A9986486A}
 start /wait msiexec /qn /norestart /x {CA19DC3C-DA9E-40B1-B501-710F437604C0}
 start /wait msiexec /qn /norestart /x {D5510D28-D0E4-433E-A0F3-EE3FCECA60D2}
@@ -1777,6 +1779,7 @@ start /wait msiexec /qn /norestart /x {F1DD6CD2-6734-4089-9EF5-441F51E083B6}
 start /wait msiexec /qn /norestart /x {F243A34B-AB7F-4065-B770-B85B767C247C}
 
 :: HP Connection Manager (various versions)
+start /wait msiexec /qn /norestart /x {04C23662-CE15-48BE-AF77-7BD9028934E7}
 start /wait msiexec /qn /norestart /x {7940DAB9-AC72-4422-8908-DCF58C2C1D21}
 start /wait msiexec /qn /norestart /x {226837D8-0BF8-4CBE-BAB2-8F07E2C2B4DD}
 start /wait msiexec /qn /norestart /x {40FB8D7C-6FF8-4AF2-BC8B-0B1DB32AF04B}
@@ -1837,6 +1840,7 @@ start /wait msiexec /qn /norestart /x {D99A8E3A-AE5A-4692-8B19-6F16D454E240}
 start /wait msiexec /qn /norestart /x {EF9E56EE-0243-4BAD-88F4-5E7508AA7D96}
 
 :: HP Device Access Manager
+start /wait msiexec /qn /norestart /x {D7BC5D88-FC93-46D6-B7B0-145C2E168A95}
 start /wait msiexec /qn /norestart /x {2642BE09-1F9F-4E18-AAD4-0258B9BCE611}
 start /wait msiexec /qn /norestart /x {9EC0BE64-2C6C-428A-A4C2-E7EDF831B29A}
 start /wait msiexec /qn /norestart /x {DBCD5E64-7379-4648-9444-8A6558DCB614}
@@ -1848,6 +1852,7 @@ start /wait msiexec /qn /norestart /x {AB5D51AE-EBC3-438D-872C-705C7C2084B0}
 start /wait msiexec /qn /norestart /x {F769B78E-FF0E-4db5-95E2-9F4C8D6352FE}
 
 :: HP Discover hp Touchpoint Manager
+start /wait msiexec /qn /norestart /x {74C4DA32-D4FD-406B-AEA3-6781757C8EC3}
 start /wait msiexec /qn /norestart /x {37EC8980-A8E5-411D-8CDD-CB1CCA95057F}
 
 :: HP DisplayLink Core Software and DisplayLink Graphics
@@ -1904,6 +1909,7 @@ start /wait msiexec /qn /norestart /x {74FE39A0-FB76-47CD-84BA-91E2BBB17EF2}
 start /wait msiexec /qn /norestart /x {AF9E97C1-7431-426D-A8D5-ABE40995C0B1}
 
 :: HP Drive Encryption for HP ProtectTools
+start /wait msiexec /qn /norestart /x {B05372A4-5AF0-4343-BA7B-2745E30A2D23}
 start /wait msiexec /qn /norestart /x {34E6F14D-68F9-486D-87BA-6AA8431F3F44}
 
 :: HP Easy Setup - Frontend
@@ -1918,6 +1924,7 @@ start /wait msiexec /qn /norestart /x {0FA995CC-C849-4755-B14B-5404CC75DC24}
 start /wait msiexec /qn /norestart /x {95BECC50-22B4-4FCA-8A2E-BF77713E6D3A}
 
 :: HP ESU for Microsoft Windows (Windows update hijacker)
+start /wait msiexec /qn /norestart /x {240B2BF7-E7E6-425C-A2A4-A3149189BF7F}
 start /wait msiexec /qn /norestart /x {A5F1C701-E150-4A86-A7F8-9E9225C2AE52}
 start /wait msiexec /qn /norestart /x {6349342F-9CEF-4A70-995A-2CF3704C2603}
 start /wait msiexec /qn /norestart /x {22706ADC-74A1-43A0-ABAE-47F84966B909}
@@ -2035,6 +2042,7 @@ start /wait msiexec /qn /norestart /x {D734D743-2385-46ED-9B3E-168A24A9E1A9}
 start /wait msiexec /qn /norestart /x {EC8D12E4-A73C-4C27-B1C7-E9683052E556}
 
 :: HP PageLift
+start /wait msiexec /qn /norestart /x {708ABF62-5D7A-4550-823A-1F9EFA63645A}
 start /wait msiexec /qn /norestart /x {7059BDA7-E1DB-442C-B7A1-6144596720A4}
 start /wait msiexec /qn /norestart /x {274A948D-DD41-4B8F-B66F-0F4AD233200F}
 
@@ -2200,6 +2208,7 @@ start /wait msiexec /qn /norestart /x {DAE3B13B-5097-4EAE-BC26-C463377BD80E}
 start /wait msiexec /qn /norestart /x {DA200FDD-DE3D-4958-8465-C4FBC869544B}
 
 :: HP Software Setup
+start /wait msiexec /qn /norestart /x {B1AFAD6F-9192-421F-9DFF-60A59571366B}
 start /wait msiexec /qn /norestart /x {65514800-1E09-48D6-B520-3DC70572E891}
 start /wait msiexec /qn /norestart /x {D160035A-CFF0-49C6-BE19-B9EFDE4AEBF2}
 start /wait msiexec /qn /norestart /x {7ED7BF91-D145-480A-B206-6891576F6935}
