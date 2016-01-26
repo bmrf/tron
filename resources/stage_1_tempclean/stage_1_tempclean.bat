@@ -3,13 +3,14 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 + Add function to delete duplicate files found in all users Downloads folders
+:: Version:       1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.1 * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
 ::                      * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now displays ALL Bleachbit output to console and log file if -v is used. Thanks to /u/Forcen
 ::                      - misc:      Remove unecessary window title reset after Tempfilecleanup
 ::                1.0.0 + Initial write
 @echo off
+
 
 
 :::::::::::::::::::::
@@ -24,7 +25,7 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	echo  ERROR
 	echo.
-	echo   You cannot run this script directly - it must be 
+	echo   You cannot run this script directly - it must be
 	echo   called from Tron.bat during a Tron run.
 	echo.
 	echo   Navigate to Tron's root folder and execute Tron.bat
@@ -64,7 +65,7 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner."
 	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 15 >NUL
-	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
@@ -72,37 +73,49 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [BleachBit]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
-	
+
 	if %VERBOSE%==yes (
 		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
 		:: Thanks Windows Batch for not having a TEE or equivalent
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
-	
+
 	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Clean up Downloads folders
-:: placeholder code:
-:: 1. check Windows version (location of Downloads folder changes)
-:: 2. check for dry run
-:: 3. Loop through all folders and run finddupe.exe against them
+:: JOB: Delete duplicate files in the "Downloads" folder for each user
+title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean duplicate files from Download folders'..."
+if %DRY_RUN%==no(
+	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
+	dir "%USERPROFILES%\" /B > %TEMP%\userlist.txt
+	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
+		if %VERBOSE%==yes (
+			stage_1_tempclean\finddupe\finddupe.exe -v "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			stage_1_tempclean\finddupe\finddupe.exe -v -del "%USERPROFILES%\%%i\Downloads\**" 2>NUL
+		) else (
+			stage_1_tempclean\finddupe\finddupe.exe -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		)
+	)
+	del /s /q "%TEMP%\userlist.txt" >nul 2>&1
+)
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: USB Device Cleanup
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [USB Device Cleanup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'USB Device Cleanup'..."
 if /i %DRY_RUN%==no (
-if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
-	if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -t -n
-	"stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
-) else (
-	if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -t -n
-	"stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
+		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -t -n
+		"stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	) else (
+		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -t -n
+		"stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
