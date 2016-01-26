@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow us to greatly simplify a lot of duplicate code built to
+:: Version:       8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
 ::                                           handle XP/2003's "Documents and Settings" vs. Vista and ups "C:\Users"
 ::                8.5.0 / tron.bat:switch:   Change -sb switch (skip debloat) to -sdb to match other switches
 ::                                           Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
