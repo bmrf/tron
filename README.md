@@ -429,11 +429,13 @@ Master script that launches everything else. It performs many actions on its own
 
 4. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)**: Script I wrote to clean some areas that other tools seem to miss
 
-5. **[DriveCleanup.exe](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Clean unused/not present USB device drivers. Utility from [Uwe Sieber](http://www.uwe-sieber.de/)
+5. **[USB Device Cleanup](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Uninstalls unused or not present USB devices from the system (non-existent thumb drives, etc etc). Uses `drivecleanup.exe` from [Uwe Sieber](http://www.uwe-sieber.de/)
 
-6. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
+6. **Download folder cleanup**: Uses [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) to search for and delete duplicate files in all user's Downloads folders (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe`, etc)
 
-7. **Clear Windows Update cache**: Purge uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space. Accomplished via this command:
+7. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
+
+8. **Clear Windows Update cache**: Purge uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space. Accomplished via this command:
     
     ```
     rmdir /s /q %windir%\softwaredistribution\download
