@@ -196,7 +196,7 @@ set FIND=%SystemRoot%\System32\find.exe
  if /i "%1"=="-resume" set RESUME_DETECTED=yes
 :: End of resume-related stuff
 :: Build our USERPROFILES variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
-pushd %USERPROFILE%\..
+pushd "%USERPROFILE%\.."
 set USERPROFILES=%CD%
 popd
 
