@@ -4,12 +4,13 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.5.1 / placeholder comment
-::                8.5.0 / tron.bat:switch:  Change -sb switch (skip debloat) to -sdb to match other switches
-::                                          Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
-::                      * tron.bat:         Grammar and log cleanup
-::                      * tron.bat:eula:    Reword the warning screen to be even MORE clear about the necessity of reading the instructions
-::                      + tron.bat:loading: Add "loading..." message while Tron performs pre-run actions
+:: Version:       8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow us to greatly simplify a lot of duplicate code built to
+::                                           handle XP/2003's "Documents and Settings" vs. Vista and ups "C:\Users"
+::                8.5.0 / tron.bat:switch:   Change -sb switch (skip debloat) to -sdb to match other switches
+::                                           Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
+::                      * tron.bat:          Grammar and log cleanup
+::                      * tron.bat:eula:     Reword the warning screen to be even MORE clear about the necessity of reading the instructions
+::                      + tron.bat:loading:  Add "loading..." message while Tron performs pre-run actions
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -175,24 +176,30 @@ set REPO_URL=https://www.bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_DATE=0
 set REPO_SCRIPT_VERSION=0
-set HELP=no
 set TARGET_METRO=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
+set HELP=no
 set SAFE_MODE=no
-:: Force the location of some variables in case the system PATH is messed up
-set WMIC=%SystemRoot%\System32\wbem\wmic.exe
-set FIND=%SystemRoot%\System32\find.exe
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
-:: Stuff related to resuming from an interrupted run
-set RESUME_STAGE=0
-set RESUME_FLAGS=0
-set RESUME_DETECTED=no
-reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
-if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
-if /i "%1"=="-resume" set RESUME_DETECTED=yes
+:: Force location of some system variables in case system PATH is messed up
+set WMIC=%SystemRoot%\System32\wbem\wmic.exe
+set FIND=%SystemRoot%\System32\find.exe
+:: Resume-related stuff (resuming from an interrupted run)
+ set RESUME_STAGE=0
+ set RESUME_FLAGS=0
+ set RESUME_DETECTED=no
+ reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
+ if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
+ if /i "%1"=="-resume" set RESUME_DETECTED=yes
+:: End of resume-related stuff
+:: Build our USERPROFILES variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
+pushd %USERPROFILE%\..
+set USERPROFILES=%CD%
+popd
+
 
 
 :: Make sure we're not running from the %TEMP% directory
