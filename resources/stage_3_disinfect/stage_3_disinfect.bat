@@ -39,7 +39,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_3_disinfect begin..."
 
 
 REM :: JOB: RogueKiller
-REM title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [RogueKiller]
+REM title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [RogueKiller]
 REM call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'RogueKiller' (it is SLOW, be patient)..."
 REM if /i %DRY_RUN%==no (
     REM start stage_3_disinfect\roguekiller\RogueKillerAutomation.exe
@@ -50,7 +50,7 @@ REM call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: MBAM (MalwareBytes Anti-Malware)
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
+title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
 	call functions\log.bat "%CUR_DATE% %TIME% !  Malwarebytes installation detected. Skipping MBAM installation."
 	goto skip_mbam
@@ -83,7 +83,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
+title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Kaspersky VRT]
 if /i %SKIP_KASPERSKY_SCAN%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_KASPERSKY_SCAN (-sk) set. Skipping KVRT scan."
 ) else (
@@ -98,7 +98,7 @@ if /i %SKIP_KASPERSKY_SCAN%==yes (
 
 
 :: JOB: Sophos Virus Remover
-title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
+title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
 if /i %SKIP_SOPHOS_SCAN%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
 ) else (
