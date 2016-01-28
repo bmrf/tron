@@ -6,6 +6,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
 ::                                           handle XP/2003's "Documents and Settings" vs. Vista and ups "C:\Users"
+::                      * tron.bat:display:  Update "verbose output requested" log message to more accurately describe what will be different due to its use
 ::                8.5.0 / tron.bat:switch:   Change -sb switch (skip debloat) to -sdb to match other switches
 ::                                           Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
 ::                      * tron.bat:          Grammar and log cleanup
@@ -14,7 +15,7 @@
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
-::                OPTIONAL command-line flags (can be combined, none are required):
+::                OPTIONAL Command-line switches (can be combined, none are required):
 ::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
 ::                      -c   Config dump (display config. Can be used with other flags to see what
 ::                           WOULD happen, but script will never execute if this flag is used)
@@ -165,7 +166,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=8.5.1
-set SCRIPT_DATE=2016-01-xx
+set SCRIPT_DATE=2016-01-28
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -194,7 +195,8 @@ set FIND=%SystemRoot%\System32\find.exe
  reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
  if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
  if /i "%1"=="-resume" set RESUME_DETECTED=yes
-:: End of resume-related stuff
+:: Resume-related stuff (end)
+
 :: Build our USERPROFILES variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
 set USERPROFILES=%CD%
@@ -800,7 +802,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
-	call functions\log.bat "                          Command-line flags: %*"
+	call functions\log.bat "                          Command-line switches: %*"
 	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 	call functions\log.bat "-------------------------------------------------------------------------------"
@@ -808,7 +810,8 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
-if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. Expanded scrollback buffer to accomodate increased output."
+if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. All commands will display verbose output when possible."
+if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
 
 
 :: Run a quick SMART check and notify if there are any drives with problems
@@ -1084,7 +1087,7 @@ call functions\log.bat "--------------------------------------------------------
 call functions\log.bat "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
 call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
-call functions\log.bat "                          Command-line flags: %*"
+call functions\log.bat "                          Command-line switches: %*"
 call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
@@ -1098,7 +1101,7 @@ call functions\log.bat "--------------------------------------------------------
 
 
 :: JOB: Actually send the email report if it was requested
-:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of command-line flags that were used
+:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of Command-line switches that were used
 set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
