@@ -96,7 +96,7 @@ if %DRY_RUN%==no (
 	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
 		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
-			REM For VERBOSE mode, for each location, 1st: Display files to be nuked. 2nd: Dump the same list to the log. 3rd: Do the actual deletion
+			REM VERBOSE mode. For each location, 1st: Display files to be nuked. 2nd: Dump the same list to the log. 3rd: Do the actual deletion
 			stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\Downloads\**"
 			stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
