@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Metro: Add missing log message about use of -m flag
+:: Version:       1.1.2 * Metro: Add missing log message about use of -m switch
 ::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
 ::                1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
 ::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
@@ -47,7 +47,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
 
 
 :: JOB: Remove crapware programs, phase 1: by specific GUID
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by specific GUID)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat"
 if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -55,7 +55,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 2: wildcard by name
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by name)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
@@ -64,7 +64,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (toolbars by specific GUID)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat"
 if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -72,7 +72,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove default Metro apps (Windows 8 and up)
-title TRON v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: This command will re-install ALL default Windows 10 apps:
 :: Get-AppxPackage -AllUsers| Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 
