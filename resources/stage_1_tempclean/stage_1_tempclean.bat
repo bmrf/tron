@@ -87,21 +87,34 @@ if /i %DRY_RUN%==no (
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Delete duplicate files in the "Downloads" folder for each user
+:: JOB: Delete duplicate files in the "Downloads" folder of each user profile
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean duplicate files from Download folders'..."
-if %DRY_RUN%==no(
+if %DRY_RUN%==no (
 	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
 	dir "%USERPROFILES%\" /B > %TEMP%\userlist.txt
 	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
+		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
-			stage_1_tempclean\finddupe\finddupe.exe -v "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			stage_1_tempclean\finddupe\finddupe.exe -v "%USERPROFILES%\%%i\My Douments\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			stage_1_tempclean\finddupe\finddupe.exe -v -del "%USERPROFILES%\%%i\Downloads\**" 2>NUL
-			stage_1_tempclean\finddupe\finddupe.exe -v -del "%USERPROFILES%\%%i\My Documents\Downloads\**" 2>NUL
+			REM For VERBOSE mode, for each location, 1st: Display files to be nuked. 2nd: Dump the same list to the log. 3rd: Do the actual deletion
+			stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\Downloads\**"
+			stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			if exist "%USERPROFILES%\%%i\My Documents\Downloads" (
+				stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\My Documents\Downloads\**"
+				stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\My Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\My Documents\Downloads\**" 2>NUL
+			)
+			if exist "%USERPROFILES%\%%i\Documents\Downloads" (
+				stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\Documents\Downloads\**"
+				stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Documents\Downloads\**" 2>NUL
+			)
 		) else (
-			stage_1_tempclean\finddupe\finddupe.exe -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
-			stage_1_tempclean\finddupe\finddupe.exe -del "%USERPROFILES%\%%i\My Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			REM Non-VERBOSE mode. Simply perform deletion and pipe the output to the log
+			stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			if exist "%USERPROFILES%\%%i\Documents\Downloads" stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			if exist "%USERPROFILES%\%%i\My Documents\Downloads" stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\My Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
 	del /s /q "%TEMP%\userlist.txt" >nul 2>&1
@@ -130,7 +143,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clear Windows event log
 if /i %SKIP_EVENT_LOG_CLEAR%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear."
 	goto skip_event_log_clear
-	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Saving logs to "%BACKUPS%" first..."
 :: Backup all logs first. Redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
@@ -157,7 +170,7 @@ if /i %DRY_RUN%==no (
 	net stop WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
 	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
-	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
