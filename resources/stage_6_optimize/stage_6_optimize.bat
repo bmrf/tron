@@ -39,7 +39,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_6_optimize begin..."
 
 
 :: JOB: Reset the system page file settings
-title TRON v%SCRIPT_VERSION% [stage_6_optimize] [pageFileReset]
+title Tron v%SCRIPT_VERSION% [stage_6_optimize] [pageFileReset]
 if /i %SKIP_PAGEFILE_RESET%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset."
 ) else (
@@ -54,7 +54,7 @@ if /i "%SKIP_DEFRAG%"=="yes_ssd" call functions\log.bat "%CUR_DATE% %TIME% !  So
 if /i "%SKIP_DEFRAG%"=="yes_vm" call functions\log.bat "%CUR_DATE% %TIME% !  Virtual Machine detected. Skipping defrag of %SystemDrive%."
 if /i "%SKIP_DEFRAG%"=="yes_error" call functions\log.bat "%CUR_DATE% %TIME% !  Error reading %SystemDrive% disk stats. Skipping defrag as a precaution."
 if /i "%SKIP_DEFRAG%"=="no" (
-	title TRON v%SCRIPT_VERSION% [stage_6_optimize] [Defrag]
+	title Tron v%SCRIPT_VERSION% [stage_6_optimize] [Defrag]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Defrag %SystemDrive%'..."
 	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
