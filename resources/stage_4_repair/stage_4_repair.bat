@@ -45,11 +45,11 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_4_repair begin..."
 
 
 :: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Dism Windows image check (Win8 and up)'..."
 if /i %DRY_RUN%==yes goto skip_dism_image_check
 
-:: Read WIN_VER and run the scan if we're on 8 or above
+:: Read WIN_VER_NUM and run the scan if we're on 8 or above
 if %WIN_VER_NUM% geq 6.2 (
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%LOGPATH%\tron_dism.log"
 	type "%LOGPATH%\tron_dism.log" >> "%LOGPATH%\%LOGFILE%"
@@ -58,7 +58,7 @@ if %WIN_VER_NUM% geq 6.2 (
 
 :: If we detect errors try to repair them
 if /i not %ERRORLEVEL%==0 (
-	title TRON v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
+	title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [DISM Repair]
 	if %WIN_VER_NUM% geq 6.2 (
 		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
@@ -75,7 +75,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Reset registry permissions
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting registry permissions..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
@@ -88,7 +88,7 @@ if /i %SKIP_REGPERMS_RESET%==no (
 
 
 :: JOB: Reset filesystem permissions
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
@@ -101,7 +101,7 @@ if /i %SKIP_FILEPERMS_RESET%==no (
 
 
 :: JOB: System File Checker (SFC) scan
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
 if /i %DRY_RUN%==yes goto skip_sfc
 :: Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
@@ -112,7 +112,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: chkdsk the system drive
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
 call functions\log.bat "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
@@ -127,7 +127,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Kill Microsoft telemetry (user tracking)
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling Microsoft telemetry (user tracking) instead of purging"
 	REM Only disable telemetry, don't completely purge it
@@ -158,7 +158,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 
 
 :: JOB: Network repair (minor)
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
 if /i %DRY_RUN%==no (
 	ipconfig /flushdns >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -170,7 +170,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Repair file extensions
-title TRON v%SCRIPT_VERSION% [stage_4_repair] [repair file extensions]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [repair file extensions]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Repair file extensions'..."
 if /i %DRY_RUN%==no (
 	setlocal
