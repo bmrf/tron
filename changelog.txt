@@ -17,11 +17,13 @@ Version number legend:
 
 
 ########################
-# v8.5.1 // 2016-01-xx #
+# v8.5.1 // 2016-01-28 #
 ########################
 tron.bat                         v8.5.1
- / placeholder comment
-
+ + Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
+   handle XP/2003's "Documents and Settings" vs. "C:\Users" of Vista and up
+ * Update "verbose output requested" log message to more accurately describe what will be different due to its use
+   
 Stage 0: Prep
  . stage_0_prep.bat              v1.0.4
  . rkill                         v2.8.3.0
@@ -33,7 +35,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  * stage_1_tempclean.bat         v1.1.0
-    + Add function to delete duplicate files found in all user's Downloads folders. Thanks to /u/kronflux and /u/Lemminsky
+    + Add function to delete duplicate files found in Downloads folders of each user. Thanks to /u/kronflux and /u/Lemminsky
 
  . CCLeaner                      v5.13.5460
  . BleachBit                     v1.10
