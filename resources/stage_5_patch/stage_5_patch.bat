@@ -41,7 +41,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_5_patch begin..."
 
 
 :: Prep task: enable MSI installer in Safe Mode
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Prep]
+title Tron v%SCRIPT_VERSION% [stage_5_patch] [Prep]
 if /i %DRY_RUN%==no (
 	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 	net start msiserver >nul 2>&1
@@ -60,7 +60,7 @@ set 7ZIP_DETECTED=no
 if exist "%ProgramFiles(x86)%\7-Zip" set 7ZIP_DETECTED=yes
 if exist "%ProgramFiles%\7-Zip" set 7ZIP_DETECTED=yes
 if %7ZIP_DETECTED%==yes (
-	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
+	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
 	call functions\log.bat "%CUR_DATE% %TIME%    7-Zip detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
 	setlocal
@@ -76,7 +76,7 @@ set FLASH_DETECTED=no
 if exist "%windir%\SysWOW64\Macromed\Flash" set FLASH_DETECTED=yes
 if exist "%windir%\System32\Macromed\Flash" set FLASH_DETECTED=yes
 if %FLASH_DETECTED%==yes (
-	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
+	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
 	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Flash detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'..."
 	setlocal
@@ -88,7 +88,7 @@ if %FLASH_DETECTED%==yes (
 
 :: JOB: Adobe Reader
 if exist "%ProgramFiles(x86)%\Adobe\Reader*" (
-	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
+	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
 	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Reader detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
 	setlocal
@@ -105,7 +105,7 @@ set JAVA_DETECTED=no
 if exist "%ProgramFiles(x86)%\Java\jre*" set JAVA_DETECTED=yes
 if exist "%ProgramFiles%\Java\jre*" set JAVA_DETECTED=yes
 if %JAVA_DETECTED%==yes (
-	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
+	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
 	call functions\log.bat "%CUR_DATE% %TIME%    Java Runtime detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
@@ -156,7 +156,7 @@ echo off
 
 
 :: JOB: Windows updates
-title TRON v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
+title Tron v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no (
@@ -172,7 +172,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will no longer be uninstallable)
 :: Windows 8/2012 and up only
 if %SKIP_DISM_CLEANUP%==no (
-	title TRON v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
+	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 	if /i %DRY_RUN%==no (
 		:: 7/2008R2 and up
