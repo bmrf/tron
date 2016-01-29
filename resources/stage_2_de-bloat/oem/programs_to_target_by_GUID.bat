@@ -2577,6 +2577,7 @@ start /wait msiexec /qn /norestart /x {C03C6D4C-6606-4268-AC4C-23508721F112}
 start /wait msiexec /qn /norestart /x {3849486C-FF09-4F5D-B491-3E179D58EE15}
 start /wait msiexec /qn /norestart /x {7F8205DE-DDFA-4156-ADA2-766E9CB4FABC}
 start /wait msiexec /qn /norestart /x {8C6D6116-B724-4810-8F2D-D047E6B7D68E}
+start /wait msiexec /qn /norestart /x {C2C2DB64-1BCE-4FA7-962D-457795ECCEC0}
 
 :: Lenovo Metric Collection SDK
 start /wait msiexec /qn /norestart /x {DDAA788F-52E6-44EA-ADB8-92837B11BF26}
@@ -2601,6 +2602,9 @@ start /wait msiexec /qn /norestart /x {91CC5BAE-A098-40D3-A43B-C0DC7CE263FE}
 
 :: Lenovo Patch Utility
 start /wait msiexec /qn /norestart /x {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43}
+
+:: Lenovo PowerENGAGE (wtf?)
+start /wait msiexec /qn /norestart /x {15B15395-FF53-44E1-ADAD-FCC279E3CA10}
 
 :: Lenovo PhoneCompanion
 start /wait msiexec /qn /norestart /x {0F82EA83-B0C5-4AB9-9695-DFE92C5FD57B}
@@ -2649,6 +2653,7 @@ start /wait msiexec /qn /norestart /x {63942F7E-3646-45EC-B8A9-EAC40FEB66DB}
 start /wait msiexec /qn /norestart /x {13BD494D-9ACD-420B-A291-E145DED92EF6}
 start /wait msiexec /qn /norestart /x {4C2B6F96-3AED-4E3F-8DCE-917863D1E6B1}
 start /wait msiexec /qn /norestart /x {494D80C4-3557-4D73-A153-65FE4B3ECDC3}
+start /wait msiexec /qn /norestart /x {15730627-A3E2-4EBA-A431-CAD867DADFFD}
 
 :: Lenovo System Update
 start /wait msiexec /qn /norestart /x {25C64847-B900-48AD-A164-1B4F9B774650}
