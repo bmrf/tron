@@ -2415,10 +2415,11 @@ start /wait msiexec /qn /norestart /x {FCDDBA94-7389-49E5-B287-2661460BAF18}
 
 :: Intel(R) Rapid Storage Technology // often the culprit behind BSODs when scanning drives with smartctl
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
-::         Please comment on this program at reddit.com/r/TronScript on the main release thread
-start /wait msiexec /qn /norestart /x {96714280-14E6-4DF7-BACD-F797C0F17C3D}
-start /wait msiexec /qn /norestart /x {205AE40D-8AD7-4F29-A430-DD2168DA562D}
-start /wait msiexec /qn /norestart /x {93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
+::  Please comment on this program at reddit.com/r/TronScript on the main release thread
+:: Disabled by /u/vocatus for Tron, due to it causing issues in a few limited scenarios
+::start /wait msiexec /qn /norestart /x {96714280-14E6-4DF7-BACD-F797C0F17C3D}
+::start /wait msiexec /qn /norestart /x {205AE40D-8AD7-4F29-A430-DD2168DA562D}
+::start /wait msiexec /qn /norestart /x {93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
 
 :: Intel(R) Security Assist
 start /wait msiexec /qn /norestart /x {4B230374-6475-4A73-BA6E-41015E9C5013}
