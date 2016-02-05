@@ -7,9 +7,12 @@ $ErrorActionPreference = "SilentlyContinue"
 $PackagesToRemove = (
 	'Microsoft.3DBuilder',                    # '3DBuilder' app
 	'Microsoft.BingFinance',                  # 'Money' app - Financial news
+	'Microsoft.BingFoodAndDrink',             # 'Food and Drink' app
+	'Microsoft.BingHealthAndFitness',         # 'Health and Fitness' app
 	'Microsoft.BingNews',                     # 'Generic news' app
 	'Microsoft.BingSports',                   # 'Sports' app - Sports news
 	'Microsoft.BingTranslator',               # 'Translator' app - Bing Translate
+	'Microsoft.BingTravel',                   # 'Travel' app
 	'Microsoft.CommsPhone',                   # 'Phone' app
 	'Microsoft.ConnectivityStore',
 	'Windows.ContactSupport',
