@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Metro: Add missing log message about use of -m switch
+:: Version:       1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
+::                1.1.2 * Metro: Add missing log message about use of -m switch
 ::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
 ::                1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
 ::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
@@ -20,8 +21,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.2
-set STAGE_2_SCRIPT_DATE=2016-01-20
+set STAGE_2_SCRIPT_VERSION=1.1.3
+set STAGE_2_SCRIPT_DATE=2016-02-05
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -44,6 +45,17 @@ if /i "%LOGFILE%"=="" (
 :: STAGE 2: De-Bloat :: // Begin jobs
 :::::::::::::::::::::::
 call functions\log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
+
+:: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of "classic" (non-"Modern") Windows programs
+if /i %SAFE_MODE%==yes (
+	title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Enable MSIServer]
+	call functions\log.bat "%CUR_DATE% %TIME%    Enabling MSIServer to allow program removal in Safe Mode..."
+	if /i %DRY_RUN%==no (
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
+		net start MSIServer >nul 2>&1
+	)
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: Remove crapware programs, phase 1: by specific GUID
