@@ -2603,6 +2603,7 @@ start /wait msiexec /qn /norestart /x {91CC5BAE-A098-40D3-A43B-C0DC7CE263FE}
 
 :: Lenovo Patch Utility
 start /wait msiexec /qn /norestart /x {C6FB6B4A-1378-4CD3-9CD3-42BA69FCBD43}
+start /wait msiexec /qn /norestart /x {E8F27ADF-B1ED-41AF-A7EF-D5E71778480C}
 
 :: Lenovo PowerENGAGE (wtf?)
 start /wait msiexec /qn /norestart /x {15B15395-FF53-44E1-ADAD-FCC279E3CA10}
@@ -2655,6 +2656,11 @@ start /wait msiexec /qn /norestart /x {13BD494D-9ACD-420B-A291-E145DED92EF6}
 start /wait msiexec /qn /norestart /x {4C2B6F96-3AED-4E3F-8DCE-917863D1E6B1}
 start /wait msiexec /qn /norestart /x {494D80C4-3557-4D73-A153-65FE4B3ECDC3}
 start /wait msiexec /qn /norestart /x {15730627-A3E2-4EBA-A431-CAD867DADFFD}
+start /wait msiexec /qn /norestart /x {4386A5EF-BD23-49F4-9DAD-CD76B4F6A8BF}
+start /wait msiexec /qn /norestart /x {437CF75F-0102-4D1E-8685-E48D92A61D9B}
+
+:: Lenovo Solutions for Small Business
+start /wait msiexec /qn /norestart /x {6A6D86CD-B004-46b7-8951-7BB75A776F8C}
 
 :: Lenovo System Update
 start /wait msiexec /qn /norestart /x {25C64847-B900-48AD-A164-1B4F9B774650}
@@ -2682,6 +2688,9 @@ start /wait msiexec /qn /norestart /x {6ADA7E88-8D16-4D0D-BC90-2B93AC5E56DA}
 :: Lenovo Warranty Info
 start /wait msiexec /qn /norestart /x {FD4EC278-C1B1-4496-99ED-C0BE1B0AA521}
 start /wait msiexec /qn /norestart /x {EFC9FE7C-ECE8-4282-8F77-FEDCAD374C77}
+
+:: Lenovo WaveEditor
+start /wait msiexec /qn /norestart /x {324F76CC-D8DD-4D87-B77D-D4AF5E1AA7B3}
 
 :: Lenovo Web Start (Pokki Start Menu)
 if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" /UNINSTALL04bb6df446330549a2cb8d67fbd1a745025b7bd1
@@ -2894,6 +2903,8 @@ start /wait msiexec /qn /norestart /x {6E7DFD3E-2E89-4F35-B4F2-D3301A4AD190}
 
 :: Nitro Pro 9
 start /wait msiexec /qn /norestart /x {70B831B7-A8EE-4C5F-8F34-F383D24B3A04}
+start /wait msiexec /qn /norestart /x {1E067071-56A8-43EF-9526-73FF8CE5825A}
+start /wait msiexec /qn /norestart /x {DEE5747D-4DF1-412F-B438-DBB7919B68B8}
 
 :: Norton 360 // Internet Security // Online Backup
 start /wait msiexec /qn /norestart /x {E4FC1ED9-E20C-4621-B834-03C388278DD8}
