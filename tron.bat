@@ -4,14 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
+:: Version:       8.6.0 - Remove support for deprecated -sb switch (use new -sdb switch instead)
+::                8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
 ::                                           handle XP/2003's "Documents and Settings" vs. Vista and ups "C:\Users"
 ::                      * tron.bat:display:  Update "verbose output requested" log message to more accurately describe what will be different due to its use
-::                8.5.0 / tron.bat:switch:   Change -sb switch (skip debloat) to -sdb to match other switches
-::                                           Undocumented support for -sb left in place for legacy compatibility, but it will eventually be removed! Use the new switch!!
-::                      * tron.bat:          Grammar and log cleanup
-::                      * tron.bat:eula:     Reword the warning screen to be even MORE clear about the necessity of reading the instructions
-::                      + tron.bat:loading:  Add "loading..." message while Tron performs pre-run actions
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -165,8 +161,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.5.1
-set SCRIPT_DATE=2016-01-28
+set SCRIPT_VERSION=8.6.0
+set SCRIPT_DATE=2016-02-06
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1172,8 +1168,6 @@ for %%i in (%*) do (
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sdb set SKIP_DEBLOAT=yes
-	REM below line for legacy compatibility. Will eventually be removed, use the new switch!!
-	if /i %%i==-sb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
