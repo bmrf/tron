@@ -41,7 +41,7 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  * stage_2_de-bloat.bat             v1.1.3
-    ! Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
+    ! Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" bloatware programs. Thanks to https://github.com/Verteiron
 
  . stage_2_de-bloat\oem\programs_to_target_by_name.txt
  * stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
@@ -71,7 +71,7 @@ Stage 5: Patch
  . 7-Zip                         v15.14        (multi-language)
  . Adobe Flash Player            v20.0.0.286   (language ignored)
  . Adobe Reader                  v11.0.14      (English-only; replace with your language version if necessary)
- * Java Runtime Environment      8u72          (language ignored)
+ * Java Runtime Environment      8u74          (language ignored)
  . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
