@@ -184,14 +184,14 @@ if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
-:: Resume-related stuff (resuming from an interrupted run)
- set RESUME_STAGE=0
- set RESUME_FLAGS=0
- set RESUME_DETECTED=no
- reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
- if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
- if /i "%1"=="-resume" set RESUME_DETECTED=yes
-:: Resume-related stuff (end)
+:: Resume-related stuff begin (resuming from an interrupted run)
+  set RESUME_STAGE=0
+  set RESUME_FLAGS=0
+  set RESUME_DETECTED=no
+  reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
+  if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
+  if /i "%1"=="-resume" set RESUME_DETECTED=yes
+:: Resume-related stuff end
 
 :: Build our USERPROFILES variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
