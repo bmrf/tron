@@ -45,7 +45,7 @@ set SCRIPT_UPDATED=2016-01-13
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
-	set VERBOSE=no
+	set VERBOSE=yes
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
@@ -311,7 +311,7 @@ if "%VERBOSE%"=="yes" (
 
 	:: "WAP Push Message Routing Service"
 	sc stop dmwappushservice
-	sc delete dmwappushservice
+	sc disable dmwappushservice
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc
@@ -339,7 +339,7 @@ if "%VERBOSE%"=="yes" (
 
 	:: "WAP Push Message Routing Service"
 	sc stop dmwappushservice >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc delete dmwappushservice >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc disable dmwappushservice >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc >> "%LOGPATH%\%LOGFILE%" 2>&1
