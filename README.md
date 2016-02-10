@@ -544,6 +544,8 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `LOGPATH\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
+3. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only
+
 ## STAGE 8: Manual tools
 
 Tron does not run these automatically because most do not support command-line use, or are only useful in special cases.
