@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.0.9-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
+:: Version:       1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for doing Wireshark analysis
+::                1.0.9-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.8-TRON ! Fix critical bug where the check to prevent running the script on any Windows version besides 10 would check WIN_VER_NUM and find the version # to be 6.3 instead of 10
 ::                           / Change "sc delete" commands to "sc config <servicename> start= disabled" for Xbox related services
 ::                1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
@@ -38,8 +39,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.9-TRON
-set SCRIPT_UPDATED=2016-01-13
+set SCRIPT_VERSION=1.1.0-TRON
+set SCRIPT_UPDATED=2016-02-10
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -454,8 +455,8 @@ if "%VERBOSE%"=="yes" (
 	route -p add 65.52.108.153/32 0.0.0.0
 	:: statsfe2.ws.microsoft.com
 	route -p add 64.4.54.22/32 0.0.0.0
-	:: storeedgefd.dsx.mp.microsoft.com
-	route -p add 104.79.153.53/32 0.0.0.0
+	:: storeedgefd.dsx.mp.microsoft.com // Disabled for Tron, required for the Microsoft App Store to connect
+	:: route -p add 104.79.153.53/32 0.0.0.0
 	:: telecommand.telemetry.microsoft.com
 	route -p add 65.55.252.92/32 0.0.0.0
 	:: telecommand.telemetry.microsoft.com.nsatc.net
@@ -558,8 +559,8 @@ if "%VERBOSE%"=="yes" (
 	route -p add 65.52.108.153/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: statsfe2.ws.microsoft.com
 	route -p add 64.4.54.22/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: storeedgefd.dsx.mp.microsoft.com
-	route -p add 104.79.153.53/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
+	:: storeedgefd.dsx.mp.microsoft.com // Disabled for Tron. Required for the Microsoft App Store to connect
+	:: route -p add 104.79.153.53/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: telecommand.telemetry.microsoft.com
 	route -p add 65.55.252.92/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: telecommand.telemetry.microsoft.com.nsatc.net
