@@ -6,7 +6,7 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for doing Wireshark analysis
+:: Version:       1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for Wireshark analysis
 ::                1.0.9-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.8-TRON ! Fix critical bug where the check to prevent running the script on any Windows version besides 10 would check WIN_VER_NUM and find the version # to be 6.3 instead of 10
 ::                           / Change "sc delete" commands to "sc config <servicename> start= disabled" for Xbox related services
@@ -312,7 +312,7 @@ if "%VERBOSE%"=="yes" (
 
 	:: "WAP Push Message Routing Service"
 	sc stop dmwappushservice
-	sc disable dmwappushservice
+	sc config dmwappushservice start= disabled
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc
@@ -340,7 +340,7 @@ if "%VERBOSE%"=="yes" (
 
 	:: "WAP Push Message Routing Service"
 	sc stop dmwappushservice >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc disable dmwappushservice >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config dmwappushservice start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Windows Event Collector Service (disable only)
 	sc stop Wecsvc >> "%LOGPATH%\%LOGFILE%" 2>&1
