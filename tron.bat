@@ -4,10 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.6.0 - Remove support for deprecated -sb switch (use new -sdb switch instead)
-::                8.5.1 + tron.bat:variable: Build and implement new USERPROFILES variable, which will allow simplification of duplicate code built to
-::                                           handle XP/2003's "Documents and Settings" vs. Vista and ups "C:\Users"
-::                      * tron.bat:display:  Update "verbose output requested" log message to more accurately describe what will be different due to its use
+:: Version:       8.6.1 + stage_7_wrap-up:systemrestore: Add post-run System Restore point to match the one we create in Stage 0: Prep
+::                      / tron.bat:logging:              Condense some code that wiped the log file when starting a new run
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -161,8 +159,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.6.0
-set SCRIPT_DATE=2016-02-06
+set SCRIPT_VERSION=8.6.1
+set SCRIPT_DATE=2016-02-11
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -777,10 +775,6 @@ for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_L
 )
 
 
-:: If we're resuming from a script interruption we don't want to wipe the log, so check for that here before creating the new log
-if /i %RESUME_DETECTED%==no echo. > "%LOGPATH%\%LOGFILE%"
-
-
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
@@ -790,9 +784,10 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 if /i %VERBOSE%==yes mode con:lines=9000
 
 
-:: Create log header
+:: Create log header, but don't do it if we're resuming from an interrupted run
 cls
 if /i %RESUME_DETECTED%==no (
+	echo. > "%LOGPATH%\%LOGFILE%"
 	call functions\log.bat "-------------------------------------------------------------------------------"
 	call functions\log.bat "%CUR_DATE% %TIME%   Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)"
 	call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
@@ -1029,6 +1024,20 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
+:: JOB: Create post-run Restore Point
+title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
+if %WIN_VER_NUM% geq 6.0 (
+	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
+	if %WIN_VER_NUM% geq 6.2 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
+	REM Create the restore point
+	echo "%WIN_VER%" | findstr /i /c:"server" >NUL || (
+		call functions\log.bat "%CUR_DATE% %TIME%    Creating post-run Restore Point..."
+		if /i %DRY_RUN%==no	powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Post-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
+)
+call functions\log.bat "%CUR_DATE% %TIME%    OK."
+
+
 :: JOB: Calculate saved disk space
 title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
@@ -1041,6 +1050,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 :: JOB: Shut down Caffeine which has kept the system awake during the Tron run
 stage_0_prep\caffeine\caffeine.exe -appexit
+
 
 :: Notify of Tron completion
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
