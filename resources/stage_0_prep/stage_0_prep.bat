@@ -4,7 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
-::                      + Enable System Restore on Windows 8 and up prior to attempting to create restore point, since it's disabled-by-default (wtf??)
+::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
 ::                1.0.4 ! Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
 ::                1.0.3 / Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
 ::                1.0.2 ! Fix typo in log message
