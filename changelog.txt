@@ -24,7 +24,11 @@ tron.bat                         v8.6.1
 
 Stage 0: Prep
  * stage_0_prep.bat              v1.0.5
-   * Add registry entry on Windows 8 and up that removes the 24 hour cooldown timer on System Restore point creation
+    + Win8 and up: Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft starting in Win8). We can now create a 
+	  pre/post system restore point pair
+    ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
+	  This fixes the error "Checkpoint-Computer : This command cannot be run due to the following error: the service cannot be started because it
+      is disabled or does not have enabled devices associated with it." reported by a few users
 
  . rkill                         v2.8.3.0
  . ProcessKiller                 v2.0.0-TRON
