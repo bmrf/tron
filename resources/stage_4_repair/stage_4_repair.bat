@@ -66,7 +66,7 @@ if not %ERRORLEVEL%==0 (
 )
 
 :: Add the DISM logs to the main Tron log
-if %WIN_VER_NUM% get 6.2 (
+if %WIN_VER_NUM% gt 6.2 (
 	call functions\log.bat "%CUR_DATE% %TIME%    Compiling DISM logs into main Tron log..."
 	if exist "%RAW_LOGS%\dism_check.log" type "%RAW_LOGS%\dism_check.log" >> "%LOGPATH%\%LOGFILE%" 2>nul
 	if exist "%RAW_LOGS%\dism_repair.log" type "%RAW_LOGS%\dism_repair.log" >> "%LOGPATH%\%LOGFILE%" 2>nul
