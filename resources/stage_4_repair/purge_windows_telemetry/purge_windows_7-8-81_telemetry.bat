@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
+:: Version:       1.0.3-TRON + Add KB 3123862 to list of updates to remove and block. Thanks to /u/MirageESO
+::                1.0.2-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.1-TRON ! Fix crash error due to log file name containing "::" characters from a sloppy find/replace
 ::                1.0.0-TRON + Initial write
 @SETLOCAL
@@ -20,14 +21,14 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.2-TRON
-set SCRIPT_UPDATED=2016-01-13
+set SCRIPT_VERSION=1.0.3-TRON
+set SCRIPT_UPDATED=2016-02-16
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_7-8-81_telemetry_removal.log
-	set VERBOSE=no
+	set VERBOSE=yes
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
@@ -72,6 +73,10 @@ if %WIN_VER_NUM% leq 6.0 (
 :: UPDATES
 
 if "%VERBOSE%"=="yes" (
+
+	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
+	wusa /uninstall /kb:3123862 /quiet /norestart
+
 	:: Compatibility update for Windows 8.1 and Windows 8
 	wusa /uninstall /kb:2976978 /quiet /norestart
 
@@ -170,7 +175,7 @@ if "%VERBOSE%"=="yes" (
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\purge_windows_telemetry 2>NUL
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324 3112336
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3123862 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324 3112336
 popd
 
 
