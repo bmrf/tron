@@ -1188,6 +1188,9 @@ start /wait msiexec /qn /norestart /x {D12E3E7F-1B13-4933-A915-16C7DD37A095}
 start /wait msiexec /qn /norestart /x {80E158EA-7181-40FE-A701-301CE6BE64AB}
 start /wait msiexec /qn /norestart /x {6DAF8CDC-9B04-413B-A0F2-BCC13CF8A5BF}
 
+:: CyberLink MediaStory
+start /wait msiexec /qn /norestart /x {55762F9A-FCE3-45d5-817B-051218658423}
+
 :: CyberLink Power2Go
 start /wait msiexec /qn /norestart /x {2A87D48D-3FDF-41fd-97CD-A1E370EFFFE2}
 start /wait msiexec /qn /norestart /x {40BF1E83-20EB-11D8-97C5-0009C5020658}
