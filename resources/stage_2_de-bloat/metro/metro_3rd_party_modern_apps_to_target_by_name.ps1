@@ -21,6 +21,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ASUSCloudCorporati
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AccuWeather.AccuWeatherforWindows8*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AcerIncorporated.AcerExplorer*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AcerIncorporated.GatewayExplorer*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AdobeSystemsIncorporated.AdobeRevel*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Amazon.com.Amazon*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*AppUp.IntelAppUpCatalogueAppWorldwideEdition*"}).PackageFullName
@@ -31,6 +32,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*BD9B8345.Socialife
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*BD9B8345.VAIOCare*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*BD9B8345.VAIOMessageCenter*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ChaChaSearch.ChaChaPushNotification*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ClearChannelRadioDigital.iHeartRadio*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ClearChannelRadioDigital.iHeartRadio*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CrackleInc.Crackle*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CyberLinkCorp.ac.AcerCrystalEye*"}).PackageFullName
@@ -55,6 +57,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*FilmOnLiveTVFree.F
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*FingertappsInstruments*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*FingertappsOrganizer*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Flipboard.Flipboard*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Flipboard.Flipboard*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*FreshPaint*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*GAMELOFTSA.SharkDash*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*GameGeneticsApps.FreeOnlineGamesforLenovo*"}).PackageFullName
@@ -68,6 +71,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*KindleforWindows8*
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MAGIX.MusicMakerJam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*McAfee*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*McAfeeInc.05.McAfeeSecurityAdvisorforASUS*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.MinecraftUWP*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MobileFileExplorer*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*MusicMakerJam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*NAMCOBANDAIGamesInc.PAC-MANChampionshipEditionDXfo*"}).PackageFullName
@@ -76,6 +80,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Netflix*"}).Packag
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*PinballFx2*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*PublicationsInternational.iCookbookSE*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*RandomSaladGamesLLC.GinRummyProforHP*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ShazamEntertainmentLtd.Shazam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*ShazamEntertainmentLtd.Shazam*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*SymantecCorporation.NortonStudio*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*TelegraphMediaGroupLtd.TheTelegraphforLenovo*"}).PackageFullName
