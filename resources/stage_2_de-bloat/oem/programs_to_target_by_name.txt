@@ -73,7 +73,7 @@ Dell%%
 Delta toolbar
 Discovery Tools
 Download Updater (AOL Inc.)
-DriverUpdate
+DriverUpdate%%
 eBay%%
 eMachines%%
 Face Theme
