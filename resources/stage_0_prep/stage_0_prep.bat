@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
+:: Version:       1.0.6 * Expand 24 hour cooldown timer removal to include Windows 7/Server 2008 R2
+::                1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
 ::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
 ::                1.0.4 ! Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
 ::                1.0.3 / Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
@@ -16,8 +17,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.5
-set STAGE_0_SCRIPT_DATE=2016-02-11
+set STAGE_0_SCRIPT_VERSION=1.0.6
+set STAGE_0_SCRIPT_DATE=2016-02-19
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -44,13 +45,13 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 
 
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
-::      On Windows 8 and up, we have to manually enable System Restore (it's disabled by default...why?? because Microsoft)
+::      On Windows 7 and up, we have to manually enable System Restore (it's disabled by default...why?? because Microsoft)
 ::      as well as remove the 24 hour cooldown timer they brilliantly added which prevents doing things like creating a before/after
 ::      restore point pair. Why? Because Microsoft.
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
-	REM Win8 and up only: Remove the cooldown timer (the reg command) and enable System Restore
-	if %WIN_VER_NUM% geq 6.2 (
+	REM Win7 and up only: Remove the cooldown timer (the reg command) and enable System Restore
+	if %WIN_VER_NUM% geq 6.1 (
 		if /i %DRY_RUN%==no (
 			reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
 			powershell "Enable-ComputerRestore -Drive "%SystemDrive%" | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
