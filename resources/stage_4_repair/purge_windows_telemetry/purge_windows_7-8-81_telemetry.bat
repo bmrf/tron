@@ -35,7 +35,7 @@ if /i "%LOGPATH%"=="" (
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
-	
+
 :: Make sure we're on Win7, 8 or 8.1 series
 if %WIN_VER_NUM% gtr 6.3 (
 	color 0c
@@ -82,99 +82,159 @@ if %WIN_VER_NUM% leq 6.0 (
 :: UPDATES
 
 if "%VERBOSE%"=="yes" (
-
 	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
-	wusa /uninstall /kb:3123862 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart
 
 	:: Compatibility update for Windows 8.1 and Windows 8
-	wusa /uninstall /kb:2976978 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:2976978 /quiet /norestart
 
 	:: New update client for Windows 8/8.1
-	wusa /uninstall /kb:3083711 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3083711 /quiet /norestart
+
+	:: Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
+	start /wait "" wusa /uninstall /kb:3058168 /quiet /norestart
+
+	:: Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
+	start /wait "" wusa /uninstall /kb:3064683 /quiet /norestart
+
+	:: Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
+	start /wait "" wusa /uninstall /kb:3072318 /quiet /norestart
+
+	:: Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
+	start /wait "" wusa /uninstall /kb:3090045 /quiet /norestart
 
 	:: Update that enables you to upgrade from Windows 7 to a later version of Windows
-	wusa /uninstall /kb:2990214 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:2990214 /quiet /norestart
 
 	:: Customer Experience and Diagnostic Telemetry-related updates
-	wusa /uninstall /kb:3022345 /quiet /norestart
-	wusa /uninstall /kb:3068708 /quiet /norestart
-	wusa /uninstall /kb:3080149 /quiet /norestart
-	wusa /uninstall /kb:3021917 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3022345 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3068708 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3080149 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3021917 /quiet /norestart
 
 	:: Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
-	wusa /uninstall /kb:3075249 /quiet /norestart
-	wusa /uninstall /kb:3015249 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3075249 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3015249 /quiet /norestart
+
+	:: Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
+	start /wait "" wusa /uninstall /kb:3081954 /quiet /norestart
 
 	:: "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
-	wusa /uninstall /kb:3035583 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3035583 /quiet /norestart
 
 	:: Enable upgrade from Windows 8.1 to Windows 10
-	wusa /uninstall /kb:3044374 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3044374 /quiet /norestart
+
+	:: Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
+	start /wait "" wusa /uninstall /kb:3046480 /quiet /norestart
+
+	:: Windows 7/8.1: How to manage Windows 10 notification and upgrade options
+	start /wait "" wusa /uninstall /kb:3080351 /quiet /norestart
+
+	:: Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
+	start /wait "" wusa /uninstall /kb:3081437 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3081454 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3074677 /quiet /norestart
 
 	:: Compatibility update for Windows 7 (is a scanner)
-	wusa /uninstall /kb:2977759 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:2977759 /quiet /norestart
 
 	:: Compatibility update for Windows 7
-	wusa /uninstall /kb:2952664 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:2952664 /quiet /norestart
 
 	:: New update client for Windows 7
-	wusa /uninstall /kb:3083710 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3083710 /quiet /norestart
 
 	:: Description of the update for Windows Activation Technologies
-	wusa /uninstall /kb:971033 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:971033 /quiet /norestart
 
-	:: Descriptions not available, update was pulled by Microsoft
-	wusa /uninstall /kb:2902907 /quiet /norestart
-	wusa /uninstall /kb:2922324 /quiet /norestart
-	
+	:: KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
+	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart
+
 	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
 	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
-	wusa /uninstall /kb:3112336 /quiet /norestart
+	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart
 ) else (
+	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
+	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
 	:: Compatibility update for Windows 8.1 and Windows 8
-	wusa /uninstall /kb:2976978 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:2976978 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: New update client for Windows 8/8.1
-	wusa /uninstall /kb:3083711 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3083711 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
+	start /wait "" wusa /uninstall /kb:3058168 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
+	start /wait "" wusa /uninstall /kb:3064683 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
+	start /wait "" wusa /uninstall /kb:3072318 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
+	start /wait "" wusa /uninstall /kb:3090045 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Update that enables you to upgrade from Windows 7 to a later version of Windows
-	wusa /uninstall /kb:2990214 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:2990214 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Customer Experience and Diagnostic Telemetry-related updates
-	wusa /uninstall /kb:3022345 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	wusa /uninstall /kb:3068708 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	wusa /uninstall /kb:3080149 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	wusa /uninstall /kb:3021917 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3022345 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3068708 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3080149 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3021917 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
-	wusa /uninstall /kb:3075249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	wusa /uninstall /kb:3015249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3075249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3015249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
+	start /wait "" wusa /uninstall /kb:3081954 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
-	wusa /uninstall /kb:3035583 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3035583 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Enable upgrade from Windows 8.1 to Windows 10
-	wusa /uninstall /kb:3044374 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3044374 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
+	start /wait "" wusa /uninstall /kb:3046480 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 7/8.1: How to manage Windows 10 notification and upgrade options
+	start /wait "" wusa /uninstall /kb:3080351 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	:: Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
+	start /wait "" wusa /uninstall /kb:3081437 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3081454 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3074677 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Compatibility update for Windows 7 (is a scanner)
-	wusa /uninstall /kb:2977759 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:2977759 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Compatibility update for Windows 7
-	wusa /uninstall /kb:2952664 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:2952664 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: New update client for Windows 7
-	wusa /uninstall /kb:3083710 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3083710 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Description of the update for Windows Activation Technologies
-	wusa /uninstall /kb:971033 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:971033 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 
-	:: Descriptions not available, update was pulled by Microsoft
-	wusa /uninstall /kb:2902907 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	wusa /uninstall /kb:2922324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+	:: KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
+	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+
 	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
 	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
-	wusa /uninstall /kb:3112336 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 
@@ -184,7 +244,7 @@ if "%VERBOSE%"=="yes" (
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\purge_windows_telemetry 2>NUL
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3123862 2977759 2952664 2976978 3083710 3083711 2990214 3022345 3068708 3080149 3021917 3075249 3015249 3035583 3044374 971033 2902907 2922324 3112336
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 popd
 
 
@@ -202,7 +262,7 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
 	schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
-) else ( 
+) else (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
