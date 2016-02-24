@@ -4,8 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.6.1 + stage_7_wrap-up:systemrestore: Add post-run System Restore point to match the one we create in Stage 0: Prep
-::                      / tron.bat:logging:              Condense some code that wiped the log file when starting a new run
+:: Version:       8.7.0 . No changes to tron.bat; increment version number only
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -159,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.6.1
-set SCRIPT_DATE=2016-02-11
+set SCRIPT_VERSION=8.7.0
+set SCRIPT_DATE=2016-02-24
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
