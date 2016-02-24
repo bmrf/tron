@@ -112,93 +112,93 @@ if "%VERBOSE%"=="yes" (
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
 if "%VERBOSE%"=="yes" (
-	:: 02/22 - KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
+	:: KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet
-	:: 03/22 - KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
+	:: KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
 	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet
-	:: 04/22 - KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
+	:: KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
 	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet
-	:: 05/22 - KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
+	:: KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
 	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet
-	:: 06/22 - KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
+	:: KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
 	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet
-	:: 07/22 - KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
+	:: KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
 	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet
-	:: 08/22 - KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
+	:: KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
 	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet
-	:: 09/22 - KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
+	:: KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
 	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet
-	:: 10/22 - KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
+	:: KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
 	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet
-	:: 11/22 - KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
+	:: KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
 	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet
-	:: 12/22 - KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
+	:: KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
 	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet
-	:: 13/22 - KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
+	:: KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
 	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet
-	:: 14/22 - KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
+	:: KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
 	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet
-	:: 15/22 - KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
+	:: KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
 	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet
-	:: 16/22 - KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
+	:: KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
 	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet
-	:: 17/22 - KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
+	:: KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
 	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet
-	:: 18/22 - KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
+	:: KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
 	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet
-	:: 19/22 - KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
+	:: KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
 	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet
-	:: 20/22 - KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
+	:: KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
 	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet
-	:: 21/22 - KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
+	:: KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
 	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet
-	:: 22/22 - KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
+	:: KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
 	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet
 	:: Additional KB entries removed by Microsoft; originally associated with telemetry
 	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet
 ) else (
-	:: 02/22 - KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
+	:: KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 03/22 - KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
+	:: KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
 	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 04/22 - KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
+	:: KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
 	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 05/22 - KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
+	:: KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
 	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 06/22 - KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
+	:: KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
 	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 07/22 - KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
+	:: KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
 	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 08/22 - KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
+	:: KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
 	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 09/22 - KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
+	:: KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
 	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 10/22 - KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
+	:: KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
 	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 11/22 - KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
+	:: KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
 	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 12/22 - KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
+	:: KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
 	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 13/22 - KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
+	:: KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
 	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 14/22 - KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
+	:: KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
 	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 15/22 - KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
+	:: KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
 	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 16/22 - KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
+	:: KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
 	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 17/22 - KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
+	:: KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
 	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 18/22 - KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
+	:: KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
 	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 19/22 - KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
+	:: KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
 	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 20/22 - KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
+	:: KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
 	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 21/22 - KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
+	:: KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
 	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: 22/22 - KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
+	:: KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
 	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: Additional KB entries removed by Microsoft; originally associated with telemetry
 	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
