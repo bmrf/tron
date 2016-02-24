@@ -1,7 +1,10 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3-TRON + Add KB 3123862 to list of updates to remove and block. Thanks to /u/MirageESO
+:: Version:       1.0.4-TRON + Add additional KB entries. Thanks to /u/kronflux
+::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
+::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
+::                1.0.3-TRON + Add KB 3123862 to list of updates to remove and block. Thanks to /u/MirageESO
 ::                1.0.2-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.1-TRON ! Fix crash error due to log file name containing "::" characters from a sloppy find/replace
 ::                1.0.0-TRON + Initial write
@@ -21,8 +24,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.3-TRON
-set SCRIPT_UPDATED=2016-02-16
+set SCRIPT_VERSION=1.0.4-TRON
+set SCRIPT_UPDATED=2016-02-24
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -36,29 +39,35 @@ if /i "%LOGPATH%"=="" (
 :: Make sure we're on Win7, 8 or 8.1 series
 if %WIN_VER_NUM% gtr 6.3 (
 	color 0c
+	echo  ERROR! This script is only for Windows 7/8/8.1. Detected version is %WIN_VER% %WIN_VER_NUM%. Aborting. >> %LOGPATH%\%LOGFILE%
 	echo.
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 7, 8 and 8.1
-	echo   ^(server variants included^).
+	echo   ^(including server variants^).
 	echo.
-	echo   Aborting.
+	echo   Detected version is %WIN_VER% %WIN_VER_NUM%
 	echo.
-	pause
+	echo   Quitting in 60 seconds...
+	echo.
+	ping 127.0.0.1 -n 60 >NUL
 	color
 	exit /b 1
 )
 if %WIN_VER_NUM% leq 6.0 (
 	color 0c
+	echo  ERROR! This script is only for Windows 7/8/8.1. Detected version is %WIN_VER% %WIN_VER_NUM%. Aborting. >> %LOGPATH%\%LOGFILE%
 	echo.
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 7, 8 and 8.1
-	echo   ^(server variants included^).
+	echo   ^(including server variants^).
 	echo.
-	echo   Aborting.
+	echo   Detected version is %WIN_VER% %WIN_VER_NUM%
 	echo.
-	pause
+	echo   Quitting in 60 seconds...
+	echo.
+	ping 127.0.0.1 -n 60 >NUL
 	color
 	exit /b 1
 )
