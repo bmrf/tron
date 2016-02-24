@@ -7,6 +7,8 @@
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
 :: Version:       1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
+::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
+::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
 ::                1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for Wireshark analysis
 ::                1.0.9-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.8-TRON ! Fix critical bug where the check to prevent running the script on any Windows version besides 10 would check WIN_VER_NUM and find the version # to be 6.3 instead of 10
@@ -56,14 +58,16 @@ if /i "%LOGPATH%"=="" (
 :: Windows 10 stupidly reports its version number as 6.3 so we can't use WIN_VER_NUM. sigh
 if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 	color 0c
+	echo  ERROR! This script is only for Windows 10. Detected version is %WIN_VER% %WIN_VER_NUM%. Aborting. >> %LOGPATH%\%LOGFILE%
 	echo.
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 10.
+	echo   Detected version is %WIN_VER% %WIN_VER_NUM%
 	echo.
-	echo   Aborting.
+	echo   Quitting in 60 seconds...
 	echo.
-	pause
+	ping 127.0.0.1 -n 60 >NUL
 	color
 	exit /b 1
 )
