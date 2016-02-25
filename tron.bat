@@ -185,8 +185,7 @@ set FIND=%SystemRoot%\System32\find.exe
   set RESUME_STAGE=0
   set RESUME_FLAGS=0
   set RESUME_DETECTED=no
-  reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
-  if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
+  reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1 && set RESUME_DETECTED=yes
   if /i "%1"=="-resume" set RESUME_DETECTED=yes
 :: Resume-related stuff end
 
@@ -309,42 +308,51 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 :: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 SETLOCAL ENABLEDELAYEDEXPANSION
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Solid State" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Solid State" >NUL &&(
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SSD" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SSD" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "RAID" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "RAID" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VMware" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VMware" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VBOX" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VBOX" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "XENSRC" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "XENSRC" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
+)
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "PVDISK" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "PVDISK" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
 	)
+)
 :: Failsafe for drives that can't be read. Re: issue #59 on GitHub
 for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_error&& goto freespace_check
+	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && (
+		ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_error&& goto freespace_check
 	)
+)
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
@@ -393,16 +401,13 @@ if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
 if /i %DRY_RUN%==yes goto skip_update_check
 if /i %AUTORUN%==yes goto skip_update_check
 :: Use wget to fetch sha256sums.txt from the repo and parse through it. Extract latest version number and release date from last line (which is always the latest release)
-stage_0_prep\check_update\wget.exe --no-check-certificate %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
-:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
-if /i %ERRORLEVEL%==0 (
+stage_0_prep\check_update\wget.exe --no-check-certificate %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL && (
+	:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
 	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%a
-	)
-if /i %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
 	set REPO_SCRIPT_DATE=%WORKING2%
-	)
+)
 
 
 :: Reset window title since wget clobbers it
@@ -444,7 +449,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
 		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
-		if !ERRORLEVEL!==0 (
+		&& (
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
 			echo.
 			echo %TIME%   This copy of Tron will now self-destruct.
@@ -452,7 +457,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			popd
 			pause
 			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
-		) else (
+		) || (
 			color 0c
 			echo %TIME% ^^! ERROR: Download FAILED the integrity check. Recommend manually
 			echo                      downloading latest version. Will delete failed file and
@@ -556,8 +561,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 :: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
-	fsutil dirty query %systemdrive% >NUL
-	if /i not !ERRORLEVEL!==0 (
+	fsutil dirty query %systemdrive% >NUL || (
 		color cf
 		cls
 		echo.
@@ -721,8 +725,7 @@ cls
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
-	findstr /i "YOUR-EMAIL-ADDRESS" stage_7_wrap-up\email_report\SwithMailSettings.xml >NUL
-	if !ERRORLEVEL!==0 (
+	findstr /i "YOUR-EMAIL-ADDRESS" stage_7_wrap-up\email_report\SwithMailSettings.xml >NUL && (
 		color cf
 		cls
 		echo.
@@ -808,8 +811,7 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrol
 %WMIC% diskdrive get status > "%TEMP%\tron_smart_results.txt"
 setlocal enabledelayedexpansion
 for %%i in (Error,Degraded,Unknown,PredFail,Service,Stressed,NonRecover) do (
-	%FIND% /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1
-	if !ERRORLEVEL!==0 (
+	%FIND% /i "%%i" %TEMP%\tron_smart_results.txt >nul 2>&1 && (
 		call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 		call functions\log.bat "%CUR_DATE% %TIME%   SMART errors can mean a drive is close to failure"
 		call functions\log.bat "%CUR_DATE% %TIME%   Recommend you back the system up BEFORE running Tron."
@@ -985,8 +987,7 @@ if /i %DRY_RUN%==no (
 		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt > %SUMMARY_LOGS%\tron_removed_programs.txt
 
 		REM If the parsed file is the same as the original, we can assume nothing was removed, so just echo that into the file
-		fc /b %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
-		if %ERRORLEVEL%==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
+		fc /b %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL && echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
 
 		REM Cleanup
 		del /f /q %TEMP%\temp.txt 2>NUL
@@ -1111,11 +1112,9 @@ set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
-
-		if !ERRORLEVEL!==0 (
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%" && (
 			call functions\log.bat "%CUR_DATE% %TIME%   Done."
-		) else (
+		) || (
 			call functions\log.bat "%CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings."
 		)
 	)

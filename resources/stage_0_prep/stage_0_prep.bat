@@ -132,8 +132,7 @@ title Tron v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
 setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no (
-	%WMIC% timezone >NUL
-	if /i not !ERRORLEVEL!==0 (
+	%WMIC% timezone >NUL || (
 		call functions\log.bat "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
 		call functions\log.bat "              This will take time, please be patient..."
 		call stage_0_prep\repair_wmi\repair_wmi.bat
