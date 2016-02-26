@@ -332,7 +332,7 @@ If you feel overly charitable, bitcoin donations are accepted at this address:
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that however, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific sub-scripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that, here's a general description of every action Tron performs.
 
 ## tron.bat
 
