@@ -1,7 +1,7 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3-TRON + Add code to delete Start Menu link and another auto-run entry. Thanks to /u/sofakingdead
+:: Version:       1.0.3-TRON + Add code to delete another auto-run entry. Thanks to /u/sofakingdead
 ::                1.0.2-TRON ! Suppress output on desktop shortcut deletion
 ::                1.0.1-TRON + Create BINARY_VERSION and PATCH_VERSION variables to make updates easier
 ::                1.0.0-TRON + Initial build for Tron, modified from PDQ Deploy pack installer version
@@ -40,8 +40,7 @@ msiexec /p "Adobe Reader v%PATCH_VERSION% patch.msp" REINSTALL=ALL REINSTALLMODE
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Adobe\Acrobat Reader\11.0\FeatureLockDown" /v bUpdater /t REG_DWORD /d 00000000 /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 %SystemRoot%\System32\reg.exe delete "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run" /v "Adobe ARM" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-
-:: Delte the Adobe Acrobat Update Service
+:: Delete the Adobe Acrobat Update Service
 net stop AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 sc delete AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
@@ -51,7 +50,6 @@ del /F /Q C:\windows\tasks\Adobe*.job >> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: Delete desktop and start icons
 if exist "%PUBLIC%\Desktop\Adobe Reader XI.lnk" del /s /q "%PUBLIC%\Desktop\Adobe Reader XI.lnk" >NUL
 if exist "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" del /s /q "%ALLUSERSPROFILE%\Desktop\Adobe Reader XI.lnk" >NUL
-if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" del /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" >NUL
 
 :: Delete the Start Menu icon
 if exist "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" del /s /q "%ProgramData%\Microsoft\Windows\Start Menu\Programs\Adobe Reader XI.lnk" >NUL
