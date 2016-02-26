@@ -772,7 +772,7 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrol
 
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
-set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover OK)
+set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
 for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|findstr /i "%WARNING_LIST:~1,-1%" && (
 	call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 	call functions\log.bat "%CUR_DATE% %TIME% SMART errors can mean a drive is close to failure"
