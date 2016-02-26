@@ -204,8 +204,7 @@ if %WIN_VER_NUM% lss 6.0 (
 
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
-echo %WIN_VER% | findstr /i /c:"server" >NUL
-if %ERRORLEVEL%==0 (
+echo %WIN_VER% | findstr /i /c:"server" >NUL && (
 	echo.
 	echo  ! Server operating system detected.
 	echo    Removing built-in media files ^(.wav, .midi, etc^)...

@@ -34,8 +34,7 @@ set ATTEMPT=0
 
 :BEGINCHK
 echo CHECKING WMI... ATTEMPT:%ATTEMPT%...
-wmic computersystem get name
-IF %ERRORLEVEL%==0 goto SUCCESS
+wmic computersystem get name && goto SUCCESS
 IF %ATTEMPT%==0 GOTO REPAIR1
 IF %ATTEMPT%==1 GOTO REPAIR2
 IF %ATTEMPT%==2 GOTO REPAIR3
@@ -59,14 +58,11 @@ set LERR=2001
 echo 2. REPAIRING WMI REPOSITORY... ATTEMPT:%ATTEMPT%...
 echo 2. REPAIRING WMI REPOSITORY... 1. Resetting permissions...
 sc sdset winmgmt D:(A;;CCDCLCSWRPWPDTLOCRRC;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;DA)(A;;CCDCLCSWRPWPDTLOCRRC;;;PU)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)
-echo 2. REPAIRING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository
-IF %ERRORLEVEL%==0 GOTO SKIPRESET
+echo 2. REPAIRING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository && GOTO SKIPRESET
 set LERR=2002
-echo 2. REPAIRING WMI REPOSITORY... 2. Salvaging...& %windir%\system32\wbem\winmgmt /salvagerepository
-IF %ERRORLEVEL%==0 GOTO SKIPRESET
+echo 2. REPAIRING WMI REPOSITORY... 2. Salvaging...& %windir%\system32\wbem\winmgmt /salvagerepository && GOTO SKIPRESET
 set LERR=2003
-echo 2. REPAIRING WMI REPOSITORY... 3. Resetting...& %windir%\system32\wbem\winmgmt /resetrepository
-IF %ERRORLEVEL%==0 GOTO SKIPRESET
+echo 2. REPAIRING WMI REPOSITORY... 3. Resetting...& %windir%\system32\wbem\winmgmt /resetrepository &&  GOTO SKIPRESET
 set LERR=2004
 
 :SKIPRESET
@@ -118,11 +114,9 @@ ping 127.0.0.1 -n 5
 echo 3. REBUILDING WMI REPOSITORY... Starting BITS& sc start BITS> nul
 for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 3. REBUILDING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
 timeout /t 10
-echo 3. REBUILDING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository
-IF %ERRORLEVEL%==0 GOTO SKIPRESET
+echo 3. REBUILDING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository && GOTO SKIPRESET
 set LERR=3002
-echo 3. REBUILDING WMI REPOSITORY... 2. Salvaging...& %windir%\system32\wbem\winmgmt /salvagerepository
-IF %ERRORLEVEL%==0 GOTO SKIPRESET
+echo 3. REBUILDING WMI REPOSITORY... 2. Salvaging...& %windir%\system32\wbem\winmgmt /salvagerepository && GOTO SKIPRESET
 set LERR=3003
 echo 3. REBUILDING WMI REPOSITORY... 3. Resetting...& %windir%\system32\wbem\winmgmt /resetrepository
 set LERR=3004

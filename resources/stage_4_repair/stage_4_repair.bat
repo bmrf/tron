@@ -50,20 +50,17 @@ if %WIN_VER_NUM% geq 6.2 (
 	title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM Windows image check'..."
 	if /i %DRY_RUN%==yes goto skip_dism_image_check
-	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%RAW_LOGS%\dism_check.log"
-)
-
-:: If we detect errors try to repair them
-if not %ERRORLEVEL%==0 (
-	title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Repair]
-	if %WIN_VER_NUM% geq 6.2 (
+	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%RAW_LOGS%\dism_check.log" && (
+		call functions\log.bat "%CUR_DATE% %TIME%    DISM: No image corruption detected."
+	) || (
+		:: If we detect errors try to repair them
+		title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Repair]
 		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
 		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%RAW_LOGS%\dism_repair.log"
 	)
-) else (
-	call functions\log.bat "%CUR_DATE% %TIME%    DISM: No image corruption detected."
 )
+
 
 :: Add the DISM logs to the main Tron log
 if %WIN_VER_NUM% gtr 6.2 (
@@ -120,12 +117,11 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
 call functions\log.bat "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
-if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
-if /i not %ERRORLEVEL%==0 (
-	call functions\log.bat "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
-	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
-) else (
+if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive% && (
 	call functions\log.bat "%CUR_DATE% %TIME%    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
+) || (
+	call functions\log.bat "%CUR_DATE% %TIME% !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
+	fsutil dirty set %SystemDrive%
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
