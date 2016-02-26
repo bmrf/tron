@@ -30,7 +30,7 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow it to install updates if at all possible. This isn't *required* but STRONGLY recommended prior to running Tron.
+0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow it to install updates if at all possible. This isn't *required* but STRONGLY RECOMMENDED.
 
 1. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. You don't *have* to run Tron in Safe Mode but it is **strongly recommended**.
 
