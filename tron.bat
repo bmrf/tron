@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.7.0 . No changes to tron.bat; increment version number only
+:: Version:       8.7.1 * smartctl_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -158,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.7.0
-set SCRIPT_DATE=2016-02-24
+set SCRIPT_VERSION=8.7.1
+set SCRIPT_DATE=2016-02-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -307,9 +307,11 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 
 :: PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
-for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
-for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_error
+pushd stage_6_optimize\defrag\
+	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
+	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
+	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_error
+popd
 
 
 :: PREP: Get free space on the system drive and stash it for comparison later
