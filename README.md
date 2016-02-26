@@ -358,13 +358,13 @@ Master script that launches everything else. It performs many actions on its own
 
 6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8 and up only; enabled by default on Server 2012/2012 R2)
 
-7. **Check for update**: Use `wget` to pull down `sha256sums.txt` from the Tron mirror and see if we're on the current version. Tron will ask to automatically download the newest version. If you answer yes, it will download a copy to the desktop, verify the SHA256 hash, and then self-destruct the current copy
+7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the current outdated copy
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
 9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
 
-10. **Make log directories**: Create the master log directory and sub-directories if they don't exist
+10. **Make log directories**: Create the master log directory and sub-directories if they don't exist. By default this is `%SystemDrive%\Logs\tron.log`
 
 
 ## STAGE 0: Prep
