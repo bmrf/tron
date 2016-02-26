@@ -82,7 +82,7 @@ Command-line use is fully supported. All flags are optional and can be combined.
 
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
-     -sb  Skip de-bloat (OEM bloatware removal; implies -m)
+     -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 
      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
      
