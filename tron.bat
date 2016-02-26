@@ -307,45 +307,9 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 
 :: PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
-SETLOCAL ENABLEDELAYEDEXPANSION
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Solid State" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SSD" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "RAID" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "SandForce" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_ssd&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VMware" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "VBOX" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "XENSRC" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
-	)
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "PVDISK" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_vm&& goto freespace_check
-	)
-:: Failsafe for drives that can't be read. Re: issue #59 on GitHub
-for /f "tokens=1" %%i in ('stage_6_optimize\defrag\smartctl.exe --scan') do (
-	stage_6_optimize\defrag\smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL
-	if "!ERRORLEVEL!"=="0" ENDLOCAL DISABLEDELAYEDEXPANSION && set SKIP_DEFRAG=yes_error&& goto freespace_check
-	)
-ENDLOCAL DISABLEDELAYEDEXPANSION
+for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
+for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
+for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_error
 
 
 :: PREP: Get free space on the system drive and stash it for comparison later
