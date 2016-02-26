@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       8.7.1 * smartctl_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
+::                      * smart_check:    Improve SMART disk check code. Thanks to /u/ixnyne
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -770,8 +771,8 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) o
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
 
 
-:: Run a quick SMART check and notify if there are any drives with problems
-set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
+:: PREP: Run a quick SMART check and notify if there are any drives with problems
+set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover OK)
 for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|findstr /i "%WARNING_LIST:~1,-1%" && (
 	call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 	call functions\log.bat "%CUR_DATE% %TIME% SMART errors can mean a drive is close to failure"
@@ -779,7 +780,6 @@ for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|findstr /i "%WARNING_L
 	color 0e
 	set WARNINGS_DETECTED=yes
 )
-:smart_check_complete
 
 
 :: PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
@@ -980,6 +980,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+	del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
