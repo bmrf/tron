@@ -4,8 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.7.1 * smartctl_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
-::                      * smart_check:    Improve SMART disk check code. Thanks to /u/ixnyne
+:: Version:       8.7.1 * smartctl_disk_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
+::                      * smart_disk_check:    Improve SMART disk check code. Thanks to /u/ixnyne
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
