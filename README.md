@@ -344,13 +344,13 @@ Master script that launches everything else. It performs many actions on its own
 ## Tron-internal prep jobs
 (These are executed even if Tron is canceled before running)
 
-0. **Detect TEMP execution**: Detect if we're running from the TEMP directory and prevent Tron from running if so. TEMP is one of the first places to get wiped when Tron starts so we cannot run from there
+0. **Detect TEMP execution**: Detect if we're running from the TEMP directory and prevent Tron from executing if so. TEMP is one of the first places to get wiped when Tron starts so we cannot run from there
 
 1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
 2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions.
 
-3. **Detect SSD**: Detect solid state hard drives. If an SSD is found, the system disk is a virtual drive, OR the system drive can't be read by `smartctl`, Tron sets the `SKIP_DEFRAG` variable to `yes_ssd` and skips **Stage 5 defrag**
+3. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
 
 4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
