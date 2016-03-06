@@ -15,6 +15,87 @@ Version number legend:
 
 
 
+########################
+# v8.7.1 // 2016-03-xx #
+########################
+tron.bat                         v8.7.1
+ * smartctl_disk_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
+ * smart_disk_check:    Improve SMART disk check code. Thanks to /u/ixnyne
+
+Stage 0: Prep
+ . stage_0_prep.bat              v1.0.6
+ . rkill                         v2.8.3.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.7
+ . McAfee Stinger                v12.1.0.1926
+ . erunt                         v1.1j
+ . caffeine                      v1.6.1.0
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat         v1.1.0
+ * CCleaner                      v5.15.5513
+   - Removed 64-bit CCleaner binary since it's not necessary. Thanks to /u/Nolzi and /u/ixnyne
+ . BleachBit                     v1.10
+ . finddupe.exe                  v1.23
+ . TempFileCleanup               v1.0.7-TRON
+ . USB Device Cleanup            v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat             v1.1.3
+ . \oem\programs_to_target_by_name.txt
+ . \oem\programs_to_target_by_GUID.bat
+ . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
+ . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat         v1.0.2
+ . Sophos Virus Removal Tool     v2.5.5
+ . Kaspersky Virus Removal Tool  v15.0.19.0
+ . Malwarebytes Anti-Malware     v2.2.0.1024
+
+Stage 4: Repair
+ . stage_4_repair.bat            v1.0.6
+ . subinacl.exe                  v5.2.3790.1180
+ . Repair file extensions        v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat             v1.1.2
+ . 7-Zip                         v15.14        (multi-language)
+ . Adobe Flash Player            v20.0.0.306   (language ignored)
+ * Adobe Reader                  v11.0.14      (English-only; replace with your language version if necessary)
+    + Add code to delete Start Menu link and another auto-run entry. Thanks to /u/sofakingdead
+
+ . Java Runtime Environment      8u74          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat          v1.0.2
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.20.989
+
+Stage 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+Stage 8: Manual tools
+ . .NET Repair Tool              v4.5.52207.36207
+ . ADSSpy                        v1.11.0.0
+ . AdwCleaner                    v5.0.3.6
+ . Autoruns                      v13.51
+ . BlueScreenView                v1.55
+ . ComboFix                      v16.2.23.1
+ . Junkware Removal Tool         v8.0.3.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+
+
 
 ########################
 # v8.7.0 // 2016-02-24 #
@@ -33,7 +114,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.1.0
- * CCLeaner                      v5.15.5513
+ * CCleaner                      v5.15.5513
  . BleachBit                     v1.10
  . finddupe.exe                  v1.23
  . TempFileCleanup               v1.0.7-TRON
@@ -59,7 +140,7 @@ Stage 4: Repair
    + Add additional telemetry and Win10 upgrade KB entries. Thanks to /u/kronflux
    ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
    * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
-   
+
  . stage_4_repair.bat            v1.0.6
  . subinacl.exe                  v5.2.3790.1180
  . Repair file extensions        v1.0.0
@@ -118,7 +199,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.1.0
- . CCLeaner                      v5.14.5493
+ . CCleaner                      v5.14.5493
  . BleachBit                     v1.10
  . finddupe.exe                  v1.23
  . TempFileCleanup               v1.0.7-TRON
@@ -209,7 +290,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.1.0
- . CCLeaner                      v5.14.5493
+ . CCleaner                      v5.14.5493
  . BleachBit                     v1.10
  . finddupe.exe                  v1.23
  . TempFileCleanup               v1.0.7-TRON
@@ -289,7 +370,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.1.0
- . CCLeaner                      v5.14.5493
+ . CCleaner                      v5.14.5493
  . BleachBit                     v1.10
  . finddupe.exe                  v1.23
  . TempFileCleanup               v1.0.7-TRON
@@ -379,7 +460,7 @@ Stage 1: Tempclean
  * stage_1_tempclean.bat         v1.1.0
     + Add function to delete duplicate files found in Downloads folders of each user. Thanks to /u/kronflux and /u/Lemminsky
 
- * CCLeaner                      v5.14.5493
+ * CCleaner                      v5.14.5493
  . BleachBit                     v1.10
  + finddupe.exe                  v1.23 // New; used to support deletion of duplicate files in Downloads folders
  . TempFileCleanup               v1.0.7-TRON
@@ -464,7 +545,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- . CCLeaner                      v5.13.5460
+ . CCleaner                      v5.13.5460
  . BleachBit                     v1.10
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -546,7 +627,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- . CCLeaner                      v5.13.5460
+ . CCleaner                      v5.13.5460
  . BleachBit                     v1.10
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -632,7 +713,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- . CCLeaner                      v5.13.5460
+ . CCleaner                      v5.13.5460
  . BleachBit                     v1.10
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -711,7 +792,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- . CCLeaner                      v5.13.5460
+ . CCleaner                      v5.13.5460
  . BleachBit                     v1.10
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -791,7 +872,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- . CCLeaner                      v5.13.5460
+ . CCleaner                      v5.13.5460
  . BleachBit                     v1.10
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -878,7 +959,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.2
- * CCLeaner                      v5.13.5460
+ * CCleaner                      v5.13.5460
     * Update winapp2.ini to v5.13.151221
  * BleachBit                     v1.10
     * Update winapp2.ini to v5.13.151221
@@ -967,7 +1048,7 @@ Stage 1: Tempclean
  * stage_1_tempclean.bat         v1.0.2
      - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 
- * CCLeaner                      v5.13.5460
+ * CCleaner                      v5.13.5460
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1056,7 +1137,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat         v1.0.1
- . CCLeaner                      v5.12.5431
+ . CCleaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1142,11 +1223,11 @@ Stage 0: Prep
 
 Stage 1: Tempclean
 stage_1_tempclean.bat            v1.0.1
-    * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
+    * CCleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
     * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now display ALL Bleachbit output to console and log if -v is used. Thanks to /u/forcen
     - misc:      Remove unnecessary window title reset after Tempfilecleanup
 
- * CCLeaner                      v5.12.5431
+ * CCleaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1247,7 +1328,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  + stage_1_tempclean.bat         v1.0.0
- * CCLeaner                      v5.12.5431
+ * CCleaner                      v5.12.5431
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1334,7 +1415,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.11.5408
+ . CCleaner                      v5.11.5408
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1405,7 +1486,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.11.5408
+ . CCleaner                      v5.11.5408
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1474,7 +1555,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.11.5408
+ * CCleaner                      v5.11.5408
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1542,7 +1623,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.10.5373
+ . CCleaner                      v5.10.5373
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
  . USB Device Cleanup            v1.1.0
@@ -1613,7 +1694,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.10.5373
+ * CCleaner                      v5.10.5373
     ! Disable Restore Point cleaning. Thanks to /u/spexdi and /u/mycroc
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
@@ -1677,7 +1758,7 @@ tron.bat                         v6.9.0
  ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks to /u/ericrobert
  ! tron.bat:prep:quarantine:    Fix incorrectly-named quarantine path variable
  / stage_0_prep:ntp:            Rotate order of NTP servers, now query in this order: 2.pool.ntp.org, time.windows.com, time.nist.gov
- ! stage_1_tempclean:ccleaner:  Fix bug where script continued before CCleaner was finished. Thanks to /u/Chmaera12
+ ! stage_1_tempclean:CCleaner:  Fix bug where script continued before CCleaner was finished. Thanks to /u/Chmaera12
  * stage_2_de-bloat:oem:win10:  Expand and tune OEM Metro de-bloat on Windows 10. This should fix removal of Calculator and some other desireable apps
  * stage_2_de-bloat:by_guid:    Add new entries and remove many incorrect ones based on user feedback
  * stage_4_repair:dism_rebuild: Move DISM rebuild out of Stage 2: De-bloat and into Stage 4: Repair after Windows telemetry removal. This prevents telemetry updates from getting "baked in" to Windows. Major thanks to /u/spexdi
@@ -1691,7 +1772,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.10.5373
+ * CCleaner                      v5.10.5373
     ! winapp2.ini: Disable Sticky Notes cleaning. Thanks to /u/Tronium90
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.7-TRON
@@ -1749,7 +1830,7 @@ STAGE 8: Manual tools
 tron.bat                         v6.8.0
  ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks to /u/Modeopfa
  + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks to /u/ALittleFunInTheSun
- + stage_1_tempclean:ccleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
+ + stage_1_tempclean:CCleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks to /u/expert02
  + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks to /u/chinpopocortez
  ! stage_7_wrap-up:sum_logs:   Fix minor log error due to missing closing quote mark
  * stage_0_prep:repair_wmi:    Break WMI repair out into its own subscript, with significant additions from /u/expert02
@@ -1763,7 +1844,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.10.5373
+ * CCleaner                      v5.10.5373
     + Integrate the CCEnhancer project's winapp2.ini file; now cleans significantly more individual program locations. Thanks to /u/Chimaera12
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.7-TRON
@@ -1839,7 +1920,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.09.5343
+ . CCleaner                      v5.09.5343
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.7-TRON
 
@@ -1914,7 +1995,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.09.5343
+ . CCleaner                      v5.09.5343
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.5-TRON
  . USB Device Cleanup            v1.1.0
@@ -1985,7 +2066,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.09.5343
+ . CCleaner                      v5.09.5343
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.5-TRON
     + Add purging of queued Windows Error Reporting reports. Thanks to /u/neonicacid
@@ -2051,7 +2132,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.09.5343
+ * CCleaner                      v5.09.5343
  . BleachBit                     v1.8
  * TempFileCleanup               v1.0.4-TRON
     * Re-enable purging of "%WINDIR%\TEMP\*"
@@ -2126,7 +2207,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.08.5308
+ . CCleaner                      v5.08.5308
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2193,7 +2274,7 @@ STAGE 0: Prep
  . caffeine                      v1.6.0.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.08.5308
+ . CCleaner                      v5.08.5308
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2264,7 +2345,7 @@ STAGE 0: Prep
  + caffeine                      v1.6.0.0 // utility to keep the system awake
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.08.5308
+ . CCleaner                      v5.08.5308
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2330,7 +2411,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.08.5308
+ * CCleaner                      v5.08.5308
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2397,7 +2478,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.07.5261
+ . CCleaner                      v5.07.5261
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2469,7 +2550,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.07.5261
+ . CCleaner                      v5.07.5261
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2533,7 +2614,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.07.5261
+ . CCleaner                      v5.07.5261
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2600,7 +2681,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.07.5261
+ . CCleaner                      v5.07.5261
  . BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2666,7 +2747,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.07.5261
+ * CCleaner                      v5.07.5261
  * BleachBit                     v1.8
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2729,7 +2810,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.06.5219
+ . CCleaner                      v5.06.5219
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2796,7 +2877,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.06.5219
+ * CCleaner                      v5.06.5219
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2856,7 +2937,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.05.5176
+ * CCleaner                      v5.05.5176
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -2938,7 +3019,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v1.1.0
@@ -3001,7 +3082,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  * USB Device Cleanup            v1.1.0
@@ -3061,7 +3142,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v0.9.0
@@ -3123,7 +3204,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v0.9.0
@@ -3182,7 +3263,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v0.9.0
@@ -3262,7 +3343,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.04.5151
+ . CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.1-TRON
  . USB Device Cleanup            v0.9.0
@@ -3346,7 +3427,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.04.5151
+ * CCleaner                      v5.04.5151
  . BleachBit                     v1.6
  * TempFileCleanup               v1.0.1-TRON
  * USB Device Cleanup            v0.9.0
@@ -3403,7 +3484,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.03.5128
+ * CCleaner                      v5.03.5128
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3472,7 +3553,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.03.5128
+ * CCleaner                      v5.03.5128
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3541,7 +3622,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.02.5101
+ . CCleaner                      v5.02.5101
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3603,7 +3684,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.02.5101
+ . CCleaner                      v5.02.5101
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3675,7 +3756,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.02.5101
+ * CCleaner                      v5.02.5101
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3751,7 +3832,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.01.5075
+ . CCleaner                      v5.01.5075
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3810,7 +3891,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.01.5075
+ . CCleaner                      v5.01.5075
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3876,7 +3957,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.01.5075
+ . CCleaner                      v5.01.5075
  . BleachBit                     v1.6
  . TempFileCleanup               v1.0.0-TRON
  . USB Device Cleanup            v0.8.1
@@ -3934,7 +4015,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.01.5075
+ . CCleaner                      v5.01.5075
  . BleachBit                     v1.6
  * TempFileCleanup               v1.0.0-TRON
    - Remove many unnecessary sections which aren't applicable to Tron
@@ -3992,7 +4073,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.01.5075
+ * CCleaner                      v5.01.5075
  . BleachBit                     v1.6
  . TempFileCleanup               v3.5.0
 
@@ -4064,7 +4145,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v5.00.5050
+ . CCleaner                      v5.00.5050
  . BleachBit                     v1.6
  . TempFileCleanup               v3.5.0
 
@@ -4127,7 +4208,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v5.00.5050
+ * CCleaner                      v5.00.5050
  * BleachBit                     v1.6
  . TempFileCleanup               v3.5.0
 
@@ -4196,7 +4277,7 @@ STAGE 0: Prep
  - nircmd                        v2.75
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.19.4867
+ . CCleaner                      v4.19.4867
  . BleachBit                     v1.4
  . TempFileCleanup               v3.5.0
 
@@ -4249,7 +4330,7 @@ STAGE 0: Prep
  . nircmd                        v2.75
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.19.4867
+ . CCleaner                      v4.19.4867
  . BleachBit                     v1.4
  . TempFileCleanup               v3.5.0
 
@@ -4325,7 +4406,7 @@ STAGE 0: Prep
  + nircmd                        v2.75
 
 STAGE 1: Tempclean
- * CCLeaner                      v4.19.4867
+ * CCleaner                      v4.19.4867
  . BleachBit                     v1.4
  * TempFileClean                 v3.5.0
     + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
@@ -4380,7 +4461,7 @@ tron.bat                         v3.9.0
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v4.19.4867
+ * CCleaner                      v4.19.4867
  . BleachBit                     v1.4
  * TempFileClean                 v3.5.0
     + Add removal of C:\Windows.old folder if it exists (left over from in-place Windows version upgrades). Thanks to /u/bodkov
@@ -4440,7 +4521,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.18.4844
+ . CCleaner                      v4.18.4844
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4514,7 +4595,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.18.4844
+ . CCleaner                      v4.18.4844
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4571,7 +4652,7 @@ STAGE 0: Prep
  . erunt                         v1.1j
 
 STAGE 1: Tempclean
- * CCLeaner                      v4.18.4844
+ * CCleaner                      v4.18.4844
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4630,7 +4711,7 @@ STAGE 0: Prep
  + erunt                         v1.1j         (added for registry backup job)
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
+ . CCleaner                      v4.17.4808
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4686,7 +4767,7 @@ STAGE 0: Prep
 ` Quarantines %LOGPATH%\tron_quarantined_files by default
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
+ . CCleaner                      v4.17.4808
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4733,7 +4814,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
+ . CCleaner                      v4.17.4808
  . BleachBit                     v1.4
  . TempFileCleanup               v3.4.4
 
@@ -4781,7 +4862,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
+ . CCleaner                      v4.17.4808
  . BleachBit                     v1.4
  * TempFileClean                 v3.4.4
 
@@ -4833,7 +4914,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.17.4808
+ . CCleaner                      v4.17.4808
  * BleachBit                     v1.4
  + TempFileClean                 v3.4.2
 
@@ -4898,7 +4979,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v4.17.4808
+ * CCleaner                      v4.17.4808
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -4948,7 +5029,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ . CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5010,7 +5091,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ . CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5059,7 +5140,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ . CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5110,7 +5191,7 @@ STAGE 0: Prep
  * Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ . CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5161,7 +5242,7 @@ STAGE 0: Prep
  * Rkill                         v2.6.8.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.16.4763
+ . CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5216,7 +5297,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- * CCLeaner                      v4.16.4763
+ * CCleaner                      v4.16.4763
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5266,7 +5347,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5327,7 +5408,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5447,7 +5528,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5528,7 +5609,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5609,7 +5690,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5687,7 +5768,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  * BleachBit                     v1.2
     * Updated to target more locations, including Firefox, Thunderbird, and Chrome temp files
 
@@ -5762,7 +5843,7 @@ STAGE 0: Prep
  . Rkill                         v2.6.7.0
 
 STAGE 1: Tempclean
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  - BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5836,7 +5917,7 @@ tron.bat                         v1.2
  / Intro screen:      Adjust runtime estimates based on user feedback
  / tron.bat:          Disable post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
  - tron.bat:          Remove section asking user if we want to do a post-run defrag (replaced by auto-detect)
- - stage_1_tempclean: Remove TempFileCleanup job (ccleaner and BleachBit cover this requirement)
+ - stage_1_tempclean: Remove TempFileCleanup job (CCleaner and BleachBit cover this requirement)
  - stage_4_patch:     Remove /r flag on wuauclt command
 
 STAGE 0: Prep
@@ -5844,7 +5925,7 @@ STAGE 0: Prep
 
 STAGE 1: Tempclean
  - TempFileCleanup               REMOVED
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  * BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5924,7 +6005,7 @@ STAGE 0: Prep
 
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  * BleachBit                     v1.2
 
 STAGE 2: Disinfect
@@ -5997,7 +6078,7 @@ STAGE 0: Prep
 
 STAGE 1: Tempclean
  . TempFileCleanup               v3.1
- . CCLeaner                      v4.15.4725
+ . CCleaner                      v4.15.4725
  . BleachBit                     v1.0
 
 STAGE 2: Disinfect
