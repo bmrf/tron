@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4-TRON + Add additional KB entries. Thanks to /u/kronflux
+:: Version:       1.0.5-TRON + Add KB 3139929. Thanks to /u/MirageESO
+::                1.0.4-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
 ::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
 ::                1.0.3-TRON + Add KB 3123862 to list of updates to remove and block. Thanks to /u/MirageESO
@@ -24,8 +25,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.4-TRON
-set SCRIPT_UPDATED=2016-02-24
+set SCRIPT_VERSION=1.0.5-TRON
+set SCRIPT_UPDATED=2016-03-12
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -105,6 +106,9 @@ if "%VERBOSE%"=="yes" (
 
 	:: Update that enables you to upgrade from Windows 7 to a later version of Windows
 	start /wait "" wusa /uninstall /kb:2990214 /quiet /norestart
+
+	:: Updated Internet Explorer 11 capabilities to upgrade Windows 8.1 and Windows 7
+	start /wait "" wusa /uninstall /kb:3139929 /quiet /norestart
 
 	:: Customer Experience and Diagnostic Telemetry-related updates
 	start /wait "" wusa /uninstall /kb:3022345 /quiet /norestart
@@ -244,7 +248,9 @@ if "%VERBOSE%"=="yes" (
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\purge_windows_telemetry 2>NUL
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683
+:: Next batch
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907
 popd
 
 
