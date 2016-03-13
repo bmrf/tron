@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
+:: Version:       1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
+::                1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
 ::                      + Implement support for -sdc switch (SKIP_DISM_CLEANUP)
 ::                1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
@@ -14,8 +15,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.2
-set STAGE_5_SCRIPT_DATE=2016-01-08
+set STAGE_5_SCRIPT_VERSION=1.1.3
+set STAGE_5_SCRIPT_DATE=2016-03-13
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -55,11 +56,11 @@ if /i %SKIP_PATCHES%==yes (
 
 
 :: JOB: 7-Zip
-:: spawn 7ZIP_DETECTED variable, flip it if an existing 7-Zip installation is detected
-set 7ZIP_DETECTED=no
-if exist "%ProgramFiles(x86)%\7-Zip" set 7ZIP_DETECTED=yes
-if exist "%ProgramFiles%\7-Zip" set 7ZIP_DETECTED=yes
-if %7ZIP_DETECTED%==yes (
+:: spawn SEVENZIP_DETECTED variable, flip it if an existing 7-Zip installation is detected
+set SEVENZIP_DETECTED=no
+if exist "%ProgramFiles(x86)%\7-Zip" set SEVENZIP_DETECTED=yes
+if exist "%ProgramFiles%\7-Zip" set SEVENZIP_DETECTED=yes
+if %SEVENZIP_DETECTED%==yes (
 	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
 	call functions\log.bat "%CUR_DATE% %TIME%    7-Zip detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
