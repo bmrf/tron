@@ -4,8 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.7.1 * smartctl_disk_check: Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
-::                      * smart_disk_check:    Improve SMART disk check code. Thanks to /u/ixnyne
+:: Version:       8.8.0 * prep:directory_check: Expand list of prevented exection locations to include %SystemDrive%\TEMP since this also gets wiped. Thanks to /u/toomasmolder
+::                      * smartctl_disk_check:  Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
+::                      * smart_disk_check:     Improve SMART disk check code. Thanks to /u/ixnyne
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -159,8 +160,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.7.1
-set SCRIPT_DATE=2016-02-xx
+set SCRIPT_VERSION=8.8.0
+set SCRIPT_DATE=2016-03-13
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -197,7 +198,6 @@ set USERPROFILES=%CD%
 popd
 
 
-
 :: Make sure we're not running from the %TEMP% directory
 if "%~dp0"=="%TEMP%\tron\" (
 	color 0c
@@ -208,6 +208,27 @@ if "%~dp0"=="%TEMP%\tron\" (
 	echo  Tron is running from the Windows TEMP directory. Tron
 	echo  cannot run from the TEMP directory as it's one of the
 	echo  first places to get wiped when Tron starts. Run Tron
+	echo  directly from your Desktop. Example of correct path:
+	echo.
+	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
+	echo.
+	echo  Tron will now quit.
+	echo.
+	pause
+	cls
+	goto :eof
+)
+
+:: Make sure we're not running from %SystemDrive%\TEMP
+if "%~dp0"=="%SystemDrive%\temp\tron\" (
+	color 0c
+	cls
+	echo.
+	echo  ERROR
+	echo.
+	echo  Tron is running from %SystemDrive%\TEMP. Tron cannot
+	echo  run from this location as it's one of the first
+	echo  places to get wiped when Tron starts. Run Tron
 	echo  directly from your Desktop. Example of correct path:
 	echo.
 	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
