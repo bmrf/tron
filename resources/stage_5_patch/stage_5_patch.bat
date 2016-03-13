@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
+::                      / Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
 ::                1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
 ::                      + Implement support for -sdc switch (SKIP_DISM_CLEANUP)
 ::                1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
@@ -116,32 +117,32 @@ if %JAVA_DETECTED%==yes (
 		REM Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
 		REM type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
 
-		:: JRE 8
-		:: Skip JRE 8 because the JRE 8 update script automatically removes older versions of 8, no need to do it twice
+		REM JRE 8
+		REM Skip JRE 8 because the JRE 8 update script automatically removes older versions of 8, no need to do it twice
 
-		:: JRE 7
+		REM JRE 7
 		call functions\log.bat "%CUR_DATE% %TIME%    JRE 7..."
 		%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-		:: JRE 6
+		REM JRE 6
 		call functions\log.bat "%CUR_DATE% %TIME%    JRE 6..."
-		:: 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
-		:: 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
+		REM 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
+		REM 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
 		%WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-		:: JRE 5
+		REM JRE 5
 		call functions\log.bat "%CUR_DATE% %TIME%    JRE 5..."
 		%WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-		:: JRE 4
+		REM JRE 4
 		call functions\log.bat "%CUR_DATE% %TIME%    JRE 4..."
 		%WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 		call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-		:: Install the latest version
+		REM Install the latest version
 		call functions\log.bat "%CUR_DATE% %TIME%    Installing latest JRE..."
 		setlocal
 		call "stage_5_patch\java\jre\jre-8-installer.bat"
@@ -176,13 +177,13 @@ if %SKIP_DISM_CLEANUP%==no (
 	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 	if /i %DRY_RUN%==no (
-		:: 7/2008R2 and up
+		REM 7/2008R2 and up
 		if %WIN_VER_NUM% geq 6.1 (
 			Dism /online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:"%LOGPATH%\dism_base_reset.log" >nul 2>&1
 			type "%LOGPATH%\dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
 			del /f /q "%LOGPATH%\dism_base_reset.log"
 		)
-		:: Vista version
+		REM Vista version
 		if %WIN_VER_NUM% equ 6.0 (
 			Dism /online /Cleanup-Image /StartComponentCleanup /Logpath:"%LOGPATH%\dism_base_reset.log" >nul 2>&1
 			type "%LOGPATH%\dism_base_reset.log" >> "%LOGPATH%\%LOGFILE%"
