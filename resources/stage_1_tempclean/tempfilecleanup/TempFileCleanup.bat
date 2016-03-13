@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8-TRON / Switch to use of WIN_VER_NUM variable (inherited from Tron.bat). Note that this breaks standalone run functionality
+:: Version:       1.0.9-TRON / Remove /s (recurse) switch from 'del /F /Q "%%x\Documents\*.tmp"' and 'del /F /Q "%%x\My Documents\*.tmp"' commands. /u/toomasmolder reported this deleted some .tmplate files (unintended behavior).
+::                1.0.8-TRON / Switch to use of WIN_VER_NUM variable (inherited from Tron.bat). Note that this breaks standalone run functionality
 ::                1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
 ::                           * Add /u/neonicacid's suggestion to purge leftover NVIDIA driver installation files
@@ -31,8 +32,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.8-TRON
-set SCRIPT_UPDATED=2016-01-05
+set SCRIPT_VERSION=1.0.9-TRON
+set SCRIPT_UPDATED=2016-03-13
 
 
 ::::::::::::::::::::::::::
@@ -54,7 +55,7 @@ echo   Cleaning USER temp files...
 :: Create log line
 echo.  %% echo  ! Cleaning USER temp files... %% echo.
 
-:: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version. Thanks to /u/bodkov and others
+:: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version
 REM Disabled for Tron
 REM if exist %SystemDrive%\Windows.old\ (
 	REM takeown /F %SystemDrive%\Windows.old\* /R /A /D Y
@@ -93,8 +94,9 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
-		del /F /S /Q "%%x\My Documents\*.tmp" 2>NUL
-		del /F /S /Q "%%x\Recent\*" 2>NUL
+		del /F /S /Q "%%x\Recent\*" 2>NUL	
+		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+
 	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do ( 
@@ -119,7 +121,8 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
-		del /F /S /Q "%%x\Documents\*.tmp" 2>NUL
+		del /F /S /Q "%%x\Recent\*" 2>NUL
+		del /F /Q "%%x\Documents\*.tmp" 2>NUL
 	)
 	REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
 	REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
