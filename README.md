@@ -38,7 +38,7 @@ I got tired of running these utilities manually and decided to just script every
 
 3. Wait anywhere from **3-10 hours** (yes, it takes that long; no, do **not** cancel it in the middle of it running)
 
-*Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
+  *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
 4. Reboot
 
