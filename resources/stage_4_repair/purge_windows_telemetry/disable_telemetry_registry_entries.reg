@@ -9,6 +9,11 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection]
 "AllowTelemetry"=dword:00000000
 
+; GPO-based Windows 10 upgrade block. Win7/8/8.1 only. Disabled for now since users may want to upgrade in the future
+; Also disabled because not strictly telemetry related
+;[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+;"DisableOSUpgrade"=dword:00000001
+
 ; Keylogger
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener]
 "Start"=dword:00000000
