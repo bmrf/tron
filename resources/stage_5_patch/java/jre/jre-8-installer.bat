@@ -16,7 +16,7 @@ if /i "%RAW_LOGS%"=="" set RAW_LOGS=%SystemDrive\logs
 set LOGFILE=tron_jre8_update.log
 
 :: Package to install
-set BINARY_VERSION=8u72
+set BINARY_VERSION=8u74
 set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AUTOUPDATECHECK=0 RebootYesNo=No WEB_JAVA_SECURITY_LEVEL=M
 
 
