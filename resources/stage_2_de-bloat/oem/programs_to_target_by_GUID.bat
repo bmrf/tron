@@ -1167,6 +1167,32 @@ start /wait msiexec /qn /norestart /x {5C1F18D2-F6B7-4242-B803-B5A78648185D}
 start /wait msiexec /qn /norestart /x {50F68032-B5B7-4513-9116-C978DBD8F27A}
 start /wait msiexec /qn /norestart /x {FC09380E-74BE-41F5-8353-E97113969040}
 
+:: Corel PaintShop Photo Pro X3
+start /wait msiexec /qn /norestart /x {D1612A3D-0DCC-4055-BB6A-0036F31158A0}
+start /wait msiexec /qn /norestart /x {D1AEB5DB-04FA-489D-94EF-8600898B93EE}
+start /wait msiexec /qn /norestart /x {D1F80EFD-A032-4E8E-A367-70C44AD4DCE0}
+start /wait msiexec /qn /norestart /x {DA4BF4BE-3CDC-43B5-BBDA-DDDA73103111}
+start /wait msiexec /qn /norestart /x {DCD941B6-F2E7-4FAF-B102-F7D4DE5FF99A}
+start /wait msiexec /qn /norestart /x {DCF1928A-FC01-48E7-A7E6-4651D42EF6A1}
+start /wait msiexec /qn /norestart /x {DF8B9311-ADE7-4EDE-B121-326CAA3D225D}
+
+:: Corel VideoStudio Pro X3
+start /wait msiexec /qn /norestart /x {BB8AE808-F003-4C7F-B56B-8C80EEAFFE23}
+start /wait msiexec /qn /norestart /x {F069C491-69E6-4D9B-9A0C-B7894A1FA97C}
+start /wait msiexec /qn /norestart /x {F072CA07-A781-45E4-9975-C033A73019CF}
+start /wait msiexec /qn /norestart /x {F206FEC3-F5DD-43FD-A8CF-9C46B8A6A92C}
+start /wait msiexec /qn /norestart /x {F4E9851F-765E-40B7-9859-237C2724E62C}
+start /wait msiexec /qn /norestart /x {F6A76E9C-C299-4CFA-AD2A-57FE9DD68B70}
+start /wait msiexec /qn /norestart /x {F8423392-2296-4748-9B66-344432459632}
+start /wait msiexec /qn /norestart /x {F909BD3C-8684-4ACF-B7C3-33F4F9F901B7}
+start /wait msiexec /qn /norestart /x {F95C8C1F-25BB-44EC-A7E6-5C17ABC6BC71}
+start /wait msiexec /qn /norestart /x {FB0B6DDD-DF3E-4CD6-927C-724AB854E322}
+start /wait msiexec /qn /norestart /x {FD67D9F3-FED6-4A2E-9D6C-8C8C44DEF8FF}
+start /wait msiexec /qn /norestart /x {FE661711-E392-4B3F-A4A7-02C747C09134}
+
+:: Corel Share64
+start /wait msiexec /qn /norestart /x {F6246243-CF06-4E40-8A37-C3B537695C36}
+
 :: Coupon Network 12.10.2.4058
 start /wait msiexec /qn /norestart /x {6B66E18F-BC5C-47AC-A66C-9F0814A8A0EB}
 
@@ -1713,6 +1739,7 @@ start /wait msiexec /qn /norestart /x {130E5108-547F-4482-91EE-F45C784E08C7}
 start /wait msiexec /qn /norestart /x {D79A02E9-6713-4335-9668-AAC7474C0C0E}
 start /wait msiexec /qn /norestart /x {54CE68A8-4F2D-4328-B1F7-D6C720405F7F}
 start /wait msiexec /qn /norestart /x {299625B9-6C69-462C-9CEA-8E06D878B1C5}
+start /wait msiexec /qn /norestart /x {85A42FF0-F0D0-44A3-B226-C124D6E8B1D5}
 
 :: HP 64 Bit HP CIO Components Installer
 start /wait msiexec /qn /norestart /x {FF21C3E6-97FD-474F-9518-8DCBE94C2854}
@@ -2004,11 +2031,21 @@ start /wait msiexec /qn /norestart /x {55979C41-7D6A-49CC-B591-64AC1BBE2C8B}
 start /wait msiexec /qn /norestart /x {95D08F4E-DFC2-4ce3-ACB7-8C8E206217E9}
 start /wait msiexec /qn /norestart /x {D360FA88-17C8-4F14-B67F-13AAF9607B12}
 
+:: HP MediaSmart Internet TV
+start /wait msiexec /qn /norestart /x {E553760D-D7F7-48BF-BD8B-C7E23BA04CB5}
+
+:: HP MediaSmart Movies and TV
+start /wait msiexec /qn /norestart /x {4B4E2FA2-3B1E-4147-99DB-5033981D8C2F}
+
+:: HP MediaSmart Music
+start /wait msiexec /qn /norestart /x {91A34181-9FAD-43AB-A35F-E7A8945B7E1C}
+
 :: HP MediaSmart SmartMenu
 start /wait msiexec /qn /norestart /x {5A5F45AE-0250-4C34-9D89-F10BDDEE665F}
 start /wait msiexec /qn /norestart /x {A3B64280-DE4C-40F0-86BB-CCB2A6056BA2}
 start /wait msiexec /qn /norestart /x {88E60521-1E4E-4785-B9F1-1798A4BD0C30}
 start /wait msiexec /qn /norestart /x {9DEF9686-CCB2-47B7-BF83-B49EA21FA016}
+start /wait msiexec /qn /norestart /x {731A1D36-BF17-4C76-B7E7-CC055AF8C54E}
 
 :: HP MediaSmart DVD
 start /wait msiexec /qn /norestart /x {DCCAD079-F92C-44DA-B258-624FC6517A5A}
@@ -2035,6 +2072,18 @@ start /wait msiexec /qn /norestart /x {791D3241-C6A4-417F-82E6-00543B6E5012}
 
 :: HP Privacy Manager for HP ProtectTools
 start /wait msiexec /qn /norestart /x {D69F9215-B06A-4ADF-A464-E2607B2FA296}
+
+:: HP Quick Launch
+start /wait msiexec /qn /norestart /x {10F539B1-31AF-43BF-9F0C-0EB66E918922}
+
+:: HP QuickWeb Installer
+start /wait msiexec /qn /norestart /x {394FA67A-FF0A-4356-BB77-D85E5A300BDE}
+
+:: HP Setup
+start /wait msiexec /qn /norestart /x {E2831862-F131-4327-B9CC-FA30F587EB6C}
+
+:: HP Tone Control
+start /wait msiexec /qn /norestart /x {9207D4A1-586E-49CA-A002-FC9F475AB1A3}
 
 :: HP Odometer 2.10.0000
 start /wait msiexec /qn /norestart /x {B899AE89-9B09-4F11-B299-A1209CAB8D00}
@@ -2869,6 +2918,9 @@ start /wait msiexec /qn /norestart /x {3D36105D-D6C2-413A-9355-7370E8D9125B}
 :: MSN Toolbar Platform
 start /wait msiexec /qn /norestart /x {C9D43B38-34AD-4EC2-B696-46F42D49D174}
 
+:: MSN Toolbar/Bing Bar
+start /wait msiexec /qn /norestart /x {08234A0D-CF39-4DCA-99F0-0C5CB496DA81}
+
 :: muvee autoProducer 6.0
 start /wait msiexec /qn /norestart /x {14AF024E-2E3B-49D0-A175-D1C1A06B155A}
 :: %ProgramFiles%\InstallShield Installation Information\{14AF024E-2E3B-49D0-A175-D1C1A06B155A}\setup.exe -runfromtemp -l0x0009 -removeonly
@@ -3514,6 +3566,12 @@ start /wait msiexec /qn /norestart /x {AAF91344-2808-4D6B-9242-FBE5AF79D60A}
 :: Windows Demo Experience
 start /wait msiexec /qn /norestart /x {2B30D5CA-7A2D-4BAE-9654-8015995960C1}
 
+:: Windows Live Call
+start /wait msiexec /qn /norestart /x {F6BD194C-4190-4D73-B1B1-C48C99921BFE}
+
+:: Windows Live Communications Platform
+start /wait msiexec /qn /norestart /x {3B4E636E-9D65-4D67-BA61-189800823F52}
+
 :: Windows Live Family Safety // Disabled by Vocatus for Tron (some family systems may be using this)
 ::start /wait msiexec /qn /norestart /x {5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
 
@@ -3527,8 +3585,17 @@ start /wait msiexec /qn /norestart /x {A0C91188-C88F-4E86-93E6-CD7C9A266649}
 start /wait msiexec /qn /norestart /x {2902F983-B4C1-44BA-B85D-5C6D52E2C441}
 start /wait msiexec /qn /norestart /x {DECDCB7C-58CC-4865-91AF-627F9798FE48}
 
+:: Windows Live Messenger
+start /wait msiexec /qn /norestart /x {A85FD55B-891B-4314-97A5-EA96C0BD80B5}
+
 :: Windows Live MIME IFilter
 start /wait msiexec /qn /norestart /x {DA54F80E-261C-41A2-A855-549A144F2F59}
+
+:: Windows Live Upload Tool
+start /wait msiexec /qn /norestart /x {205C6BDD-7B73-42DE-8505-9A093F35A238}
+
+:: Windows Live Writer
+start /wait msiexec /qn /norestart /x {178832DE-9DE0-4C87-9F82-9315A9B03985}
 
 :: Windows Live Remote Client
 start /wait msiexec /qn /norestart /x {847B0532-55E3-4AAF-8D7B-E3A1A7CD17E5}
@@ -3553,6 +3620,9 @@ start /wait msiexec /qn /norestart /x {C424CD5E-EA05-4D3E-B5DA-F9F149E1D3AC}
 start /wait msiexec /qn /norestart /x {81128EE8-8EAD-4DB0-85C6-17C2CE50FF71}
 start /wait msiexec /qn /norestart /x {CDC1AB00-01FF-4FC7-816A-16C67F0923C0}
 start /wait msiexec /qn /norestart /x {45338B07-A236-4270-9A77-EBB4115517B5}
+
+:: Windows Live Sync
+start /wait msiexec /qn /norestart /x {84EBDF39-4B33-49D7-A0BD-EB6E2C4E81C1}
 
 :: Windows Live Toolbar
 start /wait msiexec /qn /norestart /x {995F1E2E-F542-4310-8E1D-9926F5A279B3}
