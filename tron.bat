@@ -4,9 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.8.0 * prep:directory_check: Expand list of prevented exection locations to include %SystemDrive%\TEMP since this also gets wiped. Thanks to /u/toomasmolder
-::                      * smartctl_disk_check:  Improve non-standard disk (SSD, error, Virtual Machine) detection code. Thanks to /u/ixnyne
-::                      * smart_disk_check:     Improve SMART disk check code. Thanks to /u/ixnyne
+:: Version:       8.8.1 / prep:f8_key_enable: Move enabling of F8 key on bootup to after config dump section. Thanks to /u/toomasmolder
+::                      ! prep:usage_message: Add missing -np switch from help text. Thanks to /u/toomasmolder
+::                      / prep:usage_message: Reword explanation of -r switch to more clearly explain action taken. Thanks to /u/toomasmolder
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -23,7 +23,7 @@
 ::                      -np  Skip the pause at the end of script
 ::                      -o   Power off after running (overrides -r)
 ::                      -p   Preserve power settings (don't reset to Windows default)
-::                      -r   Reboot (auto-reboot 15 seconds after completion)
+::                      -r   Reboot automatically 15 seconds after script completion
 ::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
 ::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
@@ -160,8 +160,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.8.0
-set SCRIPT_DATE=2016-03-13
+set SCRIPT_VERSION=8.8.1
+set SCRIPT_DATE=2016-03-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -259,8 +259,8 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -o -p -r -sa -sd -sdb -sdc -se -sfr
-	echo                -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc -se
+	echo                -sfr -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -274,7 +274,7 @@ if /i %HELP%==yes (
 	echo    -np  Skip pause at the end of the script
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
-	echo    -r   Reboot automatically ^(auto-reboot 15 seconds after completion^)
+	echo    -r   Reboot automatically 15 seconds after script completion
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
 	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
@@ -369,12 +369,6 @@ if /i %RESUME_DETECTED%==yes (
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
 )
-
-
-:: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
-:enable_f8_key_on_bootup
-if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
-
 
 :: PREP: Update check
 :: Skip this job if we're doing a dry run or if AUTORUN is set
@@ -532,6 +526,11 @@ if /i %CONFIG_DUMP%==yes (
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
 )
+
+
+:: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
+:enable_f8_key_on_bootup
+if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
 
 
 :: PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
