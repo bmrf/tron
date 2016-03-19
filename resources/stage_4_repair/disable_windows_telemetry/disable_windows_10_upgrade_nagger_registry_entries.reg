@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+; GPO-based Windows 10 upgrade block, applies to Win7/8/8.1 only
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+"DisableOSUpgrade"=dword:00000001
+
+; GWX upgrade nagger, applies to Win10 only
+[hkey_local_machine\software\policies\microsoft\windows\gwx]
+"disablegwx"=dword:00000001
+
+; Disable automatic update
+;[hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update]
+;"auoptions"=dword:00000002
+;"includerecommendedupdates"=dword:00000000
+;"enablefeaturedsoftware"=dword:00000000
