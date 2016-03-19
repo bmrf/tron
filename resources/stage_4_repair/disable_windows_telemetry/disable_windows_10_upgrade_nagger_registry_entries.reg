@@ -4,7 +4,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
 "DisableOSUpgrade"=dword:00000001
 
-; GWX upgrade nagger, applies to Win10 only
+; GWX nagger
 [hkey_local_machine\software\policies\microsoft\windows\gwx]
 "disablegwx"=dword:00000001
 
