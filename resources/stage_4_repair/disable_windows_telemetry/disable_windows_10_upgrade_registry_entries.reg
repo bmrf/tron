@@ -1,15 +1,18 @@
 Windows Registry Editor Version 5.00
 
-; GPO-based Windows 10 upgrade block, applies to Win7/8/8.1 only
+; "DisableOSUpgrade" disables/hides the taskbar app to prevent users from making a reservation and upgrading manually
+; However, user can still get updated automatically with KB3146449
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
 "DisableOSUpgrade"=dword:00000001
 
-; GPO-based Windows 10 upgrade block, applies to Win7/8/8.1 only
+; "AllowOSUpgrade" is the holy grail that will actually prevent the upgrade from happening, even if Win10 is sitting in the update folder. 
+; You can make a reservation, download it via updates, enable this option and windows will never automatically/manually update to Win10.
+; "ReservationsAllowed" is a little more heavy handed and may not be neccessary. This actually prevents the user (or windows) from making a reservation and downloading the upgrade even remotely possible...but the upgrade can still happen if it's already downloaded. Usually done on new installs as an extra preventative measure. The default value for this is 2. Setting it to 0 makes reservations impossible.
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\OSUpgrade]
 "AllowOSUpgrade"=dword:00000000
 "ReservationsAllowed"=dword:00000000
 
-; GWX nagger
+; "DisableGWX" is just the upgrade nagger/popup
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\GWX]
 "DisableGWX"=dword:00000001
 
