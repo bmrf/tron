@@ -3,7 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 ! Fix numerous bugs with DISM check and repair. Due to bad ERRORLEVEL checking it would fail to trigger repairs when they were required
+:: Version:       1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
+::                      / Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
+::                1.0.6 ! Fix numerous bugs with DISM check and repair. Due to bad ERRORLEVEL checking it would fail to trigger repairs when they were required
 ::                1.0.5 - Remove redundant Dism image store cleanup (move to Stage 5)
 ::                1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
 ::                1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
@@ -19,8 +21,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.6
-set STAGE_4_SCRIPT_DATE=2016-02-11
+set STAGE_4_SCRIPT_VERSION=1.0.7
+set STAGE_4_SCRIPT_DATE=2016-03-19
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -159,6 +161,18 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 :skip_telem_removal
+
+
+:: JOB: Disable Windows 10 Upgrade (Win7/8/8.1 only)
+:: Just re-use the temp variable from the above job since it will tell us whether we're on 7 or 8
+if /i "%RUN_7_OR_8_TELEM%"=="yes" (
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Disable Windows 10 Upgrade nagger (Win7/8/8.1)'..."
+	if /i %DRY_RUN%==no ( 
+		reg import stage_4_repair\disable_windows_telemetry\disable_windows_10_upgrade_registry_entries.reg >nul 2>&1
+		regedit /S stage_4_repair\disable_windows_telemetry\disable_windows_10_upgrade_registry_entries.reg >nul 2>&1
+	)
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+)
 
 
 :: JOB: Network repair (minor)
