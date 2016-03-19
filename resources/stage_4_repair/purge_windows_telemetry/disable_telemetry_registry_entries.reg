@@ -1,40 +1,26 @@
 Windows Registry Editor Version 5.00
 
-
-; This is the big one. This is what gets set if Telemetry is disabled via Group Policy in Domain environments
+; GPO option to disable telemetry
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection]
 "AllowTelemetry"=dword:00000000
 
-; This is the big one. This is what gets set if Telemetry is disabled via Group Policy in Domain environments
+; GPO option to disable telemetry
 [HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection]
 "AllowTelemetry"=dword:00000000
-
-; GPO-based Windows 10 upgrade block. Win7/8/8.1 only. Disabled for now since users may want to upgrade in the future
-; Also disabled because not strictly telemetry related
-;[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
-;"DisableOSUpgrade"=dword:00000001
 
 ; Keylogger
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener]
 "Start"=dword:00000000
 
-; Wifi sense; this is a nasty one privacy-wise
+; Wifi sense; this is a nasty one, privacy-wise
 [hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager]
 "wifisensecredshared"=dword:00000000
 "wifisenseopen"=dword:00000000
 
-[hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update]
-"auoptions"=dword:00000002
-"includerecommendedupdates"=dword:00000000
-"enablefeaturedsoftware"=dword:00000000
-
+; Windows Defender sample reporting
 [hkey_local_machine\software\microsoft\windows defender\spynet]
 "spynetreporting"=dword:00000000
 "submitsamplesconsent"=dword:00000000
-
-; GWX upgrade nagger
-[hkey_local_machine\software\policies\microsoft\windows\gwx]
-"disablegwx"=dword:00000001
 
 ; SkyDrive
 [hkey_local_machine\software\policies\microsoft\windows\skydrive]
