@@ -161,7 +161,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=8.8.1
-set SCRIPT_DATE=2016-03-xx
+set SCRIPT_DATE=2016-03-19
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
