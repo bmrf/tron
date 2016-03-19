@@ -63,7 +63,6 @@ Buzzdock%%
 ConservativeTalkNow Firefox Toolbar
 CutePDF Editor Toolbar Updater
 CWA Reminder by We-Care.com%%
-Cyberlink%%
 ClickForSale
 CloudScout%%
 Comodo%%
@@ -145,7 +144,6 @@ pdfforge Toolbar%%
 PDFLite Toolbar
 Plus-HD-1.3
 PopularScreensavers Toolbar and Software
-PowerDVD%%
 PMB%%
 Price Check by AOL
 PrivDog
