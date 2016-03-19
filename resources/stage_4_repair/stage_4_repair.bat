@@ -135,8 +135,8 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
-	reg import stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-	regedit /S stage_4_repair\purge_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+	reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+	regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 	goto skip_telem_removal
 )
 
@@ -144,7 +144,7 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
 	call functions\log.bat "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
-	if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
@@ -155,7 +155,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
-	if /i %DRY_RUN%==no call stage_4_repair\purge_windows_telemetry\purge_windows_7-8-81_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_7-8-81_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 :skip_telem_removal
