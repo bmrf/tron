@@ -544,6 +544,9 @@ start /wait msiexec /qn /norestart /x {734E01CA-17DF-C45B-9082-D4D09732D089}
 :: CCoupSCanneR
 start /wait msiexec /qn /norestart /x {80E8B0A0-117D-1402-7CDE-688156237115}
 
+:: Canon Easy-WebPrint EX toolbar
+start /wait msiexec /qn /norestart /x {759D9886-0C6F-4498-BAB6-4A5F47C6C72F}
+
 :: Common Desktop Agent
 start /wait msiexec /qn /norestart /x {031A0E14-0413-4C97-9772-2639B782F46F}
 
@@ -1286,6 +1289,10 @@ start /wait msiexec /qn /norestart /x {C994D98C-293D-4825-958E-EB684B4D413F}
 start /wait msiexec /qn /norestart /x {8dcb7100-df86-4384-8842-8fa844297b3f}
 start /wait msiexec /qn /norestart /x {1E61ED7C-7CB8-49d6-B9E9-AB4C880C8414}
 start /wait msiexec /qn /norestart /x {BDAD1DAD-C946-4A17-ADC1-64B5B4FF55D0}
+start /wait msiexec /qn /norestart /x {08234A0D-CF39-4DCA-99F0-0C5CB496DA81}
+
+:: MSN Toolbar Platform
+start /wait msiexec /qn /norestart /x {C9D43B38-34AD-4EC2-B696-46F42D49D174}
 
 :: movies Toolbar
 start /wait msiexec /qn /norestart /x {88E96402-3BBD-02D9-0A36-6FB806AEE04E}
@@ -2218,6 +2225,7 @@ start /wait msiexec /qn /norestart /x {50fafaf0-70a9-419d-a109-fa4b4ffd4e37}
 
 :: Windows Live Toolbar
 start /wait msiexec /qn /norestart /x {BDAD1DAD-C946-4A17-ADC1-64B5B4FF55D0}
+start /wait msiexec /qn /norestart /x {995F1E2E-F542-4310-8E1D-9926F5A279B3}
 
 :: Windows Live Toolbar Beta Toolbar 
 start /wait msiexec /qn /norestart /x {21FA44EF-376D-4D53-9B0F-8A89D3229068}
