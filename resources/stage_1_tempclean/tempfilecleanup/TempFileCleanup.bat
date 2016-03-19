@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9-TRON / Remove /s (recurse) switch from 'del /F /Q "%%x\Documents\*.tmp"' and 'del /F /Q "%%x\My Documents\*.tmp"' commands. /u/toomasmolder reported this deleted some .tmplate files (unintended behavior).
+:: Version:       1.1.0-TRON + Add clearing of IE low-level hidden history folder for "untrusted" browsing history "C:\Users\%username%\AppData\Local\Microsoft\Windows\History\low\*"
+::                1.0.9-TRON / Remove /s (recurse) switch from 'del /F /Q "%%x\Documents\*.tmp"' and 'del /F /Q "%%x\My Documents\*.tmp"' commands. /u/toomasmolder reported this deleted some .tmplate files (unintended behavior)
 ::                1.0.8-TRON / Switch to use of WIN_VER_NUM variable (inherited from Tron.bat). Note that this breaks standalone run functionality
 ::                1.0.7-TRON * Merge nemchik's pull request to delete .blf and.regtrans-ms files
 ::                           * Merge nemchik's pull request to purge Flash and Java temp locations
@@ -32,17 +33,13 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.0.9-TRON
-set SCRIPT_UPDATED=2016-03-13
+set SCRIPT_VERSION=1.1.0-TRON
+set SCRIPT_UPDATED=2016-03-19
 
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
 ::::::::::::::::::::::::::
-:: Create the log header for this job
-echo --------------------------------------------------------------------------------------------
-echo %CUR_DATE% %TIME%  TempFileCleanup v%SCRIPT_VERSION%, executing as %USERDOMAIN%\%USERNAME%
-echo --------------------------------------------------------------------------------------------
 echo.
 echo  Starting temp file cleanup
 echo  --------------------------
@@ -112,6 +109,7 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\* /AH 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
@@ -136,8 +134,6 @@ echo.  && echo   Done. && echo.
 ::::::::::::::::::::::::::::
 :: SYSTEM CLEANUP SECTION :: -- Most stuff here requires Admin rights
 ::::::::::::::::::::::::::::
-echo.
-echo   Cleaning SYSTEM temp files...
 echo   Cleaning SYSTEM temp files...  && echo.
 
 
