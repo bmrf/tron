@@ -94,7 +94,6 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\Recent\*" 2>NUL	
 		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
-
 	)
 ) else (
 	for /D %%x in ("%SystemDrive%\Users\*") do ( 
@@ -123,11 +122,8 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\Recent\*" 2>NUL
 		del /F /Q "%%x\Documents\*.tmp" 2>NUL
 	)
-	REM Internet Explorer cleanup // Disabled for Tron, since Tron runs this command natively
-	REM rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 )
 
-echo. && echo   Done. && echo.
 echo.  && echo   Done. && echo.
 
 
@@ -203,6 +199,8 @@ if %WIN_VER_NUM% lss 6.0 (
 	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
 )
 
+:: JOB: Disable Windows Tour bubble popup (Windows XP only; new user accounts only)
+if %WIN_VER_NUM% lss 6.0 reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Applets\Tour" /v RunCount /t REG_DWORD /d 00000000 /f
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
 echo %WIN_VER% | findstr /i /c:"server" >NUL
