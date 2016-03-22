@@ -1,6 +1,7 @@
 :: Purpose:       Restores full rights to Administrator and SYSTEM accounts on everything in specified registry hives
 :: Requirements:  subinacl in the system path or system32 folder
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+::                1.0.2-TRON ! Add missing %RAW_LOGS%\ prefix to log compilation line. Thanks to /u/toomasmolder
 ::                1.0.1-TRON ! Add missing pushd statement
 ::                1.0.0-TRON / Modifications for Tron. Remove logging, CUR_DATE, and various other unnecessary code
 ::                1.0.0        Initial write
@@ -18,8 +19,8 @@ SETLOCAL
 ::::::::::
 @echo off
 SETLOCAL
-set SCRIPT_VERSION=1.0.1-TRON
-set SCRIPT_UPDATED=2015-04-16
+set SCRIPT_VERSION=1.0.2-TRON
+set SCRIPT_UPDATED=2016-03-21
 
 :: We need this for Tron because subinacl.exe is in the same directory as this script
 pushd %~dp0
@@ -36,7 +37,7 @@ subinacl /noverbose /outputlog=%RAW_LOGS%\subinacl_reg_reset_HKCU1.log /subkeyre
 subinacl /noverbose /outputlog=%RAW_LOGS%\subinacl_reg_reset_HKCR1.log /subkeyreg HKEY_CLASSES_ROOT /grant=system=f
 
 :: Compile the logs
-type subinacl_reg_reset_HKLM1.log >> subinacl_reg_reset_HKLM.log
-type subinacl_reg_reset_HKCU1.log >> subinacl_reg_reset_HKCU.log
-type subinacl_reg_reset_HKCR1.log >> subinacl_reg_reset_HKCR.log
+type %RAW_LOGS%\subinacl_reg_reset_HKLM1.log >> %RAW_LOGS%\subinacl_reg_reset_HKLM.log
+type %RAW_LOGS%\subinacl_reg_reset_HKCU1.log >> %RAW_LOGS%\subinacl_reg_reset_HKCU.log
+type %RAW_LOGS%\subinacl_reg_reset_HKCR1.log >> %RAW_LOGS%\subinacl_reg_reset_HKCR.log
 del /f /q *1.log >NUL 2>&1
