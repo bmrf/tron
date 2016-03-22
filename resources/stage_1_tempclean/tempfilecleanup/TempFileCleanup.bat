@@ -109,7 +109,7 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\* /AH 2>NUL
+		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\*" /AH 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
 		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
