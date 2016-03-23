@@ -4,9 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       8.8.1 / prep:f8_key_enable: Move enabling of F8 key on bootup to after config dump section. Thanks to /u/toomasmolder
-::                      ! prep:usage_message: Add missing -np switch from help text. Thanks to /u/toomasmolder
-::                      / prep:usage_message: Reword explanation of -r switch to more clearly explain action taken. Thanks to /u/toomasmolder
+:: Version:       8.9.0 . No changes to tron.bat; increment version number only
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -160,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=8.8.1
-set SCRIPT_DATE=2016-03-19
+set SCRIPT_VERSION=8.9.0
+set SCRIPT_DATE=2016-03-23
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
