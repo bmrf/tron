@@ -66,7 +66,6 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-		if not exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\" mkdir "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\" >NUL
 		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" 2>NUL
 		
 		
