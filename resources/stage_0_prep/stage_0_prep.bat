@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 * Expand 24 hour cooldown timer removal to include Windows 7/Server 2008 R2
+:: Version:       1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
 ::                1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
 ::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
 ::                1.0.4 ! Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
@@ -70,7 +70,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here, kill explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here for MORE THAN 30 minutes, kill explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
