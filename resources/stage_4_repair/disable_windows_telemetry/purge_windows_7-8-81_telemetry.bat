@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5-TRON + Add KB 3139929. Thanks to /u/MirageESO
+:: Version:       1.0.6-TRON + Add KB's 3112343, 3083324, 3083325, and 3065988. Thanks to /u/toomasmolder
+::                1.0.5-TRON + Add KB 3139929. Thanks to /u/MirageESO
 ::                1.0.4-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
 ::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
@@ -25,8 +26,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.5-TRON
-set SCRIPT_UPDATED=2016-03-12
+set SCRIPT_VERSION=1.0.6-TRON
+set SCRIPT_UPDATED=2016-03-23
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -156,12 +157,31 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart
-	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart
-
+	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart
+	
+	::  Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3065988 /quiet /norestart
+	
+	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3083324 /quiet /norestart
+	
+	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3083325 /quiet /norestart
+	
 	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
 	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
 	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart
+	
+	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
+	:: This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience 
+	:: when you have to retry an operating system upgrade because of certain failure conditions. 
+	:: This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
+	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart
+	
 ) else (
 	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -233,12 +253,30 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-
+	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
+	::  Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3065988 /quiet /norestart
+	
+	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3083324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
+	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
+	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	start /wait "" wusa /uninstall /kb:3083325 /quiet /norestart
+	
 	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
 	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
 	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
+	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
+	:: This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience 
+	:: when you have to retry an operating system upgrade because of certain failure conditions. 
+	:: This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
+	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 
@@ -250,7 +288,7 @@ if "%VERBOSE%"=="yes" (
 pushd stage_4_repair\purge_windows_telemetry 2>NUL
 start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683
 :: Next batch
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
 popd
 
 
