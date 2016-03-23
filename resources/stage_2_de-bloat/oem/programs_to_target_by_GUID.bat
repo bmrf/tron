@@ -144,6 +144,7 @@ start /wait msiexec /qn /norestart /x {B0D59FDC-FEAB-49A2-9B5A-E5E0A8F9D7E0}
 start /wait msiexec /qn /norestart /x {134E190A-CE2A-4436-BDEB-387CC36A96C9}
 start /wait msiexec /qn /norestart /x {EBCCD2B7-FCA9-4714-97A4-CBC48E544BB2}
 start /wait msiexec /qn /norestart /x {0A7D6F3C-F2AB-48ED-BE23-99791BFF87D6}
+start /wait msiexec /qn /norestart /x {5095145F-A690-405A-9ABF-69C7A7319834}
 
 :: AMD Accelerated Video Transcoding // Drag-and-Drop Transcoding
 start /wait msiexec /qn /norestart /x {A6AFFBD8-D006-967F-51AF-0120F0261080}
@@ -199,14 +200,16 @@ start /wait msiexec /qn /norestart /x {DE8AAC73-6D8D-483E-96EA-CAEDDADB9079}
 start /wait msiexec /qn /norestart /x {B77DE05C-7C84-4011-B93F-A29D0D2840F4}
 start /wait msiexec /qn /norestart /x {2B2F5B94-F377-41A2-8DA8-899BC538A4E1}
 start /wait msiexec /qn /norestart /x {7D44F1E8-968F-48D8-A966-2890A2CFFC6F}
+start /wait msiexec /qn /norestart /x {7BB90344-0647-468E-925A-7F69F7983421}
 
 :: Ashampoo Burning Studio FREE v.1.14.5
 start /wait msiexec /qn /norestart /x {91B33C97-91F8-FFB3-581B-BC952C901685}
 
-:: Ask Search App by Ask
+:: Ask: Search App by Ask
 start /wait msiexec /qn /norestart /x {43C423D9-E6D6-4607-ADC9-EBB54F690C57}
 start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C1500}
 start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C2201}
+start /wait msiexec /qn /norestart /x {4F524A2D-5350-4500-76A7-A758B70C2700}
 
 :: ASPCA and CWA Reminder misc programs (we-care.com Macy's nagware)
 start /wait msiexec /qn /norestart /x {7E482AF6-AA1F-4CC5-BA13-0536675F5744}
@@ -221,8 +224,14 @@ start /wait msiexec /qn /norestart /x {A6558E2A-FAF9-4570-AA49-6328D0354517}
 :: ASUS Ai Charger
 start /wait msiexec /qn /norestart /x {7FB64E72-9B0E-4460-A821-040C341E414A}
 
+:: ASUS App Box
+start /wait msiexec /qn /norestart /x {F0CE6060-50B1-401E-8357-B6E24DB98D21}
+
 :: ASUS AudioWizard
 start /wait msiexec /qn /norestart /x {57E770A2-2BAF-4CAA-BAA3-BD896E2254D3}
+
+:: ASUS Device Setup
+start /wait msiexec /qn /norestart /x {1F07F2C7-596F-4F34-B805-2C61A3E50E5A}
 
 :: ASUS Fast Boot by ASUS
 start /wait msiexec /qn /norestart /x {13F4A7F3-EABC-4261-AF6B-1317777F0755}
@@ -238,6 +247,18 @@ start /wait msiexec /qn /norestart /x {04768366-F421-4BA5-8423-B84F644B5249}
 
 :: ASUS Live Update
 start /wait msiexec /qn /norestart /x {FA540E67-095C-4A1B-97BA-4D547DEC9AF4}
+
+:: ASUS Manager - Ai Booting
+start /wait msiexec /qn /norestart /x {2DCE446C-D090-4458-8782-8F16DF94351E}
+
+:: ASUS Manager - PC Cleanup
+start /wait msiexec /qn /norestart /x {E22A19AE-7DDB-4959-B1DB-A0996294352A}
+
+:: ASUS Manager - SyncUp
+start /wait msiexec /qn /norestart /x {C2294792-457D-4DF7-9486-B630754C73D0}
+
+:: ASUS Manager - Update
+start /wait msiexec /qn /norestart /x {675BBE8A-0ED3-4048-8723-BA51EAB8E1A8}
 
 :: ASUS Security Protect Manager
 start /wait msiexec /qn /norestart /x {DF21F1DB-80C6-11D3-9483-B03D0EC10000}
@@ -454,6 +475,9 @@ start /wait msiexec /qn /norestart /x {F05A5232-CE5E-4274-AB27-44EB8105898D}
 :: start /wait msiexec /qn /norestart /x {2CC1453B-3385-F6FF-735F-F3BA36758715}
 :: start /wait msiexec /qn /norestart /x {F79997CC-F030-93C6-7882-92DC241D7C07}
 :: start /wait msiexec /qn /norestart /x {7540EB6A-FE9B-4EE2-37D9-A88DC87AA9E6}
+
+:: CardRecovery
+start /wait msiexec /qn /norestart /x {88D68A69-D247-466B-90DD-575F6BE16230}
 
 :: Cozi Express. "Cozi Express is a "wrapper" around Microsoft Internet Explorer that provides a streamlined user interface." No thanks.
 start /wait msiexec /qn /norestart /x {EA1F3D6C-A6F5-4CDC-B0D3-9C56C06B4D29}
@@ -1655,6 +1679,7 @@ start /wait msiexec /qn /norestart /x {490CB685-FC44-42E3-BD31-461775BB7DEC}
 :: Evernote
 start /wait msiexec /qn /norestart /x {404B3FB8-A820-11E4-83FC-00163E98E7D6}
 start /wait msiexec /qn /norestart /x {FEDC7C10-EF67-11E4-9B07-00505695D7B0}
+start /wait msiexec /qn /norestart /x {F761359C-9CED-45AE-9A51-9D6605CD55C4}
 
 :: Facebook Messenger 2.1.4814.0
 start /wait msiexec /qn /norestart /x {7204BDEE-1A48-4D95-A964-44A9250B439E}
@@ -1786,6 +1811,9 @@ start /wait msiexec /qn /norestart /x {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
 :: HP Advisor
 start /wait msiexec /qn /norestart /x {403996EB-2DCE-4C43-A2B8-2B956880772D}
 start /wait msiexec /qn /norestart /x {40FB8D7C-6FF8-4AF2-BC8B-0B1DB32AF04B}
+
+:: HP App Studio
+start /wait msiexec /qn /norestart /x {565E7B0E-B76B-4EAD-9753-F1E72A5CF12E}
 
 :: HP Auto
 start /wait msiexec /qn /norestart /x {CB7D766C-879F-4800-BB09-3D29E306EF63}
@@ -1952,6 +1980,7 @@ start /wait msiexec /qn /norestart /x {53AE55F3-8E99-4776-A347-06222894ECD3}
 start /wait msiexec /qn /norestart /x {95CC589C-8D98-4539-9878-4E6A342304F2}
 start /wait msiexec /qn /norestart /x {9D20F550-4222-49A7-A7A7-7CAAB2E16C9C}
 start /wait msiexec /qn /norestart /x {89A12FD9-8FA0-4EB9-AE9A-34C7EB25C25B}
+start /wait msiexec /qn /norestart /x {25F3EC6C-BB03-4CEB-B36C-E656A9DD149E}
 
 :: HP DocProc
 start /wait msiexec /qn /norestart /x {676981B7-A2D9-49D0-9F4C-03018F131DA9}
@@ -2016,6 +2045,7 @@ start /wait msiexec /qn /norestart /x {DBE16A07-DDFF-4453-807A-212EF93916E0}
 
 :: HP Launch Box
 start /wait msiexec /qn /norestart /x {9CAB2212-0732-4827-8EC4-61D8EF0AA65B}
+start /wait msiexec /qn /norestart /x {5A847522-375C-4D05-BD3D-88C450CC047F}
 
 :: HP misc Help, eDocs and User Guide GUIDs (various versions for various products; most of these should be caught in the wildcard scan)
 start /wait msiexec /qn /norestart /x {11C9A461-DD9D-4C71-85A4-6DCE7F99CC44}
@@ -2052,6 +2082,12 @@ start /wait msiexec /qn /norestart /x {32A4CF00-9FAC-47c8-9B37-91CC23815D64}
 start /wait msiexec /qn /norestart /x {6357D25F-A9C9-4CC7-A1FB-0DCF344E7C40}
 start /wait msiexec /qn /norestart /x {1F670068-9589-4DC7-8FE4-1D0D13AF2526}
 start /wait msiexec /qn /norestart /x {E1AE0CB7-1333-4728-8520-CB3F88A252B4}
+
+:: HP Photosmart
+start /wait msiexec /qn /norestart /x {4E484899-4F93-4086-88BA-56BDDF47A776}
+start /wait msiexec /qn /norestart /x {582BA1F1-FAB4-41AD-A5E3-4A9535343461}
+start /wait msiexec /qn /norestart /x {BB3447F6-9553-4AA9-960E-0DB5310C5779}
+start /wait msiexec /qn /norestart /x {FE651900-D014-482F-AEBC-2928F57D1FB0}
 
 :: HP Picasso Media Center Add-In
 start /wait msiexec /qn /norestart /x {55979C41-7D6A-49CC-B591-64AC1BBE2C8B}
@@ -2180,6 +2216,7 @@ start /wait msiexec /qn /norestart /x {42DBA167-C25D-49CE-BBAF-DEC25E737DA8}
 :: HP Power Manager
 start /wait msiexec /qn /norestart /x {8704FEEF-A6A8-4E7E-B124-BD6122C66E2C}
 start /wait msiexec /qn /norestart /x {E35A3B13-78CD-4967-8AC8-AA9FDA693EDE}
+start /wait msiexec /qn /norestart /x {D8BCE5B9-67CF-4F3F-93AE-3ACC754C72EB}
 
 :: HP Product Detection
 start /wait msiexec /qn /norestart /x {A436F67F-687E-4736-BD2B-537121A804CF}
@@ -2212,16 +2249,19 @@ start /wait msiexec /qn /norestart /x {2856A1C2-70C5-4EC3-AFF7-E5B51E5530A2}
 start /wait msiexec /qn /norestart /x {E4A80DC6-8475-4AD9-9952-5E4437889563}
 start /wait msiexec /qn /norestart /x {6B7AB1ED-B64E-4545-A8E7-F9E071E12B6F}
 start /wait msiexec /qn /norestart /x {566BB063-0E28-4273-A748-690BE86A7E26}
+start /wait msiexec /qn /norestart /x {53B17A98-5BF0-40BC-AAFF-850A357975AC}
 
 :: HP QuickLook
 start /wait msiexec /qn /norestart /x {24795E98-3D9E-4661-BA6F-BC6A4FB820CE}
 
 :: HP QuickTransfer
 start /wait msiexec /qn /norestart /x {E7004147-2CCA-431C-AA05-2AB166B9785D}
+start /wait msiexec /qn /norestart /x {E517094C-06B6-419F-8FFD-EF4F57972130}
 
 :: HP QuickWeb
 start /wait msiexec /qn /norestart /x {BB4FC2AD-DF12-4EE1-8AA7-2C0A26B5E2FB}
 start /wait msiexec /qn /norestart /x {7861911B-4270-498A-8F7A-FCF0570F4877}
+start /wait msiexec /qn /norestart /x {8B52057C-15DB-433E-957C-E279BC7D07E3}
 
 :: HP Recovery Manager
 start /wait msiexec /qn /norestart /x {528AB81B-D65A-4AB0-A2B6-82B51A087D01}
@@ -2247,6 +2287,7 @@ start /wait msiexec /qn /norestart /x {C81D8576-F1B1-4E3A-9DC3-DF1B664962F0}
 :: HP Setup
 start /wait msiexec /qn /norestart /x {438363A8-F486-4C37-834C-4955773CB3D3}
 start /wait msiexec /qn /norestart /x {F5E7D9AF-60F6-4A30-87E3-4EA94D322CE1}
+start /wait msiexec /qn /norestart /x {5036764A-435D-40C9-869C-31085A3D741D}
 
 :: HP SimplePass // Disabled by /u/kamakaze_chickn for Tron; "fingerprint reader driver and can produce an error code in DevMan if missing"
 ::start /wait msiexec /qn /norestart /x {314FAD12-F785-4471-BCE8-AB506642B9A1}
@@ -2262,6 +2303,9 @@ start /wait msiexec /qn /norestart /x {42D10994-A566-495D-A5E7-D0C6B5C6B35C}
 
 :: HP Setup Manager 1.1.13253.3682
 start /wait msiexec /qn /norestart /x {AE2F1669-5B1F-47C5-B639-78D74DD0BCE4}
+
+:: HP Shop for Supplies (HPSSupply)
+start /wait msiexec /qn /norestart /x {AC35A885-0F8F-4857-B7DA-6E8DFB43E6B3}
 
 :: HP SmartWebPrinting
 start /wait msiexec /qn /norestart /x {8FF6F5CA-4E30-4E3B-B951-204CAAA2716A}
@@ -2324,6 +2368,10 @@ start /wait msiexec /qn /norestart /x {B1E569B6-A5EB-4C97-9F93-9ED2AA99AF0E}
 start /wait msiexec /qn /norestart /x {FB4BB287-37F9-4E27-9C4D-2D3882E08EFF}
 start /wait msiexec /qn /norestart /x {EE202411-2C26-49E8-9784-1BC1DBF7DE96}
 start /wait msiexec /qn /norestart /x {B60DCA15-56A3-4D2D-8747-22CF7D7B588B}
+start /wait msiexec /qn /norestart /x {6F44AF95-3CDE-4513-AD3F-6D45F17BF324}
+start /wait msiexec /qn /norestart /x {79C54A05-F146-4EA0-8A70-D4EFE6181E52}
+start /wait msiexec /qn /norestart /x {C595BE0A-1215-4A80-8765-23A0AAAE14EE}
+start /wait msiexec /qn /norestart /x {CA43FE4F-9FF2-4AD7-88F0-CC3BAC17B226}
 
 :: HP Support Information
 start /wait msiexec /qn /norestart /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992}
@@ -2331,6 +2379,7 @@ start /wait msiexec /qn /norestart /x {B2B7B1C8-7C8B-476C-BE2C-049731C55992}
 :: HP Support Solutions Framework
 start /wait msiexec /qn /norestart /x {D7D5F438-26EF-45AB-AB89-C476FBCF8584}
 start /wait msiexec /qn /norestart /x {348A1F5B-07B3-4436-9A47-FFE44EFE856E}
+start /wait msiexec /qn /norestart /x {55065080-504F-43BB-BE00-36B80D7D39A5}
 
 :: HP System Default Settings
 start /wait msiexec /qn /norestart /x {5C90D8CF-F12A-41C6-9007-3B651A1F0D78}
@@ -3261,6 +3310,9 @@ start /wait msiexec /qn /norestart /x {65B138AE-F636-4D4C-BA5D-A06E21E47C53}
 :: Sony Setting Utility Series
 start /wait msiexec /qn /norestart /x {A7DA438C-2E43-4C20-BFDA-C1F4A6208558}
 
+:: Sony SmartWi Connection Utility
+start /wait msiexec /qn /norestart /x {9B5F85CA-90D4-4AFC-BB37-32477FD0D2B9}
+
 :: Sony TrackID(TM) with BRAVIA (poor Shazzam clone)
 start /wait msiexec /qn /norestart /x {858B32BD-121C-4AC8-BD87-CE37C51C03E2}
 start /wait msiexec /qn /norestart /x {2F41EF61-A066-4EBF-84F8-21C1B317A780}
@@ -3598,6 +3650,9 @@ start /wait msiexec /qn /norestart /x {FE8D473A-6F06-4F99-B5F4-BED72B2A038C}
 
 :: uLead Burn.Now 4.5 4.5.0
 start /wait msiexec /qn /norestart /x {FB3A15FD-FC67-3A2F-892B-6890B0C56EA9}
+
+:: Uniblue SpeedUpMyPC
+start /wait msiexec /qn /norestart /x {E55B3271-7CA8-4D0C-AE06-69A24856E996}
 
 :: VIP Access (Lenovo-installed OEM bloatware for Verisign)
 start /wait msiexec /qn /norestart /x {E8D46836-CD55-453C-A107-A59EC51CB8DC}
