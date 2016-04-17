@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1-TRON + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
+:: Version:       1.1.2-TRON / Change lines that delete Chrome Local Storage to only remove data for websites, not extensions. Thanks to github:kezxo
+::                1.1.1-TRON + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
 ::                1.1.0-TRON + Add clearing of hidden low-level IE history folder for "untrusted" browsing history "C:\Users\%username%\AppData\Local\Microsoft\Windows\History\low\*"
 ::                1.0.9-TRON / Remove /s (recurse) switch from 'del /F /Q "%%x\Documents\*.tmp"' and 'del /F /Q "%%x\My Documents\*.tmp"' commands. /u/toomasmolder reported this deleted some .tmplate files (unintended behavior)
 ::                1.0.8-TRON / Switch to use of WIN_VER_NUM variable (inherited from Tron.bat). Note that this breaks standalone run functionality
@@ -34,8 +35,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.1-TRON
-set SCRIPT_UPDATED=2016-03-20
+set SCRIPT_VERSION=1.1.2-TRON
+set SCRIPT_UPDATED=2016-04-17
 
 
 ::::::::::::::::::::::::::
