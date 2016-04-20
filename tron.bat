@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.0.0 . No changes, increment version number only. Hello from Antarctica!
+:: Version:       9.0.0 . No changes, increment version number only. Antarctica Edition. Hello from the frozen continent!
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
