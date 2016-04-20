@@ -149,6 +149,7 @@ Price Check by AOL
 PrivDog
 Productivity%%Toolbar for IE
 QuickShare
+QuickTime%%
 Qwiklinx
 RadioRage%%
 Raptr
