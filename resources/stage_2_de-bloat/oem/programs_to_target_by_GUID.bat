@@ -2650,6 +2650,12 @@ start /wait msiexec /qn /norestart /x {8AFC7125-0E25-47AA-8444-9DA7940ABBC4}
 :: KODAK Share Button App
 start /wait msiexec /qn /norestart /x {DE9B51D7-C575-4587-A848-DE95CD7F7684}
 
+:: LeapFrog Connect
+start /wait msiexec /qn /norestart /x {F9233F02-5617-4BDC-8EC6-4B798EDFE6F4}
+
+:: LeapFrog LeapPad Explorer Plugin
+start /wait msiexec /qn /norestart /x {B124E3EA-59C5-462B-98EF-374099EA7A61}
+
 :: Lenovo Battery Gauge
 start /wait msiexec /qn /norestart /x {B8D3ED8D-A295-44C2-8AE1-56823D44AD1F}
 
@@ -3522,6 +3528,7 @@ start /wait msiexec /qn /norestart /x {FF07604E-C860-40E9-A230-E37FA41F103A}
 start /wait msiexec /qn /norestart /x {92C7DC44-DAD3-49FE-B89B-F92C6BA9A331}
 start /wait msiexec /qn /norestart /x {39187A4B-7538-4BE7-8BAD-9E83303793AA}
 start /wait msiexec /qn /norestart /x {05A55927-DB9B-4E26-BA44-828EBFF829F0}
+start /wait msiexec /qn /norestart /x {A14962A7-2B7D-456E-BFCD-F54E3A88D41F}
 
 :: TOSHIBA Bulletin Board
 start /wait msiexec /qn /norestart /x {C14518AF-1A0F-4D39-8011-69BAA01CD380}
@@ -3549,6 +3556,7 @@ start /wait msiexec /qn /norestart /x {11244D6B-9842-440F-8579-6A4D771A0D9B}
 start /wait msiexec /qn /norestart /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1}
 start /wait msiexec /qn /norestart /x {59358FD4-252B-4B38-AB81-955C491A494F}
 start /wait msiexec /qn /norestart /x {2C486987-D447-4E36-8D61-86E48E24199C}
+start /wait msiexec /qn /norestart /x {C2F94B5E-201A-4754-8F2F-4395E1D90DA3}
 
 :: TOSHIBA Extended Tiles for Windows Mobility Center // GUID shared with TOSHIBA Disc Creator
 start /wait msiexec /qn /norestart /x {5DA0E02F-970B-424B-BF41-513A5018E4C0}
@@ -3559,12 +3567,18 @@ start /wait msiexec /qn /norestart /x {F67FA545-D8E5-4209-86B1-AEE045D1003F}
 :: TOSHIBA Flash Cards Support Utility
 start /wait msiexec /qn /norestart /x {617C36FD-0CBE-4600-84B2-441CEB12FADF}
 
+:: TOSHIBA Hardware Setup
+start /wait msiexec /qn /norestart /x {5279374D-87FE-4879-9385-F17278EBB9D3}
+
 :: TOSHIBA HDD/SDD Alert 3.1.64.x
 start /wait msiexec /qn /norestart /x {D4322448-B6AF-4316-B859-D8A0E84DCB38}
 
 :: TOSHIBA Media Controller and TOSHIBA Media Controller Plug-in 1.0.5.11
 start /wait msiexec /qn /norestart /x {983CD6FE-8320-4B80-A8F6-0D0366E0AA22}
 start /wait msiexec /qn /norestart /x {F26FDF57-483E-42C8-A9C9-EEE1EDB256E0}
+
+:: Toshiba Online Backup
+star /wait msiexec /qn /norestart /x {C57BCDE1-7CB9-467D-B3BA-7E119916CDC1}
 
 :: Toshiba Password Utility
 start /wait msiexec /qn /norestart /x {26BB68BB-CF93-4A12-BC6D-A3B6F53AC8D9}
@@ -3617,6 +3631,9 @@ start /wait msiexec /qn /norestart /x {3FBF6F99-8EC6-41B4-8527-0A32241B5496}
 start /wait msiexec /qn /norestart /x {B040D5C9-C9AA-430A-A44E-696656012E61}
 start /wait msiexec /qn /norestart /x {EFCCEE68-1317-40A5-B785-C07AD2769338}
 
+:: TOSHIBA Supervisor Password
+start /wait msiexec /qn /norestart /x {51B4E156-14A5-4904-9AE4-B1AA2A0E46BE}
+
 :: Toshiba TEMPRO
 start /wait msiexec /qn /norestart /x {F76F5214-83A8-4030-80C9-1EF57391D72A}
 
@@ -3633,6 +3650,9 @@ start /wait msiexec /qn /norestart /x {FBFCEEA5-96EA-4C8E-9262-43CBBEBAE413}
 :: TOSHIBA Web Camera Application
 start /wait msiexec /qn /norestart /x {5E6F6CF3-BACC-4144-868C-E14622C658F3}
 start /wait msiexec /qn /norestart /x {6F3C8901-EBD3-470D-87F8-AC210F6E5E02}
+
+:: TOSHIBA Wireless Display Monitor
+start /wait msiexec /qn /norestart /x {617773AE-ADBA-4479-BB04-65FE7758B35C}
 
 :: Toshiba Wireless LAN Indicator
 start /wait msiexec /qn /norestart /x {CDADE9BC-612C-42B8-B929-5C6A823E7FF9}
@@ -3656,6 +3676,9 @@ start /wait msiexec /qn /norestart /x {E55B3271-7CA8-4D0C-AE06-69A24856E996}
 
 :: VIP Access (Lenovo-installed OEM bloatware for Verisign)
 start /wait msiexec /qn /norestart /x {E8D46836-CD55-453C-A107-A59EC51CB8DC}
+
+:: VTech Download Agent Libarary
+start /wait msiexec /qn /norestart /x {40C4903E-EDFB-4CAE-A611-41FEBA585921}
 
 :: Real Networks Video Downloader, VideoManager, VideoToolkit
 start /wait msiexec /qn /norestart /x {62796191-6F12-4ABE-BA8B-B4D4A266C997}
