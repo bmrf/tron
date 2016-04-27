@@ -317,6 +317,7 @@ start /wait msiexec /qn /norestart /x {8E5E2654-AD2D-48bf-AC2D-D17F00898D06}
 :: Avery Toolbar
 start /wait msiexec /qn /norestart /x {41565256-3700-A76A-76A7-7A786E7484D7}
 start /wait msiexec /qn /norestart /x {8D20B4D7-3422-4099-9332-39F27E617A6F}
+start /wait msiexec /qn /norestart /x {41565256-3700-A76A-76A7-A758B70C1D00}
 
 :: AVG Web TuneUp Toolbar
 start /wait msiexec /qn /norestart /x {95B7759C-8C7F-4BF1-B163-73684A933233}
