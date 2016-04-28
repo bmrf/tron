@@ -541,23 +541,33 @@ if /i %AUTORUN%==yes goto execute_jobs
 :: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
-	fsutil dirty query %systemdrive% >NUL
-	if /i not !ERRORLEVEL!==0 (
-		color cf
-		cls
-		echo.
-		echo  ERROR
-		echo.
-		echo  Tron doesn't think it is running as an Administrator.
-		echo  Tron MUST be run with full Administrator rights to
-		echo  function correctly.
-		echo.
-		echo  Close this window and re-run Tron as an Administrator.
-		echo  ^(right-click Tron.bat and click "Run as Administrator"^)
-		echo.
-		pause
-		exit /b 1
-	)
+
+:checkPrivileges
+NET FILE 1>NUL 2>NUL
+if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges )
+
+:getPrivileges
+if '%1'=='ELEV' (echo ELEV & shift /1 & goto gotPrivileges)
+ECHO.
+ECHO **************************************
+ECHO Invoking UAC for Privilege Escalation
+ECHO **************************************
+setlocal DisableDelayedExpansion
+set "batchPath=%~0"
+setlocal EnableDelayedExpansion
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\OEgetPrivileges.vbs"
+ECHO args = "ELEV " >> "%temp%\OEgetPrivileges.vbs"
+ECHO For Each strArg in WScript.Arguments >> "%temp%\OEgetPrivileges.vbs"
+ECHO args = args ^& strArg ^& " "  >> "%temp%\OEgetPrivileges.vbs"
+ECHO Next >> "%temp%\OEgetPrivileges.vbs"
+ECHO UAC.ShellExecute "!batchPath!", args, "", "runas", 1 >> "%temp%\OEgetPrivileges.vbs"
+"%SystemRoot%\System32\WScript.exe" "%temp%\OEgetPrivileges.vbs" %*
+exit /B
+
+:gotPrivileges
+if '%1'=='ELEV' shift /1
+setlocal & pushd .
+cd /d %~dp0
 )
 SETLOCAL DISABLEDELAYEDEXPANSION
 
