@@ -2083,6 +2083,9 @@ start /wait msiexec /qn /norestart /x {6357D25F-A9C9-4CC7-A1FB-0DCF344E7C40}
 start /wait msiexec /qn /norestart /x {1F670068-9589-4DC7-8FE4-1D0D13AF2526}
 start /wait msiexec /qn /norestart /x {E1AE0CB7-1333-4728-8520-CB3F88A252B4}
 
+:: HP PC Hardware Diagnostics UEFI
+start /wait msiexec /qn /norestart /x {DD43EA67-DAF3-4879-BFF7-E534675BDEA5}
+
 :: HP Photosmart
 start /wait msiexec /qn /norestart /x {4E484899-4F93-4086-88BA-56BDDF47A776}
 start /wait msiexec /qn /norestart /x {582BA1F1-FAB4-41AD-A5E3-4A9535343461}
