@@ -1798,6 +1798,7 @@ start /wait msiexec /qn /norestart /x {85A42FF0-F0D0-44A3-B226-C124D6E8B1D5}
 :: HP 64 Bit HP CIO Components Installer
 start /wait msiexec /qn /norestart /x {FF21C3E6-97FD-474F-9518-8DCBE94C2854}
 start /wait msiexec /qn /norestart /x {BC741628-0AFC-405C-8946-DD46D1005A0A}
+start /wait msiexec /qn /norestart /x {345F3F90-0505-4EDF-B7A9-5E3AC1AC6CE4}
 
 :: HP ActiveCheck component for HP Active Support Libary
 start /wait msiexec /qn /norestart /x {254C37AA-6B72-4300-84F6-98A82419187E}
