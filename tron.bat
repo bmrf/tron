@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.0.0 . No changes, increment version number only. Antarctica Edition. Hello from the frozen continent!
+:: Version:       9.0.1 + tron.bat:prep: Collect system time zone and store it in the TIME_ZONE variable. Displayed in log header and config dump screens
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -158,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.0.0
-set SCRIPT_DATE=2016-04-19
+set SCRIPT_VERSION=9.0.1
+set SCRIPT_DATE=2016-05-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -174,6 +174,7 @@ set TARGET_METRO=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
+for /f "delims=" %%i in ('tzutil /g') do set TIME_ZONE=%%i
 set HELP=no
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
@@ -518,6 +519,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
+	echo    TIME_ZONE:              !TIME_ZONE!
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
 	echo.
@@ -778,6 +780,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call functions\log.bat "                          Command-line switches: %*"
+	call functions\log.bat "                          System time zone: %TIME_ZONE%"
 	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 	call functions\log.bat "-------------------------------------------------------------------------------"
@@ -1073,6 +1076,7 @@ call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITEC
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line switches: %*"
 call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
+call functions\log.bat "                          System time zone: %TIME_ZONE%"
 call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
 call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
