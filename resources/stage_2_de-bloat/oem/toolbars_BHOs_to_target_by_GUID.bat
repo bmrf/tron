@@ -299,6 +299,8 @@ start /wait msiexec /qn /norestart /x {79A765E1-C399-405B-85AF-466F52E918B0}
 start /wait msiexec /qn /norestart /x {86D4B82A-ABED-442A-BE86-96357B70F4FE}
 start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {F084395C-40FB-4DB3-981C-B51E74E1E83D}
+start /wait msiexec /qn /norestart /x {57434C32-2D56-3700-76A7-A758B70C1D00}
+start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C2802}
 
 :: Astrology.com Toolbar
 start /wait msiexec /qn /norestart /x {ea184a40-b71a-4aa7-b3be-596349038fa0}
@@ -599,6 +601,9 @@ start /wait msiexec /qn /norestart /x {2FA77785-00C3-A920-6452-D4FE5C9C129F}
 
 :: DDealEXpreuss
 start /wait msiexec /qn /norestart /x {25F259ED-12F6-429F-5783-527C3E2F8586}
+
+:: DealerToolbar
+start /wait msiexec /qn /norestart /x {96AB7C32-237F-49DB-B8DF-D72D7C5C4996}
 
 :: DealNoDeal
 start /wait msiexec /qn /norestart /x {37476589-E48E-439E-A706-56189E2ED4C4}
@@ -1030,6 +1035,10 @@ start /wait msiexec /qn /norestart /x {90eee664-34b1-422a-a782-779af65cdf6d}
 :: InternetDownload Toolbar
 start /wait msiexec /qn /norestart /x {376CA00C-3F95-46F7-8F04-E69906E52A1F}
 
+:: Internet Explorer Toolbar by SweetPacks
+start /wait msiexec /qn /norestart /x {80F3F10B-A177-4494-93CE-98090D819093}
+start /wait msiexec /qn /norestart /x {DD85D6BF-4787-4A93-99A5-3F0CF0AE8834}
+
 :: iNTERNET TURBO Toolbar
 start /wait msiexec /qn /norestart /x {09152f0b-739c-4dec-a245-1aa8a37594f1}
 start /wait msiexec /qn /norestart /x {B69EF583-75E4-4C52-B912-C711D937D648}
@@ -1294,6 +1303,7 @@ start /wait msiexec /qn /norestart /x {08234A0D-CF39-4DCA-99F0-0C5CB496DA81}
 
 :: MSN Toolbar Platform
 start /wait msiexec /qn /norestart /x {C9D43B38-34AD-4EC2-B696-46F42D49D174}
+start /wait msiexec /qn /norestart /x {66468F4D-BC4E-470C-9093-B3B6A1BB378C}
 
 :: movies Toolbar
 start /wait msiexec /qn /norestart /x {88E96402-3BBD-02D9-0A36-6FB806AEE04E}
@@ -1968,7 +1978,6 @@ start /wait msiexec /qn /norestart /x {4FFBB818-B13C-11E0-931D-B2664824019B}_is1
 :: SuperOptimizer
 start /wait msiexec /qn /norestart /x {1146AC44-2F03-4431-B4FD-889BC837521F}
 
-
 :: SweetIM for Messenger 3.6 / SweetIM Toolbar
 start /wait msiexec /qn /norestart /x {A81A974F-8A22-43E6-9243-5198FF758DA1}
 start /wait msiexec /qn /norestart /x {A0C9DF2B-89B5-4483-8983-18A68200F1B4}
@@ -2306,7 +2315,7 @@ start /wait msiexec /qn /norestart /x {44cd9a5d-138e-4764-b6f4-1bed50a72405}
 start /wait msiexec /qn /norestart /x {D62304BE-D5D3-4CCF-8973-123909491ADB}
 start /wait msiexec /qn /norestart /x {3f0a76b2-932c-4f0e-914b-480f3d689529}
 
-:: YTD Toolbar v7.2 / v8.6 / v8.9
+:: YTD Toolbar
 start /wait msiexec /qn /norestart /x {DA36FB9E-9020-47E6-9BDE-B33A6E36F0F4}
 start /wait msiexec /qn /norestart /x {4BBD417F-13B6-4477-B7C2-AE705864058D}
 start /wait msiexec /qn /norestart /x {5CDFBF03-D1B2-466B-AA19-B10FDA43E2BB}
@@ -2332,3 +2341,6 @@ start /wait msiexec /qn /norestart /x {3033124f-06bf-4829-873a-310a125b4d4c}
 
 :: Zynga Toolbar
 start /wait msiexec /qn /norestart /x {7b13ec3e-999a-4b70-b9cb-2617b8323822}
+
+:: Zywaver Sidebar
+start /wait msiexec /qn /norestart /x {5C65ECC1-68F7-4550-B083-DF4AB05A84EE}
