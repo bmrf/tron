@@ -149,7 +149,7 @@ Price Check by AOL
 PrivDog
 Productivity%%Toolbar for IE
 QuickShare
-QuickTime%%
+%%QuickTime%%
 Qwiklinx
 RadioRage%%
 Raptr
@@ -166,7 +166,7 @@ Roxio%%
 SaveOn%%
 ScorpionSave%%
 Search Assistant%%
-Search Protectio%%
+Search Pro%%
 Search Setting%%
 Search Toolba%%
 SelectionLinks
@@ -204,7 +204,7 @@ VAIO%%
 VGClient%%
 Video Converter%%
 Video Player
-VideoDownloadConverter Internet Explorer Toolbar
+VideoDownloadConverter%%
 VideoFileDownload
 VisualBee%%
 Wajam
