@@ -49,8 +49,8 @@ start /wait msiexec /qn /norestart /x {4D0F42CF-1693-43D9-BDC8-19141D023EE0}
 :: Acer Instant Update Service
 start /wait msiexec /qn /norestart /x {D32367AC-8FCA-4DE8-A2C6-037AE14B4001}
 
-:: Acer Launch Manager
-start /wait msiexec /qn /norestart /x {C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
+:: Acer Launch Manager // disabled by /u/vocatus for Tron, after user reports that it broke wireless button functionality
+::start /wait msiexec /qn /norestart /x {C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
 
 :: Acer Portal
 start /wait msiexec /qn /norestart /x {A5AD0B17-F34D-49BE-A157-C8B3D52ACD13}
