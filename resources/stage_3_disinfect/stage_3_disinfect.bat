@@ -52,7 +52,7 @@ REM call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: MBAM (MalwareBytes Anti-Malware)
 title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
-	call functions\log.bat "%CUR_DATE% %TIME% !  Malwarebytes installation detected. Skipping MBAM installation."
+	call functions\log.bat "%CUR_DATE% %TIME%    MBAM installation detected. Skipping installation."
 	goto skip_mbam
 )
 if /i %SKIP_MBAM_INSTALL%==yes (
@@ -61,20 +61,21 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM & remove the desktop icon
 	if /i %DRY_RUN%==no (
-		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.2.0.1024.exe" /verysilent
+		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.2.1.1043.exe" /verysilent
 		::"Malwarebytes Anti-Malware v2.2.1.1043.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" 2>NUL
 		
-		
 		:: Scan for and launch appropriate architecture version
-		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" (
-			start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
-		) else (
+		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
+		if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" (
 			start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
-			)
+		) else (
+			REM Failsafe
+			call functions\log.bat "%CUR_DATE% %TIME% ! Couldn't find MBAM.exe! Not launching MBAM."
+		)
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 	call functions\log.bat "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM window!"
