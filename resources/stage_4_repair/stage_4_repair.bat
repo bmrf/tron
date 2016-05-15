@@ -145,7 +145,7 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 :: Windows 10 version
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
-	call functions\log.bat "%CUR_DATE% %TIME% !  THIS TAKES A WHILE - BE PATIENT!!"
+	call functions\log.bat "%CUR_DATE% %TIME%    THIS TAKES A WHILE - BE PATIENT!!"
 	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
