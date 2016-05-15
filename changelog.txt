@@ -15,6 +15,95 @@ Version number legend:
 
 
 ########################
+# v9.1.0 // 2016-05-16 # // AQ
+########################
+tron.bat                         v9.1.0
+ + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
+ * tron.bat:update_check: Break all Update Check code out of tron.bat and into a separate function
+ + tron.bat:update_check: Add SKIP_UPDATE_CHECK variable. Not currently toggleable with command-line switch, maybe in the future
+ * tron.bat:errors:       Improve code handling for when various errors are detected (update check failed, SMART error, etc)
+ / tron.bat:safe_mode:    Reword the Safe Mode warning dialogue to be less severe, since it's not the end of the world if Tron isn't run in Safe Mode 
+ / tron.bat:formatting:   Add a single blank line before displaying the log trailer, to be visually consistent with log header
+
+Stage 0: Prep
+ . stage_0_prep.bat              v1.0.7
+ . rkill                         v2.8.4.0
+ . ProcessKiller                 v2.0.0-TRON
+ . TDSS Killer                   v3.1.0.7
+ * McAfee Stinger                v12.1.0.2004
+ . erunt                         v1.1j
+ * caffeine                      v1.6.2.0 
+     * Special version with a statically-linked Visual C++ library. This should help avoid 
+       the "this application's side-by-side configuration is incorrect" error on some versions 
+       of Windows. Big thanks to Tom from Zhorn Software for providing this.
+ 
+Stage 1: Tempclean
+ . stage_1_tempclean.bat         v1.1.0
+ * CCleaner                      v5.17.5590
+ . BleachBit                     v1.10
+ . finddupe.exe                  v1.23
+ . TempFileCleanup               v1.1.2-TRON
+ . USB Device Cleanup            v1.2.0
+
+Stage 2: De-bloat
+ * stage_2_de-bloat.bat          v1.1.4
+     ! OneDrive: Minor logging fix, suppress an irrelevant error message
+ * \oem\programs_to_target_by_name.txt
+     + Add QuickTime to list of programs to remove, due to the Apple security advisory and decision to stop support
+ * \oem\programs_to_target_by_GUID.bat
+ * \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat         v1.0.2
+ . Sophos Virus Removal Tool     v2.5.5
+ . Kaspersky Virus Removal Tool  v15.0.19.0
+ . Malwarebytes Anti-Malware     v2.2.1.1043
+
+Stage 4: Repair
+ . stage_4_repair.bat            v1.0.7
+ . subinacl.exe                  v5.2.3790.1180
+ . Repair file extensions        v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat             v1.1.3
+ * 7-Zip                         v16.00        (multi-language)
+ * Adobe Flash Player            v21.0.0.242   (language ignored)
+ * Adobe Reader                  v11.0.16      (English-only; replace with your language version if necessary)
+ * Java Runtime Environment      8u92          (language ignored)
+ . Windows updates               Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ * stage_6_optimize.bat          v1.0.3
+    * Clarify log messages if we're skipping defrag because of an error
+ . smartctl                      v6.4.0 2015-06-04 r4109
+ . Defraggler                    v2.21.0.993
+
+Stage 7: Wrap-up
+ . SwithMail.exe                 v2.1.5.0
+
+Stage 8: Manual tools
+ . .NET Repair Tool              v4.5.52207.36207
+ . ADSSpy                        v1.11.0.0
+ * AdwCleaner                    v5.1.1.5
+ . Autoruns                      v13.51
+ . BlueScreenView                v1.55
+ * ComboFix                      v16.4.29.1
+ * Junkware Removal Tool         v8.0.6.0
+ . Net Adapter Repair            v1.2
+ . PC Hunter                     v1.35 x64
+ . PC Hunter                     v1.35 x86
+ . Remote Support Reboot Config  v1.0.0
+ . Safe Mode Boot Selector.bat   v1.0.0
+ . ServicesRepair                v1.0.0.3
+ . Spybot Anti-Beacon            v1.5.0.35
+ . Tron Reset Tool               v1.0.0
+ . UserBenchMark                 v2.6.0.0
+ 
+
+
+########################
 # v9.0.0 // 2016-04-19 # // Antarctica Edition
 ########################
 tron.bat                         v9.0.0
@@ -40,7 +129,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  . \oem\programs_to_target_by_GUID.bat
  . \oem\toolbars_BHOs_to_target_by_GUID.bat
@@ -123,7 +212,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  * \oem\programs_to_target_by_GUID.bat
     + Add many more entries. Thanks to /u/kronflux
@@ -210,7 +299,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  * \oem\programs_to_target_by_GUID.bat
  * \oem\toolbars_BHOs_to_target_by_GUID.bat
@@ -297,7 +386,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  . \oem\programs_to_target_by_GUID.bat
  . \oem\toolbars_BHOs_to_target_by_GUID.bat
@@ -379,7 +468,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  . \oem\programs_to_target_by_GUID.bat
  . \oem\toolbars_BHOs_to_target_by_GUID.bat
@@ -464,7 +553,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  * \oem\programs_to_target_by_name.txt
     + Add DriverUpdate by SlimWare Utilities (scareware). Thanks to /u/staticextasy
 
@@ -555,7 +644,7 @@ Stage 1: Tempclean
  . USB Device Cleanup            v1.2.0
 
 Stage 2: De-bloat
- . stage_2_de-bloat.bat             v1.1.3
+ . stage_2_de-bloat.bat          v1.1.3
  . \oem\programs_to_target_by_name.txt
  . \oem\programs_to_target_by_GUID.bat
  . \oem\toolbars_BHOs_to_target_by_GUID.bat
