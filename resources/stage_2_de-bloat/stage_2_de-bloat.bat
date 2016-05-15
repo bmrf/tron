@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
+:: Version:       1.1.4 ! OneDrive: Minor fix for logging error, suppress an irrelevant error message
+::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
 ::                1.1.2 * Metro: Add missing log message about use of -m switch
 ::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
 ::                1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
@@ -21,8 +22,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.3
-set STAGE_2_SCRIPT_DATE=2016-02-05
+set STAGE_2_SCRIPT_VERSION=1.1.4
+set STAGE_2_SCRIPT_DATE=2016-05-15
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -126,7 +127,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 		)
 
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
-	for /F %%i in ('dir /b "%USERPROFILE%\OneDrive\*.*"') do (
+	for /F %%i in ('dir /b "%USERPROFILE%\OneDrive\*.*" 2^>nul') do (
 		call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
 		goto skip_onedrive_removal
 	)
@@ -146,7 +147,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 				reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 				reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 			)
-		call functions\log.bat "%CUR_DATE% %TIME%   Done."
+		call functions\log.bat "%CUR_DATE% %TIME%    Done."
 	)
 )
 :skip_onedrive_removal
