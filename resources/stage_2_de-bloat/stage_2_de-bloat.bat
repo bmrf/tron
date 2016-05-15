@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! OneDrive: Minor fix for logging error, suppress an irrelevant error message
+:: Version:       1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
 ::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
 ::                1.1.2 * Metro: Add missing log message about use of -m switch
 ::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
