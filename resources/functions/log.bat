@@ -1,4 +1,4 @@
-:: Description: Tron's log function
+:: Tron's log function
 
 :: %1 reference contains the first argument passed to the function. When the
 :: whole argument string is wrapped in double quotes, it is sent as an argument.
