@@ -4,7 +4,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.0.1 + tron.bat:prep: Collect system time zone and store it in the TIME_ZONE variable. Displayed in log header and config dump screens
+:: Version:       9.1.0 + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
+::                      * tron.bat:update_check: Break all Update Check code out of tron.bat and into a separate function
+::                      + tron.bat:update_check: Add SKIP_UPDATE_CHECK variable. Not currently toggleable with command-line switch, maybe in the future
+::                      * tron.bat:errors:       Improve code handling for when various errors are detected (update check failed, SMART error, etc)
+::                      / tron.bat:safe_mode:    Reword the Safe Mode warning dialogue to be less severe, since it's not the end of the world if Tron isn't run in Safe Mode 
+::                      / tron.bat:formatting:   Add a single blank line before displaying the log trailer, to be visually consistent with log header
 ::
 :: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
 ::
@@ -158,8 +163,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.0.1
-set SCRIPT_DATE=2016-05-xx
+set SCRIPT_VERSION=9.1.0
+set SCRIPT_DATE=2016-05-16
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -174,14 +179,16 @@ set TARGET_METRO=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
-for /f "delims=" %%i in ('tzutil /g') do set TIME_ZONE=%%i
 set HELP=no
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
+set SKIP_UPDATE_CHECK=no
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
+:: Get Time Zone name and value
+for /f "USEBACKQ skip=1 delims=" %%i IN (`%WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
 :: Resume-related stuff begin (resuming from an interrupted run)
   set RESUME_STAGE=0
   set RESUME_FLAGS=0
@@ -254,6 +261,7 @@ call :parse_cmdline_args %*
 
 :: PREP: Execute help if requested
 if /i %HELP%==yes (
+	cls
 	echo.
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
@@ -305,7 +313,7 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
-:: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail.
+:: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail
 if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 	if /i %DEV_MODE%==no (
 		color 0c
@@ -369,89 +377,16 @@ if /i %RESUME_DETECTED%==yes (
 	goto %RESUME_STAGE%
 )
 
+
 :: PREP: Update check
-:: Skip this job if we're doing a dry run or if AUTORUN is set
-if /i %DRY_RUN%==yes goto skip_update_check
-if /i %AUTORUN%==yes goto skip_update_check
-:: Use wget to fetch sha256sums.txt from the repo and parse through it. Extract latest version number and release date from last line (which is always the latest release)
-stage_0_prep\check_update\wget.exe --no-check-certificate %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
-:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
-if /i %ERRORLEVEL%==0 (
-	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
-	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%a
-	)
-if /i %ERRORLEVEL%==0 (
-	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
-	set REPO_SCRIPT_DATE=%WORKING2%
-	)
-
-
-:: Reset window title since wget clobbers it
-title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
-
-
-:: Notify if an update was found
-SETLOCAL ENABLEDELAYEDEXPANSION
-if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
-	set CHOICE=y
-	color 8a
+if /i %DRY_RUN%==yes set SKIP_UPDATE_CHECK=yes
+if /i %AUTORUN%==yes set SKIP_UPDATE_CHECK=yes
+if /i %SKIP_UPDATE_CHECK%==no (
 	cls
 	echo.
-	echo  ^^! A newer version of Tron is available on the official repo.
-	echo.
-	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
-	echo.
-	echo    Option 1: Sync directly from repo using BT Sync read-only key:
-	echo     %REPO_BTSYNC_KEY%
-	echo.
-	echo    Option 2: Download the latest self-extracting .exe yourself:
-	echo     %REPO_URL%
-	echo.
-	echo    Option 3: Automatically download latest .exe to the desktop
-	echo              ^(This copy of Tron will self-destruct afterwards^)
-	echo.
-	set /p CHOICE= Auto-download latest version now? [Y/n]:
-	if /i !CHOICE!==y (
-		color 8B
-		cls
-		echo.
-		echo %TIME%   Downloading new version to the desktop, please wait...
-		echo.
-		stage_0_prep\check_update\wget.exe --no-check-certificate "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
-		echo.
-		echo %TIME%   Download finished.
-		echo.
-		echo %TIME%   Verifying SHA256 pack integrity, please wait...
-		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
-		if !ERRORLEVEL!==0 (
-			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
-			echo.
-			echo %TIME%   This copy of Tron will now self-destruct.
-			echo.
-			popd
-			pause
-			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes&& goto self_destruct
-		) else (
-			color 0c
-			echo %TIME% ^^! ERROR: Download FAILED the integrity check. Recommend manually
-			echo                      downloading latest version. Will delete failed file and
-			echo                      exit.
-			echo.
-			pause
-			REM Clean up after ourselves
-			del /f /q "%USERPROFILE%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
-			del /f /q "%TEMP%\sha256sums.txt"
-			exit /b 1
-		)
-	)
-	color 0f
+	call functions\log.bat "  Checking for updated Tron version..."
+	call functions\update_check.bat
 )
-ENDLOCAL DISABLEDELAYEDEXPANSION
-:: Clean up after ourselves
-if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
-:skip_update_check
 
 
 :: PREP: Execute config dump if requested
@@ -509,6 +444,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    TEMP:                   !TEMP!
 	echo    TIME:                   %TIME%
+	echo    TIME_ZONE_NAME:         %TIME_ZONE_NAME%
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
 	echo    REPO_BTSYNC_KEY:        %REPO_BTSYNC_KEY%
 	echo    REPO_URL:               %REPO_URL%
@@ -519,7 +455,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
 	echo    SCRIPT_DATE:            %SCRIPT_DATE%
-	echo    TIME_ZONE:              !TIME_ZONE!
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
 	echo.
@@ -540,7 +475,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 ::::::::::::::::::::::::
 :: ADMIN RIGHTS CHECK ::
 ::::::::::::::::::::::::
-:: We skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
+:: Skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
 	fsutil dirty query %systemdrive% >NUL
@@ -603,14 +538,16 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 SETLOCAL ENABLEDELAYEDEXPANSION
 set CHOICE=y
 if /i not "%SAFE_MODE%"=="yes" (
-	color 0c
+	color 0e
 	cls
 	echo.
 	echo  WARNING
 	echo.
-	echo  The system is not in safe mode. Tron functions best
-	echo  in "Safe Mode with Networking" in order to download
-	echo  Windows and anti-virus definition updates.
+	echo  The system isn't in Safe Mode. Safe Mode is NOT required,
+	echo  and sometimes Tron can actually work as well or better in
+	echo  "regular" mode, but generally I recommend first running in
+	echo  Safe Mode, then if there are still issues, re-running in 
+	echo  "regular" mode.
 	echo.
 	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
 	if /i "!CHOICE!"=="y" (
@@ -780,7 +717,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call functions\log.bat "                          Command-line switches: %*"
-	call functions\log.bat "                          System time zone: %TIME_ZONE%"
+	call functions\log.bat "                          Time zone name: %TIME_ZONE_NAME%"
 	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 	call functions\log.bat "-------------------------------------------------------------------------------"
@@ -790,6 +727,10 @@ if /i %RESUME_DETECTED%==no (
 :: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. All commands will display verbose output when possible."
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
+
+
+:: PREP: Tell us if the update check failed
+if %WARNINGS_DETECTED%==yes_update_check_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
 
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
@@ -998,9 +939,12 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
-	bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-	bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-	bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
+	if %DRY_RUN%==no (
+		bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+		bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+		bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+	)
 	del /f /q %TEMP%\tron_smart_results.txt 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
@@ -1040,7 +984,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
-	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot disabled. Recommend rebooting as soon as possible."
+	call functions\log.bat "%CUR_DATE% %TIME%   Auto-reboot (-r) not selected. Reboot as soon as possible."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME% ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
 )
@@ -1065,18 +1009,28 @@ if /i %SELF_DESTRUCT%==yes (
 )
 
 
-:: Display and log the job summary
-:: Color window based on run results so we can see at a glance if it's done
+:: Error checking. Color the window based on run results so we can see at a glance if it's done
 color 2f
-if /i %WARNINGS_DETECTED%==yes color e0
-if /i %ERRORS_DETECTED%==yes color cf
+:: Were warning detected?
+if /i not %WARNINGS_DETECTED%==no (
+	color e0
+	call functions\log.bat "%CUR_DATE% %TIME% ! WARNINGS were detected. Recommend reviewing the log file."
+) 
+:: Were errors detected?
+if /i not %ERRORS_DETECTED%==no (
+	color cf
+	call functions\log.bat "%CUR_DATE% %TIME% ! ERRORS were detected. Review the log file."
+)
+
+:: Display and log the job summary
+echo.
 call functions\log.bat "-------------------------------------------------------------------------------"
 call functions\log.bat "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%) complete"
 call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line switches: %*"
+call functions\log.bat "                          Time zone name: %TIME_ZONE_NAME%"
 call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-call functions\log.bat "                          System time zone: %TIME_ZONE%"
 call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
 call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
@@ -1125,6 +1079,7 @@ if /i %SELF_DESTRUCT%==yes (
 	)
 
 :end_and_skip_shutdown
+echo.
 if /i %NO_PAUSE%==no pause
 ENDLOCAL
 exit /B
