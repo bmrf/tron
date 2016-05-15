@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
+:: Version:       1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
+::                1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
 ::                1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
 ::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
 ::                1.0.4 ! Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
@@ -17,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.6
-set STAGE_0_SCRIPT_DATE=2016-02-19
+set STAGE_0_SCRIPT_VERSION=1.0.7
+set STAGE_0_SCRIPT_DATE=2016-04-17
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -70,7 +71,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here for MORE THAN 20 minutes, kill explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here for more than 20 min, kill explorer64.exe and explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -151,11 +152,17 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: McAfee Stinger
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
-call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
-call functions\log.bat "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
-if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+:: First check if .NET 3.5 is installed, since Stinger relies on it
+reg query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install | find /i "0x1" > nul
+if %ERRORLEVEL%==0 (
+	title Tron v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
+	if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+) else (
+	call functions\log.bat "%CUR_DATE% %TIME%    System is missing .NET 3.5, skipping McAfee Stinger scan."
+)
 
 
 :: JOB: TDSS Killer
