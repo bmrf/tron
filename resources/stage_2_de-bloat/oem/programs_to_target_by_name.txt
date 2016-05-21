@@ -34,7 +34,6 @@
 180 Solution%%
 24x7 Help
 3vix%%
-888bar
 Advanced Registry%%
 Acer%%
 Adobe Shockwave%%
@@ -60,6 +59,7 @@ Bonzi Buddy%%
 Browser%%Optimize%%
 BrowserSafeguard%%
 Buzzdock%%
+%%CCC Help%%
 ConservativeTalkNow Firefox Toolbar
 CutePDF Editor Toolbar Updater
 CWA Reminder by We-Care.com%%
