@@ -579,7 +579,7 @@ start /wait msiexec /qn /norestart /x {850C7BC5-8CBC-4635-552E-C0AD6A0EA01E}
 start /wait msiexec /qn /norestart /x {BCBEB9CF-2DEA-33F6-2C8D-733C2F243597}
 start /wait msiexec /qn /norestart /x {3A25676C-038C-504A-FA32-F971B36BF7EE}
 
-:: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info
+:: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info. Also listed as CCC Help
 start /wait msiexec /qn /norestart /x {0EB8D099-E537-E3D3-039A-CBC50899C25B}
 start /wait msiexec /qn /norestart /x {9A8C9B7D-C894-A9FE-755B-B97ADF16D966}
 start /wait msiexec /qn /norestart /x {39D18BB4-D8F9-5940-6A7B-DA74A3BCA57C}
@@ -1290,6 +1290,28 @@ start /wait msiexec /qn /norestart /x {0F0E3D54-F2B7-1719-974D-BCA73194786F}
 start /wait msiexec /qn /norestart /x {3A938157-0745-6290-8CF6-400C7BEDF1A4}
 start /wait msiexec /qn /norestart /x {77D41B26-31DE-4EBA-F974-26D67B728FDB}
 start /wait msiexec /qn /norestart /x {DF47708E-999C-4470-BC97-5FA4BA533A1C}
+start /wait msiexec /qn /norestart /x {7D94356D-48E0-DE1A-423C-67A363C13771}
+start /wait msiexec /qn /norestart /x {7DE27D8A-1D73-61EB-86F1-079AF7E55C3A}
+start /wait msiexec /qn /norestart /x {7E0B1563-7607-00D7-21CE-7DAFA6FF009C}
+start /wait msiexec /qn /norestart /x {7F8B68A2-0CD0-7DAF-8955-1419C60886D3}
+start /wait msiexec /qn /norestart /x {6D7A146A-BD56-8EE1-FCC7-BE02013ACE36}
+start /wait msiexec /qn /norestart /x {AFDFBED8-CC9A-8E00-015D-845F0BF9D1E1}
+start /wait msiexec /qn /norestart /x {1E93452B-BA3E-7375-958C-EBC5E8672A5E}
+start /wait msiexec /qn /norestart /x {C3EAC1D2-A492-7B08-A9D5-15EDD5EA1A89}
+start /wait msiexec /qn /norestart /x {F6860530-9733-0BB2-9C09-F25101076E78}
+start /wait msiexec /qn /norestart /x {AAAE97DA-1E8B-C0E9-F0E3-5481A09F97C8}
+start /wait msiexec /qn /norestart /x {3310DD5A-3695-3390-6F38-2B93D862FE02}
+start /wait msiexec /qn /norestart /x {4D72F94C-95A5-AA85-E75B-A1A1CB8FCE7A}
+start /wait msiexec /qn /norestart /x {A3168DE0-479A-D5EC-59C4-0278C7DEC11C}
+start /wait msiexec /qn /norestart /x {71971AE8-C8F3-3C62-FB89-AC41A96761AB}
+start /wait msiexec /qn /norestart /x {6953ECF8-0B1B-FBD7-0DDB-84C82FBBC2F4}
+start /wait msiexec /qn /norestart /x {5DA870C0-BC5C-BE96-5045-BD429959C0D3}
+start /wait msiexec /qn /norestart /x {87006B27-A5A6-9EF1-BA04-CD7284462419}
+start /wait msiexec /qn /norestart /x {BF44ADDF-E927-4B66-E829-4AF27BF6A58B}
+start /wait msiexec /qn /norestart /x {5F3182EE-2532-3B96-2BBB-03B87F574E76}
+start /wait msiexec /qn /norestart /x {947E1256-258E-60A2-7331-44D09E61CF99}
+start /wait msiexec /qn /norestart /x {2B642F70-BA82-5E78-41CE-BDFFD5C37530}
+start /wait msiexec /qn /norestart /x {2EA40F3D-0D93-A391-F383-6F1C708B80BF}
 
 :: ccc-utility64
 start /wait msiexec /qn /norestart /x {75BF0B9A-1E6E-FF5D-A0BA-1A0F3AE3B7C9}
@@ -1301,6 +1323,7 @@ start /wait msiexec /qn /norestart /x {E06357A3-5F44-B1AE-F4BA-9DAC26A209C9}
 start /wait msiexec /qn /norestart /x {D021AEE9-18D2-1F56-46DA-CD72CA3E97F0}
 start /wait msiexec /qn /norestart /x {D5D4D47F-60C8-AAA1-6366-78EF6AF1221C}
 start /wait msiexec /qn /norestart /x {13059C0E-FF81-40C5-D15B-7905D3CDD783}
+start /wait msiexec /qn /norestart /x {D9C2E250-17A1-0D68-CB41-83232EC31C2C}
 
 :: CITIZEN bloatware (printer)
 start /wait msiexec /qn /norestart /x {546D97C7-9DF6-4A2D-BE02-2C0B25FFE1E3}
