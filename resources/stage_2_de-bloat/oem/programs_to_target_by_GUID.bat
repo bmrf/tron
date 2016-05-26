@@ -181,6 +181,9 @@ start /wait msiexec /qn /norestart /x {CF84CD21-FC52-857E-AF41-9DEE9C76D245}
 start /wait msiexec /qn /norestart /x {0D12E51B-490F-99B7-E4B6-FF7EF0530061}
 start /wait msiexec /qn /norestart /x {30948398-D7CA-3BF8-CC2F-02FCDD6FAE61}
 
+:: AMD Dual-Core Optimizer
+start /wait msiexec /qn /norestart /x {9FD6F1A8-5550-46AF-8509-271DF0E768B5}
+
 :: AMD Fuel
 start /wait msiexec /qn /norestart /x {242999B2-8F17-BFDD-0B69-2250380CBEF2}
 
@@ -2989,6 +2992,9 @@ start /wait msiexec /qn /norestart /x {65487538-FF20-421B-91DB-F6634B8D264C}
 :: Lenovo Educational Puzzle - Larsen Introduction Pack
 start /wait msiexec /qn /norestart /x {F4904A51-D3CA-451D-A169-6D38CE2C5442}
 
+:: Lenovo Graphics Software
+start /wait msiexec /qn /norestart /x {BC7CE075-0A45-4DC0-A973-67626CF41144}
+
 :: Lenovo "Hightail for Lenovo"
 start /wait msiexec /qn /norestart /x {2F10E937-F6D7-4174-8AB9-B299E8FC5CEC}
 
@@ -3028,6 +3034,7 @@ start /wait msiexec /qn /norestart /x {DFB2E0D6-8DDE-49A4-B8F7-03C14DACCBA6}
 :: Lenovo Motion Control
 start /wait msiexec /qn /norestart /x {0D740B00-2307-44AC-B91B-F3E67444ECA6}
 start /wait msiexec /qn /norestart /x {3963D1D4-8723-4EE4-9694-D1078BB26B75}
+start /wait msiexec /qn /norestart /x {D3F38500-4C99-4E4F-9786-B907224E13A1}
 
 :: Lenovo OneKey Recovery // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {46F4D124-20E5-4D12-BE52-EC177A7A4B42}
@@ -3146,6 +3153,7 @@ start /wait msiexec /qn /norestart /x {1CA74803-5CB2-4C03-BDBE-061EDC81CC7F}
 
 :: Lenovo Yoga 3 Pro Demo
 start /wait msiexec /qn /norestart /x {A4D294C5-D925-4FEA-9C60-16B8CB92F95A}
+start /wait msiexec /qn /norestart /x {22000764-22E0-4313-AA51-FB9E191E0542}
 
 :: Level Quality Watcher (outright adware, no pretense of being anything else)
 start /wait msiexec /qn /norestart /x {19DC5AB8-0792-4875-8F1B-896C5A9CE6AE}
@@ -3178,6 +3186,9 @@ start /wait msiexec /qn /norestart /x {174A3B31-4C43-43DD-866F-73C9DB887B48}
 start /wait msiexec /qn /norestart /x {9B65F9A3-9D24-452A-B6EF-1457D65E4259}
 start /wait msiexec /qn /norestart /x {273E1F1A-7B1A-436C-A783-A4A8C97AD036}
 start /wait msiexec /qn /norestart /x {6E810AB6-F34E-49A3-A93F-9E503660F718}
+
+:: Secure Download Manager
+start /wait msiexec /qn /norestart /x {E040B65B-8683-4228-8C33-D44A141E40EA} 
 
 :: Setup1 (??)
 start /wait msiexec /qn /norestart /x {86091EC1-DD17-4814-A54B-0A634CB8D82C}
@@ -3244,6 +3255,7 @@ start /wait msiexec /qn /norestart /x {986E003C-E56D-5A47-110E-D3C81F0E8535}
 
 :: Microsoft Help Viewer
 start /wait msiexec /qn /norestart /x {E5748D30-7E6D-3A8E-BFE6-C1D02C6DDABB}
+start /wait msiexec /qn /norestart /x {0398BFBC-991B-3275-9463-D2BF91B3C80B}
 
 :: Microsoft Mouse and Keyboard Center (various versions) // Disabled by /u/kamakaze_chickn for Tron
 ::start /wait msiexec /qn /norestart /x {91150000-0051-0000-1000-0000000FF1CE}
@@ -4118,6 +4130,9 @@ start /wait msiexec /qn /norestart /x {e6b22ecf-c476-4fb0-899f-edb6b6da269d}
 	start /wait msiexec /qn /norestart /x WTA-6e35cc10-c9f5-48e9-baf9-e03aec7ff14d
 	start /wait msiexec /qn /norestart /x WTA-4527bc60-c537-4ef8-8c87-cc9539bb1241
 :: End of Wild Tangent GUID's we're unsure about
+
+:: Windows 7 USB/DVD Download Tool
+start /wait msiexec /qn /norestart /x {CCF298AF-9CE1-4B26-B251-486E98A34789}
 
 :: Windows 7 Upgrade Advisor
 start /wait msiexec /qn /norestart /x {AAF91344-2808-4D6B-9242-FBE5AF79D60A}
