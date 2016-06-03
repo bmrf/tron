@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
+:: Version:       1.1.2-TRON ! Fix error with incorrectly named directory in pushd statement. Resolves error where Tron can't find the Windows Update blocker script. Thanks to /u/adabo for reporting
+::                1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
 ::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
 ::                1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for Wireshark analysis
@@ -42,8 +43,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.1-TRON
-set SCRIPT_UPDATED=2016-02-24
+set SCRIPT_VERSION=1.1.2-TRON
+set SCRIPT_UPDATED=2016-06-03
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -215,10 +216,10 @@ if "%VERBOSE%"=="yes" (
 :: BLOCK BAD UPDATES FROM RE-INSTALLING
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\purge_windows_telemetry 2>NUL
+pushd stage_4_repair\disable_windows_telemetry 2>NUL
 
 ::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 
 popd
 
