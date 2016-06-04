@@ -216,7 +216,7 @@ if "%VERBOSE%"=="yes" (
 :: BLOCK BAD UPDATES FROM RE-INSTALLING
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\disable_windows_telemetry 2>NUL
+pushd stage_4_repair\disable_windows_telemetry
 
 ::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
