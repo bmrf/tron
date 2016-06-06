@@ -3941,7 +3941,7 @@ start /wait msiexec /qn /norestart /x {983CD6FE-8320-4B80-A8F6-0D0366E0AA22}
 start /wait msiexec /qn /norestart /x {F26FDF57-483E-42C8-A9C9-EEE1EDB256E0}
 
 :: Toshiba Online Backup
-star /wait msiexec /qn /norestart /x {C57BCDE1-7CB9-467D-B3BA-7E119916CDC1}
+start /wait msiexec /qn /norestart /x {C57BCDE1-7CB9-467D-B3BA-7E119916CDC1}
 
 :: Toshiba Password Utility
 start /wait msiexec /qn /norestart /x {26BB68BB-CF93-4A12-BC6D-A3B6F53AC8D9}
