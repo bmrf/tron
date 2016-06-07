@@ -4,14 +4,15 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.1.0 + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
+:: Version:       9.1.1 ! tron.bat:timezone:     Bracket echo of TIME_ZONE_NAME in config dump with ! instead of % to prevent crashing on locales with special chars in the name. Thanks to /u/adabo
+::                9.1.0 + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
 ::                      * tron.bat:update_check: Break all Update Check code out of tron.bat and into a separate function
 ::                      + tron.bat:update_check: Add SKIP_UPDATE_CHECK variable. Not currently toggleable with command-line switch, maybe in the future
 ::                      * tron.bat:errors:       Improve code handling for when various errors are detected (update check failed, SMART error, etc)
 ::                      / tron.bat:safe_mode:    Reword the Safe Mode warning dialogue to be less severe, since it's not the end of the world if Tron isn't run in Safe Mode 
 ::                      / tron.bat:formatting:   Add a single blank line before displaying the log trailer, to be visually consistent with log header
 ::
-:: Usage:         Run this script in Safe Mode as an Administrator, follow the prompts, and reboot when finished. That's it.
+:: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL Command-line switches (can be combined, none are required):
 ::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
@@ -163,8 +164,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.1.0
-set SCRIPT_DATE=2016-05-16
+set SCRIPT_VERSION=9.1.1
+set SCRIPT_DATE=2016-06-07
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -444,7 +445,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    TEMP:                   !TEMP!
 	echo    TIME:                   %TIME%
-	echo    TIME_ZONE_NAME:         %TIME_ZONE_NAME%
+	echo    TIME_ZONE_NAME:         !TIME_ZONE_NAME!
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
 	echo    REPO_BTSYNC_KEY:        %REPO_BTSYNC_KEY%
 	echo    REPO_URL:               %REPO_URL%
