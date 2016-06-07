@@ -5,6 +5,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       9.1.1 ! tron.bat:timezone:     Bracket echo of TIME_ZONE_NAME in config dump with ! instead of % to prevent crashing on locales with special chars in the name. Thanks to /u/adabo
+::                      ! tron.bat:config_dump:  Add missing value of find.exe path to config dump output
 ::                9.1.0 + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
 ::                      * tron.bat:update_check: Break all Update Check code out of tron.bat and into a separate function
 ::                      + tron.bat:update_check: Add SKIP_UPDATE_CHECK variable. Not currently toggleable with command-line switch, maybe in the future
@@ -437,6 +438,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo  Script-internal variables:
 	echo    CUR_DATE:               %CUR_DATE%
 	echo    DTS:                    %DTS%
+	echo    FIND:                   %FIND%
 	echo    FREE_SPACE_AFTER:       %FREE_SPACE_AFTER%
 	echo    FREE_SPACE_BEFORE:      %FREE_SPACE_BEFORE%
 	echo    FREE_SPACE_SAVED:       %FREE_SPACE_SAVED%
