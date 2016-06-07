@@ -60,7 +60,7 @@ Stage 4: Repair
 
 Stage 5: Patch
  . stage_5_patch.bat             v1.1.3
- . 7-Zip                         v16.00        (multi-language)
+ * 7-Zip                         v16.02        (multi-language)
  . Adobe Flash Player            v21.0.0.242   (language ignored)
  . Adobe Reader                  v11.0.16      (English-only; replace with your language version if necessary)
  . Java Runtime Environment      8u92          (language ignored)
