@@ -377,7 +377,7 @@ Master script that launches everything else. It performs many actions on its own
 
 2. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
-3. **Create System Restore point**: Create a system restore snapshot before beginning operations. Windows Vista and up only, and client OS's only (not supported on Server OS's)
+3. **Create System Restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
 
 4. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` ([link](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/processkiller/whitelist.txt))
 
