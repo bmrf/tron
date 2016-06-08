@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticextasy
+:: Version:       1.1.0 + mbam: Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to /u/sofakingdead
+::                1.0.2 * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticextasy
 ::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
@@ -12,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.0.2
-set STAGE_3_SCRIPT_DATE=2015-12-15
+set STAGE_3_SCRIPT_VERSION=1.1.0
+set STAGE_3_SCRIPT_DATE=2016-06-08
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -67,6 +68,12 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" 2>NUL
+		
+		:: Install the bundled definitions file and integrate the log into Tron's log
+		call functions\log.bat "%CUR_DATE% %TIME%     Loading bundled def package'..."
+		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
+		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
+		call functions\log.bat "%CUR_DATE% %TIME%     Done."
 		
 		:: Scan for and launch appropriate architecture version
 		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
