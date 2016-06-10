@@ -377,7 +377,7 @@ Master script that launches everything else. It performs many actions on its own
 
    Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
-2. **Create System Restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
+2. **Create System Restore point**: Create a pre-run system restore point. Vista and up only, client OS's only (not supported on Server OS's, and on Windows 10 does not work if the system is in any form of Safe Mode. This is a known bug, and I spent hours trying to find a workaround but was not able to find a solution, so if you absolutely require a system restore point, recommend running in normal mode
 
 3. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` ([link](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/processkiller/whitelist.txt))
 
@@ -548,7 +548,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `<LOGPATH>\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
-3. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only
+3. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
 
 ## STAGE 8: Manual tools
 
