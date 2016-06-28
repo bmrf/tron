@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
+:: Version:       1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
+::                1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.1 * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
 ::                      * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now displays ALL Bleachbit output to console and log file if -v is used. Thanks to /u/Forcen
@@ -16,8 +17,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.0
-set STAGE_1_SCRIPT_DATE=2016-01-26
+set STAGE_1_SCRIPT_VERSION=1.1.1
+set STAGE_1_SCRIPT_DATE=2016-06-28
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -58,13 +59,13 @@ if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: CCLeaner
+:: JOB: CCleaner
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner."
 	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 15 >NUL
+	ping 127.0.0.1 -n 60 >NUL
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
@@ -144,13 +145,13 @@ if /i %SKIP_EVENT_LOG_CLEAR%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear."
 	goto skip_event_log_clear
 )
-call functions\log.bat "%CUR_DATE% %TIME%    Saving logs to "%BACKUPS%" first..."
+call functions\log.bat "%CUR_DATE% %TIME%     Saving logs to "%BACKUPS%" first..."
 :: Backup all logs first. Redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no for /f %%i in ('%WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%BACKUPS%\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 ENDLOCAL DISABLEDELAYEDEXPANSION
-call functions\log.bat "%CUR_DATE% %TIME%    Backups done, now clearing..."
+call functions\log.bat "%CUR_DATE% %TIME%     Backups done, now clearing..."
 :: Clear the logs
 if /i %DRY_RUN%==no %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
 :: Alternate Vista-and-up only method
