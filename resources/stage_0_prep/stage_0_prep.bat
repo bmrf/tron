@@ -71,7 +71,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call functions\log.bat "%CUR_DATE% %TIME% !  If script stalls here for more than 20 min, kill explorer64.exe and explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME%    If script stalls here more than 20 min, kill explorer64.exe and explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -146,7 +146,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Backup registry
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
-call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Back up registry' to "%LOGPATH%"..."
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Back up registry' to "%LOGPATH%"..."
 if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\registry_backup" /noconfirmdelete /noprogresswindow
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
