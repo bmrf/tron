@@ -108,8 +108,7 @@ Intel%%ME%%UninstallLegacy
 Intel%%Smart%%
 Internet Explorer Toolbar%%
 InternetHelper3 Toolbar
-IObit Apps Toolbar%%
-IObit Toolbar%%
+IObit%%
 IWon%%
 Launch Manager%%
 Lenovo%%
