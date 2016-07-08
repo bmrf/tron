@@ -301,6 +301,8 @@ start /wait msiexec /qn /norestart /x {9149AE79-3421-4A3A-834E-543948B045A2}
 start /wait msiexec /qn /norestart /x {F084395C-40FB-4DB3-981C-B51E74E1E83D}
 start /wait msiexec /qn /norestart /x {57434C32-2D56-3700-76A7-A758B70C1D00}
 start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C2802}
+start /wait msiexec /qn /norestart /x {4F524A2D-5637-4300-76A7-A758B70C2300}
+start /wait msiexec /qn /norestart /x {86D4B82A-ABED-442A-BE86-96357B70F4FE}
 
 :: Astrology.com Toolbar
 start /wait msiexec /qn /norestart /x {ea184a40-b71a-4aa7-b3be-596349038fa0}
