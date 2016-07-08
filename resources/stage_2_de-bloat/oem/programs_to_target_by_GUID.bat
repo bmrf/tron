@@ -135,6 +135,9 @@ start /wait msiexec /qn /norestart /x {7C548501-3501-468A-A443-CC42F5B3626B}
 :: Adobe Widget Browser
 start /wait msiexec /qn /norestart /x {EFBE6DD5-B224-96E5-72B9-68D328CB12A6}
 
+:: Advanced Identity Protector
+start /wait msiexec /qn /norestart /x {94D1067D-4899-466c-BBB4-9FDD98E02C77}
+
 :: Advertising Center 0.0.0.2
 start /wait msiexec /qn /norestart /x {3784D297-8089-43B6-B57F-11B7E96413CD}
 
@@ -167,9 +170,12 @@ start /wait msiexec /qn /norestart /x {8F2415FA-72F2-F029-0450-4EB2FAE484C5}
 start /wait msiexec /qn /norestart /x {8E7CCFB3-4102-6A32-8C4F-202B7AB7C8E3}
 start /wait msiexec /qn /norestart /x {698121AE-4A85-719E-539D-977A1E65C283}
 start /wait msiexec /qn /norestart /x {2676B059-A878-CEA7-CB24-97F4F5377385}
+start /wait msiexec /qn /norestart /x {509E2F77-9E85-EDA9-1EBA-B79B080A3394}
 
 :: AMD Catalyst Control Center - Branding
 start /wait msiexec /qn /norestart /x {24D38277-CE6E-4E12-A2EE-F46832A4FA2F}
+start /wait msiexec /qn /norestart /x {AD29E049-CAA6-4EC0-9553-19B375DB8658}
+start /wait msiexec /qn /norestart /x {7004684C-7DB9-4D49-8CFE-B78B006C53FC}
 
 :: AMD Drag and Drop Transcoding (various versions)
 start /wait msiexec /qn /norestart /x {0336B81E-E745-7FE9-74D5-157EBCDF71E3}
@@ -189,6 +195,7 @@ start /wait msiexec /qn /norestart /x {242999B2-8F17-BFDD-0B69-2250380CBEF2}
 
 :: AMD Media Foundation Decoders
 start /wait msiexec /qn /norestart /x {A26560A0-770C-A8E6-27DD-3F9381B6C9B1}
+start /wait msiexec /qn /norestart /x {A3728759-51D3-E983-D9B1-15629FBCB134}
 
 :: AMD OEM Application Profile
 start /wait msiexec /qn /norestart /x {C89A97B6-F991-EBB5-77B7-927BCF420EBE}
@@ -199,6 +206,9 @@ start /wait msiexec /qn /norestart /x {8A079327-5B79-24B5-9E95-91960E763CB2}
 start /wait msiexec /qn /norestart /x {C36C7280-879A-D8A7-570F-844CB6E5F7E8}
 start /wait msiexec /qn /norestart /x {2E794F67-DAC1-C4A3-9128-0C841DF8A1BE}
 start /wait msiexec /qn /norestart /x {6845AC1A-1202-BB5F-6E69-90C9C537B1C4}
+
+:: AMD Start Now
+start /wait msiexec /qn /norestart /x {AF08DEBD-05F7-F9D5-5A9E-DC52C9292C1D}
 
 :: AMD Wireless Display v3.0
 start /wait msiexec /qn /norestart /x {0A2E1907-D0DE-0D01-CA64-CB0AB0BFE539}
@@ -330,6 +340,7 @@ start /wait msiexec /qn /norestart /x {D381FF29-7CFB-4D4E-B92A-C4EDDC696614}
 :: ASUS WinFlash
 start /wait msiexec /qn /norestart /x {FFCF82EC-895F-4AC8-925E-3412FE25EF62}
 
+
 :: AVAST SecureLine
 start /wait msiexec /qn /norestart /x {2CD3C92F-EDC5-4B02-9B0A-9C1D37C58EF5}
 
@@ -397,6 +408,8 @@ start /wait msiexec /qn /norestart /x {7D095455-D971-4D4C-9EFD-9AF6A6584F3A}
 :: Blio (eBook reader app)
 start /wait msiexec /qn /norestart /x {741006D1-7B2B-4E33-B2B0-831F282EEF64}
 start /wait msiexec /qn /norestart /x {400182B4-CA55-46A9-9D88-F8413DCFB36D}
+start /wait msiexec /qn /norestart /x {9368DDD5-CE7F-4BD7-A83A-F00FABE338EC}
+start /wait msiexec /qn /norestart /x {741006D1-7B2B-4E33-B2B0-831F282EEF64}
 
 :: Boot Configure
 start /wait msiexec /qn /norestart /x {E9C22B7A-5D6A-4CC7-A493-38B27519C4D6}
@@ -577,6 +590,7 @@ start /wait msiexec /qn /norestart /x {383FCD28-9484-48AC-9397-C8FCD9D8F76E}
 start /wait msiexec /qn /norestart /x {45160C56-61F6-468D-A5B0-9FAE2C3E68D6}
 
 :: Catalyst Control Center Graphics Previews Common (various version numbers)
+start /wait msiexec /qn /norestart /x {1502F427-F988-C5A0-DC84-BB03C560F72A}
 start /wait msiexec /qn /norestart /x {190A9F41-85D0-CDB3-AA2D-A076D30953C9}
 start /wait msiexec /qn /norestart /x {AA725670-A7B4-D1B0-4EF5-F4B2E418C9F4}
 start /wait msiexec /qn /norestart /x {4841F481-1272-A1BE-D424-78628D252426}
@@ -614,6 +628,7 @@ start /wait msiexec /qn /norestart /x {850C7BC5-8CBC-4635-552E-C0AD6A0EA01E}
 start /wait msiexec /qn /norestart /x {BCBEB9CF-2DEA-33F6-2C8D-733C2F243597}
 start /wait msiexec /qn /norestart /x {3A25676C-038C-504A-FA32-F971B36BF7EE}
 start /wait msiexec /qn /norestart /x {E755FF48-9936-FE6B-3910-490DFB39F56D}
+start /wait msiexec /qn /norestart /x {431DD095-10B2-1390-AF45-22EBADE16D25}
 
 :: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info. Also listed as CCC Help
 start /wait msiexec /qn /norestart /x {0EB8D099-E537-E3D3-039A-CBC50899C25B}
@@ -1401,6 +1416,7 @@ start /wait msiexec /qn /norestart /x {5A6CB42D-AFB6-989E-E7EB-B3FF928C707F}
 start /wait msiexec /qn /norestart /x {1267DA48-A6EA-3202-6C02-0AD5D3AAF360}
 
 :: ccc-utility64
+start /wait msiexec /qn /norestart /x {E163A1D2-BAEA-6786-8E73-0ABD5A2D4C5B}
 start /wait msiexec /qn /norestart /x {75BF0B9A-1E6E-FF5D-A0BA-1A0F3AE3B7C9}
 start /wait msiexec /qn /norestart /x {933B2CE2-3BA2-7067-0B70-B8A89BEBB0EF}
 start /wait msiexec /qn /norestart /x {0A22EA76-BA37-E640-28D2-AF72AC9CEA52}
@@ -1917,6 +1933,7 @@ start /wait msiexec /qn /norestart /x {F8EB8FFC-C535-49A1-A84D-CC75CB2D6ADA}
 start /wait msiexec /qn /norestart /x {1BDEB6E2-6706-4132-A5D3-99190C6BECD8}
 start /wait msiexec /qn /norestart /x {2DFA9084-CEB3-4A48-B9F7-9038FEF1B8F4}
 start /wait msiexec /qn /norestart /x {4E91898E-4DED-4B17-94F0-FA61AACCDEB0}
+start /wait msiexec /qn /norestart /x {2DFA9084-CEB3-4A48-B9F7-9038FEF1B8F4}
 
 :: EA Download Manager (deprecated, replaced with Origin)
 start /wait msiexec /qn /norestart /x {EF7E931D-DC84-471B-8DB6-A83358095474}
@@ -2559,6 +2576,12 @@ start /wait msiexec /qn /norestart /x {394FA67A-FF0A-4356-BB77-D85E5A300BDE}
 start /wait msiexec /qn /norestart /x {E2831862-F131-4327-B9CC-FA30F587EB6C}
 start /wait msiexec /qn /norestart /x {210A03F5-B2ED-4947-B27E-516F50CBB292}
 
+:: HP Spot SmartCenter Launcher and associated apps
+start /wait msiexec /qn /norestart /x {3D171340-B528-42E0-92E4-BDA7AEEF6F32}
+start /wait msiexec /qn /norestart /x {A393CDFF-BEB8-48EA-990D-2EB35B311D23}
+start /wait msiexec /qn /norestart /x {D0661463-50F7-4A1E-83CB-37CC590589AE}
+start /wait msiexec /qn /norestart /x {5BFFDDEB-AFD7-499F-BB13-7A6EAD927CDA}
+
 :: HP Software Framework
 start /wait msiexec /qn /norestart /x {1DFA0C99-6E2E-46F4-B242-51C7CF41DDE5}
 
@@ -2584,6 +2607,9 @@ start /wait msiexec /qn /norestart /x {B899AE89-9B09-4F11-B299-A1209CAB8D00}
 start /wait msiexec /qn /norestart /x {9ADABDDE-9644-461B-9E73-83FA3EFCAB50}
 start /wait msiexec /qn /norestart /x {D734D743-2385-46ED-9B3E-168A24A9E1A9}
 start /wait msiexec /qn /norestart /x {EC8D12E4-A73C-4C27-B1C7-E9683052E556}
+
+:: HP opensource
+start /wait msiexec /qn /norestart /x {3677D4D8-E5E0-49FC-B86E-06541CF00BBE}
 
 :: HP PageLift
 start /wait msiexec /qn /norestart /x {708ABF62-5D7A-4550-823A-1F9EFA63645A}
@@ -3435,6 +3461,10 @@ start /wait msiexec /qn /norestart /x {307032B2-6AF2-46D7-B933-62438DEB2B9A}
 if exist "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
 if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
 
+:: McAfee TechMate
+start /wait msiexec /qn /norestart /x {9B2F78A8-8260-4FCF-A482-85C88978DE8A}
+start /wait msiexec /qn /norestart /x {AD8EE062-30F3-4832-B369-11D31B2C8049}
+
 :: McAfee WebAdvisor
 start /wait msiexec /qn /norestart /x {35ED3F83-4BDC-4c44-8EC6-6A8301C7413A}
 
@@ -3549,6 +3579,9 @@ start /wait msiexec /qn /norestart /x {7ADEC426-BE95-48EF-84D4-086BD0F4D331}
 :: MSN Explorer Repair Tool
 start /wait msiexec /qn /norestart /x {3D36105D-D6C2-413A-9355-7370E8D9125B}
 
+:: MusicOasis
+start /wait msiexec /qn /norestart /x {856480C9-2428-15E1-97BC-685EE2A7B8E6}
+
 :: muvee autoProducer 6.0
 start /wait msiexec /qn /norestart /x {14AF024E-2E3B-49D0-A175-D1C1A06B155A}
 :: %ProgramFiles%\InstallShield Installation Information\{14AF024E-2E3B-49D0-A175-D1C1A06B155A}\setup.exe -runfromtemp -l0x0009 -removeonly
@@ -3556,6 +3589,9 @@ start /wait msiexec /qn /norestart /x {14AF024E-2E3B-49D0-A175-D1C1A06B155A}
 
 :: MyEpson Portal
 start /wait msiexec /qn /norestart /x {3361D415-BA35-4143-B301-661991BA6219}
+
+:: My Phone Support aka MyPhoneSupport
+start /wait msiexec /qn /norestart /x {008855A5-CADD-448E-B4CB-1C4E2A42CA5D}
 
 :: My Way Search Assistant
 start /wait msiexec /qn /norestart /x {05F1B866-2372-4E82-9AA8-C64FB11CEF8B}
@@ -3679,6 +3715,9 @@ start /wait msiexec /qn /norestart /x {B6659DD8-00A7-4A24-BBFB-C1F6982E5D66}
 :: PlayStationStore (hidden)
 start /wait msiexec /qn /norestart /x {0E532C84-4275-41B3-9D81-D4A1A20D8EE7}
 
+:: PressReader
+start /wait msiexec /qn /norestart /x {912CED74-88D3-4C5B-ACB0-132318649765}
+
 :: PSE10 STI Installer
 start /wait msiexec /qn /norestart /x {11D08055-939C-432b-98C3-E072478A0CD7}
 
@@ -3784,6 +3823,7 @@ start /wait msiexec /qn /norestart /x {FE51662F-D8F6-43B5-99D9-D4894AF00F83}
 start /wait msiexec /qn /norestart /x {6F0BBEFE-BE1C-419B-BA1F-D36C9E7915BC}
 start /wait msiexec /qn /norestart /x {AAE78E39-FAAF-4C19-A63E-BDED7428FDE1}
 start /wait msiexec /qn /norestart /x {3FB3647F-B6A6-46B4-8613-A09BCFAB80F0}
+start /wait msiexec /qn /norestart /x {0EDEB615-1A60-425E-8306-0E10519C7B55}
 
 :: Samsung MagicTunePremium (monitor selection app)
 start /wait msiexec /qn /norestart /x {79E9C7C5-4FCC-4DFF-B79E-17319E9522F3}
