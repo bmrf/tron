@@ -4,14 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.1.1 ! tron.bat:timezone:     Bracket echo of TIME_ZONE_NAME in config dump with ! instead of % to prevent crashing on locales with special chars in the name. Thanks to /u/adabo
+:: Version:       9.1.3 . placeholder comment
+::                9.1.2 / tron.bat:prep:         Rename all "PREP: " job headers to "INTERNAL PREP:" to differentiate Tron's internal prep jobs from stage_0_prep jobs
+::                9.1.1 ! tron.bat:timezone:     Bracket echo of TIME_ZONE_NAME in config dump with ! instead of % to prevent crashing on locales with special chars in the name. Thanks to /u/adabo
 ::                      ! tron.bat:config_dump:  Add missing value of find.exe path to config dump output
-::                9.1.0 + tron.bat:function:     Add collection of system Time Zone information and display it in the log header and trailer
-::                      * tron.bat:update_check: Break all Update Check code out of tron.bat and into a separate function
-::                      + tron.bat:update_check: Add SKIP_UPDATE_CHECK variable. Not currently toggleable with command-line switch, maybe in the future
-::                      * tron.bat:errors:       Improve code handling for when various errors are detected (update check failed, SMART error, etc)
-::                      / tron.bat:safe_mode:    Reword the Safe Mode warning dialogue to be less severe, since it's not the end of the world if Tron isn't run in Safe Mode 
-::                      / tron.bat:formatting:   Add a single blank line before displaying the log trailer, to be visually consistent with log header
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -48,7 +44,7 @@
 ::
 ::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
 ::
-::                "Do not withold good from those who deserve it, when it is in your power to act." -p3:27
+::                "Do not withhold good from those to whom it is due, when it is in your power to act." -p3:27
 @echo off && cls
 echo. && echo   Loading...
 SETLOCAL
@@ -165,8 +161,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.1.1
-set SCRIPT_DATE=2016-06-07
+set SCRIPT_VERSION=9.1.3
+set SCRIPT_DATE=2016-07-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -249,19 +245,19 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 )
 
 
-:: PREP: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
+:: INTERNAL PREP: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
-:: PREP: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
+:: INTERNAL PREP: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
 pushd %~dp0 2>NUL
-:: PREP: Get in the resources sub-directory. We stay here for the rest of the script
+:: INTERNAL PREP: Get in the resources sub-directory. We stay here for the rest of the script
 pushd resources
 
 
-:: PREP: Parse command-line arguments (functions are at bottom of script)
+:: INTERNAL PREP: Parse command-line arguments (functions are at bottom of script)
 call :parse_cmdline_args %*
 
 
-:: PREP: Execute help if requested
+:: INTERNAL PREP: Execute help if requested
 if /i %HELP%==yes (
 	cls
 	echo.
@@ -308,14 +304,14 @@ if /i %HELP%==yes (
 	)
 
 
-:: PREP: Detect the version of Windows we're on. This determines a few things later on
+:: INTERNAL PREP: Detect the version of Windows we're on. This determines a few things later on
 set WIN_VER=undetected
 set WIN_VER_NUM=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
-:: PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail
+:: INTERNAL PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail
 if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 	if /i %DEV_MODE%==no (
 		color 0c
@@ -336,7 +332,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 )
 
 
-:: PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
+:: INTERNAL PREP: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 :: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 pushd stage_6_optimize\defrag\
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
@@ -345,7 +341,7 @@ pushd stage_6_optimize\defrag\
 popd
 
 
-:: PREP: Get free space on the system drive and stash it for comparison later
+:: INTERNAL PREP: Get free space on the system drive and stash it for comparison later
 :freespace_check
 for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 :: GB version
@@ -354,7 +350,7 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIN
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
-:: PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
+:: INTERNAL PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if /i %RESUME_DETECTED%==yes (
@@ -380,7 +376,7 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 
-:: PREP: Update check
+:: INTERNAL PREP: Update check
 if /i %DRY_RUN%==yes set SKIP_UPDATE_CHECK=yes
 if /i %AUTORUN%==yes set SKIP_UPDATE_CHECK=yes
 if /i %SKIP_UPDATE_CHECK%==no (
@@ -391,7 +387,7 @@ if /i %SKIP_UPDATE_CHECK%==no (
 )
 
 
-:: PREP: Execute config dump if requested
+:: INTERNAL PREP: Execute config dump if requested
 if /i %CONFIG_DUMP%==yes (
 	:: We need this set/endlocal pair because on Vista the OS name has "(TM)" in it, which breaks the script. Sigh
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -466,12 +462,12 @@ if /i %CONFIG_DUMP%==yes (
 )
 
 
-:: PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
+:: INTERNAL PREP: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
 :enable_f8_key_on_bootup
 if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
 
 
-:: PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
+:: INTERNAL PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
 if /i %AUTORUN%==yes goto execute_jobs
 
 
@@ -502,7 +498,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 SETLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: PREP: Display the annoying disclaimer screen. Sigh
+:: INTERNAL PREP: Display the annoying disclaimer screen. Sigh
 cls
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not %EULA_ACCEPTED%==yes (
@@ -537,7 +533,7 @@ if /i not %EULA_ACCEPTED%==yes (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: PREP: Check if we're in safe mode
+:: INTERNAL PREP: Check if we're in safe mode
 SETLOCAL ENABLEDELAYEDEXPANSION
 set CHOICE=y
 if /i not "%SAFE_MODE%"=="yes" (
@@ -571,7 +567,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
-:: PREP: Check if we have network support
+:: INTERNAL PREP: Check if we have network support
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 	cls
 	color 0e
@@ -590,11 +586,11 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 	)
 
 
-:: PREP: UPM detection circuit
+:: INTERNAL PREP: UPM detection circuit
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
-:: PREP: Welcome screen
+:: INTERNAL PREP: Welcome screen
 cls
 echo  **********************  TRON v%SCRIPT_VERSION% (%SCRIPT_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfection tools           *
@@ -644,7 +640,7 @@ pause
 cls
 
 
-:: PREP: Email report check
+:: INTERNAL PREP: Email report check
 :: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
@@ -727,16 +723,16 @@ if /i %RESUME_DETECTED%==no (
 )
 
 
-:: If VERBOSE (-v) was used, notify that we expanded the scrollback buffer
+:: If verbose (-v) was used, notify that we expanded the scrollback buffer
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. All commands will display verbose output when possible."
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
 
 
-:: PREP: Tell us if the update check failed
+:: INTERNAL PREP: Tell us if the update check failed
 if %WARNINGS_DETECTED%==yes_update_check_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
 
 
-:: PREP: Run a quick SMART check and notify if there are any drives with problems
+:: INTERNAL PREP: Run a quick SMART check and notify if there are any drives with problems
 set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
 for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|findstr /i "%WARNING_LIST:~1,-1%" && (
 	call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
@@ -747,7 +743,7 @@ for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|findstr /i "%WARNING_L
 )
 
 
-:: PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
+:: INTERNAL PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
 if /i "%SAFE_MODE%"=="yes" (
 	if %WIN_VER_NUM% geq 6.0 (
