@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.6.2-TRON * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
+:: History:       1.6.3-TRON ! Fix missing percentage sign around SystemDrive variable
+::                1.6.2-TRON * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
 ::                1.6.1-TRON / Branch into Tron-specific version
 ::                           * Switch to version-agnostic installation, will now detect system architecture and run appropriate installer
 ::                1.0.0      + Initial write
@@ -11,12 +12,12 @@
 :: Variables :: -- Set these to your desired values. No trailing slashes (\)
 :::::::::::::::
 :: If RAW_LOGS isn't populated then we're running in standalone mode and likely weren't called from Tron, so populate RAW_LOGS with the standard log location
-if /i "%RAW_LOGS%"=="" set RAW_LOGS=%SystemDrive\logs
+if /i "%RAW_LOGS%"=="" set RAW_LOGS=%SystemDrive%\logs
 :: This overrides Tron's LOGFILE, but only for the duration of the script
 set LOGFILE=tron_jre8_update.log
 
 :: Package to install
-set BINARY_VERSION=8u74
+set BINARY_VERSION=8u102
 set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AUTOUPDATECHECK=0 RebootYesNo=No WEB_JAVA_SECURITY_LEVEL=M
 
 
@@ -24,8 +25,8 @@ set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AU
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.2-TRON
-set SCRIPT_UPDATED=2015-12-04
+set SCRIPT_VERSION=1.6.3-TRON
+set SCRIPT_UPDATED=2016-17-24
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
