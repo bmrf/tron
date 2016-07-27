@@ -126,6 +126,7 @@ start /wait msiexec /qn /norestart /x {AC76BA86-0804-1033-1959-001824166751}
 start /wait msiexec /qn /norestart /x {AC76BA86-0804-1033-1959-001824184103}
 start /wait msiexec /qn /norestart /x {AC76BA86-0804-1033-1959-001824157129}
 start /wait msiexec /qn /norestart /x {AC76BA86-0804-1033-1959-001824161310}
+start /wait msiexec /qn /norestart /x {AC76BA86-0804-1033-1959-001824191728}
 
 :: Adobe Setup (various versions)
 start /wait msiexec /qn /norestart /x {11A955CD-4398-405A-886D-E464C3618FBF}
@@ -1952,15 +1953,20 @@ start /wait msiexec /qn /norestart /x {51CB3204-2129-4D74-8AF8-3AEB52793969}
 start /wait msiexec /qn /norestart /x {AC768037-7079-4658-AC24-2897650E0ABE}
 start /wait msiexec /qn /norestart /x {BD1A34C9-4764-4F79-AE1F-112F8C89D3D4}
 
-:: Epson Customer Participation
+:: Epson Customer Research Participation
 start /wait msiexec /qn /norestart /x {814FA673-A085-403C-9545-747FC1495069}
 start /wait msiexec /qn /norestart /x {4BB82AD9-0CF6-4E14-BD75-C1AB657C2914}
+start /wait msiexec /qn /norestart /x {B26449A6-6007-4460-B4FE-C4776115BCEA}
+
+:: Epson E-Web Print
+start /wait msiexec /qn /norestart /x {6BF9F374-EC67-4808-A90C-F127DE6D989D}
 
 :: Epson Event Manager
 start /wait msiexec /qn /norestart /x {3F29268A-F53A-4387-9F2B-E9368A823178}
 start /wait msiexec /qn /norestart /x {2970697F-2A11-4588-8B7F-97322D1CCF3C}
 start /wait msiexec /qn /norestart /x {03B8AA32-F23C-4178-B8E6-09ECD07EAA47}
 start /wait msiexec /qn /norestart /x {10144CFE-D76C-4CFA-81A1-37A1642349A3}
+start /wait msiexec /qn /norestart /x {9F205E94-9E42-4486-A92A-DF3F6CB85444}
 
 :: Epson Software Updater
 start /wait msiexec /qn /norestart /x {A3B308B9-BE96-4334-816F-3D82B19A7DE2}
@@ -2556,6 +2562,7 @@ start /wait msiexec /qn /norestart /x {99039186-EBEB-4127-BFA2-18B10A05ACE2}
 start /wait msiexec /qn /norestart /x {85CB0687-0239-473E-943B-E8AFEE6E044C}
 start /wait msiexec /qn /norestart /x {8F3591D0-074B-4F7B-A269-39FE61C9CB5C}
 start /wait msiexec /qn /norestart /x {16B872EE-C458-41BD-BEAE-52758A3F3168}
+start /wait msiexec /qn /norestart /x {96ABEAD3-67AE-4BF7-8A16-F745352049B3}
 
 :: HP PrintScreen
 start /wait msiexec /qn /norestart /x {57C7C46A-D35D-492d-A328-4F8C9B5B4B52}
@@ -3482,6 +3489,9 @@ start /wait msiexec /qn /norestart /x {95120000-00B9-0409-1000-0000000FF1CE}
 start /wait msiexec /qn /norestart /x {91710409-8000-11D3-8CFE-0150048383C9}
 start /wait msiexec /qn /norestart /x {95120000-00B9-0409-0000-0000000FF1CE}
 
+:: Microsoft Office Activation Assistant
+start /wait msiexec /qn /norestart /x {E50AE784-FABE-46DA-A1F8-7B6B56DCB22E}
+
 :: Microsoft DVD App Installation for Microsoft.WindowsDVDPlayer_2019.6.11761.0_neutral_~_8wekyb3d8bbwe (x64)
 start /wait msiexec /qn /norestart /x {986E003C-E56D-5A47-110E-D3C81F0E8535}
 
@@ -4168,6 +4178,7 @@ start /wait msiexec /qn /norestart /x {72EFCFA8-3923-451D-AF52-7CE9D87BC2A1}
 start /wait msiexec /qn /norestart /x {59358FD4-252B-4B38-AB81-955C491A494F}
 start /wait msiexec /qn /norestart /x {2C486987-D447-4E36-8D61-86E48E24199C}
 start /wait msiexec /qn /norestart /x {C2F94B5E-201A-4754-8F2F-4395E1D90DA3}
+start /wait msiexec /qn /norestart /x {B3FF1CD9-B2F0-4D71-BB55-5F580401C48E}
 
 :: TOSHIBA Extended Tiles for Windows Mobility Center // GUID shared with TOSHIBA Disc Creator
 start /wait msiexec /qn /norestart /x {5DA0E02F-970B-424B-BF41-513A5018E4C0}
@@ -4183,6 +4194,9 @@ start /wait msiexec /qn /norestart /x {5279374D-87FE-4879-9385-F17278EBB9D3}
 
 :: TOSHIBA HDD/SDD Alert 3.1.64.x
 start /wait msiexec /qn /norestart /x {D4322448-B6AF-4316-B859-D8A0E84DCB38}
+
+:: TOSHIBA HDD Protection
+start /wait msiexec /qn /norestart /x {94A90C69-71C1-470A-88F5-AA47ECC96B40}
 
 :: TOSHIBA Media Controller and TOSHIBA Media Controller Plug-in 1.0.5.11
 start /wait msiexec /qn /norestart /x {983CD6FE-8320-4B80-A8F6-0D0366E0AA22}
@@ -4222,6 +4236,7 @@ start /wait msiexec /qn /norestart /x {5AF550B4-BB67-4E7E-82F1-2C4300279050}
 :: Toshiba ReelTime
 start /wait msiexec /qn /norestart /x {24811C12-F4A9-4D0F-8494-A7B8FE46123C}
 start /wait msiexec /qn /norestart /x {C2DDF845-7107-40E8-8D2A-8719F1799570}
+start /wait msiexec /qn /norestart /x {A0E99122-25C1-4CA4-9063-499A2A814EB6}
 
 :: Toshiba Service Station
 start /wait msiexec /qn /norestart /x {0DFA8761-7735-4DE8-A0EB-2286578DCFC6}
@@ -4229,6 +4244,9 @@ start /wait msiexec /qn /norestart /x {6499E894-43F8-458B-AE35-724F4732BCDE}
 start /wait msiexec /qn /norestart /x {F64E9295-E1B3-4EEA-86D3-AF44A0087B06}
 start /wait msiexec /qn /norestart /x {B8C8422F-01F1-4791-B084-047AAFF9BFCC}
 start /wait msiexec /qn /norestart /x {AC6569FA-6919-442A-8552-073BE69E247A}
+
+:: TOSHIBA Software Updater
+start /wait msiexec /qn /norestart /x {8DBC5A0A-31C4-46C7-B252-6B593EA11A87}
 
 :: TOSHIBA Speech System Appplications, SR Engine(U.S.), TTS Engine(U.S.)
 start /wait msiexec /qn /norestart /x {EE033C1F-443E-41EC-A0E2-559B539A4E4D}
