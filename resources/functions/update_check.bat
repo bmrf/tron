@@ -1,7 +1,7 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 ! Fix SSL encryption on wget commands. Previously we were skipping certificate checking due to cert errors. With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
+:: Version:       1.0.1 ! Fix SSL encryption on update check and new version download. Previously we were skipping certificate checking due to cert errors. With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
 ::                1.0.0 + Initial write
 @echo off
 
