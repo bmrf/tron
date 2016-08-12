@@ -4,10 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.1.3 . No changes this release; increment version number only
-::                9.1.2 / tron.bat:prep:         Rename all "PREP: " job headers to "INTERNAL PREP:" to differentiate Tron's internal prep jobs from stage_0_prep jobs
-::                9.1.1 ! tron.bat:timezone:     Bracket echo of TIME_ZONE_NAME in config dump with ! instead of % to prevent crashing on locales with special chars in the name. Thanks to /u/adabo
-::                      ! tron.bat:config_dump:  Add missing value of find.exe path to config dump output
+:: Version:       9.2.0 / tron:prep:           Remove "www" from the URL in the REPO_URL variable. This is related to fixing SSL encryption on the update checker
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -161,15 +158,15 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.1.3
-set SCRIPT_DATE=2016-07-24
+set SCRIPT_VERSION=9.2.0
+set SCRIPT_DATE=2016-08-12
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
 set ERRORS_DETECTED=no
 set WARNINGS_DETECTED=no
 set CONFIG_DUMP=no
-set REPO_URL=https://www.bmrf.org/repos/tron
+set REPO_URL=https://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_DATE=0
 set REPO_SCRIPT_VERSION=0
