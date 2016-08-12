@@ -97,7 +97,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Do a GUID dump before kicking everything off to make it easier for users to submit them if they forgot to do it before running Tron
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [GUID dump]
 call functions\log.bat "%CUR_DATE% %TIME%    Dumping GUID list to "%RAW_LOGS%"..."
-if /i %DRY_RUN%==no wmic product get identifyingnumber,name,version /all > "%RAW_LOGS%\%COMPUTERNAME%_%TIME%_GUID_dump.txt"
+if /i %DRY_RUN%==no wmic product get identifyingnumber,name,version /all > "%RAW_LOGS%\%COMPUTERNAME%_%TIME%_GUID_dump.txt" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
