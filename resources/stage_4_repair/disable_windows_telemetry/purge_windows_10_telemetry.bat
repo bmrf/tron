@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.2-TRON ! Fix error with incorrectly named directory in pushd statement. Resolves error where Tron can't find the Windows Update blocker script. Thanks to /u/adabo for reporting
+:: Version:       1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
+::                1.1.2-TRON ! Fix error with incorrectly named directory in pushd statement. Fixes error where Tron couldn't find the Windows Update blocker script. Thanks to /u/adabo for reporting
 ::                1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
 ::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
@@ -43,8 +44,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.2-TRON
-set SCRIPT_UPDATED=2016-06-03
+set SCRIPT_VERSION=1.1.3-TRON
+set SCRIPT_UPDATED=2016-08-12
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -383,6 +384,11 @@ if "%VERBOSE%"=="yes" (
 	regedit /S disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+:: SPYBOT ANTI-BEACON IMMUNIZATIONS
+"Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+%~dp0"Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
