@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
+:: Version:       1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
+::                1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
 ::                1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
 ::                1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
 ::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
@@ -18,8 +19,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.7
-set STAGE_0_SCRIPT_DATE=2016-04-17
+set STAGE_0_SCRIPT_VERSION=1.0.8
+set STAGE_0_SCRIPT_DATE=2016-08-12
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -47,11 +48,11 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
 ::      On Windows 7 and up, we have to manually enable System Restore (it's disabled by default...why?? because Microsoft)
-::      as well as remove the 24 hour cooldown timer they brilliantly added which prevents doing things like creating a before/after
-::      restore point pair. Why? Because Microsoft.
+::      as well as remove the 24 hour cooldown timer they brilliantly added in Windows 8 which prevents doing things like
+::      creating a before/after restore point pair. Why? Because Microsoft.
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
-	REM Win7 and up only: Remove the cooldown timer (the reg command) and enable System Restore
+	REM Win7 and up only: Remove the cooldown timer (via reg command) and enable System Restore
 	if %WIN_VER_NUM% geq 6.1 (
 		if /i %DRY_RUN%==no (
 			reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
@@ -71,7 +72,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call functions\log.bat "%CUR_DATE% %TIME%    If script stalls here more than 20 min, kill explorer64.exe and explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME%    If script stalls 20 min or more here, kill explorer64.exe and explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -81,7 +82,7 @@ if /i %DRY_RUN%==no (
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Get pre-Tron system state (installed programs, complete file list)
+:: JOB: Get pre-run system state (installed programs, complete file list)
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
 call functions\log.bat "%CUR_DATE% %TIME%    Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
@@ -90,6 +91,13 @@ if /i %DRY_RUN%==no (
 	:: Get list of all files on system
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
 )
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
+:: JOB: Do a GUID dump before kicking everything off to make it easier for users to submit them if they forgot to do it before running Tron
+title Tron v%SCRIPT_VERSION% [stage_0_prep] [GUID dump]
+call functions\log.bat "%CUR_DATE% %TIME%    Dumping GUID list to "%RAW_LOGS%"..."
+if /i %DRY_RUN%==no wmic product get identifyingnumber,name,version /all > "%RAW_LOGS%\%COMPUTERNAME%_%TIME%_GUID_dump.txt"
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
