@@ -3,21 +3,21 @@
 %%AdBlocknWatch%%
 %%AppToU%%
 %%BlocckkTheAds%%
+%%CCC Help%%
 %%ClipGenie%%
-%%CoolWebSearch%%
 %%CoolWWW%%
-%%Cydoor%%
+%%CoolWebSearch%%
 %%Coupon%%
+%%Cydoor%%
 %%Esuack%%
 %%FashionLife%%
 %%Freenpro25%%
 %%Gamevance%%
-%%iBryte%%
-%%iStart123%%
 %%MapsGalaxy%%
+%%QuickTime%%
 %%SaferSurf%%
-%%Savings%%
 %%SaveForYou%
+%%Savings%%
 %%Search%%
 %%Shop_and_Up%%
 %%Shopper%%
@@ -31,12 +31,17 @@
 %%WeatherBug%%
 %%WhenUsave%%
 %%Zango%%
+%%iBryte%%
+%%iStart123%%
 180 Solution%%
 24x7 Help
 3vix%%
-Advanced Registry%%
+ASUS%%
+AVG PC TuneUp%%
+AVG Web TuneUp
 Acer%%
 Adobe Shockwave%%
+Advanced Registry%%
 Advanced%%FX Engine
 Akamai%%
 Altnet
@@ -45,10 +50,7 @@ Any Video Converter%%
 AppsHat
 ArcadeParlor
 Ask%%Toolbar
-ASUS%%
 AtuZi
-AVG PC TuneUp%%
-AVG Web TuneUp
 Baidu PC Faster%%
 Big Fish Games: Game Manager
 Big Fish: Game Manager
@@ -59,13 +61,12 @@ Bonzi Buddy%%
 Browser%%Optimize%%
 BrowserSafeguard%%
 Buzzdock%%
-%%CCC Help%%
-ConservativeTalkNow Firefox Toolbar
-CutePDF Editor Toolbar Updater
 CWA Reminder by We-Care.com%%
 ClickForSale
 CloudScout%%
 Comodo%%
+ConservativeTalkNow Firefox Toolbar
+CutePDF Editor Toolbar Updater
 DealPly (remove only)
 DealScout for Internet Explorer
 Dell%%
@@ -73,17 +74,13 @@ Delta toolbar
 Discovery Tools
 Download Updater (AOL Inc.)
 DriverUpdate%%
-eBay%%
-eMachines%%
 Face Theme
 File Type Assistant%%
 Files Opened
 FilesFrog Update Checker
-flash-Enhancer%%
 Free Download Manager%%
 Free Studio%%
 Free YouTube%%
-freemakeTB Toolbar
 FromDocToPDF Internet Explorer Toolbar
 FromDocToPDF Toolbar
 GetSavin
@@ -92,41 +89,39 @@ HP%%Assistant%%
 HP%%Documentation%%
 HP%%Guide%%
 HP%%Help%%
+HP%%Notifications%%
 HP%%Registration%%
-hpStatusAlerts%%
 HP%%Study%%
 HP%%Support%%
 HP%%Update%%
-HP%%Help%%
 IB Updater%%
+IObit%%
+IWon%%
 Iminent
 Inbox Toolbar
 InfoAtoms
 InstaCodecs
-Intel%%Management Engine%%
 Intel%%ME%%UninstallLegacy
+Intel%%Management Engine%%
 Intel%%Smart%%
 Internet Explorer Toolbar%%
 InternetHelper3 Toolbar
-IObit%%
-IWon%%
 Launch Manager%%
 Lenovo%%
-Live! Cam Avatar%%
 LinkSwift%%
 Live Updater
-lucky leap%%
+Live! Cam Avatar%%
+MPlayerplus%%
 MapsGalaxy%%
+McAfee Security Scan
 Media Buzz
+Media Gallery%%
 Media View%%
 Media Watch%%
-Media Gallery%%
-McAfee Security Scan
 MixiDJ V30 Toolbar
 MobileWiFi%%
 Mobogenie
 Move Media%%
-MPlayerplus%%
 My HP%%
 My Scrap Nook Internet Explorer Toolbar
 My Web Searc%%
@@ -138,30 +133,29 @@ OMG Music Plus%%
 OOBE%%
 Optimizer Pro%%
 Orbit Downloader
-Pdf995%%
-pdfforge Toolbar%%
 PDFLite Toolbar
+PMB%%
+Pdf995%%
 Plus-HD-1.3
 PopularScreensavers Toolbar and Software
-PMB%%
 Price Check by AOL
 PrivDog
 Productivity%%Toolbar for IE
 QuickShare
-%%QuickTime%%
 Qwiklinx
 RadioRage%%
 Raptr
 RealDownloader%%
 RealNetworks%%
 RealUpgrade%%
-Remote Keyboard
-Remote Play with Playstation%%
 RegClean Pro
 RegInOut%%
+Remote Keyboard
+Remote Play with Playstation%%
 Rich Media View
 Rock Turner
 Roxio%%
+SLOW-PCfighter
 SaveOn%%
 ScorpionSave%%
 Search Assistant%%
@@ -171,34 +165,32 @@ Search Toolba%%
 SelectionLinks
 Shop To Win
 ShopAtHome.com Toolbar
-Shopping%%
 Shopper%%
-SLOW-PCfighter
+Shopping%%
 SmartWebPrinting%%
 Smiley Central%%
+SocialSafe
 Software Assist
 Software Updater
+Soluto
 Sonic CinePlayer%%
 Sony Music%%
 Spam Free Search Toolbar
-Speedial%%
 SpeedUpMyPc%%
+Speedial%%
 StartNow Toolbar
-SocialSafe
-Soluto
 Super Optimizer%%
 SweetIM for Messenger%%
 SweetPacks%%
 SySaver
 The Gator
 TidyNetwork.com
-TopArcadeHits
 Toolbar%%
+TopArcadeHits
 Toshiba%%
 Uninstall Helper
 UserGuide%%
 Utility Chest Toolbar
-uTorrentControl2 Toolbar
 VAIO%%
 VGClient%%
 Video Converter%%
@@ -214,12 +206,20 @@ WildGames%%
 WildTangent%%
 Windows Internet Guard%%
 WiseConvert%%
-Yahoo%%Toolbar
 Yahoo%%Browser%%
 Yahoo%%Search%%
 Yahoo%%Software%%
+Yahoo%%Toolbar
 Yammer%%
 Yontoo%%
 YouTube Downloader%%
 ZD Manager
 Zip Opener Packages
+eBay%%
+eMachines%%
+flash-Enhancer%%
+freemakeTB Toolbar
+hpStatusAlerts%%
+lucky leap%%
+pdfforge Toolbar%%
+uTorrentControl2 Toolbar
