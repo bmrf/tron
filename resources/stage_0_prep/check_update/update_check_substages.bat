@@ -95,6 +95,7 @@ if /i %LOCAL_STAGE_1_SCRIPT_VERSION% LSS %REPO_STAGE_1_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 1 v%REPO_STAGE_1_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_1_tempclean\stage_1_tempclean.bat" "stage_1_tempclean\stage_1_tempclean.bat.backup" >NUL
 	move /y "%TEMP%\stage_1_tempclean.bat" "stage_1_tempclean\stage_1_tempclean.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -105,6 +106,7 @@ if /i %LOCAL_STAGE_2_SCRIPT_VERSION% LSS %REPO_STAGE_2_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 2 v%REPO_STAGE_2_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_2_de-bloat\stage_2_de-bloat.bat" "stage_2_de-bloat\stage_2_de-bloat.bat.backup" >NUL
 	move /y "%TEMP%\stage_2_de-bloat.bat" "stage_2_de-bloat\stage_2_de-bloat.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -115,6 +117,7 @@ if /i %LOCAL_STAGE_3_SCRIPT_VERSION% LSS %REPO_STAGE_3_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 3 v%REPO_STAGE_3_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_3_disinfect\stage_3_disinfect.bat" "stage_3_disinfect\stage_3_disinfect.bat.backup" >NUL
 	move /y "%TEMP%\stage_3_disinfect.bat" "stage_3_disinfect\stage_3_disinfect.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -125,6 +128,7 @@ if /i %LOCAL_STAGE_4_SCRIPT_VERSION% LSS %REPO_STAGE_4_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 4 v%REPO_STAGE_4_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_4_repair\stage_4_repair.bat" "stage_4_repair\stage_4_repair.bat.backup" >NUL
 	move /y "%TEMP%\stage_4_repair.bat" "stage_4_repair\stage_4_repair.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -135,6 +139,7 @@ if /i %LOCAL_STAGE_5_SCRIPT_VERSION% LSS %REPO_STAGE_5_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 5 v%REPO_STAGE_5_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_5_patch\stage_5_patch.bat" "stage_5_patch\stage_5_patch.bat.backup" >NUL
 	move /y "%TEMP%\stage_5_patch.bat" "stage_5_patch\stage_5_patch.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -145,5 +150,6 @@ if /i %LOCAL_STAGE_6_SCRIPT_VERSION% LSS %REPO_STAGE_6_SCRIPT_VERSION% (
 	call functions\log.bat " ! Splicing in updated Stage 6 v%REPO_STAGE_6_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_6_optimize\stage_6_optimize.bat" "stage_6_optimize\stage_6_optimize.bat.backup" >NUL
 	move /y "%TEMP%\stage_6_optimize.bat" "stage_6_optimize\stage_6_optimize.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
