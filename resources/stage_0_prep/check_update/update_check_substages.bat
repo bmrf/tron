@@ -80,69 +80,70 @@ for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\stage_6_optimize.bat
 :: Check all versions and splice in new code if necessary
 :: Check Stage 0
 if /i %LOCAL_STAGE_0_SCRIPT_VERSION% LSS %REPO_STAGE_0_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 0 v%REPO_STAGE_0_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_0_SCRIPT_VERSION%"
-	call functions\log.bat " ! Splicing in updated Stage 0 v%REPO_STAGE_0_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 0 is v%REPO_STAGE_0_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_0_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 0 v%REPO_STAGE_0_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_0_prep\stage_0_prep.bat" "stage_0_prep\stage_0_prep.bat.backup" >NUL
-	move -y "%TEMP%\stage_0_prep.bat" "stage_0_prep\stage_0_prep.bat" >NUL
+	move /y "%TEMP%\stage_0_prep.bat" "stage_0_prep\stage_0_prep.bat" >NUL
+	ping 127.0.0.1 -n 3 >nul
 	call functions\log.bat "   Done."
 )
 pause
 
 :: Check Stage 1
 if /i %LOCAL_STAGE_1_SCRIPT_VERSION% LSS %REPO_STAGE_1_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 1 v%REPO_STAGE_1_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_1_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 1 v%REPO_STAGE_1_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 1 is v%REPO_STAGE_1_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_1_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 1 v%REPO_STAGE_1_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_1_tempclean\stage_1_tempclean.bat" "stage_1_tempclean\stage_1_tempclean.bat.backup" >NUL
-	move -y "%TEMP%\stage_1_tempclean.bat" "stage_1_tempclean\stage_1_tempclean.bat" >NUL
+	move /y "%TEMP%\stage_1_tempclean.bat" "stage_1_tempclean\stage_1_tempclean.bat" >NUL
 	call functions\log.bat "   Done."
 )
 
 
 :: Check Stage 2
 if /i %LOCAL_STAGE_2_SCRIPT_VERSION% LSS %REPO_STAGE_2_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 2 v%REPO_STAGE_2_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_2_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 2 v%REPO_STAGE_2_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 2 is v%REPO_STAGE_2_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_2_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 2 v%REPO_STAGE_2_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_2_de-bloat\stage_2_de-bloat.bat" "stage_2_de-bloat\stage_2_de-bloat.bat.backup" >NUL
-	move -y "%TEMP%\stage_2_de-bloat.bat" "stage_2_de-bloat\stage_2_de-bloat.bat" >NUL
+	move /y "%TEMP%\stage_2_de-bloat.bat" "stage_2_de-bloat\stage_2_de-bloat.bat" >NUL
 	call functions\log.bat "   Done."
 )
 
 
 :: Check Stage 3
 if /i %LOCAL_STAGE_3_SCRIPT_VERSION% LSS %REPO_STAGE_3_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 3 v%REPO_STAGE_3_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_3_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 3 v%REPO_STAGE_3_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 3 is v%REPO_STAGE_3_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_3_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 3 v%REPO_STAGE_3_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_3_disinfect\stage_3_disinfect.bat" "stage_3_disinfect\stage_3_disinfect.bat.backup" >NUL
-	move -y "%TEMP%\stage_3_disinfect.bat" "stage_3_disinfect\stage_3_disinfect.bat" >NUL
+	move /y "%TEMP%\stage_3_disinfect.bat" "stage_3_disinfect\stage_3_disinfect.bat" >NUL
 	call functions\log.bat "   Done."
 )
 
 
 :: Check Stage 4
 if /i %LOCAL_STAGE_4_SCRIPT_VERSION% LSS %REPO_STAGE_4_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 4 v%REPO_STAGE_4_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_4_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 4 v%REPO_STAGE_4_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 4 is v%REPO_STAGE_4_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_4_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 4 v%REPO_STAGE_4_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_4_repair\stage_4_repair.bat" "stage_4_repair\stage_4_repair.bat.backup" >NUL
-	move -y "%TEMP%\stage_4_repair.bat" "stage_4_repair\stage_4_repair.bat" >NUL
+	move /y "%TEMP%\stage_4_repair.bat" "stage_4_repair\stage_4_repair.bat" >NUL
 	call functions\log.bat "   Done."
 )
 
 
 :: Check Stage 5
 if /i %LOCAL_STAGE_5_SCRIPT_VERSION% LSS %REPO_STAGE_5_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 5 v%REPO_STAGE_5_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_5_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 5 v%REPO_STAGE_5_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 5 is v%REPO_STAGE_5_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_5_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 5 v%REPO_STAGE_5_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_5_patch\stage_5_patch.bat" "stage_5_patch\stage_5_patch.bat.backup" >NUL
-	move -y "%TEMP%\stage_5_patch.bat" "stage_5_patch\stage_5_patch.bat" >NUL
+	move /y "%TEMP%\stage_5_patch.bat" "stage_5_patch\stage_5_patch.bat" >NUL
 	call functions\log.bat "   Done."
 )
 
 
 :: Check Stage 6
 if /i %LOCAL_STAGE_6_SCRIPT_VERSION% LSS %REPO_STAGE_6_SCRIPT_VERSION% (
-	call functions\log.bat " ! Github Stage 6 v%REPO_STAGE_6_SCRIPT_VERSION%is newer than local v%LOCAL_STAGE_6_SCRIPT_VERSION%code."
-	call functions\log.bat " ! Splicing in updated Stage 6 v%REPO_STAGE_6_SCRIPT_VERSION%code. Old code renamed with .backup extension."
+	call functions\log.bat " ! Github Stage 6 is v%REPO_STAGE_6_SCRIPT_VERSION%which is newer than local v%LOCAL_STAGE_6_SCRIPT_VERSION%"
+	call functions\log.bat " ! Splicing in updated Stage 6 v%REPO_STAGE_6_SCRIPT_VERSION%and renaming old code with .backup extension."
 	move "stage_6_optimize\stage_6_optimize.bat" "stage_6_optimize\stage_6_optimize.bat.backup" >NUL
-	move -y "%TEMP%\stage_6_optimize.bat" "stage_6_optimize\stage_6_optimize.bat" >NUL
+	move /y "%TEMP%\stage_6_optimize.bat" "stage_6_optimize\stage_6_optimize.bat" >NUL
 	call functions\log.bat "   Done."
 )
