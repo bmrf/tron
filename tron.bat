@@ -4,7 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.2.0 / tron:prep:           Remove "www" from the URL in the REPO_URL variable. This is related to fixing SSL encryption on the update checker
+:: Version:       9.3.0 + tron:update:       Add call to update_check_substages function. This will pull down the latest sub-stage scripts from Github prior to Tron's execution
+::                      + tron:prep:         Add check for active network connection prior to running update checker scripts
+::                      / tron:prep:         Move creation of log directories from EXECUTION section up to PREP
+::                      - tron:update_check: Move REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables to update_check sub-script since they're only relevant there
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -158,18 +161,14 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.2.0
-set SCRIPT_DATE=2016-08-12
+set SCRIPT_VERSION=9.3.0
+set SCRIPT_DATE=2016-08-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
 set ERRORS_DETECTED=no
 set WARNINGS_DETECTED=no
 set CONFIG_DUMP=no
-set REPO_URL=https://bmrf.org/repos/tron
-set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
-set REPO_SCRIPT_DATE=0
-set REPO_SCRIPT_VERSION=0
 set TARGET_METRO=no
 set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
@@ -193,7 +192,7 @@ for /f "USEBACKQ skip=1 delims=" %%i IN (`%WMIC% timezone get StandardName ^|fin
   if /i "%1"=="-resume" set RESUME_DETECTED=yes
 :: Resume-related stuff end
 
-:: Build our USERPROFILES variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
+:: Build our USERPROFILE variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
 set USERPROFILES=%CD%
 popd
@@ -248,6 +247,12 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 pushd %~dp0 2>NUL
 :: INTERNAL PREP: Get in the resources sub-directory. We stay here for the rest of the script
 pushd resources
+
+
+:: INTERNAL PREP: Make log file and directories if they don't already exist
+for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
+    if not exist %%D mkdir %%D
+)
 
 
 :: INTERNAL PREP: Parse command-line arguments (functions are at bottom of script)
@@ -373,14 +378,28 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 
+:: INTERNAL PREP: Check if there's a network connection
+%WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL
+if /i not %ERRORLEVEL%==0 (
+	call functions\log.bat " ! Tron doesn't think we have a network connection. Skipping update checks."
+	set SKIP_UPDATE_CHECK=yes
+	set WARNINGS_DETECTED=yes_update_check_skipped
+)
+
+
 :: INTERNAL PREP: Update check
 if /i %DRY_RUN%==yes set SKIP_UPDATE_CHECK=yes
 if /i %AUTORUN%==yes set SKIP_UPDATE_CHECK=yes
 if /i %SKIP_UPDATE_CHECK%==no (
 	cls
 	echo.
-	call functions\log.bat "  Checking for updated Tron version..."
-	call functions\update_check.bat
+	call functions\log.bat "  Checking repo for updated Tron version..."
+	call stage_0_prep\check_update\update_check.bat
+	call functions\log.bat "  Done."
+	echo.
+	call functions\log.bat "  Checking Github for updated sub-stage scripts..."
+	call stage_0_prep\check_update\update_check_substages.bat
+	call functions\log.bat "  Done."
 )
 
 
@@ -442,10 +461,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    TIME:                   %TIME%
 	echo    TIME_ZONE_NAME:         !TIME_ZONE_NAME!
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
-	echo    REPO_BTSYNC_KEY:        %REPO_BTSYNC_KEY%
-	echo    REPO_URL:               %REPO_URL%
-	echo    REPO_SCRIPT_VERSION:    %REPO_SCRIPT_VERSION%
-	echo    REPO_SCRIPT_DATE:       %REPO_SCRIPT_DATE%
 	echo    RESUME_DETECTED:        %RESUME_DETECTED%
 	echo    RESUME_FLAGS:           %RESUME_FLAGS%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
@@ -537,15 +552,15 @@ if /i not "%SAFE_MODE%"=="yes" (
 	color 0e
 	cls
 	echo.
-	echo  WARNING
+	echo  NOTE
 	echo.
 	echo  The system isn't in Safe Mode. Safe Mode is NOT required,
 	echo  and sometimes Tron can actually work as well or better in
 	echo  "regular" mode, but generally I recommend first running in
-	echo  Safe Mode, then if there are still issues, re-running in 
+	echo  Safe Mode, then if there are still issues, re-running in
 	echo  "regular" mode.
 	echo.
-	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
+	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n]
 	if /i "!CHOICE!"=="y" (
 		echo.
 		echo  Rebooting system to Safe Mode in 7 seconds...
@@ -604,7 +619,7 @@ echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
 echo  *                                                                     *
-echo  * \resources\stage_8_manual_tools contains additional manual tools    *
+echo  * \tron\resources\stage_8_manual_tools contains other useful utils    *
 echo  ***********************************************************************
 :: So ugly
 echo  Current settings (run tron.bat -c to dump full config):
@@ -688,12 +703,6 @@ if /i %AUTORUN%==yes (
 )
 
 
-:: Make log file and directories if they don't already exist
-for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
-    if not exist %%D mkdir %%D
-)
-
-
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
@@ -725,8 +734,9 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) o
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
 
 
-:: INTERNAL PREP: Tell us if the update check failed
+:: INTERNAL PREP: Tell us if the update check failed or was skipped
 if %WARNINGS_DETECTED%==yes_update_check_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
+if %WARNINGS_DETECTED%==yes_update_check_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has an Internet connection. Update checks were skipped."
 
 
 :: INTERNAL PREP: Run a quick SMART check and notify if there are any drives with problems
@@ -1011,7 +1021,7 @@ color 2f
 if /i not %WARNINGS_DETECTED%==no (
 	color e0
 	call functions\log.bat "%CUR_DATE% %TIME% ! WARNINGS were detected. Recommend reviewing the log file."
-) 
+)
 :: Were errors detected?
 if /i not %ERRORS_DETECTED%==no (
 	color cf
