@@ -6,7 +6,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       9.3.0 + tron:update:       Add call to update_check_substages function. This will pull down the latest sub-stage scripts from Github prior to Tron's execution
 ::                      + tron:prep:         Add check for active network connection prior to running update checker scripts
-::                      / tron:prep:         Move creation of log directories from EXECUTION section up to PREP
+::                      / tron:prep:         Move creation of log directories from EXECUTION to PREP section
 ::                      - tron:update_check: Move REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables to update_check sub-script since they're only relevant there
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
@@ -378,7 +378,7 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 
-:: INTERNAL PREP: Check if there's a network connection
+:: INTERNAL PREP: Check for active network connection
 %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL
 if /i not %ERRORLEVEL%==0 (
 	call functions\log.bat " ! Tron doesn't think we have a network connection. Skipping update checks."
@@ -393,13 +393,16 @@ if /i %AUTORUN%==yes set SKIP_UPDATE_CHECK=yes
 if /i %SKIP_UPDATE_CHECK%==no (
 	cls
 	echo.
-	call functions\log.bat "  Checking repo for updated Tron version..."
-	call stage_0_prep\check_update\update_check.bat
-	call functions\log.bat "  Done."
+	call functions\log.bat "   Checking repo for updated Tron version..."
 	echo.
-	call functions\log.bat "  Checking Github for updated sub-stage scripts..."
+	call stage_0_prep\check_update\update_check.bat
+	call functions\log.bat "   Done."
+	echo.
+	call functions\log.bat "   Checking Github for updated sub-stage scripts..."
+	echo.
 	call stage_0_prep\check_update\update_check_substages.bat
-	call functions\log.bat "  Done."
+	call functions\log.bat "   Done."
+	echo.
 )
 
 
@@ -736,7 +739,7 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrol
 
 :: INTERNAL PREP: Tell us if the update check failed or was skipped
 if %WARNINGS_DETECTED%==yes_update_check_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
-if %WARNINGS_DETECTED%==yes_update_check_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has an Internet connection. Update checks were skipped."
+if %WARNINGS_DETECTED%==yes_update_check_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
 
 
 :: INTERNAL PREP: Run a quick SMART check and notify if there are any drives with problems
@@ -867,7 +870,6 @@ echo stage_7_wrap-up>tron_stage.txt
 call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
 
 
-
 :: JOB: Reset power settings to Windows defaults
 title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Reset power settings]
 if %PRESERVE_POWER_SCHEME%==yes (
@@ -985,7 +987,7 @@ stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \resources\stage_8_manual_tools if further cleaning is required."
+call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \tron\resources\stage_8_manual_tools if further action is required."
 
 
 :: Check if auto-reboot was requested
