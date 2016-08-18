@@ -77,8 +77,7 @@ for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\stage_5_patch.bat" ^
 for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\stage_6_optimize.bat" ^| find "STAGE_6_SCRIPT_VERSION"`) DO ( set REPO_STAGE_6_SCRIPT_VERSION=%%i )
 
 
-echo %REPO_STAGE_0_SCRIPT_VERSION%
-:: Check all veresions and splice in new code if necessary
+:: Check all versions and splice in new code if necessary
 :: Check Stage 0
 if /i %LOCAL_STAGE_0_SCRIPT_VERSION% LSS %REPO_STAGE_0_SCRIPT_VERSION% (
 	call functions\log.bat " ! Github Stage 0 code is v%REPO_STAGE_0_SCRIPT_VERSION% which is newer than local v%LOCAL_STAGE_0_SCRIPT_VERSION% code."
