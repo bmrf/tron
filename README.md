@@ -1,6 +1,6 @@
 | NAME       | Tron, an automated PC cleanup script                                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
-| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus d0t gate@gmail`) // PGP ID: [0x07d1490f82a211a2](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) |
+| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus.gate@gmail`) // PGP ID: [0x07d1490f82a211a2](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) |
 | BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
 # DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [/r/TronScript](https://www.reddit.com/r/TronScript) !!
@@ -346,9 +346,11 @@ Master script that launches everything else. It performs many actions on its own
 
 0. **Detect TEMP execution**: Detect if we're running from the TEMP directory and prevent Tron from executing if so. TEMP is one of the first places to get wiped when Tron starts so we cannot run from there
 
+1. **Make log directories**: Create the master log directory and sub-directories if they don't exist. By default this is `%SystemDrive%\Logs\tron.log`
+
 1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions.
+2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions
 
 3. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
 
@@ -358,13 +360,17 @@ Master script that launches everything else. It performs many actions on its own
 
 6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8 and up only; enabled by default on Server 2012/2012 R2)
 
+7. **Check for network connection**: Check for an active network connection, and skip the update checks if one isn't found
+
 7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the current outdated copy
+
+8. **Check for sub-stage updates**: Check the versions of the sub-stage scripts hosted on Github (e.g. `stage_4_repair.bat`) and compare to local versions. If the Github version is newer, automatically splice it in prior to beginning execution of Stage 0
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
 9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
 
-10. **Make log directories**: Create the master log directory and sub-directories if they don't exist. By default this is `%SystemDrive%\Logs\tron.log`
+10. 
 
 11. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
