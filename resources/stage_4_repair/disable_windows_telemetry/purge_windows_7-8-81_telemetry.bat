@@ -1,7 +1,10 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6-TRON + Add KB's 3112343, 3083324, 3083325, and 3065988. Thanks to /u/toomasmolder
+:: Version:       1.0.7-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/DrQuack32
+::                           * Simplify and clean up OS version detection
+::                           ! Fix bug where script could mistakenly run on a Windows 10 system if manually executed
+::                1.0.6-TRON + Add KB's 3112343, 3083324, 3083325, and 3065988. Thanks to /u/toomasmolder
 ::                1.0.5-TRON + Add KB 3139929. Thanks to /u/MirageESO
 ::                1.0.4-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
@@ -26,8 +29,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.6-TRON
-set SCRIPT_UPDATED=2016-03-23
+set SCRIPT_VERSION=1.0.7-TRON
+set SCRIPT_UPDATED=2016-08-25
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -39,33 +42,22 @@ if /i "%LOGPATH%"=="" (
 )
 
 :: Make sure we're on Win7, 8 or 8.1 series
-if %WIN_VER_NUM% gtr 6.3 (
+:: On Windows 10 the console stupidly reports that the internal version number is 6.3, same
+:: as Win7-81, so we have to add an additional literal string check to catch it. Sigh.
+set ABORT=no
+if %WIN_VER_NUM% gtr 6.3 set ABORT=yes
+if %WIN_VER_NUM% leq 6.0 set ABORT=yes
+if "%WIN_VER:~0,10%"=="Windows 10" set ABORT=yes
+if %ABORT%==yes (
 	color 0c
-	echo  ERROR! This script is only for Windows 7/8/8.1. Detected version is %WIN_VER% %WIN_VER_NUM%. Aborting. >> %LOGPATH%\%LOGFILE%
+	echo  ERROR! This script is only for Windows 7/8/8.1. Detected version is %WIN_VER% ^(%WIN_VER_NUM%^). Aborting.>> %LOGPATH%\%LOGFILE%
 	echo.
 	echo  ERROR
 	echo.
 	echo   This script is only for Windows 7, 8 and 8.1
 	echo   ^(including server variants^).
 	echo.
-	echo   Detected version is %WIN_VER% %WIN_VER_NUM%
-	echo.
-	echo   Quitting in 60 seconds...
-	echo.
-	ping 127.0.0.1 -n 60 >NUL
-	color
-	exit /b 1
-)
-if %WIN_VER_NUM% leq 6.0 (
-	color 0c
-	echo  ERROR! This script is only for Windows 7/8/8.1. Detected version is %WIN_VER% %WIN_VER_NUM%. Aborting. >> %LOGPATH%\%LOGFILE%
-	echo.
-	echo  ERROR
-	echo.
-	echo   This script is only for Windows 7, 8 and 8.1
-	echo   ^(including server variants^).
-	echo.
-	echo   Detected version is %WIN_VER% %WIN_VER_NUM%
+	echo   Detected version is %WIN_VER% ^(%WIN_VER_NUM%^).
 	echo.
 	echo   Quitting in 60 seconds...
 	echo.
@@ -285,7 +277,7 @@ if "%VERBOSE%"=="yes" (
 :: BLOCK BAD UPDATES
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\purge_windows_telemetry 2>NUL
+pushd stage_4_repair\disable_windows_telemetry 2>NUL
 start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683
 :: Next batch
 start "" /b /wait cscript.exe "block_windows_updates.vbs" 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
