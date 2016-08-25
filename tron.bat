@@ -162,7 +162,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=9.3.0
-set SCRIPT_DATE=2016-08-xx
+set SCRIPT_DATE=2016-08-25
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -303,7 +303,7 @@ if /i %HELP%==yes (
 	echo    -h   Display this help text
 	echo.
 	exit /b 0
-	)
+)
 
 
 :: INTERNAL PREP: Detect the version of Windows we're on. This determines a few things later on
