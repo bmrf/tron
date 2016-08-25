@@ -1,4 +1,4 @@
-:: Purpose:       Checks for updated sub-stage script code on Github prior to executing Tron. If a newer version is found, automatically splices the new code in
+:: Purpose:       Checks for updated sub-stage script code on Github prior to executing Tron. If updates are found, they are spliced in prior to Stage 0 execution
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.0 + Initial write
