@@ -53,12 +53,14 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr -sk
-              -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
+    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr
+              -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
     Optional flags (can be combined):
 
      -a   Automatic mode (no welcome screen or prompts; implies -e)
+     
+     -asu Automatic Substage Update. Download latest substage code from Github before execution
 
      -c   Config dump (display current config. Can be used with other
           flags to see what WOULD happen, but script will never execute
@@ -181,6 +183,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To always run automatically (no welcome screen, implies acceptance of EULA), change this to `yes`:
   ```
   set AUTORUN=no
+  ```
+
+- To always check Github for updated sub-stage scripts (e.g. `stage_0_prep.bat`) prior to running, change this to `yes`:
+  ```
+  set AUTO_SUBSTAGE_UPDATE=no
   ```
 
 - To do a dry run (don't actually execute jobs), change this to `yes`:
@@ -364,7 +371,7 @@ Master script that launches everything else. It performs many actions on its own
 
 7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the current outdated copy
 
-8. **Check for sub-stage updates**: Check the versions of the sub-stage scripts hosted on Github (e.g. `stage_4_repair.bat`) and compare to local versions. If the Github version is newer, automatically splice it in prior to beginning execution of Stage 0
+8. **Check for sub-stage updates**: If the `-asu` (`AUTO_SUBSTAGE_UPDATE`) switch is used, check the versions of the sub-stage scripts hosted on Github (e.g. `stage_4_repair.bat`) and compare to local versions. If the Github version is newer, automatically splice it in prior to beginning execution of Stage 0
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
