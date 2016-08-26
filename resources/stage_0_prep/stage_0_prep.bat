@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
+:: Version:       1.0.9 / Minor log message change
+::                1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
 ::                1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
 ::                1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
 ::                1.0.5 + Remove 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
@@ -19,8 +20,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.8
-set STAGE_0_SCRIPT_DATE=2016-08-12
+set STAGE_0_SCRIPT_VERSION=1.0.9
+set STAGE_0_SCRIPT_DATE=2016-08-26
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -72,7 +73,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: rkill
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
-call functions\log.bat "%CUR_DATE% %TIME%    If script stalls 20 min or more here, kill explorer64.exe and explorer.exe with Task Manager"
+call functions\log.bat "%CUR_DATE% %TIME%    If script stalls 20 min or more, kill explorer64.exe and explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -101,7 +102,7 @@ if /i %DRY_RUN%==no wmic product get identifyingnumber,name,version /all > "%RAW
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Disable mode and disable screen saver
+:: JOB: Disable system sleep and screen saver
 if /i %DRY_RUN%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Temporarily disable system sleep and screensaver'..."
 	title Tron v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
