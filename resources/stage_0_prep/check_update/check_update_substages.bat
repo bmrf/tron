@@ -9,10 +9,11 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set UPDATE_CHECK_SUBSTAGES_VERSION=1.0.0
-set UPDATE_CHECK_SUBSTAGES_VERSION=2016-08-17
+set CHECK_UPDATE_SUBSTAGES_VERSION=1.0.0
+set CHECK_UPDATE_SUBSTAGES_VERSION=2016-08-17
 
 :: Base of the Github URL we pull the scripts from
+:: Full URL is built like this: %GITHUB_URL_BASE%/stage_0_prep.bat  (for example)
 set GITHUB_URL_BASE=https://github.com/bmrf/tron/raw/master/resources/stage
 
 :: Preload repo version variables in case they don't get fetched for some reason
@@ -47,9 +48,6 @@ for %%i in (_0_prep,_1_tempclean,_2_de-bloat,_3_disinfect,_4_repair,_5_patch,_6_
 	start /min stage_0_prep\check_update\wget --no-check-certificate %GITHUB_URL_BASE%%%i/stage%%i.bat -O %TEMP%\stage%%i.bat
 )
 
-:: Reset window title since wget clobbers it
-title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
-
 :: Wait for wget to finish
 :wget_check_loop
 tasklist | find /i "wget" >nul
@@ -57,6 +55,9 @@ if not errorlevel 1 (
     ping 127.0.0.1 -n 4 >nul
     goto :wget_check_loop
 )
+
+:: Reset window title since wget clobbers it
+title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Parse local sub-stage scripts for their versions and stash in variables
 for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "stage_0_prep\stage_0_prep.bat" ^| find "STAGE_0_SCRIPT_VERSION"`) DO ( set LOCAL_STAGE_0_SCRIPT_VERSION=%%i )
