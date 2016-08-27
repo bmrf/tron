@@ -1,8 +1,24 @@
-# Script to remove a lot of the pre-loaded Microsoft Metro "modern app" bloatware
-# Initial creation by Garacesh at:  http://www.edugeek.net/forums/windows-10/161433-windows-10-removal-off-preinstalled-apps-bulk-sans-store.html#post1398039
-# Modified for use with the Tron project by /u/vocatus on reddit.com/r/TronScript
+<#
+Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
+               Add any AppX package names to the $PackagesToRemove array to target them for removal
+Requirements:  1. Administrator access
+               2. Windows 7 and up
+Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
+#>
 $ErrorActionPreference = "SilentlyContinue"
 
+
+########
+# PREP #
+########
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.0"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-08-27"
+
+
+###########
+# EXECUTE #
+###########
 # Active identifiers
 $PackagesToRemove = (
 	'9E2F88E3.Twitter',                       # Twitter app
