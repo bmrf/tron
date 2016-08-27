@@ -1,8 +1,25 @@
-# Script to remove a lot of the pre-loaded 3rd-party Metro "modern app" bloatware
-# Initial creation by /u/kronflux
-# Modified for use with the Tron project by /u/vocatus on reddit.com/r/TronScript
+<#
+Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
+               Add any AppX uninstall commands to this list to target them for removal
+Requirements:  1. Administrator access
+               2. Windows 7 and up
+Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
+#>
 $ErrorActionPreference = "SilentlyContinue"
 
+
+########
+# PREP #
+########
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.0"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-08-27"
+
+
+
+###########
+# EXECUTE #
+###########
 #remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Evernote.Evernote*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*06DAC6F6.StumbleUpon*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*134D4F5B.Box*"}).PackageFullName
