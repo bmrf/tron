@@ -4,15 +4,20 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.3.0 + tron:update:       Add call to update_check_substages function. This will pull down the latest sub-stage scripts from Github prior to Tron's execution
+:: Version:       9.3.1 + tron:cli_flags:    Add -asu switch. Use this to have Tron automatically pull down the latest sub-stage scripts from Github before execution
+::                      / tron_update:       Disable-by-default the Github sub-stage script update check
+::                      + tron_config:       Add state of AUTO_SUBSTAGE_UPDATE variable to config dump screen (-c)
+::                      / tron_update:       Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
+::                9.3.0 + tron:update:       Add call to update_check_substages function. This will pull down the latest sub-stage scripts from Github prior to Tron's execution
 ::                      + tron:prep:         Add check for active network connection prior to running update checker scripts
 ::                      / tron:prep:         Move creation of log directories from EXECUTION to PREP section
-::                      - tron:update_check: Move REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables to update_check sub-script since they're only relevant there
+::                      - tron:check_update: Move REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables to check_update sub-script since they're only relevant there
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL Command-line switches (can be combined, none are required):
-::                      -a   Automatic mode (no welcome screen or prompts; implies -e)
+::                      -a   Automatic exection mode (no welcome screen or prompts; implies -e)
+::                      -asu Automatic Substage Update. Download latest substage code from Github before execution
 ::                      -c   Config dump (display config. Can be used with other flags to see what
 ::                           WOULD happen, but script will never execute if this flag is used)
 ::                      -d   Dry run (run through script without executing any jobs)
@@ -90,6 +95,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: ! All defaults here are overridden if their respective command-line flag is used
 ::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
+:: AUTO_SUBSTAGE_UPDATE   (-asu) = Automatic Substage Update. Automatically download the latest substage scripts from Github before execution
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
 :: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -116,6 +122,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
+set AUTO_SUBSTAGE_UPDATE=no
 set DRY_RUN=no
 set DEV_MODE=no
 set EULA_ACCEPTED=no
@@ -161,8 +168,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.3.0
-set SCRIPT_DATE=2016-08-25
+set SCRIPT_VERSION=9.3.1
+set SCRIPT_DATE=2016-09-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -177,7 +184,7 @@ set HELP=no
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
-set SKIP_UPDATE_CHECK=no
+set SKIP_CHECK_UPDATE=no
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
@@ -266,11 +273,12 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc -se
-	echo                -sfr -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -asu -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc
+	echo                -se -sfr -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
-	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
+	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
+	echo    -asu Automatic Substage Update. Download latest substage code from Github before execution
  	echo    -c   Config dump ^(display config. Can be used with other flags to see what
 	echo         WOULD happen, but script will never execute if this flag is used^)
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
@@ -382,27 +390,34 @@ if /i %RESUME_DETECTED%==yes (
 %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL
 if /i not %ERRORLEVEL%==0 (
 	call functions\log.bat " ! Tron doesn't think we have a network connection. Skipping update checks."
-	set SKIP_UPDATE_CHECK=yes
-	set WARNINGS_DETECTED=yes_update_check_skipped
+	set SKIP_CHECK_UPDATE=yes
+	set WARNINGS_DETECTED=yes_check_update_skipped
 )
 
 
-:: INTERNAL PREP: Update check
-if /i %DRY_RUN%==yes set SKIP_UPDATE_CHECK=yes
-if /i %AUTORUN%==yes set SKIP_UPDATE_CHECK=yes
-if /i %SKIP_UPDATE_CHECK%==no (
+:: INTERNAL PREP: Check for updates
+if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
+if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
+if /i %SKIP_CHECK_UPDATE%==no (
 	cls
 	echo.
 	call functions\log.bat "   Checking repo for updated Tron version..."
 	echo.
-	call stage_0_prep\check_update\update_check.bat
+	call stage_0_prep\check_update\check_update.bat
 	call functions\log.bat "   Done."
 	echo.
-	call functions\log.bat "   Checking Github for updated sub-stage scripts..."
+	call functions\log.bat "   Checking repo for updated debloat lists..."
 	echo.
-	call stage_0_prep\check_update\update_check_substages.bat
+	call stage_0_prep\check_update\check_update_debloat_lists.bat
 	call functions\log.bat "   Done."
 	echo.
+	if /i %AUTO_SUBSTAGE_UPDATE%==yes (
+		call functions\log.bat "   Checking Github for updated sub-stage scripts..."
+		echo.
+		call stage_0_prep\check_update\check_update_substages.bat
+		call functions\log.bat "   Done."
+		echo.
+	)
 )
 
 
@@ -420,6 +435,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo  User-set variables:
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
+	echo    AUTO_SUBSTAGE_UPDATE:   %AUTO_SUBSTAGE_UPDATE%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
@@ -738,8 +754,8 @@ if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrol
 
 
 :: INTERNAL PREP: Tell us if the update check failed or was skipped
-if %WARNINGS_DETECTED%==yes_update_check_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
-if %WARNINGS_DETECTED%==yes_update_check_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
+if %WARNINGS_DETECTED%==yes_check_update_failed call functions\log.bat "%CUR_DATE% %TIME% ! WARNING: Tron update check failed."
+if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
 
 
 :: INTERNAL PREP: Run a quick SMART check and notify if there are any drives with problems
@@ -1110,6 +1126,7 @@ goto :eof
 :parse_cmdline_args
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
+	if /i %%i==-asu set AUTO_SUBSTAGE_UPDATE=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-dev set DEV_MODE=yes
