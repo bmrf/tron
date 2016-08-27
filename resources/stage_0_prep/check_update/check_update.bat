@@ -11,8 +11,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set UPDATE_CHECK_VERSION=1.0.2
-set UPDATE_CHECK_VERSION=2016-08-18
+set CHECK_UPDATE_VERSION=1.0.2
+set CHECK_UPDATE_VERSION=2016-08-18
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
