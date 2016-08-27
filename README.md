@@ -60,8 +60,6 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -a   Automatic mode (no welcome screen or prompts; implies -e)
      
-     -asu Automatic Substage Update. Download latest substage code from Github before execution
-
      -c   Config dump (display current config. Can be used with other
           flags to see what WOULD happen, but script will never execute
           if this flag is used)
@@ -89,6 +87,8 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
      
      -sdc Skip DISM component (SxS store) cleanup
+     
+     -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 
      -se  Skip Event Log clear (don't clear Windows Event Logs)
 
@@ -185,11 +185,6 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTORUN=no
   ```
 
-- To always check Github for updated sub-stage scripts (e.g. `stage_0_prep.bat`) prior to running, change this to `yes`:
-  ```
-  set AUTO_SUBSTAGE_UPDATE=no
-  ```
-
 - To do a dry run (don't actually execute jobs), change this to `yes`:
   ```
   set DRY_RUN=no
@@ -248,6 +243,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To skip DISM component (SxS store) cleanup, change this to `yes`:
   ```
   set SKIP_DISM_CLEANUP=no
+  ```
+  
+- To prevent Tron from connecting to Github and automatically updating the Stage 2 debloat lists, set this to `yes`:
+  ```
+  set SKIP_DEBLOAT_UPDATE=no
   ```
 
 - To skip Windows Event Log clearing, change this to `yes`:
@@ -371,7 +371,7 @@ Master script that launches everything else. It performs many actions on its own
 
 7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the current outdated copy
 
-8. **Check for sub-stage updates**: If the `-asu` (`AUTO_SUBSTAGE_UPDATE`) switch is used, check the versions of the sub-stage scripts hosted on Github (e.g. `stage_4_repair.bat`) and compare to local versions. If the Github version is newer, automatically splice it in prior to beginning execution of Stage 0
+8. **Update debloat lists**: Connect to Github and download the latest version of the Stage 2 debloat lists at initial launch. Use the `-sdu` (`SKIP_DEBLOAT_UPDATE`) switch to prevent this behavior. I recommend letting Tron update the lists unless you have a good, specific reason not to
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
