@@ -56,7 +56,7 @@ if not errorlevel 1 (
     ping 127.0.0.1 -n 4 >nul
     goto :wget_check_loop
 )
-pause
+
 :: Reset window title since wget clobbers it
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
