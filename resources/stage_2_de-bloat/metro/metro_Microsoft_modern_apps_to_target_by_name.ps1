@@ -5,6 +5,9 @@ $ErrorActionPreference = "SilentlyContinue"
 
 # Active identifiers
 $PackagesToRemove = (
+	'9E2F88E3.Twitter',                       # Twitter app
+	'D52A8D61.FarmVille2CountryEscape',
+	'GAMELOFTSA.Asphalt8Airborne',
 	'Microsoft.3DBuilder',                    # '3DBuilder' app
 	'Microsoft.BingFinance',                  # 'Money' app - Financial news
 	'Microsoft.BingFoodAndDrink',             # 'Food and Drink' app
@@ -15,32 +18,31 @@ $PackagesToRemove = (
 	'Microsoft.BingTravel',                   # 'Travel' app
 	'Microsoft.CommsPhone',                   # 'Phone' app
 	'Microsoft.ConnectivityStore',
-	'Windows.ContactSupport',
 	'Microsoft.FreshPaint',                   # 'Canvas' app
 	'Microsoft.Getstarted',                   # 'Get Started' link
-	'MicrosoftMahjong',                       # 'Mahjong' game
-	'Microsoft.MicrosoftJigsaw',
 	'Microsoft.Messaging',                    # 'Messaging' app
 	'Microsoft.MicrosoftJackpot',             # 'Jackpot' app
+	'Microsoft.MicrosoftJigsaw',
 	'Microsoft.MicrosoftOfficeHub',
-	'Microsoft.Taptiles',                     # imported from stage_2_de-bloat.bat
+	'Microsoft.MicrosoftSudoku',
+	'Microsoft.MovieMoments',                 # imported from stage_2_de-bloat.bat
 	'Microsoft.Office.OneNote',               # 'Onenote' app
 	'Microsoft.Office.Sway',                  # 'Sway' app
 	'Microsoft.People',                       # 'People' app
 	'Microsoft.SkypeApp',                     # 'Get Skype' link
 	'Microsoft.SkypeWiFi',
 	'Microsoft.Studios.Wordament',            # imported from stage_2_de-bloat.bat
-	'Microsoft.MicrosoftSudoku',
-	'microsoft.windowscommunicationsapps',    # 'Calendar and Mail' app
+	'Microsoft.Taptiles',                     # imported from stage_2_de-bloat.bat
 	'Microsoft.Windows.CloudExperienceHost',  # 'Cloud Experience' sigh
 	'Microsoft.WindowsFeedback',              # 'Feedback' functionality
-	'Microsoft.MovieMoments',                 # imported from stage_2_de-bloat.bat
 	'Microsoft.WindowsPhone',                 # 'Phone Companion' app
 	'Microsoft.XboxApp',                      # Xbox junk, unfortunately 'Microsoft.XboxGameCallableUI' and 'Microsoft.XboxIdentityProvider' can't be removed
 	'Microsoft.ZuneMusic',                    # 'Groove Music' app
 	'Microsoft.ZuneVideo',                    # Groove Music
+	'MicrosoftMahjong',                       # 'Mahjong' game
+	'Windows.ContactSupport',
 	'king.com.CandyCrushSodaSaga',            # Candy Crush app
-	'9E2F88E3.Twitter'                        # Twitter app
+	'microsoft.windowscommunicationsapps'     # 'Calendar and Mail' app
 )
 			
 # Inactive identifers
