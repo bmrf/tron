@@ -1,8 +1,16 @@
-:: Batch file to uninstall a specific list of programs by GUID
-:: Called by Tron in Stage 2: De-bloat
-:: Initial list by reddit.com/user/tuxedo_jack, modifications for use in Tron by reddit.com/user/vocatus and many, many, many others
-:: Add any GUID uninstall commands to this list to target them for removal
+:: Purpose:       Batch file to uninstall a specific list of programs by GUID. Called by Tron in Stage 2: De-bloat
+::                Add any GUID uninstall commands to this list to target them for removal
+:: Requirements:  Administrator access
+:: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+:: Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 @echo off
+
+
+::::::::::
+:: PREP ::
+::::::::::
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.0
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-08-27
 
 
 :::::::::::::::
