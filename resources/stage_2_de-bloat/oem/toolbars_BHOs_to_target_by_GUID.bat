@@ -1,7 +1,16 @@
-:: Batch file to uninstall a specific list of toolbars, BHO, Trojans by GUID
-:: Called by Tron in Stage 2: De-bloat
-:: Initial list by reddit.com/user/Chimaera12, modifications for use in Tron by reddit.com/user/vocatus
+:: Purpose:       Batch file to uninstall a specific list of toolbars, BHO, Trojans by GUID. Called by Tron in Stage 2: De-bloat or when executed manually.
+::                Initial list by reddit.com/user/Chimaera12, modifications for use in Tron by reddit.com/user/vocatus
+:: Requirements:  Administrator access
+:: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+:: Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 @echo off
+
+
+::::::::::
+:: PREP ::
+::::::::::
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.0
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-08-27
 
 
 :::::::::::::::
