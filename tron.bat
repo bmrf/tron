@@ -4,20 +4,16 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.3.1 + tron:cli_flags:    Add -asu switch. Use this to have Tron automatically pull down the latest sub-stage scripts from Github before execution
-::                      / tron_update:       Disable-by-default the Github sub-stage script update check
-::                      + tron_config:       Add state of AUTO_SUBSTAGE_UPDATE variable to config dump screen (-c)
-::                      / tron_update:       Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
-::                9.3.0 + tron:update:       Add call to update_check_substages function. This will pull down the latest sub-stage scripts from Github prior to Tron's execution
-::                      + tron:prep:         Add check for active network connection prior to running update checker scripts
-::                      / tron:prep:         Move creation of log directories from EXECUTION to PREP section
-::                      - tron:check_update: Move REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables to check_update sub-script since they're only relevant there
+:: Version:       9.4.0 + tron_update:   Add automatic checking for updated debloat lists (stage 2). If found Tron will update the local lists prior to execution
+::                      + tron_cli_flag: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
+::                      + tron_update:   Add SKIP_DEBLOAT_UPDATE output to config dump screen (-c)
+::                      / tron_update:   Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
+::                      - tron_update:   Remove all references to sub-stage update. The idea behind this functionality was ported over to updating the debloat lists instead
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL Command-line switches (can be combined, none are required):
 ::                      -a   Automatic exection mode (no welcome screen or prompts; implies -e)
-::                      -asu Automatic Substage Update. Download latest substage code from Github before execution
 ::                      -c   Config dump (display config. Can be used with other flags to see what
 ::                           WOULD happen, but script will never execute if this flag is used)
 ::                      -d   Dry run (run through script without executing any jobs)
@@ -34,6 +30,7 @@
 ::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sdc Skip DISM Cleanup (SxS component store deflation)
+::                      -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 ::                      -se  Skip Event Log clearing
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
@@ -95,7 +92,6 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: ! All defaults here are overridden if their respective command-line flag is used
 ::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
-:: AUTO_SUBSTAGE_UPDATE   (-asu) = Automatic Substage Update. Automatically download the latest substage scripts from Github before execution
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
 :: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -109,6 +105,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
 :: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM Cleanup (SxS component store deflation)
+:: SKIP_DEBLOAT_UPDATE    (-sdu) = Set to yes to prevent Tron from auto-updating the stage 2 debloat lists prior to Stage 0 execution
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clearing
 :: SKIP_FILEPERMS_RESET   (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
@@ -122,7 +119,6 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
-set AUTO_SUBSTAGE_UPDATE=no
 set DRY_RUN=no
 set DEV_MODE=no
 set EULA_ACCEPTED=no
@@ -136,6 +132,7 @@ set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
 set SKIP_DISM_CLEANUP=no
+set SKIP_DEBLOAT_UPDATE=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_FILEPERMS_RESET=no
 set SKIP_KASPERSKY_SCAN=no
@@ -168,7 +165,7 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.3.1
+set SCRIPT_VERSION=9.4.0
 set SCRIPT_DATE=2016-09-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
@@ -273,12 +270,11 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -asu -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc -sdu
 	echo                -se -sfr -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
-	echo    -asu Automatic Substage Update. Download latest substage code from Github before execution
  	echo    -c   Config dump ^(display config. Can be used with other flags to see what
 	echo         WOULD happen, but script will never execute if this flag is used^)
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
@@ -294,6 +290,7 @@ if /i %HELP%==yes (
 	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
+	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 	echo    -se  Skip Event Log clearing
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
@@ -406,15 +403,10 @@ if /i %SKIP_CHECK_UPDATE%==no (
 	call stage_0_prep\check_update\check_update.bat
 	call functions\log.bat "   Done."
 	echo.
-	call functions\log.bat "   Checking repo for updated debloat lists..."
-	echo.
-	call stage_0_prep\check_update\check_update_debloat_lists.bat
-	call functions\log.bat "   Done."
-	echo.
-	if /i %AUTO_SUBSTAGE_UPDATE%==yes (
-		call functions\log.bat "   Checking Github for updated sub-stage scripts..."
+	if /i %SKIP_DEBLOAT_UPDATE%==no (
+		call functions\log.bat "   Checking repo for updated debloat lists..."
 		echo.
-		call stage_0_prep\check_update\check_update_substages.bat
+		call stage_0_prep\check_update\check_update_debloat_lists.bat
 		call functions\log.bat "   Done."
 		echo.
 	)
@@ -435,7 +427,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo  User-set variables:
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
-	echo    AUTO_SUBSTAGE_UPDATE:   %AUTO_SUBSTAGE_UPDATE%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    DRY_RUN:                %DRY_RUN%
@@ -453,6 +444,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
+	echo    SKIP_DEBLOAT_UPDATE:    %SKIP_DEBLOAT_UPDATE%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
@@ -1126,7 +1118,6 @@ goto :eof
 :parse_cmdline_args
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
-	if /i %%i==-asu set AUTO_SUBSTAGE_UPDATE=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
 	if /i %%i==-d set DRY_RUN=yes
 	if /i %%i==-dev set DEV_MODE=yes
@@ -1142,6 +1133,7 @@ for %%i in (%*) do (
 	if /i %%i==-sdb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
+	if /i %%i==-sdu set SKIP_DEBLOAT_UPDATE=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
