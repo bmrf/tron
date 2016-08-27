@@ -51,7 +51,7 @@ for %%i in (programs_to_target_by_GUID,toolbars_BHOs_to_target_by_GUID) do (
 
 :: Wait for wget to finish
 :wget_check_loop
-tasklist | find /i "wget" >nul
+tasklist | %FIND% /i "wget" >nul
 if not errorlevel 1 (
     ping 127.0.0.1 -n 4 >nul
     goto :wget_check_loop
@@ -66,17 +66,17 @@ title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 :: Parse all scripts for their versions and stash in variables
 :: WARNING: FOR /F black magic was used below
 :: LOCAL: PowerShell scripts
-for /F usebackqtokens^=2delims^=^" %%i IN (`type "stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1" ^| find "SCRIPT_VERSION"`) DO ( set LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
-for /F usebackqtokens^=2delims^=^" %%i IN (`type "stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1" ^| find "SCRIPT_VERSION"`) DO ( set LOCAL_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
+for /F usebackqtokens^=2delims^=^" %%i IN (`type "stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1" ^| %FIND% "SCRIPT_VERSION"`) DO ( set LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
+for /F usebackqtokens^=2delims^=^" %%i IN (`type "stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1" ^| %FIND% "SCRIPT_VERSION"`) DO ( set LOCAL_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
 :: LOCAL: Batch scripts
-for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "stage_2_de-bloat\oem\programs_to_target_by_GUID.bat" ^| find "SCRIPT_VERSION"`) DO ( set LOCAL_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
-for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat" ^| find "SCRIPT_VERSION"`) DO ( set LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
+for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "stage_2_de-bloat\oem\programs_to_target_by_GUID.bat" ^| %FIND% "SCRIPT_VERSION"`) DO ( set LOCAL_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
+for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat" ^| %FIND% "SCRIPT_VERSION"`) DO ( set LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
 :: REPO: PowerShell scripts
-for /F usebackqtokens^=2delims^=^" %%i IN (`type "%TEMP%\metro_3rd_party_modern_apps_to_target_by_name.ps1" ^| find "SCRIPT_VERSION"`) DO ( set REPO_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
-for /F usebackqtokens^=2delims^=^" %%i IN (`type "%TEMP%\metro_Microsoft_modern_apps_to_target_by_name.ps1" ^| find "SCRIPT_VERSION"`) DO ( set REPO_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
+for /F usebackqtokens^=2delims^=^" %%i IN (`type "%TEMP%\metro_3rd_party_modern_apps_to_target_by_name.ps1" ^| %FIND% "SCRIPT_VERSION"`) DO ( set REPO_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
+for /F usebackqtokens^=2delims^=^" %%i IN (`type "%TEMP%\metro_Microsoft_modern_apps_to_target_by_name.ps1" ^| %FIND% "SCRIPT_VERSION"`) DO ( set REPO_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=%%i )
 :: REPO: Batch scripts
-for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\programs_to_target_by_GUID.bat" ^| find "SCRIPT_VERSION"`) DO ( set REPO_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
-for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\toolbars_BHOs_to_target_by_GUID.bat" ^| find "SCRIPT_VERSION"`) DO ( set REPO_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
+for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\programs_to_target_by_GUID.bat" ^| %FIND% "SCRIPT_VERSION"`) DO ( set REPO_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
+for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\toolbars_BHOs_to_target_by_GUID.bat" ^| %FIND% "SCRIPT_VERSION"`) DO ( set REPO_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=%%i )
 
 
 
