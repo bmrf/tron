@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
+Version:       1.0.1 + Add 46928bounde.EclipseManager and D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
+               1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +13,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.0"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-08-27"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.1"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-09-03"
 
 
 
@@ -27,6 +28,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*1430GreenfieldTech
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*26720RandomSaladGamesLLC.HeartsDeluxe*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*26720RandomSaladGamesLLC.SimpleSolitaire*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*29982CsabaHarmath.UnCompress*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*46928bounde.EclipseManager*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*4AE8B7C2.Booking.comPartnerEdition*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*7906AAC0.TOSHIBACanadaPartners*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*7906AAC0.ToshibaCanadaWarrantyService*"}).PackageFullName
@@ -55,6 +57,7 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CyberLinkCorp.ac.A
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CyberLinkCorp.ac.SocialJogger*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CyberLinkCorp.hs.YouCamforHP*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*CyberLinkCorp.id.PowerDVDforLenovoIdea*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*D5EA27B7.Duolingo-LearnLanguagesforFree*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*DailymotionSA.Dailymotion*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*DellInc.DellShop*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*E046963F.LenovoCompanion*"}).PackageFullName
