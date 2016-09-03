@@ -8,7 +8,8 @@
 ::                      + tron_cli_flag: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
 ::                      + tron_update:   Add SKIP_DEBLOAT_UPDATE output to config dump screen (-c)
 ::                      / tron_update:   Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
-::                      - tron_update:   Remove all references to sub-stage update. The idea behind this functionality was ported over to updating the debloat lists instead
+::                      - tron_update:   Remove all references to substage update. The idea behind this functionality was ported over to updating the debloat lists instead
+::                      * misc:          Replace two relative calls to FIND with references to the Tron's full path variable %FIND%
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -166,7 +167,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=9.4.0
-set SCRIPT_DATE=2016-09-xx
+set SCRIPT_DATE=2016-09-03
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -314,8 +315,8 @@ if /i %HELP%==yes (
 :: INTERNAL PREP: Detect the version of Windows we're on. This determines a few things later on
 set WIN_VER=undetected
 set WIN_VER_NUM=undetected
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
 :: INTERNAL PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail
@@ -393,8 +394,8 @@ if /i not %ERRORLEVEL%==0 (
 
 
 :: INTERNAL PREP: Check for updates
-if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
-if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
+REM if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
+REM if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
 if /i %SKIP_CHECK_UPDATE%==no (
 	cls
 	echo.
@@ -404,7 +405,7 @@ if /i %SKIP_CHECK_UPDATE%==no (
 	call functions\log.bat "   Done."
 	echo.
 	if /i %SKIP_DEBLOAT_UPDATE%==no (
-		call functions\log.bat "   Checking repo for updated debloat lists..."
+		call functions\log.bat "   Checking Github for updated debloat lists..."
 		echo.
 		call stage_0_prep\check_update\check_update_debloat_lists.bat
 		call functions\log.bat "   Done."
@@ -1147,6 +1148,6 @@ for %%i in (%*) do (
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
 	if %%i==-UPM set UNICORN_POWER_MODE=on
-	)
+)
 goto :eof
 :eof
