@@ -53,7 +53,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -se -sfr
+    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se -sfr
               -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
 
     Optional flags (can be combined):
