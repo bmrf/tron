@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.4.0 + tron_update:   Add automatic checking for updated debloat lists (stage 2). If found Tron will update the local lists prior to execution
+:: Version:       9.4.1 . No changes to tron.bat; version increment only
+::                9.4.0 + tron_update:   Add automatic checking for updated debloat lists (stage 2). If found Tron will update the local lists prior to execution
 ::                      + tron_cli_flag: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
 ::                      + tron_update:   Add SKIP_DEBLOAT_UPDATE output to config dump screen (-c)
 ::                      / tron_update:   Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
@@ -166,8 +167,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.4.0
-set SCRIPT_DATE=2016-09-03
+set SCRIPT_VERSION=9.4.1
+set SCRIPT_DATE=2016-09-08
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
