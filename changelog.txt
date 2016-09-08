@@ -21,6 +21,7 @@ Version number legend:
 ########################
 Internal
  * tron.bat                        v9.4.1
+     . No changes to tron.bat; increment version number only
 
  * check_update.bat                v1.0.3
      - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
@@ -28,7 +29,7 @@ Internal
  * check_update_debloat_lists.bat  v1.0.2
      - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18. This enables proper SSL encryption when checking Github for new S2 debloat lists
      ! Remove erroneous debugging statement that was mistakenly left in. It flagged the local 3rd party Metro list as being out of date regardless of version
-     + Add preloading of variables so the script doesn't crash if it can't detect a version number correctly
+     + Add preloading of variables so the script doesn't crash if it can't detect a version number correctly. Thanks to /u/
 
 Stage 0: Prep
  . stage_0_prep.bat                v1.0.9
@@ -61,7 +62,7 @@ Stage 2: De-bloat
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
  . Sophos Virus Removal Tool       v2.5.5
- . Kaspersky Virus Removal Tool    v15.0.19.0
+ * Kaspersky Virus Removal Tool    v15.0.19.0 // update bundled defs
  . Malwarebytes Anti-Malware       v2.2.1.1043
  . Malwarebytes included defs:     2016-09-01
 
@@ -93,7 +94,7 @@ Stage 8: Manual tools
  . AdwCleaner                      v6.0.1.0
  . Autoruns                        v13.62
  . BlueScreenView                  v1.55
- . ComboFix                        v16.8.31.1
+ * ComboFix                        v16.9.5.1
  . Junkware Removal Tool           v8.0.7.0
  . Net Adapter Repair              v1.2
  . PC Hunter                       v1.35 x64
