@@ -1,7 +1,9 @@
 :: Purpose:       Checks for updated debloat lists on Github prior to executing Tron. If updates are found, they are spliced in prior to Stage 0 execution
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18.
+:: Version:       1.0.2 ! Remove erroneous debugging statement that was mistakenly left in. It flagged the local 3rd party Metro list as being out of date regardless of version
+::                      + Add preloading of variables so the script doesn't crash if it can't detect a version number correctly
+::                1.0.1 - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18.
 ::                        Enables proper SSL encryption when checking Github's S2 debloat lists. Note that the wget commands will fail if not using at least v1.18 of wget
 ::                1.0.0 + Initial write
 @echo off
@@ -11,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=1.0.1
-set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=2016-09-07
+set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=1.0.2
+set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=2016-09-08
 
 :: Base of the Github URL we pull the scripts from
 :: Full URL is built like this: %GITHUB_URL_BASE%/oem/FILENAME  (for example)
@@ -33,12 +35,21 @@ if /i "%LOGFILE%"=="" (
 	exit /b 1
 )
 
+:: Preload variables
+set LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=0
+set LOCAL_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=0
+set LOCAL_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=0
+set LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=0
+
+set REPO_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=0
+set REPO_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=0
+set REPO_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=0
+set REPO_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=0
 
 
 :::::::::::::
 :: EXECUTE ::
 :::::::::::::
-
 :: Clean up the download area
 if exist "%TEMP%\*to_target_by_*" del /f "%TEMP%\*to_target_by_*" 2>NUL
 
@@ -83,7 +94,6 @@ for /F "tokens=2 delims='=' USEBACKQ" %%i IN (`type "%TEMP%\toolbars_BHOs_to_tar
 
 
 
-set LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION=0.0.1
 :: Check all versions and splice in new code if necessary
 :: metro_3rd_party_modern_apps_to_target_by_name.ps1
 if /i %LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION% LSS %REPO_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION% (
