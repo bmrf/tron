@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
+:: Version:       1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
+::                1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
 ::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
 ::                1.1.2 * Metro: Add missing log message about use of -m switch
 ::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
@@ -22,8 +23,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.4
-set STAGE_2_SCRIPT_DATE=2016-05-15
+set STAGE_2_SCRIPT_VERSION=1.1.5
+set STAGE_2_SCRIPT_DATE=2016-09-09
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -67,20 +68,20 @@ if /i %DRY_RUN%==no call stage_2_de-bloat\oem\programs_to_target_by_GUID.bat >> 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove crapware programs, phase 2: wildcard by name
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
-call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (wildcard by name)..."
-call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
-:: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+:: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
+call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
+call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat"
+if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
-call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (toolbars by specific GUID)..."
-call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat"
-if /i %DRY_RUN%==no call stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat >> "%LOGPATH%\%LOGFILE%" 2>&1
+:: JOB: Remove crapware programs, phase 3: wildcard by name
+title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
+call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (wildcard by name)..."
+call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+:: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
