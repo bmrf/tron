@@ -162,7 +162,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: McAfee Stinger
 :: First check if .NET 3.5 is installed, since Stinger relies on it
-reg query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install | find /i "0x1" > nul
+reg query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install | %FIND% /i "0x1" > nul
 if %ERRORLEVEL%==0 (
 	title Tron v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
