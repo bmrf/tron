@@ -188,6 +188,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
 call functions\log.bat "%CUR_DATE% %TIME%    Blocking bad updates, please wait..."
+echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\disable_windows_telemetry
