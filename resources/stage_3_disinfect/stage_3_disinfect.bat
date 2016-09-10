@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 + mbam: Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to /u/sofakingdead
+:: Version:       1.1.1 ! mbam: Clean up mbam launching routine. Should eliminate erroneous message about mbam.exe not being found
+::                1.1.0 + mbam: Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to /u/sofakingdead
 ::                1.0.2 * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticextasy
 ::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
@@ -13,8 +14,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.0
-set STAGE_3_SCRIPT_DATE=2016-06-08
+set STAGE_3_SCRIPT_VERSION=1.1.1
+set STAGE_3_SCRIPT_DATE=2016-09-10
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -67,22 +68,17 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" 2>NUL
+		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		
 		:: Install the bundled definitions file and integrate the log into Tron's log
-		call functions\log.bat "%CUR_DATE% %TIME%     Loading bundled def package'..."
+		call functions\log.bat "%CUR_DATE% %TIME%     Loading bundled definitions package..."
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log.bat "%CUR_DATE% %TIME%     Done."
 		
 		:: Scan for and launch appropriate architecture version
-		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
-		if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" (
-			start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
-		) else (
-			REM Failsafe
-			call functions\log.bat "%CUR_DATE% %TIME% ! Couldn't find MBAM.exe! Not launching MBAM."
-		)
+		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
+		if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 	call functions\log.bat "%CUR_DATE% %TIME% !  NOTE: You must manually click SCAN in the MBAM window!"
@@ -99,7 +95,7 @@ if /i %SKIP_KASPERSKY_SCAN%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
 	if /i %DRY_RUN%==no (
 		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo
-		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices"
+		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
