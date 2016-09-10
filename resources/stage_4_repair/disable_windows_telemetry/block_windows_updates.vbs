@@ -15,7 +15,7 @@ Set updateSearcher = updateSession.CreateUpdateSearcher()
 
 Wscript.Stdout.Write " Searching for updates..." 
 Wscript.Stdout.Write " This takes a LONG time, often more than 30 minutes." 
-Wscript.Stdout.Write " DO NOT CANCEL THIS OPERATION!!" 
+Wscript.Stdout.Write " If it hangs for over an hour, kill cscript.exe with Task Manager" 
 Dim searchResult
 Set searchResult = updateSearcher.Search("IsInstalled=0")
 
