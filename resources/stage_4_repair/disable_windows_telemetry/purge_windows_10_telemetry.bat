@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
+:: Version:       1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
+::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
 ::                1.1.2-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/adabo
 ::                1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
 ::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
@@ -44,16 +45,16 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.3-TRON
-set SCRIPT_UPDATED=2016-08-12
+set SCRIPT_VERSION=1.1.4-TRON
+set SCRIPT_UPDATED=2016-09-10
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
 	set VERBOSE=yes
-	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
-	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| find "ProductName"') DO set WIN_VER=%%i %%j
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
 
 :: Make sure we're on Win10
@@ -81,43 +82,11 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 :: EXECUTE ::
 :::::::::::::
 
-::::::::::::::::::::::::::::::::::::::::::::::::::
-:: MISCELLANEOUS
-:: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
-if "%VERBOSE%"=="yes" (
-	taskkill /f /im gwx.exe /t
-	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full"
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full"
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full"
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"
-) else (
-	taskkill /f /im gwx.exe /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-)
-
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
+call functions\log.bat "%CUR_DATE% %TIME%    Uninstalling bad updates, please wait..."
+
 if "%VERBOSE%"=="yes" (
 	:: KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet
@@ -212,22 +181,29 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-:: BLOCK BAD UPDATES FROM RE-INSTALLING
+:: BLOCK BAD UPDATES
+call functions\log.bat "%CUR_DATE% %TIME%    Blocking bad updates, please wait..."
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\disable_windows_telemetry
 
 ::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
-
 popd
+
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
+call functions\log.bat "%CUR_DATE% %TIME%    Removing telemetry-related scheduled tasks..."
+
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
@@ -309,8 +285,11 @@ if "%VERBOSE%"=="yes" (
 )
 
 
+
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
+call functions\log.bat "%CUR_DATE% %TIME%    Removing bad services, please wait..."
+
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
 	sc stop Diagtrack
@@ -369,10 +348,14 @@ if "%VERBOSE%"=="yes" (
 	sc config XboxNetApiSvc start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
+call functions\log.bat "%CUR_DATE% %TIME%    Adding official disable telemtry registry entries..."
+
 if "%VERBOSE%"=="yes" (
 	reg import %~dp0disable_telemetry_registry_entries.reg
 	reg import disable_telemetry_registry_entries.reg
@@ -385,15 +368,24 @@ if "%VERBOSE%"=="yes" (
 	regedit /S disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
+call functions\log.bat "%CUR_DATE% %TIME%    Applying Spybot Anti-Beacon protections, please wait..."
+
 "Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 %~dp0"Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS
+call functions\log.bat "%CUR_DATE% %TIME%    Null-routing bad hosts, please wait..."
 
 :: Run this command to flush ALL routes IMMEDIATELY. It will delete your default route so you'll need to reboot or do an ipconfig /release & ipconfig /renew to get back online
 ::route -f
@@ -609,3 +601,49 @@ if "%VERBOSE%"=="yes" (
 	:: wes.df.telemetry.microsoft.com
 	route -p add 65.52.100.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
+
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+:: MISCELLANEOUS
+call functions\log.bat "%CUR_DATE% %TIME%    Miscellaneous cleanup, please wait..."
+
+:: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
+if "%VERBOSE%"=="yes" (
+	taskkill /f /im gwx.exe /t
+	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full"
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full"
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full"
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"
+) else (
+	taskkill /f /im gwx.exe /t >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+	setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+
+:: Kill pending tracking reports
+if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
+echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
+echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM 2>NUL
+
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
