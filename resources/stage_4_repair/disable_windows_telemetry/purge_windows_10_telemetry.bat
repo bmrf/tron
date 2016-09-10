@@ -355,7 +355,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "%CUR_DATE% %TIME%    Adding official disable telemtry registry entries..."
+call functions\log.bat "%CUR_DATE% %TIME%    Toggling official MS telemetry registry entries..."
 
 if "%VERBOSE%"=="yes" (
 	reg import %~dp0disable_telemetry_registry_entries.reg
