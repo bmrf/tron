@@ -79,146 +79,146 @@ if %ABORT%==yes (
 call functions\log.bat "%CUR_DATE% %TIME%    Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
-	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
+	REM Updated capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart
-	:: Compatibility update for Windows 8.1 and Windows 8
+	REM Compatibility update for Windows 8.1 and Windows 8
 	start /wait "" wusa /uninstall /kb:2976978 /quiet /norestart
-	:: New update client for Windows 8/8.1
+	REM New update client for Windows 8/8.1
 	start /wait "" wusa /uninstall /kb:3083711 /quiet /norestart
-	:: Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
+	REM Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
 	start /wait "" wusa /uninstall /kb:3058168 /quiet /norestart
-	:: Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
+	REM Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
 	start /wait "" wusa /uninstall /kb:3064683 /quiet /norestart
-	:: Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
+	REM Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
 	start /wait "" wusa /uninstall /kb:3072318 /quiet /norestart
-	:: Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
+	REM Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
 	start /wait "" wusa /uninstall /kb:3090045 /quiet /norestart
-	:: Update that enables you to upgrade from Windows 7 to a later version of Windows
+	REM Update that enables you to upgrade from Windows 7 to a later version of Windows
 	start /wait "" wusa /uninstall /kb:2990214 /quiet /norestart
-	:: Updated Internet Explorer 11 capabilities to upgrade Windows 8.1 and Windows 7
+	REM Updated Internet Explorer 11 capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3139929 /quiet /norestart
-	:: Customer Experience and Diagnostic Telemetry-related updates
+	REM Customer Experience and Diagnostic Telemetry-related updates
 	start /wait "" wusa /uninstall /kb:3022345 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3068708 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3080149 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3021917 /quiet /norestart
-	:: Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
+	REM Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3075249 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3015249 /quiet /norestart
-	:: Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
+	REM Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
 	start /wait "" wusa /uninstall /kb:3081954 /quiet /norestart
-	:: "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
+	REM "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
 	start /wait "" wusa /uninstall /kb:3035583 /quiet /norestart
-	:: Enable upgrade from Windows 8.1 to Windows 10
+	REM Enable upgrade from Windows 8.1 to Windows 10
 	start /wait "" wusa /uninstall /kb:3044374 /quiet /norestart
-	:: Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
+	REM Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
 	start /wait "" wusa /uninstall /kb:3046480 /quiet /norestart
-	:: Windows 7/8.1: How to manage Windows 10 notification and upgrade options
+	REM Windows 7/8.1: How to manage Windows 10 notification and upgrade options
 	start /wait "" wusa /uninstall /kb:3080351 /quiet /norestart
-	:: Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
+	REM Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
 	start /wait "" wusa /uninstall /kb:3081437 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3081454 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3074677 /quiet /norestart
-	:: Compatibility update for Windows 7 (is a scanner)
+	REM Compatibility update for Windows 7 (is a scanner)
 	start /wait "" wusa /uninstall /kb:2977759 /quiet /norestart
-	:: Compatibility update for Windows 7
+	REM Compatibility update for Windows 7
 	start /wait "" wusa /uninstall /kb:2952664 /quiet /norestart
-	:: New update client for Windows 7
+	REM New update client for Windows 7
 	start /wait "" wusa /uninstall /kb:3083710 /quiet /norestart
-	:: Description of the update for Windows Activation Technologies
+	REM Description of the update for Windows Activation Technologies
 	start /wait "" wusa /uninstall /kb:971033 /quiet /norestart
-	:: KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
+	REM KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
 	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart
 	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3065988 /quiet /norestart
-	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3083324 /quiet /norestart
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3083325 /quiet /norestart
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
-	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
+	REM Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
 	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart
-	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
-	:: This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience
-	:: when you have to retry an operating system upgrade because of certain failure conditions.
-	:: This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
+	REM Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
+	REM This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience
+	REM when you have to retry an operating system upgrade because of certain failure conditions.
+	REM This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart
 ) else (
-	:: Updated capabilities to upgrade Windows 8.1 and Windows 7
+	REM Updated capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Compatibility update for Windows 8.1 and Windows 8
+	REM Compatibility update for Windows 8.1 and Windows 8
 	start /wait "" wusa /uninstall /kb:2976978 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: New update client for Windows 8/8.1
+	REM New update client for Windows 8/8.1
 	start /wait "" wusa /uninstall /kb:3083711 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
+	REM Windows 8/8.1/2012/2012R2: Update: activate Windows 10 from Windows 8 or Windows 8.1, and Windows Server 2012 or Windows Server 2012 R2 KMS hosts
 	start /wait "" wusa /uninstall /kb:3058168 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
+	REM Windows 8.1: Windows 8.1 OOBE modifications to reserve Windows 10
 	start /wait "" wusa /uninstall /kb:3064683 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
+	REM Windows 8.1: Update for Windows 8.1 OOBE to upgrade to Windows 10
 	start /wait "" wusa /uninstall /kb:3072318 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
+	REM Windows 8.1: Windows Update for reserved devices in Windows 8.1 or Windows 7 SP1
 	start /wait "" wusa /uninstall /kb:3090045 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Update that enables you to upgrade from Windows 7 to a later version of Windows
+	REM Update that enables you to upgrade from Windows 7 to a later version of Windows
 	start /wait "" wusa /uninstall /kb:2990214 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Customer Experience and Diagnostic Telemetry-related updates
+	REM Customer Experience and Diagnostic Telemetry-related updates
 	start /wait "" wusa /uninstall /kb:3022345 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3068708 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3080149 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3021917 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
+	REM Adds telemetry points to consent.exe in Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3075249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3015249 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
+	REM Windows 7: Update for Work Folders improvements in Windows 7 SP1 (adds Windows 10 telemetry points)
 	start /wait "" wusa /uninstall /kb:3081954 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
+	REM "Get Windows 10" nagger in Windows 8.1 and Windows 7 SP1
 	start /wait "" wusa /uninstall /kb:3035583 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Enable upgrade from Windows 8.1 to Windows 10
+	REM Enable upgrade from Windows 8.1 to Windows 10
 	start /wait "" wusa /uninstall /kb:3044374 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
+	REM Windows 7/8.1: Update helps to determine whether to migrate the .NET Framework 1.1 when you upgrade Windows 8.1 or Windows 7
 	start /wait "" wusa /uninstall /kb:3046480 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 7/8.1: How to manage Windows 10 notification and upgrade options
+	REM Windows 7/8.1: How to manage Windows 10 notification and upgrade options
 	start /wait "" wusa /uninstall /kb:3080351 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
+	REM Windows 7/8/8.1: Compatibility update for upgrading to Windows 10
 	start /wait "" wusa /uninstall /kb:3081437 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3081454 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3074677 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Compatibility update for Windows 7 (is a scanner)
+	REM Compatibility update for Windows 7 (is a scanner)
 	start /wait "" wusa /uninstall /kb:2977759 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Compatibility update for Windows 7
+	REM Compatibility update for Windows 7
 	start /wait "" wusa /uninstall /kb:2952664 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: New update client for Windows 7
+	REM New update client for Windows 7
 	start /wait "" wusa /uninstall /kb:3083710 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Description of the update for Windows Activation Technologies
+	REM Description of the update for Windows Activation Technologies
 	start /wait "" wusa /uninstall /kb:971033 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
+	REM KB entries removed by Microsoft; previously associated with Win10 upgrade/telemetry
 	start /wait "" wusa /uninstall /kb:2902907 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:2922324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3012973 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3014460 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3068707 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: July 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3065988 /quiet /norestart
-	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 7 and Windows Server 2008 R2: September 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3083324 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
-	:: Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: September 2015
+	REM Reference: http://www.addictivetips.com/windows-tips/a-complete-list-of-all-updates-you-should-uninstall-to-block-windows-10/
 	start /wait "" wusa /uninstall /kb:3083325 /quiet /norestart
-	:: Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
-	:: Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
+	REM Windows Update Client for Windows 8.1 and Windows Server 2012 R2: December 2015
+	REM Reported here: https://www.reddit.com/r/TronScript/comments/3v592f/tron_v800_20151202_modularize_entire_project_see/cxl6rko
 	start /wait "" wusa /uninstall /kb:3112336 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
-	:: This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience
-	:: when you have to retry an operating system upgrade because of certain failure conditions.
-	:: This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
+	REM Windows Update Client for Windows 7 and Windows Server 2008 R2: December 2015
+	REM This update enables support for additional upgrade scenarios from Windows 7 to Windows 10, and provides a smoother experience
+	REM when you have to retry an operating system upgrade because of certain failure conditions.
+	REM This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
