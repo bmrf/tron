@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 / Minor log message change
+:: Version:       1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
+::                1.0.9 / Minor log message change
 ::                1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
 ::                1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
 ::                1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
@@ -20,8 +21,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.0.9
-set STAGE_0_SCRIPT_DATE=2016-08-26
+set STAGE_0_SCRIPT_VERSION=1.1.0
+set STAGE_0_SCRIPT_DATE=2016-09-10
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -98,7 +99,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Do a GUID dump before kicking everything off to make it easier for users to submit them if they forgot to do it before running Tron
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [GUID dump]
 call functions\log.bat "%CUR_DATE% %TIME%    Dumping GUID list to "%RAW_LOGS%"..."
-if /i %DRY_RUN%==no wmic product get identifyingnumber,name,version /all > "%RAW_LOGS%\%COMPUTERNAME%_%TIME%_GUID_dump.txt" 2>NUL
+if /i %DRY_RUN%==no %WMIC% product get identifyingnumber,name,version /all > "%RAW_LOGS%\%COMPUTERNAME%_%CUR_DATE%_GUID_dump.txt" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
