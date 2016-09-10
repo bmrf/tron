@@ -88,95 +88,95 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 call functions\log.bat "%CUR_DATE% %TIME%    Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
-	:: KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
+	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet
-	:: KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
+	REM KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
 	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet
-	:: KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
+	REM KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
 	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet
-	:: KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
+	REM KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
 	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet
-	:: KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
+	REM KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
 	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet
-	:: KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
+	REM KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
 	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet
-	:: KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
+	REM KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
 	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet
-	:: KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
+	REM KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
 	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet
-	:: KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
+	REM KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
 	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet
-	:: KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
+	REM KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
 	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet
-	:: KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
+	REM KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
 	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet
-	:: KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
+	REM KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
 	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet
-	:: KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
+	REM KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
 	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet
-	:: KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
+	REM KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
 	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet
-	:: KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
+	REM KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
 	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet
-	:: KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
+	REM KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
 	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet
-	:: KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
+	REM KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
 	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet
-	:: KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
+	REM KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
 	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet
-	:: KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
+	REM KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
 	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet
-	:: KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
+	REM KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
 	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet
-	:: KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
+	REM KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
 	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet
-	:: Additional KB entries removed by Microsoft; originally associated with telemetry
+	REM Additional KB entries removed by Microsoft; originally associated with telemetry
 	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet
 ) else (
-	:: KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
+	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
 	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
+	REM KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
 	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
+	REM KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
 	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
+	REM KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
 	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
+	REM KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
 	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
+	REM KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
 	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
+	REM KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
 	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
+	REM KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
 	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
+	REM KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
 	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
+	REM KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
 	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
+	REM KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
 	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
+	REM KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
 	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
+	REM KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
 	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
+	REM KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
 	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
+	REM KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
 	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
+	REM KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
 	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
+	REM KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
 	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
+	REM KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
 	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
+	REM KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
 	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
+	REM KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
 	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
+	REM KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
 	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: Additional KB entries removed by Microsoft; originally associated with telemetry
+	REM Additional KB entries removed by Microsoft; originally associated with telemetry
 	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
