@@ -233,9 +233,14 @@ echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
 pushd stage_4_repair\disable_windows_telemetry 2>NUL
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683
-:: Next batch
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
+
+:: Batch 1
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677  
+:: Batch 2
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 
+:: Batch 3
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
+
 popd
 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
