@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2-TRON / Change lines that delete Chrome Local Storage to only remove data for websites, not extensions. Thanks to github:kezxo
+:: Version:       1.1.3-TRON * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
+::                1.1.2-TRON / Change lines that delete Chrome Local Storage to only remove data for websites, not extensions. Thanks to github:kezxo
 ::                1.1.1-TRON + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
 ::                1.1.0-TRON + Add clearing of hidden low-level IE history folder for "untrusted" browsing history "C:\Users\%username%\AppData\Local\Microsoft\Windows\History\low\*"
 ::                1.0.9-TRON / Remove /s (recurse) switch from 'del /F /Q "%%x\Documents\*.tmp"' and 'del /F /Q "%%x\My Documents\*.tmp"' commands. /u/toomasmolder reported this deleted some .tmplate files (unintended behavior)
@@ -35,8 +36,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.2-TRON
-set SCRIPT_UPDATED=2016-04-17
+set SCRIPT_VERSION=1.1.3-TRON
+set SCRIPT_UPDATED=2016-09-11
 
 
 ::::::::::::::::::::::::::
@@ -52,7 +53,7 @@ echo   Cleaning USER temp files...
 :: Version-agnostic :: (these jobs run regardless of OS version)
 ::::::::::::::::::::::
 :: Create log line
-echo.  %% echo  ! Cleaning USER temp files... %% echo.
+echo.  && echo  ! Cleaning USER temp files... && echo.
 
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version
 REM Disabled for Tron
@@ -194,9 +195,9 @@ rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell 2>NUL
 ::::::::::::::::::::::
 :: JOB: Windows XP/2k3: "guided tour" annoyance
 if %WIN_VER_NUM% lss 6.0 (
-	del /f /q %WINDIR%\system32\dllcache\tourstrt.exe 2>NUL
-	del /f /q %WINDIR%\system32\dllcache\tourW.exe 2>NUL
-	del /f /q "%WINDIR%\System32\tourstart.exe"
+	del /f /q %WINDIR%\System32\dllcache\tourstrt.exe 2>NUL
+	del /f /q %WINDIR%\System32\dllcache\tourW.exe 2>NUL
+	del /f /q %WINDIR%\System32\tourstart.exe
 	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
 )
 
@@ -247,10 +248,10 @@ if %WIN_VER_NUM% lss 6.0 (
 
 	:: 2. Build the list of hotfix folders. They always have "$" signs around their name, e.g. "$NtUninstall092330$" or "$hf_mg$"
 	pushd %WINDIR%
-	dir /A:D /B $*$ > %TEMP%\hotfix_nuke_list.txt 2>NUL
+	dir /A:D /B $*$ > "%TEMP%\hotfix_nuke_list.txt" 2>NUL
 
 	:: 3. Do the hotfix clean up
-	for /f %%i in (%TEMP%\hotfix_nuke_list.txt) do (
+	for /f %%i in ("%TEMP%\hotfix_nuke_list.txt") do (
 		echo Deleting %%i...
 		echo Deleted folder %%i
 		rmdir /S /Q %%i 2>NUL
@@ -259,7 +260,7 @@ if %WIN_VER_NUM% lss 6.0 (
 	:: 4. Log that we are done with hotfix cleanup and leave the Windows directory
 	echo    Done.  && echo.
 	echo    Done.
-	del %TEMP%\hotfix_nuke_list.txt
+	del "%TEMP%\hotfix_nuke_list.txt"
 	echo.
 	popd
 )
