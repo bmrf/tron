@@ -1,7 +1,8 @@
 :: Purpose:       Checks for updated debloat lists on Github prior to executing Tron. If updates are found, they are spliced in prior to Stage 0 execution
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 ! Remove erroneous debugging statement that was mistakenly left in. It flagged the local 3rd party Metro list as being out of date regardless of version
+:: Version:       1.0.3 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
+::                1.0.2 ! Remove erroneous debugging statement that was mistakenly left in. It flagged the local 3rd party Metro list as being out of date regardless of version
 ::                      + Add preloading of variables so the script doesn't crash if it can't detect a version number correctly
 ::                1.0.1 - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18.
 ::                        Enables proper SSL encryption when checking Github's S2 debloat lists. Note that the wget commands will fail if not using at least v1.18 of wget
@@ -13,8 +14,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=1.0.2
-set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=2016-09-08
+set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=1.0.3
+set CHECK_UPDATE_DEBLOAT_LISTS_VERSION=2016-09-11
 
 :: Base of the Github URL we pull the scripts from
 :: Full URL is built like this: %GITHUB_URL_BASE%/oem/FILENAME  (for example)
@@ -55,11 +56,11 @@ if exist "%TEMP%\*to_target_by_*" del /f "%TEMP%\*to_target_by_*" 2>NUL
 
 :: Fetch the repo PowerShell scripts
 for %%i in (metro_3rd_party_modern_apps_to_target_by_name,metro_Microsoft_modern_apps_to_target_by_name) do (
-	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/metro/%%i.ps1 -O %TEMP%\%%i.ps1
+	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/metro/%%i.ps1 -O "%TEMP%\%%i.ps1"
 )
 :: Fetch the repo Batch scripts
 for %%i in (programs_to_target_by_GUID,toolbars_BHOs_to_target_by_GUID) do (
-	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/oem/%%i.bat -O %TEMP%\%%i.bat
+	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/oem/%%i.bat -O "%TEMP%\%%i.bat"
 )
 
 :: Wait for wget to finish
