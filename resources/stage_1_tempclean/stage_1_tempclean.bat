@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. &)
+:: Version:       1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
 ::                1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
