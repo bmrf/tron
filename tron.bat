@@ -402,7 +402,7 @@ if /i %SKIP_CHECK_UPDATE%==no (
 	call functions\log.bat "   Done."
 	echo.
 	if /i %SKIP_DEBLOAT_UPDATE%==no (
-		call functions\log.bat "   Checking Github for updated debloat lists..."
+		call functions\log.bat "   Downloading latest S2 debloat lists from Github..."
 		echo.
 		call stage_0_prep\check_update\check_update_debloat_lists.bat
 		call functions\log.bat "   Done."
