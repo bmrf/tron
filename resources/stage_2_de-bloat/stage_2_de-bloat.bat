@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
+::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
 ::                1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
 ::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
 ::                1.1.2 * Metro: Add missing log message about use of -m switch
@@ -128,7 +129,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 		)
 
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
-	for /F %%i in ('dir /b "%USERPROFILE%\OneDrive\*.*" 2^>nul') do (
+	for /F %%i in ('dir /b "%USERPROFILES%\OneDrive\*.*" 2^>nul') do (
 		call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
 		goto skip_onedrive_removal
 	)
