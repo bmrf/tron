@@ -1,7 +1,8 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
+:: Version:       1.0.4 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
+::                1.0.3 - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
 ::                1.0.2 + Import REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables from tron.bat since they're only relevant here
 ::                1.0.1 ! Fix SSL encryption on update check and new version download. Previously we were skipping certificate checking due to cert errors. With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
 ::                1.0.0 + Initial write
@@ -12,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.3
-set CHECK_UPDATE_VERSION=2016-09-07
+set CHECK_UPDATE_VERSION=1.0.4
+set CHECK_UPDATE_VERSION=2016-09-11
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
@@ -43,11 +44,11 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 
 :: wget sha256sums.txt from the repo
-stage_0_prep\check_update\wget.exe %REPO_URL%/sha256sums.txt -O %TEMP%\sha256sums.txt 2>NUL
+stage_0_prep\check_update\wget.exe %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
 if /i %ERRORLEVEL%==0 (
-	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
-	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%a
+	for /f "tokens=1,2,3 delims= " %%a in ("%TEMP%\sha256sums.txt") do set WORKING=%%b
+	for /f "tokens=4 delims=,()" %%a in ("%TEMP%\sha256sums.txt") do set WORKING2=%%a
 )
 if /i %ERRORLEVEL%==0 (
 	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
