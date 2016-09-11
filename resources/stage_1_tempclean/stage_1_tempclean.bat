@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
+:: Version:       1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. &)
+::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
 ::                1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.1 * ccleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
@@ -17,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.1
-set STAGE_1_SCRIPT_DATE=2016-06-28
+set STAGE_1_SCRIPT_VERSION=1.1.2
+set STAGE_1_SCRIPT_DATE=2016-09-11
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -93,8 +94,8 @@ title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean duplicate files from Download folders'..."
 if %DRY_RUN%==no (
 	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
-	dir "%USERPROFILES%\" /B > %TEMP%\userlist.txt
-	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
+	dir "%USERPROFILES%\" /B > "%TEMP%\userlist.txt"
+	for /f "tokens=* delims= " %%i in ("%TEMP%\userlist.txt") do (
 		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
 			REM VERBOSE mode. For each location, 1st: Display files to be nuked. 2nd: Dump the same list to the log. 3rd: Do the actual deletion
