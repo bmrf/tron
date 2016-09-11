@@ -4,13 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.4.1 . No changes to tron.bat; version increment only
-::                9.4.0 + tron_update:   Add automatic checking for updated debloat lists (stage 2). If found Tron will update the local lists prior to execution
-::                      + tron_cli_flag: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
-::                      + tron_update:   Add SKIP_DEBLOAT_UPDATE output to config dump screen (-c)
-::                      / tron_update:   Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
-::                      - tron_update:   Remove all references to substage update. The idea behind this functionality was ported over to updating the debloat lists instead
-::                      * misc:          Replace two relative calls to FIND with references to the Tron's full path variable %FIND%
+:: Version:       9.5.0 / Change text "Time zone name" to "Time zone" in log output
+::                      ! Correct a couple references to USERPROFILE to use Tron's universal USERPROFILES instead
+::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&"). Thanks to /u/maliyaa and /u/wiggy4383
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -167,8 +163,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.4.1
-set SCRIPT_DATE=2016-09-08
+set SCRIPT_VERSION=9.5.0
+set SCRIPT_DATE=2016-09-11
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -216,7 +212,7 @@ if "%~dp0"=="%TEMP%\tron\" (
 	echo  first places to get wiped when Tron starts. Run Tron
 	echo  directly from your Desktop. Example of correct path:
 	echo.
-	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
+	echo   "%USERPROFILES%\Desktop\tron\tron.bat"
 	echo.
 	echo  Tron will now quit.
 	echo.
@@ -237,7 +233,7 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 	echo  places to get wiped when Tron starts. Run Tron
 	echo  directly from your Desktop. Example of correct path:
 	echo.
-	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
+	echo   "%USERPROFILES%\Desktop\tron\tron.bat"
 	echo.
 	echo  Tron will now quit.
 	echo.
@@ -395,8 +391,8 @@ if /i not %ERRORLEVEL%==0 (
 
 
 :: INTERNAL PREP: Check for updates
-REM if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
-REM if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
+if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
+if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
 if /i %SKIP_CHECK_UPDATE%==no (
 	cls
 	echo.
@@ -735,7 +731,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call functions\log.bat "                          Command-line switches: %*"
-	call functions\log.bat "                          Time zone name: %TIME_ZONE_NAME%"
+	call functions\log.bat "                          Time zone: %TIME_ZONE_NAME%"
 	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 	call functions\log.bat "-------------------------------------------------------------------------------"
@@ -906,8 +902,8 @@ if /i %DRY_RUN%==no (
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
 	:: Parse everything
 		REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
-		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" > %TEMP%\temp.txt
-		for /f "tokens=1 delims=," %%a in (%TEMP%\temp.txt) do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
+		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" > "%TEMP%\temp.txt"
+		for /f "tokens=1 delims=," %%a in ("%TEMP%\temp.txt") do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
 
 		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
 		REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
@@ -930,7 +926,7 @@ if /i %DRY_RUN%==no (
 		if %ERRORLEVEL%==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
 
 		REM Cleanup
-		del /f /q %TEMP%\temp.txt 2>NUL
+		del /f /q "%TEMP%\temp.txt" 2>NUL
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
@@ -963,7 +959,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 		bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 		bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
 	)
-	del /f /q %TEMP%\tron_smart_results.txt 2>NUL
+	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
@@ -1047,7 +1043,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   TRON v%SCRIPT_VERSION% (%SCRIPT_DATE
 call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line switches: %*"
-call functions\log.bat "                          Time zone name: %TIME_ZONE_NAME%"
+call functions\log.bat "                          Time zone: %TIME_ZONE_NAME%"
 call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
 call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
