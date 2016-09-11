@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
+::                       ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&")
 ::                1.0.9 / Minor log message change
 ::                1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
 ::                1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
@@ -22,7 +23,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_0_SCRIPT_VERSION=1.1.0
-set STAGE_0_SCRIPT_DATE=2016-09-10
+set STAGE_0_SCRIPT_DATE=2016-09-11
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -179,7 +180,7 @@ if %ERRORLEVEL%==0 (
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
 if /i %DRY_RUN%==no (
-	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
+	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l "%TEMP%\tdsskiller.log" -silent -tdlfs -dcexact -accepteula -accepteulaksn
 	:: Dump TDSSKiller log into the main Tron log
 	type "%TEMP%\tdsskiller.log" >> "%LOGPATH%\%LOGFILE%"
 	del "%TEMP%\tdsskiller.log" 2>NUL
