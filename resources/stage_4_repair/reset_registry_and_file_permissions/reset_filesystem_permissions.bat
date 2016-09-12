@@ -2,9 +2,10 @@
 :: Requirements:  subinacl in the system path or system32 folder
 :: Author:        reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 ::                1.0.3-TRON * Add proper version-specifc commands to secedit database repair. Was incorrectly attempting to run Windows XP command on Windows 7 and up
-::                           - Remove unecessary SETLOCAL command
+::                           + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
 ::                           + Add standalone execution support
-::                           * Improve log compilation and filenames to be more descriptive
+::                           - Remove unecessary SETLOCAL command
+::                           - Remove logging of filesystem permissions reset since it only produces a bunch of "access denied" log entries on protected files that we don't care about
 ::                1.0.2-TRON ! Add missing %RAW_LOGS%\ prefix to log compilation line. Thanks to /u/toomasmolder
 ::                1.0.1-TRON ! Add missing pushd statement
 ::                1.0.0-TRON / Modifications for Tron. Remove logging, CUR_DATE, and various other unnecessary code
@@ -44,8 +45,8 @@ if /i "%LOGPATH%"=="" (
 :: EXECUTE ::
 :::::::::::::
 :: Filesystem permissions repair
-subinacl /noverbose /outputlog=%RAW_LOGS%\reset_filesystem_perms_subinacl_Administrators.log /subdirectories %WinDir% /grant=administrators=f
-subinacl /noverbose /outputlog=%RAW_LOGS%\reset_filesystem_perms_subinacl_SYSTEM.log /subdirectories %WinDir% /grant=system=f
+subinacl /noverbose /nostatistic /subdirectories %WinDir% /grant=administrators=f >NUL
+subinacl /noverbose /nostatistic /subdirectories %WinDir% /grant=system=f >NUL
 
 :: Security database repair
 :: Windows XP/2003
@@ -53,10 +54,3 @@ if %WIN_VER_NUM:~0,1%==5 secedit /configure /cfg %windir%\repair\secsetup.inf /d
 
 :: Windows 7 and up
 if %WIN_VER_NUM:~0,1% geq 6 secedit /configure /cfg %windir%\inf\defltbase.inf /db defltbase.sdb /verbose >> "%RAW_LOGS%\reset_filesystem_perms_secedit.log" 2>&1
-
-:: Compile the logs
-type %RAW_LOGS%\reset_filesystem_perms_subinacl_Administrators.log >> %RAW_LOGS%\reset_filesystem_perms_subinacl.log
-type %RAW_LOGS%\reset_filesystem_perms_subinacl_SYSTEM.log >> %RAW_LOGS%\reset_filesystem_perms_subinacl.log
-
-
-popd
