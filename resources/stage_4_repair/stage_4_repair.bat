@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
+::                      / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
 ::                1.0.8 - Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this was incorrectly suppressing all output
 ::                1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
 ::                      / Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
@@ -85,7 +86,6 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting registry permissions..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
-	call functions\log.bat "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
@@ -98,7 +98,6 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
-	call functions\log.bat "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_filesystem_permissions.bat"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
