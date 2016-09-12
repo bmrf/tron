@@ -3,7 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
+:: Version:       1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
+::                1.0.8 - Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this was incorrectly suppressing all output
+::                1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
 ::                      / Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
 ::                1.0.6 ! Fix numerous bugs with DISM check and repair. Due to bad ERRORLEVEL checking it would fail to trigger repairs when they were required
 ::                1.0.5 - Remove redundant Dism image store cleanup (move to Stage 5)
@@ -21,8 +23,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.7
-set STAGE_4_SCRIPT_DATE=2016-03-19
+set STAGE_4_SCRIPT_VERSION=1.0.9
+set STAGE_4_SCRIPT_DATE=2016-09-12
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -97,7 +99,7 @@ if /i %SKIP_FILEPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
 	call functions\log.bat "%CUR_DATE% %TIME%    You can ignore errors here. Raw logs saved to "%RAW_LOGS%\""
-	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_file_permissions.bat"
+	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_filesystem_permissions.bat"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET (-sfr) set. Skipping registry and file permissions reset"
@@ -146,18 +148,18 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
 	call functions\log.bat "%CUR_DATE% %TIME%    THIS TAKES A WHILE - BE PATIENT!!"
-	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_10_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_10_telemetry.bat
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 
-:: Spawn temporary variable to check for Win7 and 8. Ugly but at least it works
+:: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
 set RUN_7_OR_8_TELEM=no
 if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
-	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_7-8-81_telemetry.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_7-8-81_telemetry.bat
 	call functions\log.bat "%CUR_DATE% %TIME%    Done. Enjoy your privacy."
 )
 :skip_telem_removal
