@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8-TRON + Add log messages explaining each step in the process
+:: Version:       1.0.9-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
+::                1.0.8-TRON + Add log messages explaining each step in the process
 ::                1.0.7-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/DrQuack32
 ::                           * Simplify and clean up OS version detection
 ::                           ! Fix bug where script could mistakenly run on a Windows 10 system if manually executed
@@ -30,8 +31,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.8-TRON
-set SCRIPT_UPDATED=2016-09-10
+set SCRIPT_VERSION=1.0.9-TRON
+set SCRIPT_UPDATED=2016-09-13
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -310,8 +311,8 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 call functions\log.bat "%CUR_DATE% %TIME%    Toggling official MS telemetry registry entries..."
 
 :: Disable telemetry via master registry key
-reg import disable_telemetry_registry_entries.reg >nul 2>&1
-regedit /S disable_telemetry_registry_entries.reg >nul 2>&1
+reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
