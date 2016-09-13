@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
+:: Version:       1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
+::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
 ::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
 ::                1.1.2-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/adabo
 ::                1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
@@ -29,7 +30,7 @@
 ::                           - Remove incorrect pushd %SystemDrive at head of script
 ::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
 ::                1.0.0-TRON + Initial write
-@SETLOCAL
+SETLOCAL
 
 
 :::::::::::::::
@@ -45,8 +46,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.4-TRON
-set SCRIPT_UPDATED=2016-09-10
+set SCRIPT_VERSION=1.1.5-TRON
+set SCRIPT_UPDATED=2016-09-13
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -358,15 +359,11 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 call functions\log.bat "%CUR_DATE% %TIME%    Toggling official MS telemetry registry entries..."
 
 if "%VERBOSE%"=="yes" (
-	reg import %~dp0disable_telemetry_registry_entries.reg
-	reg import disable_telemetry_registry_entries.reg
-	regedit /S %~dp0disable_telemetry_registry_entries.reg
-	regedit /S disable_telemetry_registry_entries.reg
+	reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg
+	regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg
 ) else (
-	reg import %~dp0disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
-	reg import disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
-	regedit /S %~dp0disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
-	regedit /S disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
+	reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
+	regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
