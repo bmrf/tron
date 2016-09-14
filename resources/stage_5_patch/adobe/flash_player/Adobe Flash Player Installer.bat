@@ -48,9 +48,9 @@ wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeract
 wmic product where "name like 'Adobe Flash Player%%PPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Install Firefox and IE versions of Flash
-msiexec /i "install_flash_player_22_plugin.msi" %FLAGS%
-msiexec /i "install_flash_player_22_active_x.msi" %FLAGS%
-msiexec /i "install_flash_player_22_ppapi.msi" %FLAGS%
+msiexec /i "install_flash_player_23_plugin.msi" %FLAGS%
+msiexec /i "install_flash_player_23_active_x.msi" %FLAGS%
+msiexec /i "install_flash_player_23_ppapi.msi" %FLAGS%
 
 :: Delete the Adobe Acrobat Update Service
 net stop AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -71,7 +71,7 @@ del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Updater.job" >> "%LOGP
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
 	taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
+)
 
 :: Return exit code to SCCM/PDQ Deploy/Tron/etc
 exit /B %EXIT_CODE%
