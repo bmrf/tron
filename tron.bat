@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.5.0 / Change text "Time zone name" to "Time zone" in log output
+:: Version:       9.5.1 / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
+::                      - cleanup: Remove unused :self_destruct label
+::                9.5.0 / Change text "Time zone name" to "Time zone" in log output
 ::                      ! Correct a couple references to USERPROFILE to use Tron's universal USERPROFILES instead
 ::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&"). Thanks to /u/maliyaa and /u/wiggy4383
 ::
@@ -163,8 +165,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.5.0
-set SCRIPT_DATE=2016-09-11
+set SCRIPT_VERSION=9.5.1
+set SCRIPT_DATE=2016-09-14
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -193,8 +195,12 @@ for /f "USEBACKQ skip=1 delims=" %%i IN (`%WMIC% timezone get StandardName ^|fin
   if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
   if /i "%1"=="-resume" set RESUME_DETECTED=yes
 :: Resume-related stuff end
-
-:: Build our USERPROFILE variable, which will work across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
+:: Detect the version of Windows we're on. This determines a few things later on
+set WIN_VER=undetected
+set WIN_VER_NUM=undetected
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
+for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
+:: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
 set USERPROFILES=%CD%
 popd
@@ -307,13 +313,6 @@ if /i %HELP%==yes (
 	echo.
 	exit /b 0
 )
-
-
-:: INTERNAL PREP: Detect the version of Windows we're on. This determines a few things later on
-set WIN_VER=undetected
-set WIN_VER_NUM=undetected
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 
 :: INTERNAL PREP: Check if we're on an unsupported OS. If we are, complain to the user and bail
@@ -955,9 +954,9 @@ call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
 	del /f /q tron_stage.txt >nul 2>&1
 	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
 	if %DRY_RUN%==no (
-		bcdedit /deletevalue {current} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-		bcdedit /deletevalue {default} safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
-		bcdedit /deletevalue safeboot >> "%LOGPATH%\%LOGFILE%" 2>nul
+		bcdedit /deletevalue {current} safeboot >nul 2>&1
+		bcdedit /deletevalue {default} safeboot >nul 2>&1
+		bcdedit /deletevalue safeboot >nul 2>&1
 	)
 	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -1083,7 +1082,6 @@ if /i not "%AUTO_REBOOT_DELAY%"=="0" shutdown -r -f -t %AUTO_REBOOT_DELAY% -c "R
 if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
 
 :: De-rez self if requested
-:self_destruct
 set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
 	%SystemDrive%
