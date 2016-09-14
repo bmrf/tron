@@ -6,6 +6,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       9.5.1 / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
 ::                      - cleanup: Remove unused :self_destruct label
+::                      - welcome: Remove "not ideal" text from welcome screen when not in Safe Mode, since Tron usually works fine in regular mode as well as Safe Mode
 ::                9.5.0 / Change text "Time zone name" to "Time zone" in log output
 ::                      ! Correct a couple references to USERPROFILE to use Tron's universal USERPROFILES instead
 ::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&"). Thanks to /u/maliyaa and /u/wiggy4383
@@ -642,7 +643,7 @@ if /i "%SKIP_DEFRAG%"=="yes_vm" echo    Skip defrag?             %SKIP_DEFRAG% ^
 if /i "%SKIP_DEFRAG%"=="yes_error" echo    Skip defrag?             %SKIP_DEFRAG% ^(error reading disk stats^)
 if /i "%SKIP_DEFRAG%"=="yes" echo    Skip defrag?             %SKIP_DEFRAG% ^(user set^)
 if /i "%SKIP_DEFRAG%"=="no" echo    Skip defrag?             %SKIP_DEFRAG%
-if /i "%SAFE_MODE%"=="no" echo    Safe mode?               %SAFE_MODE% ^(not ideal^)
+if /i "%SAFE_MODE%"=="no" echo    Safe mode?               %SAFE_MODE%
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" echo    Safe mode?               %SAFE_MODE%, without Networking
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" echo    Safe mode?               %SAFE_MODE%, with Networking ^(ideal^)
 if /i "%SKIP_DEFRAG:~0,3%"=="yes" (
