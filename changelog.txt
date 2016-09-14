@@ -13,6 +13,105 @@ Version number legend:
   major release or feature change
 
 
+########################
+# v9.5.1 // 2016-09-14 # // AQ
+########################
+Internal
+ * tron.bat                        v9.5.1
+    / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
+    - cleanup: Remove unused :self_destruct label
+ 
+ . check_update.bat                v1.0.4
+ . check_update_debloat_lists.bat  v1.0.3
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.1.0
+ . rkill                           v2.8.4.0
+ . ProcessKiller                   v2.0.0-TRON
+ * TDSS Killer                     v3.1.0.11
+ . McAfee Stinger                  v12.1.0.2097
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.18
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.1.2
+ * CCleaner                        v5.22.5724
+ . BleachBit                       v1.12
+ . finddupe.exe                    v1.23
+ . TempFileCleanup                 v1.1.2-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.1.5
+ * \oem\programs_to_target_by_GUID.bat
+ * \oem\toolbars_BHOs_to_target_by_GUID.bat
+    + Add all entries from Malwarebytes' Junkware Removal Tool GUID lists
+ . \oem\programs_to_target_by_name.txt
+ . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.1.1
+ . Sophos Virus Removal Tool       v2.5.5
+ . Kaspersky Virus Removal Tool    v15.0.19.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ . Malwarebytes included defs:     2016-09-08
+
+Stage 4: Repair
+ * stage_4_repair.bat              v1.0.9
+    / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
+    / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
+
+ * reset_filesystem_permissions.bat v1.0.3
+    * Add proper version-specifc commands to secedit database repair. Was incorrectly attempting to run Windows XP command on Windows 7 and up
+    + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
+    + Add standalone execution support
+    - Remove unecessary SETLOCAL command
+    - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
+
+ * reset_registry_permissions.bat  v1.0.4
+    + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
+    + Add standalone execution support
+    - Remove unecessary SETLOCAL command
+    - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
+
+ . subinacl.exe                    v5.2.3790.1180
+ . Spybot Anti-Beacon              v1.5.0.35
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.1.3
+ . 7-Zip                           v16.02        (multi-language)
+ * Adobe Flash Player              v23.0.0.162   (language ignored)
+ . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment        8u102         (language ignored)
+ . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.3
+ . smartctl                        v6.5.0.4318 2016-05-07 r4318
+ . Defraggler                      v2.21.0.993
+
+Stage 7: Wrap-up
+ . SwithMail.exe                   v2.1.5.0
+
+Stage 8: Manual tools
+ . .NET Repair Tool                v4.5.52207.36207
+ . ADSSpy                          v1.11.0.0
+ . AdwCleaner                      v6.0.1.0
+ . Autoruns                        v13.62
+ . BlueScreenView                  v1.55
+ * ComboFix                        v16.9.14.1
+ . Junkware Removal Tool           v8.0.7.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.35 x64
+ . PC Hunter                       v1.35 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
 
 
 ########################
@@ -26,7 +125,7 @@ Internal
 
  * check_update.bat                v1.0.4
     * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
- 
+
  * check_update_debloat_lists.bat  v1.0.3
     * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 
