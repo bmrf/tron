@@ -108,7 +108,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
-	call functions\log.bat "%CUR_DATE% %TIME%    Scanning. Output REDUCED by default (use -v to show)..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Scanning output is REDUCED by default (use -v to show)..."
 	if /i %DRY_RUN%==no (
 		echo.
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
