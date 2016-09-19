@@ -93,11 +93,11 @@ if /i %SKIP_KASPERSKY_SCAN%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_KASPERSKY_SCAN (-sk) set. Skipping KVRT scan."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Kaspersky Virus Removal Tool'..."
-	call functions\log.bat "%CUR_DATE% %TIME%    Tool-specific log saved to "%RAW_LOGS%\Reports""
+	call functions\log.bat "%CUR_DATE% %TIME%    Tool-specific log will be saved to "%RAW_LOGS%\Reports""
 	if /i %DRY_RUN%==no (
 		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo
 		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		)
+	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
@@ -116,7 +116,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 		if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
 		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
-		)
+	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
