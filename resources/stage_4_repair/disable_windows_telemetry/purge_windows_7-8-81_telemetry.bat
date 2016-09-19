@@ -77,7 +77,7 @@ if %ABORT%==yes (
 
 :::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%    Uninstalling bad updates, please wait..."
+call functions\log.bat "%CUR_DATE% %TIME%     Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	REM Updated capabilities to upgrade Windows 8.1 and Windows 7
@@ -223,13 +223,13 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%    Blocking bad updates, please wait..."
+call functions\log.bat "%CUR_DATE% %TIME%     Blocking bad updates, please wait..."
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
@@ -244,13 +244,13 @@ start "" /b /wait cscript.exe "block_windows_updates.vbs" 2990214 3139929 297775
 
 popd
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-call functions\log.bat "%CUR_DATE% %TIME%    Removing telemetry-related scheduled tasks..."
+call functions\log.bat "%CUR_DATE% %TIME%     Removing telemetry-related scheduled tasks..."
 
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
@@ -276,13 +276,13 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-call functions\log.bat "%CUR_DATE% %TIME%    Removing bad services, please wait..."
+call functions\log.bat "%CUR_DATE% %TIME%     Removing bad services, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
@@ -302,29 +302,29 @@ if "%VERBOSE%"=="yes" (
 	sc stop RemoteRegistry >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "%CUR_DATE% %TIME%    Toggling official MS telemetry registry entries..."
+call functions\log.bat "%CUR_DATE% %TIME%     Toggling official MS telemetry registry entries..."
 
 :: Disable telemetry via master registry key
 reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISC
-call functions\log.bat "%CUR_DATE% %TIME%    Miscellaneous cleanup, please wait..."
+call functions\log.bat "%CUR_DATE% %TIME%     Miscellaneous cleanup, please wait..."
 
 :: Kill pending tracking reports
 if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
