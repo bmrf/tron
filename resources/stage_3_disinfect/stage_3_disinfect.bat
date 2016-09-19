@@ -72,7 +72,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		
 		:: Install the bundled definitions file and integrate the log into Tron's log
-		call functions\log.bat "%CUR_DATE% %TIME%     Loading bundled definitions package..."
+		call functions\log.bat "%CUR_DATE% %TIME%    Loading bundled definitions package..."
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log.bat "%CUR_DATE% %TIME%     Done."
