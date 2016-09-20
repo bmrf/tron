@@ -1,7 +1,9 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
+:: Version:       1.1.0-TRON + Add updates 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 from http://www.overclock.net/t/1587577/windows-7-updates-list-descriptions-windows-10-preparation-telemetry
+::                             Thanks to /u/HeyYou13
+::                1.0.9-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
 ::                1.0.8-TRON + Add log messages explaining each step in the process
 ::                1.0.7-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/DrQuack32
 ::                           * Simplify and clean up OS version detection
@@ -31,8 +33,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.9-TRON
-set SCRIPT_UPDATED=2016-09-13
+set SCRIPT_VERSION=1.1.0-TRON
+set SCRIPT_UPDATED=2016-09-20
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -80,6 +82,24 @@ if %ABORT%==yes (
 call functions\log.bat "%CUR_DATE% %TIME%     Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
+	REM Update adds ITraceRelogger interface support
+	start /wait "" wusa /uninstall /kb:2882822 /quiet /norestart
+	REM Windows Update Client for Windows 7: June 2015 = WU service updated to accept upgrade to W10 + other fixes
+	start /wait "" wusa /uninstall /kb:3050265 /quiet /norestart
+	REM Windows 10 upgrade for Windows 7
+	start /wait "" wusa /uninstall /kb:3065987 /quiet /norestart
+	REM Windows 10 upgrade for Windows 7
+	start /wait "" wusa /uninstall /kb:3075851 /quiet /norestart
+	REM Fixes an issue regarding long wait while searching for Windows Updates but also has Windows 10 upgrade preparation for Windows 7
+	start /wait "" wusa /uninstall /kb:3102810 /quiet /norestart
+	REM Allows Windows 10 dependant Universal Runtime apps to run on earlier versions of Windows
+	start /wait "" wusa /uninstall /kb:3118401 /quiet /norestart
+	REM Windows Update Client in Windows 7. Windows 10 preparation
+	start /wait "" wusa /uninstall /kb:3135445 /quiet /norestart
+	REM Windows Update Client in Windows 7. Windows 10 preparation
+	start /wait "" wusa /uninstall /kb:3138612 /quiet /norestart
+	REM Windows 10 end of free upgrade offer notification for Windows 7
+	start /wait "" wusa /uninstall /kb:3173040 /quiet /norestart
 	REM Updated capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart
 	REM Compatibility update for Windows 8.1 and Windows 8
@@ -152,6 +172,24 @@ if "%VERBOSE%"=="yes" (
 	REM This update also improves the ability of Microsoft to monitor the quality of the upgrade experience.
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart
 ) else (
+	REM Update adds ITraceRelogger interface support
+	start /wait "" wusa /uninstall /kb:2882822 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows Update Client for Windows 7: June 2015 = WU service updated to accept upgrade to W10 + other fixes
+	start /wait "" wusa /uninstall /kb:3050265 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows 10 upgrade for Windows 7
+	start /wait "" wusa /uninstall /kb:3065987 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows 10 upgrade for Windows 7
+	start /wait "" wusa /uninstall /kb:3075851 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Fixes an issue regarding long wait while searching for Windows Updates but also has Windows 10 upgrade preparation for Windows 7
+	start /wait "" wusa /uninstall /kb:3102810 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Allows Windows 10 dependant Universal Runtime apps to run on earlier versions of Windows
+	start /wait "" wusa /uninstall /kb:3118401 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows Update Client in Windows 7. Windows 10 preparation
+	start /wait "" wusa /uninstall /kb:3135445 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows Update Client in Windows 7. Windows 10 preparation
+	start /wait "" wusa /uninstall /kb:3138612 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Windows 10 end of free upgrade offer notification for Windows 7
+	start /wait "" wusa /uninstall /kb:3173040 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	REM Updated capabilities to upgrade Windows 8.1 and Windows 7
 	start /wait "" wusa /uninstall /kb:3123862 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 	REM Compatibility update for Windows 8.1 and Windows 8
@@ -236,11 +274,11 @@ echo.
 pushd stage_4_repair\disable_windows_telemetry 2>NUL
 
 :: Batch 1
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 971033 3123862 3112336 3090045 3083711 3083710 3081954 3081454 3081437 3080351 3080149 3075249 3074677  
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 971033 3123862 3112336 3090045 3083711 3083710  
 :: Batch 2
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583 3022345 3021917 3015249 3014460 3012973 
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583
 :: Batch 3
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
+start "" /b /wait cscript.exe "block_windows_updates.vbs" 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
 
 popd
 
