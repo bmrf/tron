@@ -7,7 +7,8 @@
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
 :: Version:       1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
-::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into the script. Removes dependence on an external file
+::                           ! Fix broken path on Spybot call. Thanks to /u/Seascan
+::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file 
 ::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
 ::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
 ::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
@@ -21,7 +22,7 @@
 ::                           / Change "sc delete" commands to "sc config <servicename> start= disabled" for Xbox related services
 ::                1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
 ::                1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
-::                1.0.5-TRON ! Revert all /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
+::                1.0.5-TRON ! Revert all schtasks /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
 ::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
 ::                           + Add logging and -v flag (VERBOSE) support
 ::                           / Change Scheduled Tasks cleanup to use "/disable" flag instead of "/delete" in case those jobs are needed later on
@@ -425,10 +426,7 @@ call functions\log.bat "%CUR_DATE% %TIME%     Done."
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
 call functions\log.bat "%CUR_DATE% %TIME%     Applying Spybot Anti-Beacon protections, please wait..."
-
-"Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
-%~dp0"Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
-
+	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 call functions\log.bat "%CUR_DATE% %TIME%     Done."
 
 
