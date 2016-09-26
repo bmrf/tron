@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
+:: Version:       1.1.0 * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+::                1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
 ::                      / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
 ::                1.0.8 - Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this was incorrectly suppressing all output
 ::                1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
@@ -24,8 +25,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.0.9
-set STAGE_4_SCRIPT_DATE=2016-09-12
+set STAGE_4_SCRIPT_VERSION=1.1.0
+set STAGE_4_SCRIPT_DATE=2016-09-26
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -73,8 +74,8 @@ if not %ERRORLEVEL%==0 (
 :: Add the DISM logs to the main Tron log
 if %WIN_VER_NUM% gtr 6.2 (
 	call functions\log.bat "%CUR_DATE% %TIME%    Compiling DISM logs into main Tron log..."
-	if exist "%RAW_LOGS%\dism_check.log" type "%RAW_LOGS%\dism_check.log" >> "%LOGPATH%\%LOGFILE%" 2>nul
-	if exist "%RAW_LOGS%\dism_repair.log" type "%RAW_LOGS%\dism_repair.log" >> "%LOGPATH%\%LOGFILE%" 2>nul
+	if exist "%RAW_LOGS%\dism_check.log" type "%RAW_LOGS%\dism_check.log" >> "%LOGPATH%\%LOGFILE%"
+	if exist "%RAW_LOGS%\dism_repair.log" type "%RAW_LOGS%\dism_repair.log" >> "%LOGPATH%\%LOGFILE%"
 )
 
 :skip_dism_image_check
@@ -138,8 +139,63 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
-	reg import stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
-	regedit /S stage_4_repair\disable_windows_telemetry\disable_telemetry_registry_entries.reg >nul 2>&1
+	if "%VERBOSE%"=="yes" (
+		REM GPO options to disable telemetry
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
+		
+		REM Keylogger
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
+		
+		REM Wifi sense, a nasty one privacy-wise
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisenseopen" /t REG_DWORD /d "0" /f
+		
+		REM Windows Defender sample reporting
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\windows defender\spynet" /v "spynetreporting" /t REG_DWORD /d "0" /f
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\windows defender\spynet" /v "submitsamplesconsent" /t REG_DWORD /d "0" /f
+		
+		REM SkyDrive
+		%windir%\system32\reg.exe add "HKLM\software\policies\microsoft\windows\skydrive" /v "disablefilesync" /t REG_DWORD /d "1" /f
+		
+		REM Kill OneDrive from hooking into Explorer even when disabled
+		%windir%\system32\reg.exe add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f
+		%windir%\system32\reg.exe add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f
+		
+		REM DiagTrack service
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
+		
+		REM "WAP Push Message Routing Service"
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f
+	) else (
+		REM GPO options to disable telemetry
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM Keylogger
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM Wifi sense, a nasty one privacy-wise
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisenseopen" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM Windows Defender sample reporting
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\windows defender\spynet" /v "spynetreporting" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%windir%\system32\reg.exe add "HKLM\software\microsoft\windows defender\spynet" /v "submitsamplesconsent" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM SkyDrive
+		%windir%\system32\reg.exe add "HKLM\software\policies\microsoft\windows\skydrive" /v "disablefilesync" /t REG_DWORD /d "1" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM Kill OneDrive from hooking into Explorer even when disabled
+		%windir%\system32\reg.exe add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%windir%\system32\reg.exe add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM DiagTrack service
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM "WAP Push Message Routing Service"
+		%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
 	goto skip_telem_removal
 )
 
@@ -169,8 +225,21 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Disable Windows 10 Upgrade nagger (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no ( 
-		reg import stage_4_repair\disable_windows_telemetry\disable_windows_10_upgrade_registry_entries.reg >nul 2>&1
-		regedit /S stage_4_repair\disable_windows_telemetry\disable_windows_10_upgrade_registry_entries.reg >nul 2>&1
+		REM Only disable telemetry, don't completely purge it
+		REM "DisableOSUpgrade" disables/hides the taskbar app to prevent users from making a reservation and upgrading manually
+		REM  However, user can still get updated automatically with KB3146449
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DisableOSUpgrade" /t REG_DWORD /d "1" /f
+	
+		REM "AllowOSUpgrade" is the holy grail that will actually prevent the upgrade from happening, even if Win10 is sitting in the update folder. 
+		REM You can make a reservation, download it via updates, enable this option and windows will never automatically/manually update to Win10.
+		REM "ReservationsAllowed" is a little more heavy handed and may not be neccessary. This actually prevents the user (or windows) from making a
+		REM reservation and downloading the upgrade even remotely possible...but the upgrade can still happen if it's already downloaded. Usually done 
+		REM on new installs as an extra preventative measure. The default value for this is 2. Setting it to 0 makes reservations impossible.
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\OSUpgrade" /v "AllowOSUpgrade" /t REG_DWORD /d "0" /f
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\OSUpgrade" /v "ReservationsAllowed" /t REG_DWORD /d "0" /f
+	
+		REM "DisableGWX" is the upgrade nagger/popup
+		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GWX" /v "DisableGWX" /t REG_DWORD /d "1" /f
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
