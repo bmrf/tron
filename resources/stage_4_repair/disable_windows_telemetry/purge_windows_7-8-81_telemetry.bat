@@ -1,7 +1,7 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1-TRON * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into the script. Removes dependence on an external file
+:: Version:       1.1.1-TRON * Embed contents of 'disable_telemetry_registry_entries.reg' directly into the script. Removes dependence on an external file
 ::                1.1.0-TRON + Add updates 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 from http://www.overclock.net/t/1587577/windows-7-updates-list-descriptions-windows-10-preparation-telemetry
 ::                             Thanks to /u/HeyYou13
 ::                1.0.9-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
