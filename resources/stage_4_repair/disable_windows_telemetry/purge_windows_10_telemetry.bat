@@ -7,7 +7,7 @@
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
 :: Version:       1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
-::                           * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into the script. Removes dependence on an external file
+::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into the script. Removes dependence on an external file
 ::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
 ::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
 ::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
