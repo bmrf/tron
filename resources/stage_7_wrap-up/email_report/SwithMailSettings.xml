@@ -32,7 +32,7 @@
 	Param2: Logpath\logfile (from Tron's %LOGPATH%\%LOGFILE%)
 	Param3: Safe Mode info (from Tron's %SAFE_MODE% %SAFEBOOT_OPTION%)
 	Param4: Disk space info (from Tron's %FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%)
-	Param5: CLI flags (from Window's %*)
+	Param5: CLI flags (from Windows' %*)
 	-->
 	
 	
