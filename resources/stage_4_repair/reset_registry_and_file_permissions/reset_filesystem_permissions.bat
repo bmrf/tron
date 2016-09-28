@@ -36,8 +36,10 @@ if /i "%LOGPATH%"=="" (
 	set RAW_LOGS=%LOGPATH%\raw_logs
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| find "CurrentVersion"') DO set WIN_VER_NUM=%%i
-	pushd "%~dp0"
 )
+
+:: Get in the correct directory
+pushd "%~dp0"
 
 
 :::::::::::::
@@ -53,3 +55,7 @@ if %WIN_VER_NUM:~0,1%==5 secedit /configure /cfg %windir%\repair\secsetup.inf /d
 
 :: Windows 7 and up
 if %WIN_VER_NUM:~0,1% geq 6 secedit /configure /cfg %windir%\inf\defltbase.inf /db defltbase.sdb /verbose >> "%RAW_LOGS%\reset_filesystem_perms_secedit.log" 2>&1
+
+
+
+popd
