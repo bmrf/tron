@@ -84,14 +84,9 @@ call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO (
-	if %VERBOSE%==yes (	
-		echo   %%i 
-		echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
-		%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-	) else (
-		echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
-		%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-	)
+	if %VERBOSE%==yes echo   %%i 
+	echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
+	%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
