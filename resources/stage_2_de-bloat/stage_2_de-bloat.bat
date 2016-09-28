@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
+:: Version:       1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
+::                1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
 ::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
 ::                1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
 ::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
@@ -24,8 +25,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.5
-set STAGE_2_SCRIPT_DATE=2016-09-09
+set STAGE_2_SCRIPT_VERSION=1.1.6
+set STAGE_2_SCRIPT_DATE=2016-09-28
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -82,7 +83,16 @@ title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (wildcard by name)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO echo   %%i && echo   %%i...>> "%LOGPATH%\%LOGFILE%" && %WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO (
+	if %VERBOSE%==yes (	
+		echo   %%i 
+		echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
+		%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+	) else (
+		echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
+		%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+	)
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
