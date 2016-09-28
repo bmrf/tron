@@ -38,6 +38,8 @@ if /i "%LOGPATH%"=="" (
 	pushd "%~dp0"
 )
 
+:: Get in the correct directory
+pushd "%~dp0"
 
 :::::::::::::
 :: EXECUTE ::
@@ -47,3 +49,5 @@ for %%i in (HKEY_LOCAL_MACHINE,HKEY_CURRENT_USER,HKEY_CLASSES_ROOT) do (
 	subinacl.exe /noverbose /nostatistic /subkeyreg %%i /grant=administrators=f >NUL
 	subinacl.exe /noverbose /nostatistic /subkeyreg %%i /grant=system=f >NUL
 )
+
+popd
