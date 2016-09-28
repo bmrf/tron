@@ -86,7 +86,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
 if /i %SKIP_REGPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting registry permissions..."
-	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
+	call functions\log.bat "%CUR_DATE% %TIME%    THIS CAN TAKE A LONG TIME - BE PATIENT"
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
@@ -98,7 +98,7 @@ if /i %SKIP_REGPERMS_RESET%==no (
 title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
 if /i %SKIP_FILEPERMS_RESET%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
-	call functions\log.bat "%CUR_DATE% %TIME%    THIS WILL TAKE A LONG TIME - BE PATIENT"
+	call functions\log.bat "%CUR_DATE% %TIME%    THIS CAN TAKE A LONG TIME - BE PATIENT"
 	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_filesystem_permissions.bat"
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
