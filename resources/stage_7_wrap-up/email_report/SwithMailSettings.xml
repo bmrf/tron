@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <SwithMailSettings>
   <ServerSettings>
-    <FromName>TRON</FromName>
+    <FromName>Tron</FromName>
     <FromAddress>YOUR.EMAIL.ADDRESS@example.com</FromAddress>
     <Username />
     <Password>YOUR-PASSWORD-HERE</Password>
@@ -24,7 +24,7 @@
   <EmailContent>
     <HTML>True</HTML>
     <DontReplaceNewLine>False</DontReplaceNewLine>
-    <Subject>TRON: Run complete on %COMPUTERNAME%</Subject>
+    <Subject>Tron: Run complete on %COMPUTERNAME%</Subject>
 	
 	<!-- 
 	For "Body" section, Tron passes in the following variables as parameters (%Param1%, etc):
