@@ -4,12 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.5.1 / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
-::                      - cleanup: Remove unused :self_destruct label
-::                      - welcome: Remove "not ideal" text from welcome screen when not in Safe Mode, since Tron usually works fine in regular mode as well as Safe Mode
-::                9.5.0 / Change text "Time zone name" to "Time zone" in log output
-::                      ! Correct a couple references to USERPROFILE to use Tron's universal USERPROFILES instead
-::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&"). Thanks to /u/maliyaa and /u/wiggy4383
+:: Version:       9.6.0 + stage_7_wrap-up:log_upload: Add new -udl and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -42,6 +37,7 @@
 ::                      -ss  Skip Sophos Anti-Virus (SAV) scan
 ::                      -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
+::                      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
@@ -117,6 +113,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip removal of Windows "telemetry" (user tracking) related upates
 :: SKIP_WINDOWS_UPDATES   (-sw)  = Set to yes to skip Windows Updates
+:: UPLOAD_DEBUG_LOGS      (-udl) = Upload debug logs. Send tron.log and the system GUID dump to the Tron developer. Please use this if possible, logs are extremely helpful in Tron development
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
@@ -144,6 +141,7 @@ set SKIP_REGPERMS_RESET=no
 set SKIP_SOPHOS_SCAN=no
 set SKIP_TELEMETRY_REMOVAL=no
 set SKIP_WINDOWS_UPDATES=no
+set UPLOAD_DEBUG_LOGS=no
 set UNICORN_POWER_MODE=off
 set VERBOSE=no
 set SELF_DESTRUCT=no
@@ -166,8 +164,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.5.1
-set SCRIPT_DATE=2016-09-14
+set SCRIPT_VERSION=9.6.0
+set SCRIPT_DATE=2016-10-02
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -253,7 +251,7 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 :: INTERNAL PREP: Get in the correct drive (~d0). This is sometimes needed when running from a thumb drive
 %~d0 2>NUL
 :: INTERNAL PREP: Get in the correct path (~dp0). This is useful if we start from a network share, it converts CWD to a drive letter
-pushd %~dp0 2>NUL
+pushd "%~dp0" 2>NUL
 :: INTERNAL PREP: Get in the resources sub-directory. We stay here for the rest of the script
 pushd resources
 
@@ -823,7 +821,7 @@ title Tron v%SCRIPT_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS ^(-sa^) set. Skipping Sophos, KVRT and MBAM scans."
+	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (Sophos, KVRT, MBAM)."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -964,7 +962,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Create post-run Restore Point
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
+title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
 	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
 	if %WIN_VER_NUM% geq 6.2 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
@@ -1008,13 +1006,12 @@ if "%AUTO_REBOOT_DELAY%"=="0" (
 if /i %AUTO_SHUTDOWN%==yes call functions\log.bat "%CUR_DATE% %TIME% ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds."
 
 
-:: Pretend to send the email report. We don't actually send the report since we need the log trailer which is created below,
-:: so we just pretend to send it then actually send it after the log trailer has been created
-if /i %EMAIL_REPORT%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME%   Email report requested. Sending report now..."
-	ping localhost -n 5 >NUL
-	call functions\log.bat "%CUR_DATE% %TIME%   Done."
-)
+:: Notify that we're going to email the log file
+if /i %EMAIL_REPORT%==yes call functions\log.bat "%CUR_DATE% %TIME%   Email report requested. Will email logs in a few moments."
+
+
+:: Upload logs if the switch was used
+if /i %UPLOAD_DEBUG_LOGS%==yes call functions\log.bat "%CUR_DATE% %TIME%   Debug log upload enabled (thank-you!). Will upload logs in a few moments."
 
 
 :: Check if self-destruct was set
@@ -1025,7 +1022,7 @@ if /i %SELF_DESTRUCT%==yes (
 
 :: Error checking. Color the window based on run results so we can see at a glance if it's done
 color 2f
-:: Were warning detected?
+:: Were warnings detected?
 if /i not %WARNINGS_DETECTED%==no (
 	color e0
 	call functions\log.bat "%CUR_DATE% %TIME% ! WARNINGS were detected. Recommend reviewing the log file."
@@ -1056,24 +1053,44 @@ call functions\log.bat "       after a reboot."
 call functions\log.bat "-------------------------------------------------------------------------------"
 
 
-:: JOB: Actually send the email report if it was requested
+:: JOB: Send the email report if it was requested
 :: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of Command-line switches that were used
 set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log.bat "%CUR_DATE% %TIME%   Done."
 		) else (
-			call functions\log.bat "%CUR_DATE% %TIME% ! Something went wrong, email may not have gone out. Check your settings."
+			call functions\log.bat "%CUR_DATE% %TIME% ^! Something went wrong, email may not have gone out. Check your settings."
 		)
 	)
 )
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
-:: Skip this last bit if we're doing a dry run
+
+
+:: JOB: Upload debug logs if requested
+:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of Command-line switches that were used
+set ARGUMENTS='%*'
+SETLOCAL ENABLEDELAYEDEXPANSION
+if /i %UPLOAD_DEBUG_LOGS%==yes (
+	if /i %DRY_RUN%==no (
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+
+		if !ERRORLEVEL!==0 (
+			call functions\log.bat "%CUR_DATE% %TIME%   Done."
+		) else (
+			call functions\log.bat "%CUR_DATE% %TIME% ^! Something went wrong, logs may not have uploaded. Please notify Vocatus."
+		)
+	)
+)
+ENDLOCAL DISABLEDELAYEDEXPANSION
+
+
+:: Skip everything below here if we're doing a dry run
 if /i %DRY_RUN%==yes goto end_and_skip_shutdown
 
 :: Perform reboot if requested
@@ -1089,7 +1106,7 @@ if /i %SELF_DESTRUCT%==yes (
 	cd \
 	rmdir /s /q "%CWD%"
 	exit
-	)
+)
 
 :end_and_skip_shutdown
 echo.
@@ -1100,16 +1117,15 @@ exit /B
 
 
 
+
 :::::::::::::::
 :: FUNCTIONS ::
 :::::::::::::::
-
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
 for /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
-
 
 :: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
@@ -1141,9 +1157,10 @@ for %%i in (%*) do (
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
+	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
+	if /i %%i==-upm set UNICORN_POWER_MODE=on
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
-	if %%i==-UPM set UNICORN_POWER_MODE=on
 )
 goto :eof
 :eof
