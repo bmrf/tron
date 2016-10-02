@@ -8,9 +8,112 @@ Change legend:
 Version number legend:
   x.x.x
   | | |
-  | | program/definition update, minor change or bugfix (critical or regular)
-  | regular release or feature change
-  major release or feature change
+  | | minor change, update or bugfix
+  | regular release or feature change, backwards compatible
+  major release or feature change, might break backwards compatibility
+
+
+
+########################
+# v9.6.0 // 2016-10-02 # // AQ
+########################
+Internal
+ . tron.bat                        v9.6.0
+    + stage_7_wrap-up:log_upload: Add new -udl and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
+
+ . check_update.bat                v1.0.4
+ . check_update_debloat_lists.bat  v1.0.3
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.1.0
+ . rkill                           v2.8.4.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.11
+ . McAfee Stinger                  v12.1.0.2097
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.18
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.1.2
+ . CCleaner                        v5.22.5724
+ . BleachBit                       v1.12
+ . finddupe.exe                    v1.23
+ . TempFileCleanup                 v1.1.2-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ * stage_2_de-bloat.bat            v1.1.6
+    * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
+
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ * stage_3_disinfect.bat           v1.1.2
+    + jrt:         Add job "JRT" (Junkware Removal Tool by Malwarebytes). Currently disabled pending troubleshooting
+    - roguekiller: Remove obsolete code for RogueKiller
+
+ . Sophos Virus Removal Tool       v2.5.5
+ . Kaspersky Virus Removal Tool    v15.0.19.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ * Malwarebytes included defs:     2016-09-29
+
+Stage 4: Repair
+ * stage_4_repair.bat              v1.1.0
+    * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+
+ * purge_windows_7-8-81_telemetry.bat
+    * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+	+ Add updates 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 from http://www.overclock.net/t/1587577/windows-7-updates-list-descriptions-windows-10-preparation-telemetry
+    Thanks to /u/HeyYou13
+
+ * purge_windows_10_telemetry.bat
+    + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
+    ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
+	! Fix broken path on Spybot call. Thanks to /u/Seascan
+    * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+
+ . subinacl.exe                    v5.2.3790.1180
+ . Spybot Anti-Beacon              v1.5.0.35
+ + O&O ShutUp10                    v1.4.1383 // new, Tron now automatically applies O&O's telemetry protection. Thanks to /u/ItsNotHectic
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.1.3
+ * 7-Zip                           v16.03        (multi-language)
+ . Adobe Flash Player              v23.0.0.162   (language ignored)
+ . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
+ . Java Runtime Environment        8u102         (language ignored)
+ . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.3
+ . smartctl                        v6.5.0.4318 2016-05-07 r4318
+ . Defraggler                      v2.21.0.993
+
+Stage 7: Wrap-up
+ * SwithMail.exe                   v2.1.8.0
+
+Stage 8: Manual tools
+ . .NET Repair Tool                v4.5.52207.36207
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v6.0.2.0
+ . Autoruns                        v13.62
+ . BlueScreenView                  v1.55
+ * ComboFix                        v16.9.28.1
+ * Junkware Removal Tool           v8.0.8.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.35 x64
+ . PC Hunter                       v1.35 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
 
 
 ########################
@@ -20,7 +123,7 @@ Internal
  * tron.bat                        v9.5.1
     / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
     - cleanup: Remove unused :self_destruct label
- 
+
  . check_update.bat                v1.0.4
  . check_update_debloat_lists.bat  v1.0.3
 
@@ -44,12 +147,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.5
- * \oem\programs_to_target_by_GUID.bat
- * \oem\toolbars_BHOs_to_target_by_GUID.bat
+ * programs_to_target_by_GUID.bat
+ * toolbars_BHOs_to_target_by_GUID.bat
     + Add all entries from Malwarebytes' Junkware Removal Tool GUID lists
- . \oem\programs_to_target_by_name.txt
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.1.1
@@ -64,16 +167,16 @@ Stage 4: Repair
     / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
 
  * reset_filesystem_permissions.bat v1.0.3
-    * Add proper version-specifc commands to secedit database repair. Was incorrectly attempting to run Windows XP command on Windows 7 and up
+    * Add proper version-specific commands to secedit database repair. Was incorrectly attempting to run Windows XP command on Windows 7 and up
     + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
     + Add standalone execution support
-    - Remove unecessary SETLOCAL command
+    - Remove unnecessary SETLOCAL command
     - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
 
  * reset_registry_permissions.bat  v1.0.4
     + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
     + Add standalone execution support
-    - Remove unecessary SETLOCAL command
+    - Remove unnecessary SETLOCAL command
     - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
 
  . subinacl.exe                    v5.2.3790.1180
@@ -155,11 +258,11 @@ Stage 2: De-bloat
     \ Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
     ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
 
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \oem\programs_to_target_by_name.txt
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  * stage_3_disinfect.bat           v1.1.1
@@ -249,11 +352,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -340,19 +443,19 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
+ . programs_to_target_by_name.txt
 
- * \oem\programs_to_target_by_GUID.bat
+ * programs_to_target_by_GUID.bat
      + Add script version and date variables to support automatic updates at Tron runtime
 
- * \oem\toolbars_BHOs_to_target_by_GUID.bat
+ * toolbars_BHOs_to_target_by_GUID.bat
      + Add script version and date variables to support automatic updates at Tron runtime
 
- * \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
      + Add script version and date variables to support automatic updates at Tron runtime
 	 + Add 46928bounde.EclipseManager and D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
 
- * \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
      + Add script version and date variables to support automatic updates at Tron runtime
      + Add 'D52A8D61.FarmVille2CountryEscape' to list, appears after Win10 anniversary update. Thanks to /u/reztho
      + Add 'GAMELOFTSA.Asphalt8Airborne' to list, appears after Win10 anniversary update. Thanks to /u/reztho
@@ -444,11 +547,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -534,12 +637,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
     * Misc additions by various users
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -625,11 +728,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -703,11 +806,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -784,11 +887,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.4
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -872,12 +975,12 @@ Stage 1: Tempclean
 Stage 2: De-bloat
  * stage_2_de-bloat.bat            v1.1.4
      ! OneDrive: Minor logging fix, suppress an irrelevant error message
- * \oem\programs_to_target_by_name.txt
+ * programs_to_target_by_name.txt
      + Add QuickTime to list of programs to remove, due to the Apple security advisory and decision to stop support
- * \oem\programs_to_target_by_GUID.bat
- * \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ * programs_to_target_by_GUID.bat
+ * toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -954,11 +1057,11 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1037,15 +1140,15 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
     + Add many more entries. Thanks to /u/kronflux
 
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
- * \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . toolbars_BHOs_to_target_by_GUID.bat
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
     - Remove three accidental duplicate entries. Thanks to /u/kronflux
 
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1124,12 +1227,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
- * \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
+ * toolbars_BHOs_to_target_by_GUID.bat
  - \oem\misc_other_programs_to_target.bat                         //  REMOVED
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1211,12 +1314,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1293,12 +1396,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1378,16 +1481,16 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- * \oem\programs_to_target_by_name.txt
+ * programs_to_target_by_name.txt
     + Add DriverUpdate by SlimWare Utilities (scareware). Thanks to /u/staticextasy
 
- * \oem\programs_to_target_by_GUID.bat
+ * programs_to_target_by_GUID.bat
     + Add CyberLink MediaStory. Thanks to /u/kronflux
 
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1469,12 +1572,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.3
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1551,16 +1654,16 @@ Stage 2: De-bloat
  * stage_2_de-bloat.bat            v1.1.3
     ! Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" bloatware programs. Thanks to https://github.com/Verteiron
 
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
     + Add additional Lenovo entries. Thanks to /u/tsmartin123
     + Add additional Lenovo entries. Thanks to /u/Letouane
 	- Disable Intel Matrix Storage manager entries, per crash report from the appropriately-named /u/BluescreenOfDeath
 
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- * \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
     + Add additional entries. Thanks to /u/MikeX10A
 
 Stage 3: Disinfect
@@ -1639,15 +1742,15 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.2
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
     + Add additional HP entries. Thanks to /u/RockaiE
     + Add additional HP entries. Thanks to /u/KingLinkTiger
 
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1726,12 +1829,12 @@ Stage 2: De-bloat
     * Metro:    Add missing log message about use of -m switch
     ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
 
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- * \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ * toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- * \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
     - Remove Microsoft.BingWeather from active target list. Thanks to /u/radium69
 	- Remove Microsoft.SolitaireCollection from active target list. Thanks to /u/radium69
 
@@ -1812,12 +1915,12 @@ Stage 2: De-bloat
     - Metro: Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
     ! Metro: Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
 
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1891,12 +1994,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.0
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -1970,12 +2073,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.0
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -2050,12 +2153,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.0
- . \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- ! \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ ! metro_Microsoft_modern_apps_to_target_by_name.ps1
     ! Remove incorrect Windows Store entry from the target list. Thanks to /u/regypt and /u/KnifeyGavin
 
 Stage 3: Disinfect
@@ -2139,12 +2242,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.0
- . \oem\programs_to_target_by_name.txt
- * \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ . programs_to_target_by_name.txt
+ * programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.0.2
@@ -2226,12 +2329,12 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.1.0
- * \oem\programs_to_target_by_name.txt
- . \oem\programs_to_target_by_GUID.bat
- . \oem\toolbars_BHOs_to_target_by_GUID.bat
+ * programs_to_target_by_name.txt
+ . programs_to_target_by_GUID.bat
+ . toolbars_BHOs_to_target_by_GUID.bat
  . \oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- . \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- . \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
  * stage_3_disinfect.bat           v1.0.2
@@ -2317,17 +2420,17 @@ Stage 2: De-bloat
  * stage_2_de-bloat.bat            v1.1.0
      * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
 
- . \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt
- * \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.bat
+ . \resources\stage_2_de-bloatprograms_to_target_by_name.txt
+ * \resources\stage_2_de-bloatprograms_to_target_by_GUID.bat
      * Add significant number of entries, mostly related to Sony VAIO, Lenovo, and WildTangent Games bloat. Thanks to /u/kronflux
      / Move a few toolbar entries to the toolbar/BHO list
 
- * \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.bat
+ * \resources\stage_2_de-bloattoolbars_BHOs_to_target_by_GUID.bat
      + Import a few toolbar entries from the by_GUID list
 
  . \resources\stage_2_de-bloat\oem\misc_other_programs_to_target.bat       //  Not called (currently unused)
- * \resources\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
- + \resources\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+ * \resources\stage_2_de-bloatmetro_3rd_party_modern_apps_to_target_by_name.ps1
+ + \resources\stage_2_de-bloatmetro_Microsoft_modern_apps_to_target_by_name.ps1
      + New; move all Microsoft-specific Modern apps into this script
 
 Stage 3: Disinfect
