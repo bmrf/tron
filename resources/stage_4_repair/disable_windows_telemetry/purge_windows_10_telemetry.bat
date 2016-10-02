@@ -6,32 +6,14 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
+:: Version:       1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
+::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
 ::                           ! Fix broken path on Spybot call. Thanks to /u/Seascan
 ::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file 
 ::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
 ::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
-::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon on Windows 10 systems
-::                1.1.2-TRON ! Fix incorrectly named directory in pushd statement. Resolves error where Tron couldn't find the Windows Update blocker script. Thanks to /u/adabo
-::                1.1.1-TRON + Add additional KB entries. Thanks to /u/kronflux
-::                           ! OS version check: Replace "pause" command with "ping 127.0.0.1 -n 60 >NUL". This should protect against invalid results permanently stalling the script, and instead abort after 60 seconds
-::                           * OS version check: Log a short message to the log file if version check fails. This way we know why the script aborted. Thanks to everyone who helped troubleshoot this
-::                1.1.0-TRON - Disable null-routing of storeedgefd.dsx.mp.microsoft.com, which is required for the App Store to connect. Thanks to /u/derphurr for Wireshark analysis
-::                1.0.9-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
-::                1.0.8-TRON ! Fix critical bug where the check to prevent running the script on any Windows version besides 10 would check WIN_VER_NUM and find the version # to be 6.3 instead of 10
-::                           / Change "sc delete" commands to "sc config <servicename> start= disabled" for Xbox related services
-::                1.0.7-TRON * Populate dependent variables (LOGPATH, LOGFILE, VERBOSE, WIN_VER_NUM) if we didn't inherit them from Tron (allows standalone execution)
-::                1.0.6-TRON * Wrap all references to VERBOSE in quotes. Doesn't fix an active bug but better protects us against bad input
-::                1.0.5-TRON ! Revert all schtasks /disable flags to /delete, since /disable isn't (apparently) supported on Win10. Thanks to /u/PhantomGamers
-::                1.0.4-TRON + Add blocking ("hiding") of bad updates to prevent re-installation
-::                           + Add logging and -v flag (VERBOSE) support
-::                           / Change Scheduled Tasks cleanup to use "/disable" flag instead of "/delete" in case those jobs are needed later on
-::                1.0.3-TRON - Remove "Kill forced OneDrive integration" and move it to Windows 10 Metro de-bloat section of main Tron.bat
-::                           / Change Wecsvc deletion to disabling only. Thanks to /u/hoodrichson
-::                1.0.2-TRON + Add removing of RetailDemo service
-::                1.0.1-TRON - Remove five host null-route entries that incorrectly blocked Windows Update cache servers. Thanks to /u/SirHaxalot and /u/DewArmy
-::                           - Remove incorrect pushd %SystemDrive at head of script
-::                           - Remove KB971033 from KB purge list; not applicable to Win10. Thanks to /u/spexdi
+::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon
+::                <-- obsolete changelog comments removed -->
 ::                1.0.0-TRON + Initial write
 SETLOCAL
 
@@ -49,8 +31,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.6-TRON
-set SCRIPT_UPDATED=2016-09-26
+set SCRIPT_VERSION=1.1.7-TRON
+set SCRIPT_UPDATED=2016-10-02
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -195,10 +177,14 @@ call functions\log.bat "%CUR_DATE% %TIME%     Blocking bad updates, please wait.
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\disable_windows_telemetry
+pushd stage_4_repair\disable_windows_telemetry >nul
 
-::start "" /b /wait cscript.exe "%~dp0block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
-start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
+:: Batch 1
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 
+
+:: Batch 2
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
+
 popd
 
 call functions\log.bat "%CUR_DATE% %TIME%     Done."
@@ -428,6 +414,14 @@ call functions\log.bat "%CUR_DATE% %TIME%     Done."
 call functions\log.bat "%CUR_DATE% %TIME%     Applying Spybot Anti-Beacon protections, please wait..."
 	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 call functions\log.bat "%CUR_DATE% %TIME%     Done."
+
+
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+:: OandOShutUp10 IMMUNIZATIONS
+call functions\log.bat "%CUR_DATE% %TIME%     Applying OandOShutUp10 protections, please wait..."
+	disable_windows_telemetry\OOShutUp10.exe disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
+call functions\log.bat "%CUR_DATE% %TIME%     Done
 
 
 
