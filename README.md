@@ -44,7 +44,7 @@ I got tired of running these utilities manually and decided to just script every
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
-Tron will briefly check for a newer version when it starts up and notify you if one is available.
+Tron will briefly check for a newer version when it starts up and notify you if one is available. It will also automatically download updates to the Stage 2: De-bloat lists of unwanted programs to target.
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
@@ -90,7 +90,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
      
      -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 
-     -se  Skip Event Log clear (don't clear Windows Event Logs)
+     -se  Skip Event Log backup and clear (don't clear Windows Event Logs)
 
      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 
