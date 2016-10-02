@@ -54,7 +54,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
     tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se -sfr
-              -sk -sm -sp -spr -srr -ss -str -sw -v -x] | [-h]
+              -sk -sm -sp -spr -srr -ss -str -sw -udl -v -x] | [-h]
 
     Optional flags (can be combined):
 
@@ -109,6 +109,8 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
 
      -sw  Skip Windows Updates (do not attempt to run Windows Update)
+     
+     -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 
      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 
@@ -298,6 +300,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
   ```
   set SKIP_WINDOWS_UPDATES=no
+  ```
+  
+ - To automatically upload debug logs to the Tron developer (vocatus), change this to `yes`:
+  ```
+  set UPLOAD_DEBUG_LOGS=no
   ```
 
 - To display as much output as possible (verbose), change this to `yes`:
@@ -561,11 +568,13 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 *stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
-1. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
+1. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `<LOGPATH>\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
-2. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `<LOGPATH>\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
+2. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
 
-3. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
+3. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
+
+4. **upload debug logs**: Upload 'tron.log' and the system GUID dump (list of all installed program GUIDs) to the Tron developer (vocatus). Please use this option if possible, log files are extremely helpful in developing Tron! NOTE: `tron.log` can contain personal information like names of files on the system, the computer name, user name, etc, so if you're concerned about this please look through a Tron log first to understand what will be sent. I don't care what files are on random systems on the Internet, but just something to be aware of
 
 ## STAGE 8: Manual tools
 
