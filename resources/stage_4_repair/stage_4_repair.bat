@@ -52,7 +52,18 @@ if /i "%LOGFILE%"=="" (
 call functions\log.bat "%CUR_DATE% %TIME%   stage_4_repair begin..."
 
 
-:: JOB: Check Windows Image for corruptions before running SFC (Windows 8 and up)
+:: JOB: MSI installer cleanup
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [MSI installer cleanup]
+call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up orphaned MSI cache files..."
+if /i %VERBOSE%==yes (
+	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
+) else (
+	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G! >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
+:: JOB: Check Windows Image for corruptions (Windows 8 and up)
 if %WIN_VER_NUM% geq 6.2 (
 	title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM Windows image check'..."
@@ -80,17 +91,6 @@ if %WIN_VER_NUM% gtr 6.2 (
 )
 
 :skip_dism_image_check
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
-
-
-:: JOB: MSI installer cleanup
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [MSI installer cleanup]
-call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up orphaned MSI cache files..."
-if /i %VERBOSE%==yes (
-	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
-) else (
-	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G! >> "%LOGPATH%\%LOGFILE%" 2>&1
-)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
