@@ -30,17 +30,17 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow it to install updates. This isn't *required* but is strongly recommended.
+0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. This isn't *required* but is strongly recommended.
 
-1. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. You don't *have* to run Tron in Safe Mode but it is generally recommended.
+1. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, but in general it seems to have better results that way which is why it's generally recommended.
 
-2. Copy `tron.bat` and the `\resources` folder to the Desktop of target machine and run `tron.bat` as an **ADMINISTRATOR** (Tron does not work if you don't it run as an Administrator)
+2. Copy `tron.bat` and the `\resources` folder to the Desktop of target machine and run `tron.bat` as an **ADMINISTRATOR** 
 
-3. Wait anywhere from **3-10 hours** (yes, it takes that long; no, do **not** cancel it in the middle of it running)
+3. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
 
   *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
-4. Reboot
+4. **Reboot**
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
