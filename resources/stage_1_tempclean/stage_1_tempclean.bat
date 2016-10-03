@@ -66,7 +66,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner."
 	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 60 >NUL
+	ping 127.0.0.1 -n 90 >NUL
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
