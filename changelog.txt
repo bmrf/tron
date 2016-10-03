@@ -14,12 +14,14 @@ Version number legend:
 
 
 
+
 ########################
-# v9.6.0 // 2016-10-02 # // AQ
+# v9.6.1 // 2016-10-03 # // AQ
 ########################
 Internal
- . tron.bat                        v9.6.0
-    + stage_7_wrap-up:log_upload: Add new -udl and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
+ . tron.bat                        v9.6.1
+    ! Fix critical crash bug due to an unescaped set of parentheses
+    + stage_7_wrap-up:log_upload: Add new -udl switch and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
 
  . check_update.bat                v1.0.4
  . check_update_debloat_lists.bat  v1.0.3
@@ -63,8 +65,9 @@ Stage 3: Disinfect
  * Malwarebytes included defs:     2016-09-29
 
 Stage 4: Repair
- * stage_4_repair.bat              v1.1.0
-    * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+ * stage_4_repair.bat              v1.1.1
+    + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
+	* Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 
  * purge_windows_7-8-81_telemetry.bat
     * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
