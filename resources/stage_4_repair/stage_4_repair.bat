@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+:: Version:       1.1.1 + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
+::                1.1.0 * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 ::                1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
 ::                      / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
 ::                1.0.8 - Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this was incorrectly suppressing all output
@@ -25,8 +26,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.1.0
-set STAGE_4_SCRIPT_DATE=2016-09-26
+set STAGE_4_SCRIPT_VERSION=1.1.1
+set STAGE_4_SCRIPT_DATE=2016-10-03
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -79,6 +80,17 @@ if %WIN_VER_NUM% gtr 6.2 (
 )
 
 :skip_dism_image_check
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
+:: JOB: MSI installer cleanup
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [MSI installer cleanup]
+call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up orphaned MSI cache files..."
+if /i %VERBOSE%==yes (
+	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
+) else (
+	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G! >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
@@ -139,7 +151,7 @@ title Tron v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
-	if "%VERBOSE%"=="yes" (
+	if %VERBOSE%==yes (
 		REM GPO options to disable telemetry
 		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
 		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
