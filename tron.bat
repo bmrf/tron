@@ -2,9 +2,10 @@
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended (though not required)
+::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.6.0 + stage_7_wrap-up:log_upload: Add new -udl and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
+:: Version:       9.6.1 ! Fix critical crash bug due to an unescaped set of parentheses
+::                9.6.0 + stage_7_wrap-up:log_upload: Add new -udl switch and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -27,7 +28,7 @@
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sdc Skip DISM Cleanup (SxS component store deflation)
 ::                      -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
-::                      -se  Skip Event Log clearing
+::                      -se  Skip Event Log backup and clear (don't clear Windows Event Logs)
 ::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 ::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
@@ -61,8 +62,8 @@ call :set_cur_date
 ::  * Spaces are okay               (okay:  c:\my folder\with spaces )
 ::  * Network paths are okay        (okay:  \\server\share name      )
 
-:: By DEFAULT, LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
-:: If you want a separate directory generated per Tron run (for example when doing multiple runs for testing), use something like this:
+:: LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
+:: If you want a separate directory generated per Tron run (for example if doing multiple runs for testing), use something like this:
 ::   set LOGPATH=%SystemDrive%\Logs\tron\%COMPUTERNAME%_%DTS%
 set LOGPATH=%SystemDrive%\Logs\tron
 
@@ -79,7 +80,7 @@ set BACKUPS=%LOGPATH%\backups
 :: Where to save raw unprocessed logs from the various sub-tools
 set RAW_LOGS=%LOGPATH%\raw_logs
 
-:: Where to save the summary logs
+:: Where to save the summary logs (created from the raw logs)
 set SUMMARY_LOGS=%LOGPATH%\summary_logs
 
 
@@ -92,7 +93,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
 :: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
-:: EMAIL_REPORT           (-er)  = Email post-run report with log file. Requires you to have configured SwithMailSettings.xml prior to running
+:: EMAIL_REPORT           (-er)  = Email post-run report with log file. Requires you to configure SwithMailSettings.xml prior to running
 :: PRESERVE_METRO_APPS    (-m)   = Don't remove OEM Metro apps
 :: NO_PAUSE               (-np)  = Set to yes to skip pause at the end of the script
 :: AUTO_SHUTDOWN          (-o)   = Shutdown after the finishing. Overrides auto-reboot
@@ -103,7 +104,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
 :: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM Cleanup (SxS component store deflation)
 :: SKIP_DEBLOAT_UPDATE    (-sdu) = Set to yes to prevent Tron from auto-updating the stage 2 debloat lists prior to Stage 0 execution
-:: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clearing
+:: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log backup and clear
 :: SKIP_FILEPERMS_RESET   (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
 :: SKIP_MBAM_INSTALL      (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
@@ -164,8 +165,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.6.0
-set SCRIPT_DATE=2016-10-02
+set SCRIPT_VERSION=9.6.1
+set SCRIPT_DATE=2016-10-03
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -274,7 +275,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc -sdu
-	echo                -se -sfr -sk -sm -sp -spr -srr -ss -str -sw -v -x^] ^| ^[-h^]
+	echo                -se -sfr -sk -sm -sp -spr -srr -ss -str -sw -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
@@ -294,7 +295,7 @@ if /i %HELP%==yes (
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
-	echo    -se  Skip Event Log clearing
+	echo    -se  Skip Event Log backup and clear ^(don't clear Windows Event Logs^)
 	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
@@ -304,6 +305,7 @@ if /i %HELP%==yes (
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(don't remove Windows user tracking, Win7 and up only^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
+	echo    -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
  	echo.
@@ -326,8 +328,8 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 		echo    If you want to override and run anyway, re-run
 		echo    Tron from the command-line with the -dev flag.
 		echo.
-		echo    Keep in mind that by doing this you're effectively
-		echo    waiving your already non-existent warranty!
+		echo    Keep in mind that by doing this you're waiving
+		echo    your already non-existent warranty!
 		echo.
 		pause
 		goto eof
@@ -380,7 +382,7 @@ if /i %RESUME_DETECTED%==yes (
 
 
 :: INTERNAL PREP: Check for active network connection
-%WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL
+%WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 (
 	call functions\log.bat " ! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
@@ -451,6 +453,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
+	echo	UPLOAD_DEBUG_LOGS:      %UPLOAD_DEBUG_LOGS%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -702,7 +705,7 @@ if /i %AUTORUN%==yes (
 		call functions\log.bat "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 10 seconds."
 		if /i %DRY_RUN%==no (
 			bcdedit /set {default} safeboot network
-			shutdown -r -f -t 10
+			shutdown -r -f -t 15
 			pause
 			exit
 		)
