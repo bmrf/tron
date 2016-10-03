@@ -513,6 +513,8 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 4 code](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/stage_4_repair.bat)*
 
+0. **MSI installer cleanup**: Use the Microsoft `msizap.exe` utility to remove orphaned MSI installer files from the installer cache
+
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
 2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Use the `-srr` flag skips this operation
