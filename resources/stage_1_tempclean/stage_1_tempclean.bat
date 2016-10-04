@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
+:: Version:       1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
+::                1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
 ::                1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
@@ -18,8 +19,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.2
-set STAGE_1_SCRIPT_DATE=2016-09-11
+set STAGE_1_SCRIPT_VERSION=1.1.3
+set STAGE_1_SCRIPT_DATE=2016-10-04
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -61,12 +62,13 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: CCleaner
+:: Fun little fact, if ccleaner64.exe is present and you attempt to call ccleaner.exe while on a 64-bit system, CCleaner will abort the launch request and launch ccleaner64.exe instead
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
-	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner."
-	start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 90 >NUL
+	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
+	if %PROCESSOR_ARCHITECTURE%==x86 start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" /wait stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
