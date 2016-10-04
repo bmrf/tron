@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
+:: Version:       1.1.1 * Enable running of siv64x.exe on 64-bit systems. Thanks to /u/gameoftomes
+::                1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
 ::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&")
 ::                1.0.9 / Minor log message change
 ::                1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
@@ -22,8 +23,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.1.0
-set STAGE_0_SCRIPT_DATE=2016-09-11
+set STAGE_0_SCRIPT_VERSION=1.1.1
+set STAGE_0_SCRIPT_DATE=2016-10-04
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -90,7 +91,8 @@ title Tron v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
 call functions\log.bat "%CUR_DATE% %TIME%    Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
-	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
+	if %PROCESSOR_ARCHITECTURE%==x86 stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
+	if %PROCESSOR_ARCHITECTURE%==AMD64 stage_0_prep\log_tools\siv\siv64x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
 	:: Get list of all files on system
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
 )
