@@ -118,6 +118,7 @@ Media Buzz
 Media Gallery%%
 Media View%%
 Media Watch%%
+Mindspark%%
 MixiDJ V30 Toolbar
 MobileWiFi%%
 Mobogenie
