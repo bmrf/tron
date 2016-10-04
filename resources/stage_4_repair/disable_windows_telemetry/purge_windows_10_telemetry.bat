@@ -275,6 +275,8 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
+call functions\log.bat "%CUR_DATE% %TIME%     Done."
+
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
