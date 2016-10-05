@@ -1,9 +1,10 @@
-There are four files in these sub-directories that determine what Tron targets for bloatware removal:
+There are five files in these sub-directories that determine what Tron targets for bloatware removal:
 
 1. \oem\programs_to_target_by_name.txt
 2. \oem\programs_to_target_by_GUID.bat
 3. \oem\toolbars_BHOs_to_target_by_GUID.bat
-4. \metro\metro_OEM_modern_apps_to_target_by_name.ps1
+4. \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+5. \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 You can customize any of these files to tweak what Tron targets for removal.
 
@@ -11,7 +12,7 @@ You can customize any of these files to tweak what Tron targets for removal.
 # \oem\programs_to_target_by_name.txt
 
  Insert program NAMES, one per line, into the file. Tron will try to uninstall any program
- whose name matches one of the names in this file. Don't put any special characters around 
+ whose name matches one of the names in this file. Don't put any special characters around
  the name (quotes, commas, etc). Spaces are fine. Tron uses WMI queries inside a batch file,
  so the wildcard character is double-percent (%%).
 
@@ -24,33 +25,40 @@ Example list:
 So in this example,  Dell%%  would catch and attempt to remove both "Dell Getting Started Guide" AND "Dell Video."
 
 
+
 #  \oem\programs_to_target_by_GUID.bat
 
  List specific GUIDs to target, one per line. This file is batch (not flat text). The reason it's
  batch instead of plain text is so you can put comments over each GUID describing what it is.
- 
 
- 
+
+
 #  \oem\toolbars_BHOs_to_target_by_GUID.bat
 
  List specific GUIDs to target, one per line. This file is batch instead of plain text as well.
  It's separate from programs_to_target_by_GUID.bat just for organization; Tron executes both files
  the same way.
- 
- 
- 
-#  \metro\metro_OEM_modern_apps_to_target_by_name.ps1
 
- This is a Powershell script listing pre-loaded OEM "Modern" apps. Add any Windows 10 "Modern" apps
- you want to remove to this list.
 
+
+#  \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
+
+ This is a Powershell script listing pre-loaded 3rd-party "Modern" apps. Add any 3rd-party "Modern"
+ apps you want to remove to this list.
+
+
+
+#  \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+ This is a Powershell script listing pre-loaded Microsoft "Modern" apps. Customize this list to tweak
+ which official Microsoft "modern" apps get removed.
 
 
 
  !! NOTE !!
 
-Many programs do not register with WMI and so can't be targeted with this method.
-For those programs, you'll have to manually remove them. 
-This stage is just a "best-effort" attempt to automate some of the tedium.
+Many programs do not register with WMI and so can't be targeted with the by_GUID scripts.
+For those programs, you'll just have to remove them manually. This stage is just a "best-effort"
+attempt to automate some of the tedium.
 
 Godspeed
