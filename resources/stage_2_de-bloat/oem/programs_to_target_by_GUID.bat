@@ -2,7 +2,9 @@
 ::                Add any GUID uninstall commands to this list to target them for removal
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 + Add REMOVE variable to shorten uninstall strings. Should help trim file size somewhat for automated updates against Github
+:: Version:       1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
+::                1.0.2 + Add additional entries
+::                1.0.1 + Add REMOVE variable to shorten uninstall strings. Should help trim file size somewhat for automated updates against Github
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 @echo off
 
@@ -10,8 +12,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.1
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-10-04
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.3
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-10-16
 set REMOVE=start /wait msiexec /qn /norestart /x
 
 
@@ -337,9 +339,6 @@ set REMOVE=start /wait msiexec /qn /norestart /x
 
 :: ASUS Screensaver
 %REMOVE% {0FBEEDF8-30FA-4FA3-B31F-C9C7E7E8DFA2}
-
-:: ASUS Smart Gesture
-%REMOVE% {4D3286A6-F6AB-498A-82A4-E4F040529F3D}
 
 :: ASUS Splendid Video Enhancement Technology
 %REMOVE% {0969AF05-4FF6-4C00-9406-43599238DE0D}
@@ -2665,6 +2664,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: HP SystemDiagnostics
 %REMOVE% {3CF78481-FB7B-4B51-99A2-D5E0CD0B3AAF}
 
+:: HP System Event Utility
+%REMOVE% {09D0DB68-90EA-4015-983E-A0BD777D5A02}
+
 :: HP Tone Control
 %REMOVE% {9207D4A1-586E-49CA-A002-FC9F475AB1A3}
 
@@ -4561,6 +4563,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" %REMOVE% "%P
 :: %REMOVE% {CD95F661-A5C4-44F5-A6AA-ECDD91C240CF}
 :: %REMOVE% {CD95F661-A5C4-44F5-A6AA-ECDD91C240E3}
 :: %REMOVE% {8A6EAACB-E2D6-D6BF-0338-F4AC9641B423}
+
+:: Windows Store Gift Card Promo
+%REMOVE% {FF74AA30-FF56-4197-8B64-5D63F367BC02}
 
 :: WOT for Internet Explorer plugin
 %REMOVE% {373B90E1-A28C-434C-92B6-7281AFA6115A}
