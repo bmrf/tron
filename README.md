@@ -5,7 +5,7 @@
 
 # DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [/r/TronScript](https://www.reddit.com/r/TronScript) !!
 
-I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up/disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up and disinfect Windows machines.
 
 # CONTENTS
 1. [Usage Summary](#use)
