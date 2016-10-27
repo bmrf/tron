@@ -498,15 +498,17 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 3 code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)*
 
-1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
+1. **[Clear CryptNet SSL cache](https://github.com/bmrf/tron/issues/86)**: Wipe the Windows CryptNet SSL certificate cache by executing this command:  `certutil -URLcache * delete`
 
-2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
+2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
+
+3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
+4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
 
 
 ## STAGE 4: Repair
