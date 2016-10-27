@@ -77,7 +77,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 :: JOB: Capture screenshot of the desktop. First hide all windows, then capture the screenshot, then restore all windows
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [screenshot]
 call functions\log.bat "%CUR_DATE% %TIME%    Saving screenshot of the desktop to "%RAW_LOGS%"..."
-	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+d
+	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+m
 	stage_0_prep\capture_screenshot\nircmdc.exe savescreenshot "%RAW_LOGS%\tron_pre-run_screenshot_%DTS:~0,12%.png"
 	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+shift+m
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
