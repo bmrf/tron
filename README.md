@@ -106,7 +106,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -ss  Skip Sophos Anti-Virus (SAV) scan
 
-     -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
+     -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
 
      -sw  Skip Windows Updates (do not attempt to run Windows Update)
      
