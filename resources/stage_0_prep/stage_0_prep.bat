@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 ! Prefix siv32x and siv64x commands with "start" instead of calling directly. Should prevent entire script stalling if SIV hangs
+:: Version:       1.1.3 + Add job to capture desktop screenshot to the RAW_LOGS folder. Sometimes but a visual of the system is helpful so we capture one just in case some icons change
+::                1.1.2 ! Prefix siv32x and siv64x commands with "start" instead of calling directly. Should prevent entire script stalling if SIV hangs. Thanks to /u/gameoftome
 ::                1.1.1 * Enable executing siv64x.exe instead of siv32x.exe on 64-bit systems. Thanks to /u/gameoftomes
 ::                1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
 ::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&")
@@ -24,8 +25,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.1.2
-set STAGE_0_SCRIPT_DATE=2016-10-06
+set STAGE_0_SCRIPT_VERSION=1.1.3
+set STAGE_0_SCRIPT_DATE=2016-10-27
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -50,7 +51,6 @@ if /i "%LOGFILE%"=="" (
 call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 
 
-
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
 ::      On Windows 7 and up, we have to manually enable System Restore (it's disabled by default...why?? because Microsoft)
 ::      as well as remove the 24 hour cooldown timer they brilliantly added in Windows 8 which prevents doing things like
@@ -72,6 +72,15 @@ if %WIN_VER_NUM% geq 6.0 (
 	)
 )
 call functions\log.bat "%CUR_DATE% %TIME%    OK."
+
+
+:: JOB: Capture screenshot of the desktop. First hide all windows, then capture the screenshot, then restore all windows
+title Tron v%SCRIPT_VERSION% [stage_0_prep] [screenshot]
+call functions\log.bat "%CUR_DATE% %TIME%    Saving screenshot of the desktop to "%RAW_LOGS%"..."
+	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+d
+	stage_0_prep\capture_screenshot\nircmdc.exe savescreenshot "%RAW_LOGS%\tron_pre-run_screenshot_%DTS:~0,12%.png"
+	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+shift+m
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: rkill
@@ -149,8 +158,8 @@ setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no (
 	%WMIC% timezone >NUL
 	if /i not !ERRORLEVEL!==0 (
-		call functions\log.bat "%CUR_DATE% %TIME% ! WMI appears to be broken. Calling WMI repair sub-script."
-		call functions\log.bat "              This will take time, please be patient..."
+		call functions\log.bat "%CUR_DATE% %TIME% !  WMI appears to be broken. Calling WMI repair sub-script."
+		call functions\log.bat "               This will take time, please be patient..."
 		call stage_0_prep\repair_wmi\repair_wmi.bat
 	)
 )
