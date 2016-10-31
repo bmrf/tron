@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
+:: Version:       1.1.7 * Significantly improve robustness of OneDrive checks. OneDrive now only removed if system is Win10, folder exists in default location, and is empty. Thanks to /u/ranger_dood
+::                1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
 ::                1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
 ::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
 ::                1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
@@ -25,8 +26,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.1.6
-set STAGE_2_SCRIPT_DATE=2016-09-28
+set STAGE_2_SCRIPT_VERSION=1.1.7
+set STAGE_2_SCRIPT_DATE=2016-10-27
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -82,10 +83,11 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (wildcard by name)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+echo Looking for...
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 if /i %DRY_RUN%==no FOR /F "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) DO (
-	if %VERBOSE%==yes echo   %%i 
-	echo   %%i...>> "%LOGPATH%\%LOGFILE%" 
+	echo   %%i...
+	echo   %%i...>> "%LOGPATH%\%LOGFILE%"
 	%WMIC% product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -127,36 +129,50 @@ if /i %TARGET_METRO%==yes (
 
 
 :: JOB: Remove forced OneDrive integration
-if /i "%WIN_VER:~0,9%"=="Windows 1" (
-	if /i %PRESERVE_METRO_APPS%==yes (
-			call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
-			goto skip_onedrive_removal
-		)
+:: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
-	call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
-	for /F %%i in ('dir /b "%USERPROFILES%\OneDrive\*.*" 2^>nul') do (
-		call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
-		goto skip_onedrive_removal
-	)
-		call functions\log.bat "%CUR_DATE% %TIME%    OneDrive doesn't appear to be in use. Removing..."
-			if %DRY_RUN%==no (
-				taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
-				ping 127.0.0.1 -n 5 > NUL 2>&1
-				%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
-				%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
-				ping 127.0.0.1 -n 7 > NUL 2>&1
-				takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
-				icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-				rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-				rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
-				rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
-				REM These two registry entries disable OneDrive links in the Explorer side pane
-				reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-				reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-			)
-		call functions\log.bat "%CUR_DATE% %TIME%    Done."
-	)
+:: 1. Are we on Windows 10? If not, skip removal
+if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
+
+:: 2. Was the PRESERVE_METRO_APPS (-m) switch used? If so, skip removal
+if /i %PRESERVE_METRO_APPS%==yes (
+	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
+	goto :skip_onedrive_removal
 )
+
+:: 3. Does the folder exist in the default location? If not, skip removal
+if not exist "%USERPROFILES%\OneDrive" (
+	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive folder doesn't exist in the default location. Skipping removal."
+	goto :skip_onedrive_removal
+)
+
+:: 4. Does the folder have any files in it? If so, skip removal
+call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
+stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILES%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+if /i not %ERRORLEVEL%==0 (
+	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
+	goto :skip_onedrive_removal
+)
+
+:: If none of the above triggered, we're safe to remove OneDrive
+call functions\log.bat "%CUR_DATE% %TIME%    OneDrive doesn't appear to be in use. Removing..."
+if %DRY_RUN%==no (
+	taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
+	ping 127.0.0.1 -n 5 > NUL 2>&1
+	%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+	%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
+	ping 127.0.0.1 -n 7 > NUL 2>&1
+	takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
+	icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
+	rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM These two registry entries disable OneDrive links in the Explorer side pane
+	reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :skip_onedrive_removal
 
 

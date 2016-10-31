@@ -5,7 +5,7 @@
 
 # DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [/r/TronScript](https://www.reddit.com/r/TronScript) !!
 
-I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up/disinfect a Windows machine.
+I got tired of running these utilities manually and decided to just script everything, so Tron is essentially a glorified batch file that automates a variety of tasks to clean up and disinfect Windows machines.
 
 # CONTENTS
 1. [Usage Summary](#use)
@@ -106,7 +106,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -ss  Skip Sophos Anti-Virus (SAV) scan
 
-     -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
+     -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
 
      -sw  Skip Windows Updates (do not attempt to run Windows Update)
      
@@ -384,7 +384,9 @@ Master script that launches everything else. It performs many actions on its own
 
 9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
 
-10. 
+10. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
+
+   Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
 11. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
@@ -392,10 +394,6 @@ Master script that launches everything else. It performs many actions on its own
 ## STAGE 0: Prep
 
 *[link to Stage 0 code](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/stage_0_prep.bat)*
-
-1. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
-
-   Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
 2. **Create System Restore point**: Create a pre-run system restore point. Vista and up only, client OS's only (not supported on Server OS's, and on Windows 10 does not work if the system is in any form of Safe Mode. This is a known bug, and I spent hours trying to find a workaround but was not able to find a solution, so if you absolutely require a system restore point, recommend running in normal mode
 
@@ -498,15 +496,17 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 3 code](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)*
 
-1. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
+1. **[Clear CryptNet SSL cache](https://github.com/bmrf/tron/issues/86)**: Wipe the Windows CryptNet SSL certificate cache by executing this command:  `certutil -URLcache * delete`
 
-2. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
+2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
+
+3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
 
   ```
   -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-3. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
+4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
 
 
 ## STAGE 4: Repair
@@ -525,7 +525,7 @@ Master script that launches everything else. It performs many actions on its own
 
 5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
 
-6. **Disable Windows "telemetry"**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. If the system is running Windows 7/8/8.1, Tron removes the "bad" updates Microsoft rolled out to Windows 7/8/8.1 systems after the Windows 10 release which backport the surveillance/spyware functions that are by default present in Windows 10 back to the older Windows versions. See the code ([Win7/8/8.1](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_7-8-81_telemetry.bat), [Win10](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_10_telemetry.bat)) to see exactly which KB's are removed. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. Use the `-str` switch to skip this action If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features, including automatically applying all the immunizations from Spybot's Anti-Beacon tool. Go over the code in \tron\resources\stage_4_repair\disable_windows_telemetry\ to see exactly what is removed and disabled. Use the `-str` switch to skip this action. NOTE: This section takes a LONG time to run, DO NOT CANCEL IT
+6. **Disable Windows "telemetry"**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. Tron removes the "bad" updates Microsoft pushed to Windows 7/8/8.1 systems after the Windows 10 release. These updates backport the surveillance/spyware functions that are by default present in Windows 10. See the code to see exactly which updates are removed. See the code ([Win7/8/8.1](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_7-8-81_telemetry.bat), [Win10](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_10_telemetry.bat)) to see exactly which KB's are removed. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features, including automatically applying all the immunizations from the [Spybot Anti-Beacon](https://www.safer-networking.org/spybot-anti-beacon/) and [O&O ShutUp10](https://www.oo-software.com/en/shutup10) tools. Go over the code in `\tron\resources\stage_4_repair\disable_windows_telemetry\` to see exactly what is removed and disabled. NOTE: This section takes a LONG time to run, DO NOT CANCEL IT. Use the -str switch to just turn telemetry off instead of removing it
 
 7. **Disable Windows 10 upgrade**: Disables the Windows 10 upgrade nagger on Windows 7/8/8.1 by flipping the appropriate registry switches. Users can still manually upgrade the machine if they desire, but it will no longer nag via the system tray, auto-download, or auto-install Windows 10 without their permission
 

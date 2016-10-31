@@ -3,7 +3,10 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 ! mbam: Clean up mbam launching routine. Should eliminate erroneous message about mbam.exe not being found
+:: Version:       1.1.3 + certcache:   Add job to clear the CryptNet SSL certificate cache. Thanks to github:Itsnothectic and github:alazare619
+::                1.1.2 + jrt:         Add job "JRT" (Junkware Removal Tool by Malwarebytes). Currently disabled (pending troubleshooting)
+::                      - roguekiller: Remove obsolete code for RogueKiller
+::                1.1.1 ! mbam:        Clean up mbam launching routine. Should eliminate erroneous message about mbam.exe not being found
 ::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
 ::                1.1.0 + mbam: Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to /u/sofakingdead
 ::                1.0.2 * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to /u/staticextasy
@@ -15,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.1
-set STAGE_3_SCRIPT_DATE=2016-09-10
+set STAGE_3_SCRIPT_VERSION=1.1.3
+set STAGE_3_SCRIPT_DATE=2016-10-27
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -24,7 +27,7 @@ if /i "%LOGFILE%"=="" (
 	echo.
 	echo  ERROR
 	echo.
-	echo   You cannot run this script directly - it must be 
+	echo   You cannot run this script directly - it must be
 	echo   called from Tron.bat during a Tron run.
 	echo.
 	echo   Navigate to Tron's root folder and execute Tron.bat
@@ -32,27 +35,33 @@ if /i "%LOGFILE%"=="" (
 	pause
 	exit /b 1
 )
-	
-	
-	
+
+
+
 ::::::::::::::::::::::::
 :: STAGE 3: Disinfect :: // Begin jobs
 ::::::::::::::::::::::::
 call functions\log.bat "%CUR_DATE% %TIME%   stage_3_disinfect begin..."
 
 
-REM :: JOB: RogueKiller
-REM title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [RogueKiller]
-REM call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'RogueKiller' (it is SLOW, be patient)..."
+REM :: JOB: JRT (Malwarebytes Junkware Removal Tool)
+REM title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes JRT]
+REM call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Malwarebytes Junkware Removal Tool'..."
 REM if /i %DRY_RUN%==no (
-    REM start stage_3_disinfect\roguekiller\RogueKillerAutomation.exe
-    REM if /i %VERBOSE%==yes stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan
-    REM if /i %VERBOSE%==no stage_3_disinfect\roguekiller\RogueKillerCMD.exe -scan>> "%LOGPATH%\%LOGFILE%"
-    REM )
+	REM call stage_3_disinfect\jrt\get.bat
+REM )
 REM call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: MBAM (MalwareBytes Anti-Malware)
+:: JOB: Clear CryptNet SSL certificate cache (Vista and up)
+if %WIN_VER_NUM% geq 6.0 (
+	title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Clear CryptNet SSL cache]
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clear CryptNet SSL certificate cache'..."
+	if /i %DRY_RUN%==no	certutil -URLcache * delete  >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+)
+
+:: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
 	call functions\log.bat "%CUR_DATE% %TIME%    MBAM installation detected. Skipping installation."
@@ -70,13 +79,13 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		if exist "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
 		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		
+
 		:: Install the bundled definitions file and integrate the log into Tron's log
 		call functions\log.bat "%CUR_DATE% %TIME%    Loading bundled definitions package..."
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log.bat "%CUR_DATE% %TIME%     Done."
-		
+
 		:: Scan for and launch appropriate architecture version
 		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
 		if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"

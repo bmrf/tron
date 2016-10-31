@@ -4,8 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.6.1 ! Fix critical crash bug due to an unescaped set of parentheses
-::                9.6.0 + stage_7_wrap-up:log_upload: Add new -udl switch and associated UPLOAD_DEBUG_LOGS variable. Use this switch to have Tron email 'tron.log' and the system GUID dump to Vocatus upon completion. NOTE! Log files can contain personal information such as file names on the system and it's possible I will see them when looking through the log. I don't care what files are on a system but it IS something to be aware of
+:: Version:       9.7.0 - Remove -sfr and -srr switches along with all associated code and text due to removal of those jobs from Tron. They're rarely required and seem to hang the script on a lot of systems, so in the interest of stability they've been given the axe
+::                      - Temporarily disable use of the -udl switch, until I can find a better solution for submitting log files
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -29,14 +29,12 @@
 ::                      -sdc Skip DISM Cleanup (SxS component store deflation)
 ::                      -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 ::                      -se  Skip Event Log backup and clear (don't clear Windows Event Logs)
-::                      -sfr Skip filesystem permissions reset (saves time if you're in a hurry)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 ::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 ::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
-::                      -srr Skip registry permissions reset (saves time if you're in a hurry)
 ::                      -ss  Skip Sophos Anti-Virus (SAV) scan
-::                      -str Skip Telemetry Removal (don't remove Windows user tracking, Win7 and up only)
+::                      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
 ::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
 ::                      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -105,14 +103,12 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM Cleanup (SxS component store deflation)
 :: SKIP_DEBLOAT_UPDATE    (-sdu) = Set to yes to prevent Tron from auto-updating the stage 2 debloat lists prior to Stage 0 execution
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log backup and clear
-:: SKIP_FILEPERMS_RESET   (-sfr) = Set to yes to skip filesystem permissions reset in the Windows system directory. Can save a lot of time if you're in a hurry
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
 :: SKIP_MBAM_INSTALL      (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
 :: SKIP_PATCHES           (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
-:: SKIP_REGPERMS_RESET    (-srr) = Set to yes to skip registry permissions reset. Can save a lot of time if you're in a hurry
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
-:: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip removal of Windows "telemetry" (user tracking) related upates
+:: SKIP_TELEMETRY_REMOVAL (-str) = Set to yse to skip Telemetry Removal (just turn telemetry off instead of removing it)
 :: SKIP_WINDOWS_UPDATES   (-sw)  = Set to yes to skip Windows Updates
 :: UPLOAD_DEBUG_LOGS      (-udl) = Upload debug logs. Send tron.log and the system GUID dump to the Tron developer. Please use this if possible, logs are extremely helpful in Tron development
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
@@ -133,12 +129,10 @@ set SKIP_DEFRAG=no
 set SKIP_DISM_CLEANUP=no
 set SKIP_DEBLOAT_UPDATE=no
 set SKIP_EVENT_LOG_CLEAR=no
-set SKIP_FILEPERMS_RESET=no
 set SKIP_KASPERSKY_SCAN=no
 set SKIP_MBAM_INSTALL=no
 set SKIP_PATCHES=no
 set SKIP_PAGEFILE_RESET=no
-set SKIP_REGPERMS_RESET=no
 set SKIP_SOPHOS_SCAN=no
 set SKIP_TELEMETRY_REMOVAL=no
 set SKIP_WINDOWS_UPDATES=no
@@ -165,8 +159,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.6.1
-set SCRIPT_DATE=2016-10-03
+set SCRIPT_VERSION=9.7.0
+set SCRIPT_DATE=2016-10-27
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -223,9 +217,9 @@ if "%~dp0"=="%TEMP%\tron\" (
 	echo  Tron will now quit.
 	echo.
 	pause
-	cls
 	goto :eof
 )
+
 
 :: Make sure we're not running from %SystemDrive%\TEMP
 if "%~dp0"=="%SystemDrive%\temp\tron\" (
@@ -244,7 +238,6 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 	echo  Tron will now quit.
 	echo.
 	pause
-	cls
 	goto :eof
 )
 
@@ -274,8 +267,8 @@ if /i %HELP%==yes (
 	echo  Tron v%SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc -sdu
-	echo                -se -sfr -sk -sm -sp -spr -srr -ss -str -sw -udl -v -x^] ^| ^[-h^]
+	echo   Usage: %0% ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc
+	echo                -sdu -se -sk -sm -sp -spr -ss -str -sw -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
@@ -296,14 +289,12 @@ if /i %HELP%==yes (
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 	echo    -se  Skip Event Log backup and clear ^(don't clear Windows Event Logs^)
-	echo    -sfr Skip filesystem permissions reset ^(saves time if you're in a hurry^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
-	echo    -srr Skip registry permissions reset ^(saves time if you're in a hurry^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
-	echo    -str Skip Telemetry Removal ^(don't remove Windows user tracking, Win7 and up only^)
+	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
 	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
 	echo    -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
@@ -445,16 +436,14 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
 	echo    SKIP_DEBLOAT_UPDATE:    %SKIP_DEBLOAT_UPDATE%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
-	echo    SKIP_FILEPERMS_RESET:   %SKIP_FILEPERMS_RESET%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
 	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
-	echo    SKIP_REGPERMS_RESET:    %SKIP_REGPERMS_RESET%
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
-	echo	UPLOAD_DEBUG_LOGS:      %UPLOAD_DEBUG_LOGS%
+	echo    UPLOAD_DEBUG_LOGS:      %UPLOAD_DEBUG_LOGS%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
@@ -469,6 +458,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    TEMP:                   !TEMP!
+	echo    TARGET_METRO:           %TARGET_METRO%	
 	echo    TIME:                   %TIME%
 	echo    TIME_ZONE_NAME:         !TIME_ZONE_NAME!
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
@@ -500,7 +490,7 @@ if /i %AUTORUN%==yes goto execute_jobs
 :: Skip this check if we're in Safe Mode because Safe Mode command prompt always starts with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
-	fsutil dirty query %systemdrive% >NUL
+	fsutil dirty query %systemdrive% >NUL 2>&1
 	if /i not !ERRORLEVEL!==0 (
 		color cf
 		cls
@@ -528,8 +518,8 @@ if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
 	echo  * HEY^^! READ THE INSTRUCTIONS and understand what Tron does, because it  *
-	echo  * it does a lot of stuff that, while not harmful, can be annoying if    *
-	echo  * you weren't expecting it. e.g. wiping temp files, cookies, etc. So if *
+	echo  * does a lot of stuff that, while not harmful, can be annoying if you   *
+	echo  * weren't expecting it. e.g. wiping temp files, cookies, etc. So if     *
 	echo  * Tron does something you didn't expect and you didn't read the         *
 	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
@@ -625,7 +615,7 @@ echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
-echo  *  4 Repair:    Reg and File Perms reset/chkdsk/SFC/telemetry removal *
+echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
 echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
@@ -703,7 +693,7 @@ if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunO
 :: Check if autorun (-a) flag was used but we're NOT in Safe Mode. If true, reboot.
 if /i %AUTORUN%==yes (
 	if /i not "%SAFE_MODE%"=="yes" (
-		call functions\log.bat "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 10 seconds."
+		call functions\log.bat "%CUR_DATE% %TIME% ! Autorun flag used, but we're not in Safe Mode. Rebooting in 15 seconds."
 		if /i %DRY_RUN%==no (
 			bcdedit /set {default} safeboot network
 			shutdown -r -f -t 15
@@ -1152,16 +1142,15 @@ for %%i in (%*) do (
 	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
 	if /i %%i==-sdu set SKIP_DEBLOAT_UPDATE=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
-	if /i %%i==-sfr set SKIP_FILEPERMS_RESET=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
 	if /i %%i==-sp set SKIP_PATCHES=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
-	if /i %%i==-srr set SKIP_REGPERMS_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
-	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
+	REM disabled until I can find a better way to upload logs
+	REM	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
 	if /i %%i==-upm set UNICORN_POWER_MODE=on
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
