@@ -578,7 +578,23 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 4. **upload debug logs**: Upload 'tron.log' and the system GUID dump (list of all installed program GUIDs) to the Tron developer (vocatus). Please use this option if possible, log files are extremely helpful in developing Tron! NOTE: `tron.log` can contain personal information like names of files on the system, the computer name, user name, etc, so if you're concerned about this please look through a Tron log first to understand what will be sent. I don't care what files are on random systems on the Internet, but just something to be aware of
 
-## STAGE 8: Manual tools
+## STAGE 8: Custom Scripts
+
+*stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
+
+Tron supports executing custom scripts prior to ending.
+
+Custom Scripts work as follows:
+
+ - If there are any `.bat` files in the `stage_8_custom_scripts` folder, Tron will execute (via the `call` command) every single one sequentially by name. When they're done, it will finish cleanup and end the script as normal
+
+ - If there are no `.bat` files in the `stage_8_custom_scripts` folder, Stage 8 will be silently skipped.
+
+ - Supporting files may be placed in the folder, for example any files required by the custom scripts, but Tron will ignore anything that isn't a `.bat` file
+
+ - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them.
+
+## STAGE 9: Manual tools
 
 Tron does not run these automatically because most do not support command-line use, or are only useful in special cases.
 
