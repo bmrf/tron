@@ -983,6 +983,7 @@ set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 :::::::::::::::::::::::::::::
 :stage_8_custom_scripts
 :: Stamp current stage so we can resume if we get interrupted by a reboot
+echo stage_8_custom_scripts>tron_stage.txt
 if exist stage_8_custom_scripts\*.bat (
 	echo stage_8_custom_scripts>tron_stage.txt
 	call functions\log.bat "%CUR_DATE% %TIME% ! Custom scripts detected, executing now..."
