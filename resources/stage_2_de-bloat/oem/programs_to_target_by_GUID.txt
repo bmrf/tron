@@ -3,7 +3,7 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 / Change file to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
+:: Version:       1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 ::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
 ::                1.0.2 + Add additional entries
 ::                1.0.1 + Add REMOVE variable to shorten uninstall strings. Should help trim file size somewhat for automated updates against Github
