@@ -604,7 +604,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 *stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
-1. **Execute custom scripts**: Tron will execute any .bat files placed in this directory: \tron\resources\stage_8_custom_scripts. See "Executing 3rd-party Scripts" section above for more information
+1. **Execute custom scripts**: Tron will execute any `.bat` files placed in the `\tron\resources\stage_8_custom_scripts` directory. See [Executing Custom/3rd-party Scripts](#stage-8-custom-scripts) above for more information
 
 ## STAGE 9: Manual tools
 
