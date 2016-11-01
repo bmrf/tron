@@ -588,11 +588,13 @@ Custom Scripts work as follows:
 
  - If there are any `.bat` files in the `stage_8_custom_scripts` folder, Tron will execute (via the `call` command) every single one sequentially by name. When they're done, it will finish cleanup and end the script as normal
 
- - If there are no `.bat` files in the `stage_8_custom_scripts` folder, Stage 8 will be silently skipped.
+ - If there are no `.bat` files in the `stage_8_custom_scripts` folder, Stage 8 will be silently skipped
 
  - Supporting files may be placed in the folder, for example any files required by the custom scripts, but Tron will ignore anything that isn't a `.bat` file
+ 
+ - If you want to use supporting batch files but *don't* want Tron executing them, just use the `.cmd` file extension instead of `.bat` and Tron will ignore them
 
- - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them.
+ - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
 
 ## STAGE 9: Manual tools
 
