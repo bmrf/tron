@@ -4,8 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.7.0 - Remove -sfr and -srr switches along with all associated code and text due to removal of those jobs from Tron. They're rarely required and seem to hang the script on a lot of systems, so in the interest of stability they've been given the axe
-::                      - Temporarily disable use of the -udl switch, until I can find a better solution for submitting log files
+:: Version:       9.8.0 + Add Stage 8: Custom Scripts. Tron will execute any .bat files placed in stage_8_custom_scripts just prior to script completion
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -159,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.7.0
-set SCRIPT_DATE=2016-10-27
+set SCRIPT_VERSION=9.8.0
+set SCRIPT_DATE=2016-11-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -619,7 +618,7 @@ echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
 echo  *                                                                     *
-echo  * \tron\resources\stage_8_manual_tools contains other useful utils    *
+echo  * \tron\resources\stage_9_manual_tools contains other useful utils    *
 echo  ***********************************************************************
 :: So ugly
 echo  Current settings (run tron.bat -c to dump full config):
@@ -978,13 +977,36 @@ set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 
+
+:::::::::::::::::::::::::::::
+:: STAGE 8: Custom Scripts ::
+:::::::::::::::::::::::::::::
+:stage_8_custom_scripts
+:: Stamp current stage so we can resume if we get interrupted by a reboot
+if exist stage_8_custom_scripts\*.bat (
+	echo stage_8_custom_scripts>tron_stage.txt
+	call functions\log.bat "%CUR_DATE% %TIME% ! Custom scripts detected, executing now..."
+	call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts begin..."
+	if %DRY_RUN%==no for %%i in (stage_8_custom_scripts\*.bat) do (
+		call functions\log.bat "%CUR_DATE% %TIME%    Executing %%i..."
+		call %%i
+		call functions\log.bat "%CUR_DATE% %TIME%    %%i done."
+	)
+	call functions\log.bat "%CUR_DATE% %TIME%   Done."
+)
+
+
+
+::::::::::::::::::::::
+:: Post-run Cleanup ::
+::::::::::::::::::::::
 :: JOB: Shut down Caffeine which has kept the system awake during the Tron run
 stage_0_prep\caffeine\caffeine.exe -appexit
 
 
 :: Notify of Tron completion
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \tron\resources\stage_8_manual_tools if further action is required."
+call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \tron\resources\stage_9_manual_tools if further action is required."
 
 
 :: Check if auto-reboot was requested
