@@ -20,6 +20,8 @@ I got tired of running these utilities manually and decided to just script every
 
 6. [Changing Defaults](#change-defaults-advanced)
 
+7. [Executing 3rd-party Scripts](#executing-3rd-party-scripts)
+
 7. [Pack Integrity](#integrity)
 
 8. [License](#license)
@@ -320,6 +322,26 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 * There is no `-UPM` flag
 
 
+# EXECUTING 3RD-PARTY CUSTOM SCRIPTS:
+
+Tron supports executing custom scripts just prior to the end-screen.
+
+Place any batch files you want to execute just prior to Tron completion in this folder: `\tron\resources\stage_8_custom_scripts`
+
+Custom scripts work like so:
+
+ - If there are any `.bat` files in the `\stage_8_custom_scripts` folder, Tron will execute every single one sequentially by name. When they're done, it will finish cleanup and end the script as normal
+
+ - If there are no `.bat` files in the `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
+ 
+ - Supporting files may be placed in the folder, for example any files required by the custom scripts, but Tron will ignore anything that isn't a `.bat` file
+ 
+ - If you want to use supporting batch files but don't want Tron executing them, use the `.cmd` file extension instead of .bat and Tron will ignore them
+ 
+ - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
+
+
+
 # INTEGRITY
 
 In each release, the file `\tron\integrity_verification\checksums.txt` contains SHA-256 hashes of *every* file included in Tron, and is signed with [my PGP key](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) (`0x07d1490f82a211a2`, included). You can use it to verify package integrity.
@@ -582,19 +604,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 *stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
-Tron supports executing custom scripts prior to ending.
-
-Custom Scripts work as follows:
-
- - If there are any `.bat` files in the `stage_8_custom_scripts` folder, Tron will execute (via the `call` command) every single one sequentially by name. When they're done, it will finish cleanup and end the script as normal
-
- - If there are no `.bat` files in the `stage_8_custom_scripts` folder, Stage 8 will be silently skipped
-
- - Supporting files may be placed in the folder, for example any files required by the custom scripts, but Tron will ignore anything that isn't a `.bat` file
- 
- - If you want to use supporting batch files but *don't* want Tron executing them, just use the `.cmd` file extension instead of `.bat` and Tron will ignore them
-
- - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
+1. **Execute custom scripts**: Tron will execute any .bat files placed in this directory: \tron\resources\stage_8_custom_scripts. See "Executing 3rd-party Scripts" section above for more information
 
 ## STAGE 9: Manual tools
 
