@@ -1,4 +1,6 @@
-:: Purpose:       Batch file to uninstall a specific list of toolbars, BHO, Trojans by GUID. Called by Tron in Stage 2: De-bloat or when executed manually.
+:: Purpose:       List of specific list of toolbars and BHOs to targed by GUID. Called by Tron in Stage 2: De-bloat
+::                Add any GUID uninstall commands to this list to target them for removal
+::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.4 / Change file to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
