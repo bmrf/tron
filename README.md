@@ -20,7 +20,7 @@ I got tired of running these utilities manually and decided to just script every
 
 6. [Changing Defaults](#change-defaults-advanced)
 
-7. [Executing 3rd-party Scripts](#executing-3rd-party-scripts)
+7. [Executing Custom/3rd-party Scripts](#stage-8-custom-scripts)
 
 7. [Pack Integrity](#integrity)
 
