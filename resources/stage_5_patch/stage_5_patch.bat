@@ -163,7 +163,7 @@ title Tron v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no (
-		sc config wuauserv start= >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		sc config wuauserv start= demand>> "%LOGPATH%\%LOGFILE%" 2>NUL
 		net start wuauserv >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		wuauclt /detectnow /updatenow >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		ping 127.0.0.1 -n 15 >nul
