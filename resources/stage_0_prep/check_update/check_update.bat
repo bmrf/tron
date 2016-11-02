@@ -131,7 +131,7 @@ if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
 set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
 	cd ..
-	del /f /q tron.bat
+	del /f /q tron.bat >NUL 2>&1
 	%SystemDrive%
 	cd \
 	rmdir /s /q "%CWD%"
