@@ -9,7 +9,8 @@
 ::                1.0.1 - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18.
 ::                        Enables proper SSL encryption when checking Github's S2 debloat lists. Note that the wget commands will fail if not using at least v1.18 of wget
 ::                1.0.0 + Initial write
-@echo off
+::@echo off
+@echo on
 
 
 
@@ -63,8 +64,8 @@ if exist "%TEMP%\*to_target_by_*" del /f "%TEMP%\*to_target_by_*" 2>NUL
 for %%i in (metro_3rd_party_modern_apps_to_target_by_name,metro_Microsoft_modern_apps_to_target_by_name) do (
 	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/metro/%%i.ps1 -O "%TEMP%\%%i.ps1"
 )
-:: Fetch the repo Batch scripts
-for %%i in (programs_to_target_by_GUID,toolbars_BHOs_to_target_by_GUID) do (
+:: Fetch the repo text scripts
+for %%i in (programs_to_target_by_GUID,programs_to_target_by_name,toolbars_BHOs_to_target_by_GUID) do (
 	start /min stage_0_prep\check_update\wget %GITHUB_URL_BASE%/oem/%%i.txt -O "%TEMP%\%%i.txt"
 )
 
@@ -156,7 +157,7 @@ if /i %LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION% LSS %REPO_TOOLBARS_
 
 
 
-
+pause
 
 :: Clean up
 if exist "%TEMP%\*to_target_by_*" del /f "%TEMP%\*to_target_by_*" 2>NUL
