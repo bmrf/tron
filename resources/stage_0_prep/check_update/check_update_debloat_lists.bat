@@ -9,8 +9,7 @@
 ::                1.0.1 - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18.
 ::                        Enables proper SSL encryption when checking Github's S2 debloat lists. Note that the wget commands will fail if not using at least v1.18 of wget
 ::                1.0.0 + Initial write
-::@echo off
-@echo on
+@echo off
 
 
 
@@ -156,8 +155,6 @@ if /i %LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION% LSS %REPO_TOOLBARS_
 
 
 
-
-pause
 
 :: Clean up
 if exist "%TEMP%\*to_target_by_*" del /f "%TEMP%\*to_target_by_*" 2>NUL
