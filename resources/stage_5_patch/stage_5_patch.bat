@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
+:: Version:       1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
+::                1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
 ::                      / Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
 ::                1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
 ::                      + Implement support for -sdc switch (SKIP_DISM_CLEANUP)
@@ -16,8 +17,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.3
-set STAGE_5_SCRIPT_DATE=2016-03-13
+set STAGE_5_SCRIPT_VERSION=1.1.4
+set STAGE_5_SCRIPT_DATE=2016-11-02
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -162,7 +163,9 @@ title Tron v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no (
-		wuauclt /detectnow /updatenow
+		sc config wuauserv start= >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		net start wuauserv >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		wuauclt /detectnow /updatenow >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		ping 127.0.0.1 -n 15 >nul
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
