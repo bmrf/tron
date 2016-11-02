@@ -159,7 +159,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=9.8.0
-set SCRIPT_DATE=2016-11-xx
+set SCRIPT_DATE=2016-11-02
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later so don't change them here
@@ -1007,7 +1007,8 @@ stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) [DONE]
-call functions\log.bat "%CUR_DATE% %TIME%   DONE. Use \tron\resources\stage_9_manual_tools if further action is required."
+call functions\log.bat "%CUR_DATE% %TIME%   TRON RUN COMPLETE."
+call functions\log.bat "%CUR_DATE% %TIME%   Use \tron\resources\stage_9_manual_tools if further action is required."
 
 
 :: Check if auto-reboot was requested
@@ -1118,6 +1119,8 @@ if /i %AUTO_SHUTDOWN%==yes shutdown -f -t %AUTO_REBOOT_DELAY% -s
 :: De-rez self if requested
 set CWD=%CD%
 if /i %SELF_DESTRUCT%==yes (
+	cd ..
+	del /f /q tron.bat >NUL 2>&1
 	%SystemDrive%
 	cd \
 	rmdir /s /q "%CWD%"
