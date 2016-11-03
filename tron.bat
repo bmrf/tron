@@ -4,7 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.0 + Add Stage 8: Custom Scripts. Tron will execute any .bat files placed in stage_8_custom_scripts just prior to script completion
+:: Version:       9.8.1 / Move post-run cleanup to after Stage 8
+::                      / Re-enable debug log upload function (-udl). Thanks to /u/Rikairchy2
+::                      * Improve CLI_ARGUMENTS routine (used by Swithmail) and move into :parse_cmdline_args function
+::                9.8.0 + Add Stage 8: Custom Scripts. Tron will execute any .bat files placed in stage_8_custom_scripts just prior to script completion
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -107,7 +110,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_PATCHES           (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
-:: SKIP_TELEMETRY_REMOVAL (-str) = Set to yse to skip Telemetry Removal (just turn telemetry off instead of removing it)
+:: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip Telemetry Removal (just turn telemetry off instead of removing it)
 :: SKIP_WINDOWS_UPDATES   (-sw)  = Set to yes to skip Windows Updates
 :: UPLOAD_DEBUG_LOGS      (-udl) = Upload debug logs. Send tron.log and the system GUID dump to the Tron developer. Please use this if possible, logs are extremely helpful in Tron development
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
@@ -158,11 +161,11 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.8.0
-set SCRIPT_DATE=2016-11-02
+set SCRIPT_VERSION=9.8.1
+set SCRIPT_DATE=2016-11-03
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
-:: Initialize script-internal variables. Most of these get clobbered later so don't change them here
+:: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
 set ERRORS_DETECTED=no
 set WARNINGS_DETECTED=no
 set CONFIG_DUMP=no
@@ -456,7 +459,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    TEMP:                   !TEMP!
-	echo    TARGET_METRO:           %TARGET_METRO%	
+	echo    TARGET_METRO:           %TARGET_METRO%
 	echo    TIME:                   %TIME%
 	echo    TIME_ZONE_NAME:         !TIME_ZONE_NAME!
 	echo    PROCESSOR_ARCHITECTURE: %PROCESSOR_ARCHITECTURE%
@@ -559,7 +562,7 @@ if /i not "%SAFE_MODE%"=="yes" (
 	echo  Safe Mode, then if there are still issues, re-running in
 	echo  "regular" mode.
 	echo.
-	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n]
+	set /p CHOICE=  Reboot into "Safe Mode with Networking" now? [Y/n] 
 	if /i "!CHOICE!"=="y" (
 		echo.
 		echo  Rebooting system to Safe Mode in 7 seconds...
@@ -937,22 +940,6 @@ if /i %DRY_RUN%==no (
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
-title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Remove resume files]
-call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up..."
-	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
-	del /f /q tron_flags.txt >nul 2>&1
-	del /f /q tron_stage.txt >nul 2>&1
-	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
-	if %DRY_RUN%==no (
-		bcdedit /deletevalue {current} safeboot >nul 2>&1
-		bcdedit /deletevalue {default} safeboot >nul 2>&1
-		bcdedit /deletevalue safeboot >nul 2>&1
-	)
-	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
-
-
 :: JOB: Create post-run Restore Point
 title Tron v%SCRIPT_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
@@ -976,6 +963,8 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIN
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
+call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up complete."
+
 
 
 :::::::::::::::::::::::::::::
@@ -993,7 +982,7 @@ if exist stage_8_custom_scripts\*.bat (
 		call %%i
 		call functions\log.bat "%CUR_DATE% %TIME%    %%i done."
 	)
-	call functions\log.bat "%CUR_DATE% %TIME%   Done."
+	call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts complete."
 )
 
 
@@ -1001,6 +990,21 @@ if exist stage_8_custom_scripts\*.bat (
 ::::::::::::::::::::::
 :: Post-run Cleanup ::
 ::::::::::::::::::::::
+:: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
+call functions\log.bat "%CUR_DATE% %TIME%    Doing miscellaneous clean up..."
+	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
+	del /f /q tron_flags.txt >nul 2>&1
+	del /f /q tron_stage.txt >nul 2>&1
+	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
+	if %DRY_RUN%==no (
+		bcdedit /deletevalue {current} safeboot >nul 2>&1
+		bcdedit /deletevalue {default} safeboot >nul 2>&1
+		bcdedit /deletevalue safeboot >nul 2>&1
+	)
+	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
+
+
 :: JOB: Shut down Caffeine which has kept the system awake during the Tron run
 stage_0_prep\caffeine\caffeine.exe -appexit
 
@@ -1071,12 +1075,10 @@ call functions\log.bat "--------------------------------------------------------
 
 
 :: JOB: Send the email report if it was requested
-:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of Command-line switches that were used
-set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log.bat "%CUR_DATE% %TIME%   Done."
@@ -1088,14 +1090,11 @@ if /i %EMAIL_REPORT%==yes (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-
 :: JOB: Upload debug logs if requested
-:: The below line needed for param5 (/p5) argument sent to SwithMail. It populates a list of Command-line switches that were used
-set ARGUMENTS='%*'
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %UPLOAD_DEBUG_LOGS%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log.bat "%CUR_DATE% %TIME%   Done."
@@ -1148,6 +1147,9 @@ goto :eof
 
 :: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
+:: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty. 
+:: The CLI_ARGUMENTS variable is only used for the two Swithmail jobs (upload debug logs and email report) and nowhere else in Tron.
+if /i "%*"=="" (set CLI_ARGUMENTS=No CLI switches used) else (set CLI_ARGUMENTS=%*)
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
@@ -1174,11 +1176,10 @@ for %%i in (%*) do (
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
 	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
-	REM disabled until I can find a better way to upload logs
-	REM	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
+	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
 	if /i %%i==-upm set UNICORN_POWER_MODE=on
 	if /i %%i==-v set VERBOSE=yes
 	if /i %%i==-x set SELF_DESTRUCT=yes
 )
 goto :eof
-:eof
+:eof	
