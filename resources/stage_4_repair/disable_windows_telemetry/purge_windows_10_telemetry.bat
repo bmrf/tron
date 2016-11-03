@@ -422,7 +422,7 @@ call functions\log.bat "%CUR_DATE% %TIME%     Done."
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: OandOShutUp10 IMMUNIZATIONS
 call functions\log.bat "%CUR_DATE% %TIME%     Applying OandOShutUp10 protections, please wait..."
-	disable_windows_telemetry\OOShutUp10.exe disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
+	stage_4_repair\disable_windows_telemetry\OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 call functions\log.bat "%CUR_DATE% %TIME%     Done
 
 
@@ -686,7 +686,7 @@ if "%VERBOSE%"=="yes" (
 )
 
 :: Kill pending tracking reports
-if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
+if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ >NUL 2>&1
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
