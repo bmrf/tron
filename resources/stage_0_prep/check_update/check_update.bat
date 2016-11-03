@@ -1,7 +1,9 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 + Add missing :self_destruct code and fix sha256sums.txt character encoding. Thanks to /u/botopz
+:: Version:       1.0.5 ! Fix edge case where self-destruct code would be incorrectly triggered by re-using Tron's global SELF_DESTRUCT variable
+::                        check_update.bat now uses it's own internal "NUKE_OLD_VERSION" variable to check if we need to cleanup after an update. Thanks /u/wogmail
+::                1.0.4 + Add missing :self_destruct code and fix sha256sums.txt character encoding. Thanks to /u/botopz
 ::                1.0.3 - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
 ::                1.0.2 + Import REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables from tron.bat since they're only relevant here
 ::                1.0.1 ! Fix SSL encryption on update check and new version download. Previously we were skipping certificate checking due to cert errors. With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
@@ -13,14 +15,15 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.4
-set CHECK_UPDATE_VERSION=2016-11-01
+set CHECK_UPDATE_VERSION=1.0.5
+set CHECK_UPDATE_VERSION=2016-11-03
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
 set REPO_SCRIPT_DATE=0
 set REPO_SCRIPT_VERSION=0
+set NUKE_OLD_VERSION=no
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -107,7 +110,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo.
 			popd
 			pause
-			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set SELF_DESTRUCT=yes
+			echo. && ENDLOCAL DISABLEDELAYEDEXPANSION && set NUKE_OLD_VERSION=yes
 		) else (
 			color 0c
 			echo %TIME% ^^! ERROR: Download FAILED the integrity check. Recommend manually
@@ -127,9 +130,10 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 :: Clean up after ourselves
 if exist "%TEMP%\*sums.txt" del "%TEMP%\*sums.txt"
 
-:self_destruct
+
+:: Blow away the old version if we downloaded a new version
 set CWD=%CD%
-if /i %SELF_DESTRUCT%==yes (
+if /i %NUKE_OLD_VERSION%==yes (
 	cd ..
 	del /f /q tron.bat >NUL 2>&1
 	%SystemDrive%
