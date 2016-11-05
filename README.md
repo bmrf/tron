@@ -34,15 +34,17 @@ I got tired of running these utilities manually and decided to just script every
 
 0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. This isn't *required* but is strongly recommended.
 
-1. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, but in general it seems to have better results that way which is why it's generally recommended.
+1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in /r/TronScript. If you download the self-extracting `.exe`, run it, let it extract `tron.bat` and the `\resources` folder, then place them on the Desktop of the machine.
 
-2. Copy `tron.bat` and the `\resources` folder to the **Desktop** of target machine and run `tron.bat` as an **ADMINISTRATOR** 
+2. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, though it seems to have better results that way which is why it's generally recommended.
 
-3. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
+3. Place `tron.bat` and the `\resources` folder to the **Desktop** of target machine and run `tron.bat` as an **ADMINISTRATOR** 
+
+4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
 
   *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
-4. **Reboot**
+5. **Reboot**
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
@@ -55,8 +57,8 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se -sfr
-              -sk -sm -sp -spr -srr -ss -str -sw -udl -v -x] | [-h]
+    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se
+              -sk -sm -sp -spr -ss -str -sw -udl -v -x] | [-h]
 
     Optional flags (can be combined):
 
