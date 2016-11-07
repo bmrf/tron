@@ -3,7 +3,8 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
+:: Version:       1.0.5 + Add additional user-submitted GUIDs
+::                1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 ::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
 ::                1.0.2 + Add additional entries
 ::                1.0.1 + Add REMOVE variable to shorten uninstall strings. Should help trim file size somewhat for automated updates against Github
@@ -14,8 +15,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.4
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-01
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.5
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 
 
 
@@ -136,6 +137,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-01
 {39F6E2B4-CFE8-C30A-66E8-489651F0F34C}
 
 :: Adobe Refresh Manager
+{AC76BA86-0804-1033-1959-001824202044}
 {AC76BA86-0804-1033-1959-001824147215}
 {A2BCA9F1-566C-4805-97D1-7FDC93386723}
 {AC76BA86-0804-1033-1959-001802114130}
@@ -309,6 +311,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-01
 :: ASUS HiPost
 {04768366-F421-4BA5-8423-B84F644B5249}
 
+:: ASUS Instant Connect
+{89ECB85A-D933-4CEA-9116-5CBC9C2ED95B}
+
 :: ASUS Key Suite
 {71E2F4D6-191A-4A36-8A5C-8AFEA92729C9}
 
@@ -360,12 +365,12 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-01
 :: ASUS WinFlash
 {FFCF82EC-895F-4AC8-925E-3412FE25EF62}
 
-
 :: AVAST SecureLine
 {2CD3C92F-EDC5-4B02-9B0A-9C1D37C58EF5}
 
 :: AVG // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
+:: {A3E10CD4-8B55-404F-8AEE-9BB74B631E2C}
 
 :: AVG 2013 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {C09E8C9E-A243-430E-8811-7C7C36BD8A71}
@@ -389,6 +394,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-01
 
 :: AVG 2016 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
+:: {500609C4-E46C-4887-9466-A20EB783C57A}
 
 :: AVG PC TuneUp 2015
 {4AC74ED1-719B-46DA-8B8A-340FBF892291}
@@ -610,6 +616,7 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {45160C56-61F6-468D-A5B0-9FAE2C3E68D6}
 
 :: Catalyst Control Center Graphics Previews Common (various version numbers)
+{B4C6C106-D2A3-FA5A-BB5C-77548345FE9A}
 {9C0F4CBD-8543-96CC-46F1-75E57B1B22A6}
 {1502F427-F988-C5A0-DC84-BB03C560F72A}
 {190A9F41-85D0-CDB3-AA2D-A076D30953C9}
@@ -652,6 +659,28 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {431DD095-10B2-1390-AF45-22EBADE16D25}
 
 :: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info. Also listed as CCC Help
+{6D3B7E88-75F2-7B1C-40F4-40AD3E3A6E4F}
+{8AD846C5-9A19-ABFE-EEBB-3DA3C50F594A}
+{9A221580-D618-8206-61E5-E0FC3E5413D6}
+{281B6D72-055D-8A2E-B528-F1A6056FE277}
+{5AFD5353-0F97-35B0-A40F-DA7E2CD34B7E}
+{C40C5E44-88C8-495A-F26F-C4C40CCB0539}
+{D2812064-2433-28D1-0193-47C1942B1EEE}
+{A7CBAE74-6725-310A-3CE7-9AA5D688DD1C}
+{8AFCA9F6-6BEC-0BB6-50AD-96CB7D7ECCE1}
+{4FC71547-26A5-E2C1-C8FB-D18243745606}
+{5C711EE8-4210-6558-89AA-E8CFB58819BA}
+{CFAF3B19-2D90-0D8F-BCE8-AE1A59B4AC4A}
+{61A4C00A-1314-3561-4F47-7C7A459301CF}
+{2C5182EA-B9B3-6EEC-2DE7-EA0F7AB5E8A4}
+{7C7895FA-A2AD-2D98-5DEE-A5C4F91240A7}
+{1A10436B-7FBC-2C8A-FC90-EF709BFA62E1}
+{56D7FFBB-66A6-7E93-F2B5-CC72228B9FD1}
+{17F0BBEB-9A4D-0D30-E628-A390E5188C99}
+{86F6DEAC-F85D-239E-CAD8-83F695344575}
+{AA44351D-013F-732D-35EF-BE639E5D3D08}
+{439F87FE-FD11-DBFF-DCD9-156C329F0D80}
+{A472FE3F-F845-811C-E4A6-BC4B5452EAE9}
 {07326A3E-02B3-1078-25D7-B8666BA8FE15}
 {F77474EE-EB6C-C87B-88AF-3310C848E068}
 {CA95D57F-9FC3-0DD7-7C36-362F74D8C04E}
@@ -1473,11 +1502,13 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {5A6CB42D-AFB6-989E-E7EB-B3FF928C707F}
 
 :: Catalyst Control Center InstallProxy
+{59FC0580-5DA9-32F3-CAAF-B5B6F97F6496}
 {1267DA48-A6EA-3202-6C02-0AD5D3AAF360}
 {80680785-2EE1-053F-9CD3-4B2C904596EE}
 {9285EABA-D88C-4A8A-6E9D-5F55BF03E46F}
 
 :: ccc-utility64
+{BFF0A6DB-29C9-A97F-1F9E-FB0E80DAD68D}
 {E82EC5DF-28FD-C8F4-ED08-B88728158260}
 {4B3EF5E6-9A2C-0A1B-C61C-B1FD444B84BC}
 {E163A1D2-BAEA-6786-8E73-0ABD5A2D4C5B}
@@ -2348,6 +2379,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {216C7F38-4BBC-4E9A-8392-C9FA21B54386}
 
 :: HP Deskjet Series Help
+{2E25FCEB-EFCB-4696-AA01-D3CBAC721831}
 {F7632A9B-661E-4FD9-B1A4-3B86BC99847F}
 {97C1C98D-6AE5-4C71-9B00-EBBD9E014450}
 
@@ -2646,6 +2678,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: HP Setup
 {E2831862-F131-4327-B9CC-FA30F587EB6C}
 {210A03F5-B2ED-4947-B27E-516F50CBB292}
+
+:: HP SimplePass
+{314FAD12-F785-4471-BCE8-AB506642B9A1}
 
 :: HP Spot SmartCenter Launcher and associated apps
 {3D171340-B528-42E0-92E4-BDA7AEEF6F32}
