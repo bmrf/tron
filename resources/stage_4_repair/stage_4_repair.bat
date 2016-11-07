@@ -3,7 +3,10 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
+:: Version:       1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
+::                1.2.0 - Remove job "Reset Filesystem permissions" and associated files
+::                      - Remove job "Reset Registry permissions" and associated files
+::                1.1.1 + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
 ::                1.1.0 * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 ::                1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
 ::                      / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
@@ -26,8 +29,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.1.1
-set STAGE_4_SCRIPT_DATE=2016-10-03
+set STAGE_4_SCRIPT_VERSION=1.2.1
+set STAGE_4_SCRIPT_DATE=2016-11-07
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -94,30 +97,6 @@ if %WIN_VER_NUM% gtr 6.2 (
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Reset registry permissions
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset registry permissions]
-if /i %SKIP_REGPERMS_RESET%==no (
-	call functions\log.bat "%CUR_DATE% %TIME%    Resetting registry permissions..."
-	call functions\log.bat "%CUR_DATE% %TIME%    THIS CAN TAKE A LONG TIME - BE PATIENT"
-	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_registry_permissions.bat"
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
-) else (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_REGPERMS_RESET (-srr) set. Skipping registry and file permissions reset"
-)
-
-
-:: JOB: Reset filesystem permissions
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [Reset filesystem permissions]
-if /i %SKIP_FILEPERMS_RESET%==no (
-	call functions\log.bat "%CUR_DATE% %TIME%    Resetting filesystem permissions in the Windows system directory..."
-	call functions\log.bat "%CUR_DATE% %TIME%    THIS CAN TAKE A LONG TIME - BE PATIENT"
-	if /i %DRY_RUN%==no call "stage_4_repair\reset_registry_and_file_permissions\reset_filesystem_permissions.bat"
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
-) else (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_FILEPERMS_RESET (-sfr) set. Skipping registry and file permissions reset"
-)
-
-
 :: JOB: System File Checker (SFC) scan
 title Tron v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
@@ -147,7 +126,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove Microsoft telemetry (user tracking)
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [kill-telemetry]
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [disable MS telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
@@ -255,6 +234,17 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
+
+
+:: JOB: Disable NVIDIA telemetry (sigh...)
+title Tron v%SCRIPT_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
+call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Disable NVIDIA telemetry'..."
+if /i %DRY_RUN%==no (
+	schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Network repair (minor)
