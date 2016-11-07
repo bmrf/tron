@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3-TRON * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
+:: Version:       1.1.4-TRON + Add cleanup of Dr. Watson log files. Thanks to github:nemchik
+::                1.1.3-TRON * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.2-TRON / Change lines that delete Chrome Local Storage to only remove data for websites, not extensions. Thanks to github:kezxo
 ::                1.1.1-TRON + Add removal of "%WINDIR%\System32\tourstart.exe" on Windows XP. Thanks to /u/Perma_dude
 ::                1.1.0-TRON + Add clearing of hidden low-level IE history folder for "untrusted" browsing history "C:\Users\%username%\AppData\Local\Microsoft\Windows\History\low\*"
@@ -36,8 +37,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.3-TRON
-set SCRIPT_UPDATED=2016-09-11
+set SCRIPT_VERSION=1.1.4-TRON
+set SCRIPT_UPDATED=2016-11-07
 
 
 ::::::::::::::::::::::::::
