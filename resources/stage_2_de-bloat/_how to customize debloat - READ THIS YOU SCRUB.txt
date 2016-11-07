@@ -1,8 +1,8 @@
 There are five files in these sub-directories that determine what Tron targets for bloatware removal:
 
 1. \oem\programs_to_target_by_name.txt
-2. \oem\programs_to_target_by_GUID.bat
-3. \oem\toolbars_BHOs_to_target_by_GUID.bat
+2. \oem\programs_to_target_by_GUID.txt
+3. \oem\toolbars_BHOs_to_target_by_GUID.txt
 4. \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
 5. \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
 
@@ -26,17 +26,16 @@ So in this example,  Dell%%  would catch and attempt to remove both "Dell Gettin
 
 
 
-#  \oem\programs_to_target_by_GUID.bat
+#  \oem\programs_to_target_by_GUID.txt
 
- List specific GUIDs to target, one per line. This file is batch (not flat text). The reason it's
- batch instead of plain text is so you can put comments over each GUID describing what it is.
-
+ List specific GUIDs to target, one per line. This file is commented like batch but technically plain text.
 
 
-#  \oem\toolbars_BHOs_to_target_by_GUID.bat
 
- List specific GUIDs to target, one per line. This file is batch instead of plain text as well.
- It's separate from programs_to_target_by_GUID.bat just for organization; Tron executes both files
+#  \oem\toolbars_BHOs_to_target_by_GUID.txt
+
+ List specific GUIDs to target, one per line. TThis file is commented like batch but technically plain text.
+ It's separate from programs_to_target_by_GUID.txt just for organization; Tron executes both files
  the same way.
 
 
