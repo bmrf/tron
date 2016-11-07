@@ -90,15 +90,16 @@ if %WIN_VER_NUM% lss 6.0 (
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\http*.*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Dr Watson\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
 		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
-		del /F /S /Q "%%x\Recent\*" 2>NUL	
+		del /F /S /Q "%%x\Recent\*" 2>NUL
 		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
 	)
 ) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do ( 
+	for /D %%x in ("%SystemDrive%\Users\*") do (
 		del /F /S /Q "%%x\*.blf" 2>NUL
 		del /F /S /Q "%%x\*.regtrans-ms" 2>NUL
 		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
