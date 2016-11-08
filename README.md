@@ -361,7 +361,7 @@ Hope this is helpful to other PC techs,
 If you feel overly charitable, bitcoin donations are accepted at this address:
 
 ```
-1LSJ9qDzuHyRx6FfbUmHVSii4sLU3sx2TF
+1CcijZp5wjE6PukU4xejKKqvicxnYkZKxS
 ```
 
 
