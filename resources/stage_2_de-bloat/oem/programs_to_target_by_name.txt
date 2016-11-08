@@ -3,15 +3,16 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
+:: Version:       1.0.1 + Add SimilarDeals. Thanks /u/Padankadank
+::                1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 
 
 
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.0
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2016-11-01
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.1
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2016-11-08
 
 
 
@@ -188,6 +189,7 @@ Shop To Win
 ShopAtHome.com Toolbar
 Shopper%%
 Shopping%%
+SimilarDeals%%
 SmartWebPrinting%%
 Smiley Central%%
 SocialSafe
