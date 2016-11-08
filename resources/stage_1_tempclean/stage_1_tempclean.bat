@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
+:: Version:       1.1.4 ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
+::                1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
 ::                1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
 ::                1.1.0 + Add job to delete duplicate files found in the "Downloads" folder of each user
@@ -19,8 +20,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.3
-set STAGE_1_SCRIPT_DATE=2016-10-04
+set STAGE_1_SCRIPT_VERSION=1.1.4
+set STAGE_1_SCRIPT_DATE=2016-11-08
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -62,13 +63,18 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: CCleaner
-:: Fun little fact, if ccleaner64.exe is present and you attempt to call ccleaner.exe while on a 64-bit system, CCleaner will abort the launch request and launch ccleaner64.exe instead
+:: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
-	if %PROCESSOR_ARCHITECTURE%==x86 start "" /wait stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" /wait stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	:: Hardcoded delay to let CCleaner finish
+	ping 127.0.0.1 -n 180 > nul 2>&1
+	:: Now we kill it in case it's hung
+	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /im ccleaner.exe >nul 2>&1
+	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /im ccleaner64.exe >nul 2>&1
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
@@ -100,7 +106,11 @@ if %DRY_RUN%==no (
 	for /f "tokens=* delims= " %%i in ("%TEMP%\userlist.txt") do (
 		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
-			REM VERBOSE mode. For each location, 1st: Display files to be nuked. 2nd: Dump the same list to the log. 3rd: Do the actual deletion
+			REM VERBOSE mode
+			REM For each location:
+			REM   1. Display files to be nuked
+			REM   2. Dump the same list to the log
+			REM   3. Do the actual deletion
 			stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\Downloads\**"
 			stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
 			stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -110,9 +120,9 @@ if %DRY_RUN%==no (
 				stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\My Documents\Downloads\**" 2>NUL
 			)
 			if exist "%USERPROFILES%\%%i\Documents\Downloads" (
-				stage_1_tempclean\finddupe\finddupe.exe -z "%USERPROFILES%\%%i\Documents\Downloads\**"
-				stage_1_tempclean\finddupe\finddupe.exe -z -p "%USERPROFILES%\%%i\Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
-				stage_1_tempclean\finddupe\finddupe.exe -z -p -del "%USERPROFILES%\%%i\Documents\Downloads\**" 2>NUL
+				stage_1_tempclean\finddupe\finddupe.exe -z -rdonly "%USERPROFILES%\%%i\Documents\Downloads\**"
+				stage_1_tempclean\finddupe\finddupe.exe -z -rdonly -p "%USERPROFILES%\%%i\Documents\Downloads\**" >> "%LOGPATH%\%LOGFILE%" 2>&1
+				stage_1_tempclean\finddupe\finddupe.exe -z -rdonly -p -del "%USERPROFILES%\%%i\Documents\Downloads\**" 2>NUL
 			)
 		) else (
 			REM Non-VERBOSE mode. Simply perform deletion and pipe the output to the log
