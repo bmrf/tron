@@ -72,7 +72,7 @@ for %%i in (programs_to_target_by_GUID,programs_to_target_by_name,toolbars_BHOs_
 :wget_check_loop
 tasklist | %FIND% /i "wget" >nul
 if not errorlevel 1 (
-    ping 127.0.0.1 -n 4 >nul
+    ping 127.0.0.1 -n 3 >nul
     goto :wget_check_loop
 )
 
@@ -109,7 +109,7 @@ if /i %LOCAL_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION% LSS %
 	call functions\log.bat " ! Splicing in updated v%REPO_METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION%list and renaming old list with .backup extension."
 	move /y "stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1" "stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1.backup" >NUL
 	move /y "%TEMP%\metro_3rd_party_modern_apps_to_target_by_name.ps1" "stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1" >NUL
-	ping 127.0.0.1 -n 4 >nul
+	ping 127.0.0.1 -n 5 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -119,7 +119,7 @@ if /i %LOCAL_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION% LSS %
 	call functions\log.bat " ! Splicing in updated v%REPO_METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION%list and renaming old list with .backup extension."
 	move /y "stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1" "stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1.backup" >NUL
 	move /y "%TEMP%\metro_Microsoft_modern_apps_to_target_by_name.ps1" "stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1" >NUL
-	ping 127.0.0.1 -n 4 >nul
+	ping 127.0.0.1 -n 5 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -129,7 +129,7 @@ if /i %LOCAL_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION% LSS %REPO_PROGRAMS_TO_TA
 	call functions\log.bat " ! Splicing in updated v%REPO_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION%list and renaming old list with .backup extension."
 	move /y "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt.backup" >NUL
 	move /y "%TEMP%\programs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt" >NUL
-	ping 127.0.0.1 -n 4 >nul
+	ping 127.0.0.1 -n 5 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -139,7 +139,7 @@ if /i %LOCAL_PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION% LSS %REPO_PROGRAMS_TO_TA
 	call functions\log.bat " ! Splicing in updated v%REPO_PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION%list and renaming old list with .backup extension."
 	move /y "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt.backup" >NUL
 	move /y "%TEMP%\programs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\programs_to_target_by_GUID.txt" >NUL
-	ping 127.0.0.1 -n 4 >nul
+	ping 127.0.0.1 -n 5 >nul
 	call functions\log.bat "   Done."
 )
 
@@ -149,7 +149,7 @@ if /i %LOCAL_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION% LSS %REPO_TOOLBARS_
 	call functions\log.bat " ! Splicing in updated v%REPO_TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION%list and renaming old list with .backup extension."
 	move /y "stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt.backup" >NUL
 	move /y "%TEMP%\toolbars_BHOs_to_target_by_GUID.txt" "stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt" >NUL
-	ping 127.0.0.1 -n 4 >nul
+	ping 127.0.0.1 -n 5 >nul
 	call functions\log.bat "   Done."
 )
 
