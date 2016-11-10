@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 ! ccleaner: Add /f (force) switch to ccleaner task kill command
+:: Version:       1.1.5 ! ccleaner: Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin for reporting
 ::                1.1.4 ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
 ::                1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
 ::                1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
