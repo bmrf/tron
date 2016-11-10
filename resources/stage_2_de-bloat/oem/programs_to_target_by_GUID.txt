@@ -3,7 +3,8 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 + Add additional user-submitted GUIDs
+:: Version:       1.0.6 + Add additional user-submitted GUIDs
+::                1.0.5 + Add additional user-submitted GUIDs
 ::                1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 ::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
 ::                1.0.2 + Add additional entries
@@ -15,8 +16,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.5
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.6
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-10
 
 
 
@@ -281,6 +282,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 :: ASUS Ai Charger
 {7FB64E72-9B0E-4460-A821-040C341E414A}
 
+:: ASUS AI Recovery
+{D39F0676-163E-4595-A917-E28F99BBD4D2}
+
 :: ASUS AI Suite II
 {34D3688E-A737-44C5-9E2A-FF73618728E1}
 
@@ -298,6 +302,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 
 :: ASUS eManual
 {0C84E634-EB68-4A54-B21E-A05EC87A4CC5}
+
+:: ASUS FaceLogon
+{64452561-169F-4A36-A2FF-B5E118EC65F5}
 
 :: ASUS Fast Boot by ASUS
 {13F4A7F3-EABC-4261-AF6B-1317777F0755}
@@ -341,6 +348,15 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 :: ASUS MX Suite MAGIX Media Suite
 {CFA9C800-9B0B-42E3-92E7-08B5AF2E192E}
 
+:: ASUS PWR Option
+{B800CE44-D206-475D-A6E2-5B3808E2D60A}
+
+:: ASUS Power4Gear Hybrid
+{9B6239BF-4E85-4590-8D72-51E30DB1A9AA}
+
+:: ASUS Secure Delete
+{761C6783-D3BC-48AB-8E7C-61CE918A8436}
+
 :: ASUS Security Protect Manager
 {DF21F1DB-80C6-11D3-9483-B03D0EC10000}
 
@@ -350,6 +366,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 :: ASUS Splendid Video Enhancement Technology
 {0969AF05-4FF6-4C00-9406-43599238DE0D}
 
+:: ASUS Tutor
+{58172D66-2F69-4215-9AEC-ED8196023736}
+
 :: ASUS USB Charger Plus
 {A859E3E5-C62F-4BFA-AF1D-2B95E03166AF}
 
@@ -358,6 +377,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 
 :: ASUS Virtual Camera
 {EC8BD21F-0CA0-4BBF-97D9-4A52B30041A1}
+
+:: ASUS Virtual Touch
+{938CFBD4-0652-49E5-BB8B-153948865941}
 
 :: ASUS Windows 7 Starter Helper
 {D381FF29-7CFB-4D4E-B92A-C4EDDC696614}
@@ -406,6 +428,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-07
 :: Avira Launcher
 {EA226E08-91E7-4F05-B61E-3EDBBBEB15BB}
 {315dd168-0794-4cf1-8355-f195cde642fc}
+{B53443D3-4744-4C9C-95A9-7B3DF727DAE6}
 
 :: AzureBay Screen Saver
 {958A793F-F1D2-4A90-B6A5-C52E2D74E8FE}
@@ -2161,6 +2184,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 {A4DE5CD7-96D6-3979-8C39-E864396AFFC0}
 {5BAA8884-F661-464B-B5B2-5C6C632BFC21}
+{60EC980A-BDA2-4CB6-A427-B07A5498B4CA}
 
 :: Help and Support Customization
 {90D55A3F-1D99-4C94-A77E-46DC14F0BF08}
