@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
+:: Version:       1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
+::                1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
 ::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
 ::                           ! Fix broken path on Spybot call. Thanks to /u/Seascan
 ::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file 
@@ -31,8 +32,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.7-TRON
-set SCRIPT_UPDATED=2016-10-02
+set SCRIPT_VERSION=1.1.8-TRON
+set SCRIPT_UPDATED=2016-11-10
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -377,6 +378,13 @@ if "%VERBOSE%"=="yes" (
 	
 	REM "WAP Push Message Routing Service"
 	%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f
+	
+	REM Disable Cortana globally
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f
+
+	REM Disable "Search online and include web results"
+	%windir%\system32\reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f
 ) else (
 	REM GPO options to disable telemetry
 	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -405,6 +413,14 @@ if "%VERBOSE%"=="yes" (
 	
 	REM "WAP Push Message Routing Service"
 	%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
+	REM Disable Cortana globally
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+	REM Disable "Search online and include web results"
+	%windir%\system32\reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
 )
 
 call functions\log.bat "%CUR_DATE% %TIME%     Done."
