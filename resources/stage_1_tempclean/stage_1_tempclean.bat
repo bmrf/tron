@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
+:: Version:       1.1.5 ! ccleaner: Add /f (force) switch to ccleaner task kill command
+::                1.1.4 ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
 ::                1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
 ::                1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
@@ -20,8 +21,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.4
-set STAGE_1_SCRIPT_DATE=2016-11-08
+set STAGE_1_SCRIPT_VERSION=1.1.5
+set STAGE_1_SCRIPT_DATE=2016-11-10
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -73,8 +74,8 @@ if /i %DRY_RUN%==no (
 	:: Hardcoded delay to let CCleaner finish
 	ping 127.0.0.1 -n 180 > nul 2>&1
 	:: Now we kill it in case it's hung
-	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /im ccleaner.exe >nul 2>&1
-	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /im ccleaner64.exe >nul 2>&1
+	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
+	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
 )
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
