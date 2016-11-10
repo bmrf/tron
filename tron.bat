@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_export.txt in debug log upload, since this file is more useful for debugging
+:: Version:       9.8.3 . No change, increment version number only
+::                9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_export.txt in debug log upload, since this file is more useful for debugging
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -158,8 +159,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.8.2
-set SCRIPT_DATE=2016-11-09
+set SCRIPT_VERSION=9.8.3
+set SCRIPT_DATE=2016-11-10
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
