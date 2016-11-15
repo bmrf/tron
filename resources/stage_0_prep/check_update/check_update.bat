@@ -101,7 +101,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILES%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
+		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILE%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
 		if !ERRORLEVEL!==0 (
 			color 2f
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
