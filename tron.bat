@@ -4,8 +4,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.3 . No change, increment version number only
-::                9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_export.txt in debug log upload, since this file is more useful for debugging
+:: Version:       9.8.4 * Display contents of WARNINGS_DETECTED or ERRORS_DETECTED if they are tripped, so we can quickly see what the reason was
+::                      / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
+::                9.8.3 . No change, increment version number only
+::                9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt in debug log upload, since this file is more useful for debugging
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -159,8 +161,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.8.3
-set SCRIPT_DATE=2016-11-10
+set SCRIPT_VERSION=9.8.4
+set SCRIPT_DATE=2016-11-xx
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
@@ -1044,12 +1046,12 @@ color 2f
 :: Were warnings detected?
 if /i not %WARNINGS_DETECTED%==no (
 	color e0
-	call functions\log.bat "%CUR_DATE% %TIME% ! WARNINGS were detected. Recommend reviewing the log file."
+	call functions\log.bat "%CUR_DATE% %TIME% ! WARNINGS were detected (%WARNINGS_DETECTED%). Recommend reviewing the log file."
 )
 :: Were errors detected?
 if /i not %ERRORS_DETECTED%==no (
 	color cf
-	call functions\log.bat "%CUR_DATE% %TIME% ! ERRORS were detected. Review the log file."
+	call functions\log.bat "%CUR_DATE% %TIME% ! ERRORS were detected (%ERRORS_DETECTED%). Review the log file."
 )
 
 :: Display and log the job summary
@@ -1092,7 +1094,7 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %UPLOAD_DEBUG_LOGS%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_export.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" /p1 "Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log.bat "%CUR_DATE% %TIME%   Done."
