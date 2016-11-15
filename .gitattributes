@@ -8,6 +8,9 @@
 *.sites eol=crlf
 *.config eol=crlf
 *.h eol=crlf
+*.reg eol=crlf
+*.cfg eol=crlf
+*.ini eol=crlf
 
 
 # Denote all files that are truly binary and should not be modified.
