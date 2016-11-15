@@ -1,9 +1,10 @@
-:: Purpose:       Sub-script containing all commands for Tron's Stage 2: De-bloat stage. Called by tron.bat and returns control when finished
+:: Purpose:       Sub-script containing all commands for Tron's Stage 2: De-bloat. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot. 
+:: Version:       1.2.1 / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
+::                1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot. 
 ::                        If we detect entries in this key, we export them to RAW_LOGS and then delete them before continuing on. This should allow Tron to continue removing programs without waiting for a reboot
 ::                1.1.7 * Significantly improve robustness of OneDrive checks. OneDrive now only removed if system is Win10, folder exists in default location, and is empty. Thanks to /u/ranger_dood
 ::                1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
@@ -28,8 +29,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.0
-set STAGE_2_SCRIPT_DATE=2016-11-01
+set STAGE_2_SCRIPT_VERSION=1.2.1
+set STAGE_2_SCRIPT_DATE=2016-11-15
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -86,12 +87,12 @@ if /i %DRY_RUN%==no (
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
 			)
 		)
@@ -101,7 +102,7 @@ if /i %DRY_RUN%==no (
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
-:: JOB: Remove crapware programs, phase 3: unwanted toolbars and BHOs by GUID
+:: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt"
@@ -122,12 +123,12 @@ if /i %DRY_RUN%==no (
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
 			)
 		)
@@ -161,12 +162,12 @@ if /i %DRY_RUN%==no (
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_export.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_export.txt"
+				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
 			)
 		)
