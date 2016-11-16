@@ -3,7 +3,8 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 + Add additional user-submitted GUIDs
+:: Version:       1.0.7 + Add additional user-submitted GUIDs
+::                1.0.6 + Add additional user-submitted GUIDs
 ::                1.0.5 + Add additional user-submitted GUIDs
 ::                1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 ::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
@@ -16,8 +17,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.6
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-10
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.7
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-15
 
 
 
@@ -96,6 +97,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-10
 {12A718F2-2357-4D41-9E1F-18583A4745F7}
 {978724F6-1863-4DD5-9E66-FB77F5AB5613}
 
+:: Acer System Information
+{72199E33-4F2A-4B7F-8E25-95DDDD50A678}
+
 :: Acer Video Player
 {B6846F20-4821-11E3-8F96-0800200C9A66}
 
@@ -148,6 +152,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-10
 {AC76BA86-0804-1033-1959-001824157129}
 {AC76BA86-0804-1033-1959-001824161310}
 {AC76BA86-0804-1033-1959-001824191728}
+{AC76BA86-0804-1033-1959-001824205020}
 
 :: Adobe Setup (various versions)
 {11A955CD-4398-405A-886D-E464C3618FBF}
@@ -3159,6 +3164,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components
+{085F8D6D-D06F-443B-A872-5B88C6391203}
+{D5EA481B-D855-4A0E-9E9A-21AB4F5A3C49}
+{D5EA481B-D855-4A0E-9E9A-21AB4F5A3C49}
 {69AAE674-929D-4A17-B108-623E8FDD6EE7}
 {6C9B8590-9D31-4802-92A2-0DDFE9708C4C}
 {B4FF8C31-F307-4873-A244-BBC0233CAD4B}
