@@ -121,7 +121,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -h   Display help text
 
 
-\* There is no -UPM flag
+\* There is probably no -UPM flag
 
 
 # SCRIPT INTERRUPTION
