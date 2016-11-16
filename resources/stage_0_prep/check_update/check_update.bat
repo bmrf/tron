@@ -1,7 +1,8 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 ! Fix edge case where self-destruct code would be incorrectly triggered by re-using Tron's global SELF_DESTRUCT variable
+:: Version:       1.0.6 ! Fix bug with missing username in %USERPROFILES% statement. Thanks to /u/TyanColte
+::                1.0.5 ! Fix edge case where self-destruct code would be incorrectly triggered by re-using Tron's global SELF_DESTRUCT variable
 ::                        check_update.bat now uses its own internal "NUKE_OLD_VERSION" variable to check if we need to cleanup after an update. Thanks /u/wogmail
 ::                1.0.4 + Add missing :self_destruct code and fix sha256sums.txt character encoding. Thanks to /u/botopz
 ::                1.0.3 - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
@@ -15,8 +16,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.5
-set CHECK_UPDATE_VERSION=2016-11-03
+set CHECK_UPDATE_VERSION=1.0.6
+set CHECK_UPDATE_VERSION=2016-11-16
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
@@ -95,13 +96,13 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Downloading new version to the desktop, please wait...
 		echo.
-		stage_0_prep\check_update\wget.exe "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILES%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+		stage_0_prep\check_update\wget.exe "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 		echo.
 		echo %TIME%   Download finished.
 		echo.
 		echo %TIME%   Verifying SHA256 pack integrity, please wait...
 		echo.
-		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILES%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
+		stage_0_prep\check_update\hashdeep.exe -s -e -b -v -a -k "%TEMP%\sha256sums.txt" "%USERPROFILES%\%USERNAME%\Desktop\Tron*.exe" | %FIND% /i "Files matched: 1"
 		if !ERRORLEVEL!==0 (
 			color 2f
 			echo %TIME%   SHA256 pack integrity verified. The new version is on your desktop.
@@ -119,7 +120,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo.
 			pause
 			REM Clean up after ourselves
-			del /f /q "%USERPROFILES%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+			del /f /q "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
 			del /f /q "%TEMP%\sha256sums.txt"
 			exit /b 1
 		)
