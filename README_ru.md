@@ -477,7 +477,7 @@ Tron и любые используемые им скрипты и `.reg` фай
 
 	```
 	rmdir /s /q %windir%\softwaredistribution\download
-
+	```
 
 ## STAGE 2: De-bloat (СТАДИЯ 2:Удаление раздутого ПО)
 
