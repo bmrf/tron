@@ -13,8 +13,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.1"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-09-03"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.2"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-11-29"
 
 
 
@@ -119,3 +119,6 @@ remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*sMedioforHP.sMedio
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*toolbar*"}).PackageFullName
 remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*zuukaInc.iStoryTimeLibrary*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*6Wunderkinder.Wunderlist*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*2FE3CB00.PicsArt-PhotoStudio*"}).PackageFullName
+remove-appxpackage $(Get-AppxPackage | where {$_.name -like "*Microsoft.NetworkSpeedTest*"}).PackageFullName
