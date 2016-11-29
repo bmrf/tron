@@ -3,9 +3,9 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 + Add additional user-submitted GUIDs
-::                1.0.6 + Add additional user-submitted GUIDs
-::                1.0.5 + Add additional user-submitted GUIDs
+:: Version:       1.0.9 + Add additional user-submitted GUIDs
+::                1.0.8 + Add additional user-submitted GUIDs
+::                1.0.7 + Add additional user-submitted GUIDs
 ::                1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 ::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
 ::                1.0.2 + Add additional entries
@@ -17,8 +17,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.7
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-15
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-29
 
 
 
@@ -56,6 +56,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-15
 
 :: Acer Configuration Manager
 {9A75E3DC-7F6E-47BD-8971-53CF527B96D6}
+
+:: Acer Crystal Eye webcam
+{51F026FA-5146-4232-A8BA-1364740BD053}
 
 :: Acer Device Fast-lane
 {3F62D2FD-13C1-49A2-8B5D-47623D9460D7}
@@ -206,6 +209,29 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-15
 {7004684C-7DB9-4D49-8CFE-B78B006C53FC}
 {11087D24-567D-7D88-69C6-D7A08B5F4C47}
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
+
+:: AMD Catalyst Control Center Next Localization, various versions
+{78787E00-3012-E571-6EAD-2D2E2CBBE1C1}
+{B62E1B20-86BF-7AF0-E6A7-958E9507A407}
+{ED8DB351-26C2-A05D-FBC5-B1B4828E0CA4}
+{DBCD58C2-9BB8-7604-9A98-D36775CBB1E8}
+{E8E67163-CFCC-474C-717C-49DDED4B8017}
+{06CA14A6-5205-845B-4354-496EBB36DA8E}
+{65B384E6-94BF-5BAE-F980-1992E79786EA}
+{50EA3AC7-3189-F330-2B78-00A53AEC0C3A}
+{2A855AD7-0466-8C80-35E5-14C97CCF90E0}
+{985547F7-3C77-C604-0F7C-F8C77FC18E38}
+{2377BD19-2F3B-B69C-8F89-7EBBCAEE2D19}
+{0902C95A-FD19-831A-2E15-758E9E1E0974}
+{C7FB5BAA-185C-DBEF-64D3-EF2C901FBD73}
+{90D8CD9B-3571-B4D0-569B-A89E3A59E096}
+{440E1BEC-9F24-C274-1D03-0D7B12CF9662}
+{9EAD834D-19EC-336A-7605-DFB19496C1E6}
+{A09A527D-0E4C-52A2-D75D-77F23BE6A632}
+{020D31CD-29CD-87CF-5FCD-C702F892B053}
+{6F07375E-9F69-822D-BF1F-B4AAE24E4DBD}
+{86ECF8FE-2832-80B5-6F1C-B2FF87AA73C3}
+{1E35D1AF-4EAE-DAF2-D8A4-73BFBE1BAC9B}
 
 :: AMD Drag and Drop Transcoding (various versions)
 {0336B81E-E745-7FE9-74D5-157EBCDF71E3}
@@ -434,6 +460,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-15
 {EA226E08-91E7-4F05-B61E-3EDBBBEB15BB}
 {315dd168-0794-4cf1-8355-f195cde642fc}
 {B53443D3-4744-4C9C-95A9-7B3DF727DAE6}
+{8CC8333A-AC85-4E68-88BB-4E3452CE4981}
 
 :: AzureBay Screen Saver
 {958A793F-F1D2-4A90-B6A5-C52E2D74E8FE}
@@ -1636,6 +1663,9 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 :: Customer Support (?)
 {B33D89E4-FB43-6749-447E-2E469AC9EB5B}
 
+:: CyberLink ArcadeMovie
+{B906C11A-D193-4143-9FA7-E2EE8A5A8F21}
+
 :: CyberLink Blu-ray Disc Suite; CyberLink MediaEspresso shares this GUID
 {1FBF6C24-C1FD-4101-A42B-0C564F9E8E79}
 
@@ -1644,6 +1674,9 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 
 :: CyberLink Media Suite 10
 {8DE5BF1E-6857-47C9-84FC-3DADF459493F}
+
+:: CyberLink MediaEspresso
+{4968622A-4D3F-489E-9ACE-5FEC4CC0BDE3}
 
 :: CyberLink MediaShow, MediaSmart DVD/Photo/Video
 {E3739848-5329-48E3-8D28-5BBD6E8BE384}
@@ -3184,6 +3217,8 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {65153EA5-8B6E-43B6-857B-C6E4FC25798A}
 {5D1BFBB8-4923-4388-9559-C86F5D9E2740}
 {B434599E-E35F-4612-9803-A2FB7A8E066B}
+{846DE3C3-F079-4E2D-AE25-74D2B62B1D9F}
+{7EEC6C54-5441-472A-8792-A5185CC17DF1}
 
 :: Intel ME UninstallLegacy
 {013FAB2E-017D-4330-8179-B5FE02E7F81C}
@@ -3678,6 +3713,7 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 {90160000-008C-0C0A-0000-0000000FF1CE}
 {90160000-008C-040C-0000-0000000FF1CE}
 {90160000-008C-0414-0000-0000000FF1CE}
+{90160000-00DD-0000-1000-0000000FF1CE}
 
 :: Microsoft Office 2003 Web Components
 {90120000-00A4-0409-0000-0000000FF1CE}
@@ -3752,6 +3788,10 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 :: My Way Search Assistant
 {05F1B866-2372-4E82-9AA8-C64FB11CEF8B}
 
+:: MyWinLocker Suite
+{738BF5C3-AF7B-4BB0-B7EF-E505EFC756BE}
+{0D7CD0D9-4A88-4A63-8F91-3F4E8F371768}
+
 :: Nero: various Help entries
 {EF0D1292-8FC1-41BE-9740-DBC134F66415}
 {5B79E730-D897-4B8F-A1AD-7BB2D1F22B96}
@@ -3824,6 +3864,9 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 :: Office 2013 C2R Suite
 {90150000-0138-0409-0000-0000000FF1CE}
 if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi"
+
+:: ooVoo Teoma Search App
+{4F564F2D-5447-006A-76A7-A758B70C2D01}
 
 :: opensource
 {3677D4D8-E5E0-49FC-B86E-06541CF00BBE}
@@ -4025,6 +4068,8 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {746AB259-6474-4111-8966-1C62F9A6E063}
 {FC7386E4-B71D-42AA-B6B3-0925D0361069}
 {5AD12E7A-D739-4451-9BD1-3610EC56D8F5}
+{853C1E7A-1B03-49C6-A05B-1FE8E5E5876D}
+{0A020304-81C1-4E3E-8799-59926E875385}
 
 :: Software Updater (various versions)
 {B307472F-7BD9-4040-9255-CE6D6A1196A3}
