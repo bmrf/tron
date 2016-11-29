@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.1 + Add 46928bounde.EclipseManager and D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
+Version:       1.0.2 + Add 6Wunderkinder.Wunderlist, 2FE3CB00.PicsArt-PhotoStudio, Microsoft.NetworkSpeedTest, thanks to github:Bromeego
+               1.0.1 + Add 46928bounde.EclipseManager, D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 #>
 $ErrorActionPreference = "SilentlyContinue"
