@@ -3,13 +3,8 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 + Add additional user-submitted GUIDs
-::                1.0.8 + Add additional user-submitted GUIDs
-::                1.0.7 + Add additional user-submitted GUIDs
-::                1.0.4 / Convert list to non-batch format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
-::                1.0.3 - Remove ASUS Smart Gesture as it contains touchpad drivers. Thanks to /u/NRMusicProject for reporting
-::                1.0.2 + Add additional entries
-::                1.0.1 + Add REMOVE variable to shorten uninstall strings. Should help trim file size somewhat for automated updates against Github
+:: Version:       1.1.0 + Add additional user-submitted GUIDs
+::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
@@ -17,8 +12,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.9
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-11-29
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.0
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-12-01
 
 
 
@@ -487,6 +482,7 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {7D095455-D971-4D4C-9EFD-9AF6A6584F3A}
 
 :: Blio (eBook reader app)
+{504CC891-B140-4E1B-860B-5E4C1DFBA9E3}
 {741006D1-7B2B-4E33-B2B0-831F282EEF64}
 {400182B4-CA55-46A9-9D88-F8413DCFB36D}
 {9368DDD5-CE7F-4BD7-A83A-F00FABE338EC}
@@ -2099,6 +2095,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {A8B88634-7F90-402F-B66A-86429755F6A5}
 
 :: eBay Worldwide
+{E0B19DF7-B1C7-4937-82C4-0E4B1E346965}
 {8549CF08-D327-4B73-9036-75564C0BBCFC}
 {91589413-6675-4C27-8AFC-EFB9103B90A5}
 {3DC26EA7-03E3-4353-9424-EEB7A34A7504}
@@ -2486,6 +2483,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {29E6A126-BB06-41CF-B12D-E6A56261328D}
 
 :: HP Documentation
+{2385DA7C-F545-4E66-A968-D464F0519425}
 {73A33079-D1A0-4469-8903-C4A48B4975E2}
 {C8D60CF4-BE7A-487E-BD36-535111BDB0FE}
 {06600E94-1C34-40E2-AB09-D30AECF78172}
@@ -2751,6 +2749,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {5BFFDDEB-AFD7-499F-BB13-7A6EAD927CDA}
 
 :: HP Software Framework
+{97174E88-52F9-445A-A28E-704A45332D19}
 {1DFA0C99-6E2E-46F4-B242-51C7CF41DDE5}
 {835B275B-F29B-464B-BD4B-097FD55FAB0A}
 
@@ -2822,6 +2821,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {6E4EE9B5-F69D-4455-B430-40FA5F0DC988}
 
 :: HP Product Improvement Study (various versions)
+{0E8EC6E3-3AD8-4AB0-8EB3-AA835A20EDD7}
 {E3D43596-7E26-479E-B718-77CB3D9270F6}
 {A90F92B7-3C3F-4AEF-B281-31DD17BB73CA}
 {37839D69-6DA4-4125-B33A-30DE86345DF4}
@@ -2843,6 +2843,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {42DBA167-C25D-49CE-BBAF-DEC25E737DA8}
 
 :: HP Power Manager
+{AF306BD8-F9D1-4627-89B9-246E59074A05}
 {8704FEEF-A6A8-4E7E-B124-BD6122C66E2C}
 {E35A3B13-78CD-4967-8AC8-AA9FDA693EDE}
 {D8BCE5B9-67CF-4F3F-93AE-3ACC754C72EB}
@@ -2988,6 +2989,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {F4D304D9-7647-4253-957E-44286B8631F4}
 
 :: HP Solution Center
+{F6A11738-3EE4-4573-AEA5-6CD5D491C167}
 {BC5DD87B-0143-4D14-AAE6-97109614DC6B}
 {A36CD345-625C-4d6c-B3E2-76E1248CB451}
 
@@ -3168,6 +3170,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {FBBF532A-47AC-457d-AC06-0D3163D8911E}
 
 :: HP Wireless Assistant // Wireless Button Driver // Wireless Hotspot
+{13DCC2C7-454D-42F0-A892-E0E9A5DE4E67}
 {9AB1B6EC-AEA4-4D78-ADDB-0291BF7230F4}
 {547607B0-3294-4ECA-8F5E-921404676CBB}
 {13133E99-B0D5-4143-B832-AAD55C62A41C}
@@ -3637,6 +3640,7 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 {b145ec69-66f5-11d8-9d75-000129760d75}
 
 :: Marketsplash Shortcuts
+{16FCDD97-AE09-476B-88CD-261D852BD34C}
 {FB0C267C-8B4F-4867-8161-A6A3B66D42C1}
 
 :: Maxx Audio Installer
@@ -3788,7 +3792,10 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 :: My Way Search Assistant
 {05F1B866-2372-4E82-9AA8-C64FB11CEF8B}
 
-:: MyWinLocker Suite
+:: MyWinLocker suite and associated GUIDs (Acer pre-installed bloatware)
+{17DF9714-60C9-43C9-A9C2-32BCAED44CBE}
+{0B78ECB0-1A6B-4E6D-89D7-0E7CE77F0427}
+{39F15B50-A977-4CA6-B1C3-6A8724CDA025}
 {738BF5C3-AF7B-4BB0-B7EF-E505EFC756BE}
 {0D7CD0D9-4A88-4A63-8F91-3F4E8F371768}
 
