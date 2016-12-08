@@ -1150,7 +1150,7 @@ goto :eof
 :parse_cmdline_args
 :: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty. 
 :: The CLI_ARGUMENTS variable is used three places in Tron: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI arguments to the log file at the beginning
-if /i "%*"=="" (set CLI_ARGUMENTS=No CLI switches used) else (set CLI_ARGUMENTS=%*)
+if /i not "%*"=="" (set CLI_ARGUMENTS=%*) else (set CLI_ARGUMENTS=No CLI switches used)
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-c set CONFIG_DUMP=yes
