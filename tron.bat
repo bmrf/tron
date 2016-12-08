@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.4 * Display contents of WARNINGS_DETECTED or ERRORS_DETECTED if they are tripped, so we can quickly see what the reason was
+:: Version:       9.8.5 . No change, increment version number only
+::                9.8.4 * Display contents of WARNINGS_DETECTED or ERRORS_DETECTED if they are tripped, so we can quickly see what the reason was
 ::                      / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
 ::                9.8.3 . No change, increment version number only
 ::                9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt in debug log upload, since this file is more useful for debugging
@@ -162,7 +163,7 @@ set SELF_DESTRUCT=no
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=9.8.5
-set SCRIPT_DATE=2016-11-16
+set SCRIPT_DATE=2016-12-08
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
@@ -1148,7 +1149,7 @@ goto :eof
 :: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
 :: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty. 
-:: The CLI_ARGUMENTS variable is used three places in Tron: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI arguments to the log file at the beginning of Tron
+:: The CLI_ARGUMENTS variable is used three places in Tron: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI arguments to the log file at the beginning
 if /i "%*"=="" (set CLI_ARGUMENTS=No CLI switches used) else (set CLI_ARGUMENTS=%*)
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
