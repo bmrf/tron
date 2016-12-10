@@ -60,8 +60,8 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 ::      10 if we're in Safe Mode, because it refuses to work in Safe Mode. Why? Because Microsoft.
 title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
-	if %SAFE_MODE%==yes (
-		call functions\log.bat "%CUR_DATE% %TIME% !  WARNING: Windows 10 blocks creation of System Restore points in Safe Mode. Why? Because Microsoft."
+	if  %SAFE_MODE%==yes (
+		call functions\log.bat "%CUR_DATE% %TIME% !  WARNING: Windows 10 blocks creating SysRestore points in Safe Mode. Why? Because Microsoft."
 		call functions\log.bat "%CUR_DATE% %TIME%    Skipping restore point creation. Reboot to Normal mode and re-run Tron if you absolutely require it."
 		goto :skip_restore_point_creation
 	)
@@ -220,7 +220,7 @@ title Tron v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
 if %WIN_VER_NUM% geq 6.1 (
-	call functions\log.bat "%CUR_DATE% %TIME%    Launch job: 'Purge oldest Shadow Copy set (Win7 and up)'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Purge oldest Shadow Copy set (Win7 and up)'..."
 	if /i %DRY_RUN%==no (
 		:: Force allow us to start VSS service in Safe Mode
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
