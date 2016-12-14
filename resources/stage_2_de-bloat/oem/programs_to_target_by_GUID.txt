@@ -3,7 +3,7 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 + Add additional user-submitted GUIDs
+:: Version:       1.1.2 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -12,8 +12,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.1
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-12-08
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.2
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-12-14
 
 
 
@@ -199,6 +199,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-12-08
 {509E2F77-9E85-EDA9-1EBA-B79B080A3394}
 
 :: AMD Catalyst Control Center - Branding
+{AC86FD48-76AD-4356-AF32-79BAD8C5889F}
 {24D38277-CE6E-4E12-A2EE-F46832A4FA2F}
 {AD29E049-CAA6-4EC0-9553-19B375DB8658}
 {7004684C-7DB9-4D49-8CFE-B78B006C53FC}
@@ -206,6 +207,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2016-12-08
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
 
 :: AMD Catalyst Control Center Next Localization, various versions
+{29668C1A-2163-7984-6194-6D6225F3FBCF}
 {78787E00-3012-E571-6EAD-2D2E2CBBE1C1}
 {B62E1B20-86BF-7AF0-E6A7-958E9507A407}
 {ED8DB351-26C2-A05D-FBC5-B1B4828E0CA4}
@@ -1576,6 +1578,7 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {5A6CB42D-AFB6-989E-E7EB-B3FF928C707F}
 
 :: Catalyst Control Center InstallProxy
+{8E7B8B2D-9D9C-3213-FE46-C6B567E4CE1C}
 {83B66481-A1FC-C2CF-327A-B755E8971A82}
 {59FC0580-5DA9-32F3-CAAF-B5B6F97F6496}
 {1267DA48-A6EA-3202-6C02-0AD5D3AAF360}
@@ -1583,6 +1586,7 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {9285EABA-D88C-4A8A-6E9D-5F55BF03E46F}
 
 :: ccc-utility64
+{2DAA9FFE-0AC0-ED25-BFB4-FEE5F28FD8D7}
 {BFF0A6DB-29C9-A97F-1F9E-FB0E80DAD68D}
 {E82EC5DF-28FD-C8F4-ED08-B88728158260}
 {4B3EF5E6-9A2C-0A1B-C61C-B1FD444B84BC}
