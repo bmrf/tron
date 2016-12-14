@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 + certcache:   Add job to clear the CryptNet SSL certificate cache. Thanks to github:Itsnothectic and github:alazare619
+:: Version:       1.1.4 * mbam:        Update MBAM detection to include new v3.x series. Thanks to /u/Phantop
+::                1.1.3 + certcache:   Add job to clear the CryptNet SSL certificate cache (Vista and up). Thanks to github:Itsnothectic and github:alazare619
 ::                1.1.2 + jrt:         Add job "JRT" (Junkware Removal Tool by Malwarebytes). Currently disabled (pending troubleshooting)
 ::                      - roguekiller: Remove obsolete code for RogueKiller
 ::                1.1.1 ! mbam:        Clean up mbam launching routine. Should eliminate erroneous message about mbam.exe not being found
@@ -18,8 +19,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.3
-set STAGE_3_SCRIPT_DATE=2016-10-27
+set STAGE_3_SCRIPT_VERSION=1.1.4
+set STAGE_3_SCRIPT_DATE=2016-12-14
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -63,8 +64,12 @@ if %WIN_VER_NUM% geq 6.0 (
 
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%SCRIPT_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
-if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" (
-	call functions\log.bat "%CUR_DATE% %TIME%    MBAM installation detected. Skipping installation."
+set EXISTING_MBAM=no
+if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" set EXISTING_MBAM=yes
+if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\" set EXISTING_MBAM=yes
+if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\" set EXISTING_MBAM=yes
+if /i %EXISTING_MBAM%==yes (
+	call functions\log.bat "%CUR_DATE% %TIME%    Existing MBAM installation detected. Skipping installation."
 	goto skip_mbam
 )
 if /i %SKIP_MBAM_INSTALL%==yes (
@@ -73,7 +78,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM & remove the desktop icon
 	if /i %DRY_RUN%==no (
-		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.2.1.1043.exe" /verysilent
+		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v3.0.4.1269.exe" /verysilent
 		::"Malwarebytes Anti-Malware v2.2.1.1043.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk"
