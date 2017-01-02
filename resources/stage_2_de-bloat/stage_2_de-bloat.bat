@@ -3,7 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
+:: Version:       1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
+::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
+::                1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
 ::                1.2.2 + Add resetting of UpdateExeVolatile during by_guid debloat, another measure to help prevent blocked uninstallations due to pending reboot
 ::                1.2.1 / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
 ::                1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot. 
@@ -31,8 +33,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.3
-set STAGE_2_SCRIPT_DATE=2016-12-10
+set STAGE_2_SCRIPT_VERSION=1.2.4
+set STAGE_2_SCRIPT_DATE=2017-01-02
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -235,16 +237,26 @@ if /i %PRESERVE_METRO_APPS%==yes (
 )
 
 :: 3. Does the folder exist in the default location? If not, skip removal
-if not exist "%USERPROFILES%\OneDrive" (
+if not exist "%USERPROFILE%\OneDrive" (
 	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive folder doesn't exist in the default location. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
-:: 4. Does the folder have any files in it? If so, skip removal
+:: 4. Does the default folder have any files in it? If so, skip removal
 call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
-stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILES%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
 	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
+	goto :skip_onedrive_removal
+)
+
+:: 5. Does the registry indicate the OneDrive folder has been moved? If so, skip removal
+set OneDrivePath=%USERPROFILE%\OneDrive
+for /f "usebackq tokens=3*" %%a IN (`REG QUERY "HKCU\Environment" /v OneDrive 2^>nul`) DO (
+    set OneDrivePath=%%a %%b
+)
+if /i not "%OneDrivePath%"=="%USERPROFILE%\OneDrive" (
+	call functions\log.bat "%CUR_DATE% %TIME% !  Custom OneDrive folder location detected. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
