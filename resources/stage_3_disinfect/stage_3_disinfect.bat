@@ -76,10 +76,10 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Malwarebytes Anti-Malware'..."
-	:: Install MBAM & remove the desktop icon
+	:: Install MBAM and remove desktop icon
 	if /i %DRY_RUN%==no (
-		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v3.0.4.1269.exe" /verysilent
-		::"Malwarebytes Anti-Malware v2.2.1.1043.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+		REM "stage_3_disinfect\mbam\Malwarebytes Anti-Malware v3.0.4.1269.exe" /verysilent
+		"Malwarebytes Anti-Malware v2.2.1.1043.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
