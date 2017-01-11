@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.8 . No change, increment version number only
+:: Version:       9.8.9 . No change, increment version number only
+::                9.8.8 . No change, increment version number only
 ::                9.8.7 . No change, increment version number only
 ::                9.8.6 . No change, increment version number only
 ::                9.8.5 . No change, increment version number only
@@ -165,8 +166,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.8.8
-set SCRIPT_DATE=2017-01-10
+set SCRIPT_VERSION=9.8.9
+set SCRIPT_DATE=2017-01-11
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
