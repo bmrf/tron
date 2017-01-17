@@ -1,4 +1,4 @@
-:: Purpose:       List of specific list of toolbars and BHOs to targed by GUID. Called by Tron in Stage 2: De-bloat
+:: Purpose:       List of specific programs to target by name and wildcard. Called by Tron in Stage 2: De-bloat
 ::                Add any GUID uninstall commands to this list to target them for removal
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
