@@ -404,7 +404,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-01-19
 :: ASUS Power4Gear Hybrid
 {9B6239BF-4E85-4590-8D72-51E30DB1A9AA}
 
-:: ASUS Product Demo Kit
+:: ASUS Product Demo Kit; removal code is 8777. Thanks to /u/aBraveToast
 {1714AD6E-D517-40C0-9B19-4CE0078F7694}
 
 :: ASUS Secure Delete
