@@ -3,7 +3,7 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 + Add additional user-submitted GUIDs
+:: Version:       1.1.5 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -12,8 +12,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.4
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-01-10
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.5
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-01-19
 
 
 
@@ -403,6 +403,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-01-10
 
 :: ASUS Power4Gear Hybrid
 {9B6239BF-4E85-4590-8D72-51E30DB1A9AA}
+
+:: ASUS Product Demo Kit
+{1714AD6E-D517-40C0-9B19-4CE0078F7694}
 
 :: ASUS Secure Delete
 {761C6783-D3BC-48AB-8E7C-61CE918A8436}
