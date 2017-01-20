@@ -37,7 +37,7 @@ set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2016-11-08
 %%MapsGalaxy%%
 %%QuickTime%%
 %%SaferSurf%%
-%%SaveForYou%
+%%SaveForYou%%
 %%Savings%%
 %%Search%%
 %%Shop_and_Up%%
