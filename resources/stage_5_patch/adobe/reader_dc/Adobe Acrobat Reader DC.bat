@@ -5,36 +5,24 @@
 ::                1.0.1 + Add killing of additional Task Scheduler job
 ::                      + Add killing of Adobe ARM directory
 ::                1.0.0 + Initial write
-
-
-::::::::::
-:: Prep :: -- Don't change anything in this section
-::::::::::
 @echo off
-set SCRIPT_VERSION=1.0.2
-set SCRIPT_UPDATED=2017-01-26
-:: Get the date into ISO 8601 standard date format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
-set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
-
-:: This is useful if we start from a network share; converts CWD to a drive letter
-pushd "%~dp0"
 
 
 :::::::::::::::
-:: VARIABLES :: -- Set these to your desired values
+:: VARIABLES ::
 :::::::::::::::
-:: Log location and name. Do not use trailing slashes (\)
-set LOGPATH=%SystemDrive%\Logs
-set LOGFILE=%COMPUTERNAME%_Adobe_Acrobat_DC_install.log
-
 :: Package to install. Do not use trailing slashes (\)
 set BINARY_VERSION=15.007.20033
 set PATCH_VERSION=15.023.20053
 set FLAGS=ALLUSERS=1 /qn /norestart TRANSFORMS="Adobe Acrobat Reader DC v%BINARY_VERSION%_customizations.mst"
 
-:: Create the log directory if it doesn't exist
-if not exist %LOGPATH% mkdir %LOGPATH%
+
+::::::::::
+:: Prep :: -- Don't change anything in this section
+::::::::::
+set SCRIPT_VERSION=1.0.2
+set SCRIPT_UPDATED=2017-01-26
+pushd "%~dp0"
 
 
 ::::::::::::::::::
