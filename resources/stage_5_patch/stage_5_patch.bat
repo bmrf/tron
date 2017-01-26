@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
+:: Version:       1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
+::                1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
 ::                1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
 ::                      / Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
 ::                1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
@@ -17,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.4
-set STAGE_5_SCRIPT_DATE=2016-11-02
+set STAGE_5_SCRIPT_VERSION=1.1.5
+set STAGE_5_SCRIPT_DATE=2017-01-26
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -52,7 +53,7 @@ if /i %DRY_RUN%==no (
 
 :: Prep task: check for skip patches (-sp) flag or variable and skip if used
 if /i %SKIP_PATCHES%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PATCHES (-sp) set. Skipping app patches."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PATCHES (-sp) set. Skipping all app patches."
 	goto skip_patches
 )
 
@@ -89,13 +90,13 @@ if %FLASH_DETECTED%==yes (
 )
 
 
-:: JOB: Adobe Reader
-if exist "%ProgramFiles(x86)%\Adobe\Reader*" (
+:: JOB: Adobe Acrobat Reader DC
+if exist "%ProgramFiles(x86)%\Adobe\Acrobat Reader DC*" (
 	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
-	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Reader detected, updating..."
-	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Adobe Reader'..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Acrobat Reader DC detected, updating..."
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Acrobat Reader DC'..."
 	setlocal
-	if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader\Adobe Reader.bat"
+	if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader_dc\Adobe Acrobat Reader DC.bat"
 	endlocal
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
