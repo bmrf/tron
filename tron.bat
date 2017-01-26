@@ -4,15 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       9.8.9 . No change, increment version number only
-::                9.8.8 . No change, increment version number only
-::                9.8.7 . No change, increment version number only
-::                9.8.6 . No change, increment version number only
-::                9.8.5 . No change, increment version number only
-::                9.8.4 * Display contents of WARNINGS_DETECTED or ERRORS_DETECTED if they are tripped, so we can quickly see what the reason was
-::                      / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
-::                9.8.3 . No change, increment version number only
-::                9.8.2 / Replace removed programs list with PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt in debug log upload, since this file is more useful for debugging
+:: Version:       9.9.0 / Minor formatting changes on prep code section; no functionality change
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -166,8 +158,8 @@ set SELF_DESTRUCT=no
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=9.8.9
-set SCRIPT_DATE=2017-01-11
+set SCRIPT_VERSION=9.9.0
+set SCRIPT_DATE=2017-01-26
 title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
 
 :: Initialize script-internal variables. Most of these get clobbered later based on various tests so don't change them here
@@ -183,28 +175,32 @@ set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 set SKIP_CHECK_UPDATE=no
+
 :: Force path to some system utilities in case the system PATH is messed up
-set WMIC=%SystemRoot%\System32\wbem\wmic.exe
-set FIND=%SystemRoot%\System32\find.exe
+	set WMIC=%SystemRoot%\System32\wbem\wmic.exe
+	set FIND=%SystemRoot%\System32\find.exe
+
 :: Get Time Zone name and value
 for /f "USEBACKQ skip=1 delims=" %%i IN (`%WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
-:: Resume-related stuff begin (resuming from an interrupted run)
-  set RESUME_STAGE=0
-  set RESUME_FLAGS=0
-  set RESUME_DETECTED=no
-  reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
-  if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
-  if /i "%1"=="-resume" set RESUME_DETECTED=yes
-:: Resume-related stuff end
+
+:: Resume-related stuff (resuming from an interrupted run)
+	set RESUME_STAGE=0
+	set RESUME_FLAGS=0
+	set RESUME_DETECTED=no
+	reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "tron_resume" >nul 2>&1
+	if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
+	if /i "%1"=="-resume" set RESUME_DETECTED=yes
+
 :: Detect the version of Windows we're on. This determines a few things later on
-set WIN_VER=undetected
-set WIN_VER_NUM=undetected
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
-for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
+	set WIN_VER=undetected
+	set WIN_VER_NUM=undetected
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
+	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
+
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
-pushd "%USERPROFILE%\.."
-set USERPROFILES=%CD%
-popd
+	pushd "%USERPROFILE%\.."
+	set USERPROFILES=%CD%
+	popd
 
 
 :: Make sure we're not running from the %TEMP% directory
