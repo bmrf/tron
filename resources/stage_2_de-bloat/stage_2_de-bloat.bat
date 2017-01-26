@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
+:: Version:       1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
+::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
 ::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
 ::                1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
 ::                1.2.2 + Add resetting of UpdateExeVolatile during by_guid debloat, another measure to help prevent blocked uninstallations due to pending reboot
@@ -33,8 +34,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.4
-set STAGE_2_SCRIPT_DATE=2017-01-02
+set STAGE_2_SCRIPT_VERSION=1.2.5
+set STAGE_2_SCRIPT_DATE=2017-01-26
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -227,6 +228,9 @@ if /i %TARGET_METRO%==yes (
 :: JOB: Remove forced OneDrive integration
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
+:: This variable is just to detect if we removed OneDrive or not. If we DIDN'T we make sure file sync isn't disabled
+set ONEDRIVE_REMOVEd=no 
+
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
 
@@ -264,10 +268,10 @@ if /i not "%OneDrivePath%"=="%USERPROFILE%\OneDrive" (
 call functions\log.bat "%CUR_DATE% %TIME%    OneDrive doesn't appear to be in use. Removing..."
 if %DRY_RUN%==no (
 	taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
-	ping 127.0.0.1 -n 5 > NUL 2>&1
+	ping 127.0.0.1 -n 4 > NUL 2>&1
 	%SystemRoot%\System32\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
 	%SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall >> "%LOGPATH%\%LOGFILE%" >nul 2>&1
-	ping 127.0.0.1 -n 7 > NUL 2>&1
+	ping 127.0.0.1 -n 12 > NUL 2>&1
 	takeown /f "%LocalAppData%\Microsoft\OneDrive" /r /d y >> "%LOGPATH%\%LOGFILE%" 2>&1
 	icacls "%LocalAppData%\Microsoft\OneDrive" /grant administrators:F /t >> "%LOGPATH%\%LOGFILE%" 2>&1
 	rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -276,7 +280,11 @@ if %DRY_RUN%==no (
 	REM These two registry entries disable OneDrive links in the Explorer side pane
 	reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	set ONEDRIVE_REMOVED=yes
 )
+
+:: Make sure file sync isn't disabled if OneDrive wasn't removed
+if ONEDRIVE_REMOVED=no reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\OneDrive /t REG_DWORD /v DisableFileSyncNGSC /d 0x1 /f
 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :skip_onedrive_removal
