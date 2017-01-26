@@ -4,6 +4,7 @@
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
+::                      ! Minor bug fix; don't display "done" message if no Java installation was detected or updated
 ::                1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
 ::                1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
 ::                      / Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
@@ -150,10 +151,9 @@ if %JAVA_DETECTED%==yes (
 		call "stage_5_patch\java\jre\jre-8-installer.bat"
 		endlocal
 	)
+call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
-echo off
 
 :: JOB: Skip point for if -sp (skip patches) flag was used
 :skip_patches
