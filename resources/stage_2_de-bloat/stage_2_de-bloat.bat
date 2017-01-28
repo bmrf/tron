@@ -229,7 +229,7 @@ if /i %TARGET_METRO%==yes (
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
 :: This variable is just to detect if we removed OneDrive or not. If we DIDN'T we make sure file sync isn't disabled
-set ONEDRIVE_REMOVEd=no 
+set ONEDRIVE_REMOVED=no 
 
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
