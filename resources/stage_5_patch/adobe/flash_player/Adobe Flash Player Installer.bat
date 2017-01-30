@@ -41,10 +41,10 @@ wmic product where "name like 'Adobe Flash Player%%Plugin'" uninstall /nointerac
 wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 wmic product where "name like 'Adobe Flash Player%%PPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-:: Install Firefox and IE versions of Flash
-msiexec /i "install_flash_player_23_plugin.msi" %FLAGS%
-msiexec /i "install_flash_player_23_active_x.msi" %FLAGS%
-msiexec /i "install_flash_player_23_ppapi.msi" %FLAGS%
+:: Install Flash. NPAPI = Firefox/plugin version. PPAPI = Chrome version. Active_x = Internet Explorer version.
+msiexec /i "install_flash_player_24_npapi.msi" %FLAGS%
+msiexec /i "install_flash_player_24_active_x.msi" %FLAGS%
+msiexec /i "install_flash_player_24_ppapi.msi" %FLAGS%
 
 :: Delete the Adobe Acrobat Update Service
 net stop AdobeARMservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
