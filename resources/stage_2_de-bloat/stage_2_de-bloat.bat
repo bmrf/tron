@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
+:: Version:       1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling sync instead of ENABLING. Thanks to /u/Gyllius
+::                1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
 ::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
 ::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
 ::                1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
@@ -34,8 +35,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.5
-set STAGE_2_SCRIPT_DATE=2017-01-26
+set STAGE_2_SCRIPT_VERSION=1.2.6
+set STAGE_2_SCRIPT_DATE=2017-02-04
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
 if /i "%LOGFILE%"=="" (
@@ -284,7 +285,7 @@ if %DRY_RUN%==no (
 )
 
 :: Make sure file sync isn't disabled if OneDrive wasn't removed
-if ONEDRIVE_REMOVED=no reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\OneDrive /t REG_DWORD /v DisableFileSyncNGSC /d 0x1 /f
+if ONEDRIVE_REMOVED=no reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\OneDrive /t REG_DWORD /v DisableFileSyncNGSC /d 0x0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :skip_onedrive_removal
