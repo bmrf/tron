@@ -4,6 +4,11 @@
 :: Version:       1.0.0 . Initial write, forked out of v9.9.0 of tron.bat
 
 
+:: Script version
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.0
+set PRERUN_CHECKS_SCRIPT_DATE=2017-02-06
+
+
 
 ::::::::::::
 :: CHECKS ::
