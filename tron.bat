@@ -7,7 +7,9 @@
 :: Version:       1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
 ::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
-::
+::                      + Add flag -scs and associated variable (SKIP_CUSTOM_SCRIPTS) to allow forcibly skipping Stage 8 (custom scripts). This only has 
+::                        effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
+::                      - Move task "Enable F8 Key on Bootup" from tron.bat to prerun_checks_and_tasks.bat
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL Command-line switches (can be combined, none are required):
@@ -25,6 +27,7 @@
 ::                      -p   Preserve power settings (don't reset to Windows default)
 ::                      -r   Reboot automatically 15 seconds after script completion
 ::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
+::                      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 ::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
 ::                      -sdc Skip DISM Cleanup (SxS component store deflation)
@@ -41,7 +44,7 @@
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 ::
-::                If you don't like Tron's defaults (and don't want to use the command-line) edit the variables below to change them.
+::                If you don't like Tron's defaults (and don't want to use the command-line) edit the settings in \tron\resources\functions\tron_settings.bat
 ::
 ::                "Do not withhold good from those to whom it is due, when it is in your power to act." -p3:27
 
@@ -85,7 +88,7 @@ if /i %HELP%==yes (
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -sd -sdb -sdc
+	echo   Usage: %0%.bat ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
 	echo                -sdu -se -sk -sm -sp -spr -ss -str -sw -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
@@ -102,6 +105,7 @@ if /i %HELP%==yes (
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically 15 seconds after script completion
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
+	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
@@ -138,7 +142,7 @@ if /i %RESUME_DETECTED%==yes (
 	REM Quick check for a faulty resume detection
 	if not exist tron_stage.txt (
 		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
-		goto enable_f8_key_on_bootup
+		goto autorun_check
 	)
 
 	REM Read in the values from the previous run
@@ -217,6 +221,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
+	echo    SKIP_CUSTOM_SCRIPTS:    %SKIP_CUSTOM_SCRIPTS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
@@ -266,12 +271,8 @@ if /i %CONFIG_DUMP%==yes (
 )
 
 
-:: TASK: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
-:enable_f8_key_on_bootup
-if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
-
-
 :: INTERNAL PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
+:autorun_check
 if /i %AUTORUN%==yes goto execute_jobs
 
 
@@ -282,8 +283,8 @@ if /i not %EULA_ACCEPTED%==yes (
 	color CF
 	echo  ************************** ANNOYING DISCLAIMER **************************
 	echo  * HEY^^! READ THE INSTRUCTIONS and understand what Tron does, because it  *
-	echo  * does a lot of stuff that, while not harmful, can be annoying if you   *
-	echo  * weren't expecting it. e.g. wiping temp files, cookies, etc. So if     *
+	echo  * does a lot of stuff that, while not harmful, can be annoying if not   *
+	echo  * expected. e.g. wiping temp files, Local Store, cookies, etc. So if    *
 	echo  * Tron does something you didn't expect and you didn't read the         *
 	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
@@ -635,7 +636,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up begin..."
 :: JOB: Reset power settings to Windows defaults
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Reset power settings]
 if %PRESERVE_POWER_SCHEME%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping Windows power settings reset."
+	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping power settings reset."
 ) else (
 	call functions\log.bat "%CUR_DATE% %TIME%    Resetting Windows power settings to defaults and re-enabling screensaver..."
 	if %DRY_RUN%==no (
@@ -736,18 +737,21 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_7_wrap-up complete."
 :stage_8_custom_scripts
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_8_custom_scripts>tron_stage.txt
-if exist stage_8_custom_scripts\*.bat (
-	echo stage_8_custom_scripts>tron_stage.txt
-	call functions\log.bat "%CUR_DATE% %TIME% ! Custom scripts detected, executing now..."
-	call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts begin..."
-	if %DRY_RUN%==no for %%i in (stage_8_custom_scripts\*.bat) do (
-		call functions\log.bat "%CUR_DATE% %TIME%    Executing %%i..."
-		call %%i
-		call functions\log.bat "%CUR_DATE% %TIME%    %%i done."
+if /i %SKIP_CUSTOM_SCRIPTS%==yes (
+	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_CUSTOM_SCRIPTS (-scs) set to "%SKIP_CUSTOM_SCRIPTS%", skipping..."
+) else (
+	if exist stage_8_custom_scripts\*.bat (
+		echo stage_8_custom_scripts>tron_stage.txt
+		call functions\log.bat "%CUR_DATE% %TIME% ! Custom scripts detected, executing now..."
+		call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts begin..."
+		if %DRY_RUN%==no for %%i in (stage_8_custom_scripts\*.bat) do (
+			call functions\log.bat "%CUR_DATE% %TIME%    Executing %%i..."
+			call %%i
+			call functions\log.bat "%CUR_DATE% %TIME%    %%i done."
+		)
+		call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts complete."
 	)
-	call functions\log.bat "%CUR_DATE% %TIME%   stage_8_custom_scripts complete."
 )
-
 
 
 ::::::::::::::::::::::
@@ -927,6 +931,7 @@ for %%i in (%*) do (
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-scs set SKIP_CUSTOM_SCRIPTS=yes
 	if /i %%i==-sdb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
 	if /i %%i==-sdc set SKIP_DISM_CLEANUP=yes
