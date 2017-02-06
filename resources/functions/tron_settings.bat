@@ -3,7 +3,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       No version information since this file doesn't really ever change
+:: Version:       1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
+
+:: Script version
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.0
+set TRON_SETTINGS_SCRIPT_DATE=2014-02-06
 
 
 :::::::::::::::
