@@ -1,10 +1,11 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 1: Temp Cleanup stage. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly it will error out
+::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 ! ccleaner: Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin for reporting
-::                1.1.4 ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
+:: Version:       1.1.7 * script:     Update script to support standalone execution
+::                1.1.6 ! duplicates: Fix broken duplicate file cleanup of Downloads folder due to accidentally putting quote markes around the path to the profile list text file
+::                1.1.5 ! ccleaner:   Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin
+::                1.1.4 ! ccleaner:   Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
 ::                1.1.3 ! Fix bug with CCleaner where "start /wait" wasn't properly waiting. Turns out ccleaner silently launches ccleaner64.exe on 64-bit systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script. Sneaky sneaky, Piriform
 ::                1.1.2 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.1 / ccleaner:  Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
@@ -21,22 +22,16 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.5
-set STAGE_1_SCRIPT_DATE=2016-11-10
+set STAGE_1_SCRIPT_VERSION=1.1.7
+set STAGE_1_SCRIPT_DATE=2017-02-04
 
-:: Quick check to see if we inherited the appropriate variables from Tron.bat
+:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	color 0c
-	echo.
-	echo  ERROR
-	echo.
-	echo   You cannot run this script directly - it must be
-	echo   called from Tron.bat during a Tron run.
-	echo.
-	echo   Navigate to Tron's root folder and execute Tron.bat
-	echo.
-	pause
-	exit /b 1
+	:: Load the settings file
+	call functions\tron_settings.bat
+
+	:: Initialize the runtime environment
+	call functions\initialize_environment.bat
 )
 
 
@@ -49,7 +44,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_1_tempclean begin..."
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
 if %WIN_VER_NUM% geq 6.0 (
-	title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
+	title Tron v%TRON_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean Internet Explorer'..."
 	if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -57,7 +52,7 @@ if %WIN_VER_NUM% geq 6.0 (
 
 
 :: JOB: TempFileCleanup.bat
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [TempFileCleanup]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [TempFileCleanup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'TempFileCleanup'..."
 if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -65,7 +60,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: CCleaner
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [CCleaner]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
@@ -81,7 +76,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: BleachBit
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [BleachBit]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
 
@@ -99,12 +94,12 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Delete duplicate files in the "Downloads" folder of each user profile
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clean duplicate files from Download folders'..."
 if %DRY_RUN%==no (
 	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
 	dir "%USERPROFILES%\" /B > "%TEMP%\userlist.txt"
-	for /f "tokens=* delims= " %%i in ("%TEMP%\userlist.txt") do (
+	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
 		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
 			REM VERBOSE mode
@@ -138,7 +133,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: USB Device Cleanup
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [USB Device Cleanup]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [USB Device Cleanup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'USB Device Cleanup'..."
 if /i %DRY_RUN%==no (
 	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
@@ -153,7 +148,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Clear Windows event logs
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clear Windows Event Logs]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [Clear Windows Event Logs]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clear Windows event logs'..."
 if /i %SKIP_EVENT_LOG_CLEAR%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% ! SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear."
@@ -177,7 +172,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Clear Windows Update cache
-title Tron v%SCRIPT_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
+title Tron v%TRON_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Clear Windows Update cache'..."
 if /i %DRY_RUN%==no (
 	:: Allow us to start the service in Safe Mode
