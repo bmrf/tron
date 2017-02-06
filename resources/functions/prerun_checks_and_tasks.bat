@@ -121,3 +121,7 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIN
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
 :: MB version
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
+
+
+:: TASK: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
+if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
