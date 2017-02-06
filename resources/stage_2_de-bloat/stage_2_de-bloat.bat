@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling sync instead of ENABLING. Thanks to /u/Gyllius
+:: Version:       1.2.7 * script:     Update script to support standalone execution
+::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling sync instead of ENABLING. Thanks to /u/Gyllius
 ::                1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
 ::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
 ::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
@@ -35,22 +36,16 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.6
+set STAGE_2_SCRIPT_VERSION=1.2.7
 set STAGE_2_SCRIPT_DATE=2017-02-04
 
-:: Quick check to see if we inherited the appropriate variables from Tron.bat
+:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	color 0c
-	echo.
-	echo  ERROR
-	echo.
-	echo   You cannot run this script directly - it must be
-	echo   called from Tron.bat during a Tron run.
-	echo.
-	echo   Navigate to Tron's root folder and execute Tron.bat
-	echo.
-	pause
-	exit /b 1
+	:: Load the settings file
+	call functions\tron_settings.bat
+
+	:: Initialize the runtime environment
+	call functions\initialize_environment.bat
 )
 
 
@@ -62,7 +57,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
 
 :: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of "classic" (non-"Modern") Windows programs
 if /i %SAFE_MODE%==yes (
-	title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Enable MSIServer]
+	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Enable MSIServer]
 	call functions\log.bat "%CUR_DATE% %TIME%    Enabling MSIServer to allow program removal in Safe Mode..."
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
@@ -73,7 +68,7 @@ if /i %SAFE_MODE%==yes (
 
 
 :: JOB: Remove crapware programs, phase 1: by specific GUID
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by specific GUID)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt"
 if /i %DRY_RUN%==no (
@@ -113,7 +108,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt"
 if /i %DRY_RUN%==no (
@@ -153,7 +148,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove crapware programs, phase 3: wildcard by name
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (wildcard by name)..."
 call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 if /i %DRY_RUN%==no ( if /i %VERBOSE%==yes ( echo Looking for: ) )
@@ -192,7 +187,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove default Metro apps (Windows 8 and up)
-title Tron v%SCRIPT_VERSION% [stage_2_de-bloat] [Remove default metro apps]
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: This command will re-install ALL default Windows 10 apps:
 :: Get-AppxPackage -AllUsers| Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 
