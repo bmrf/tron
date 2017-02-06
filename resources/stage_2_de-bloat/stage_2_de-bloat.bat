@@ -3,7 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 * script:     Update script to support standalone execution
+:: Version:       1.2.7 * script: Update script to support standalone execution
 ::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling sync instead of ENABLING. Thanks to /u/Gyllius
 ::                1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
 ::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
@@ -37,17 +37,18 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_2_SCRIPT_VERSION=1.2.7
-set STAGE_2_SCRIPT_DATE=2017-02-04
+set STAGE_2_SCRIPT_DATE=2017-02-06
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd ..
+	
 	:: Load the settings file
 	call functions\tron_settings.bat
 
 	:: Initialize the runtime environment
 	call functions\initialize_environment.bat
 )
-
 
 
 :::::::::::::::::::::::
@@ -224,7 +225,7 @@ if /i %TARGET_METRO%==yes (
 :: JOB: Remove forced OneDrive integration
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
-:: This variable is just to detect if we removed OneDrive or not. If we DIDN'T we make sure file sync isn't disabled
+:: This variable is just to detect if we removed OneDrive or not. If we DIDN'T then we use it to make sure file sync isn't disabled
 set ONEDRIVE_REMOVED=no 
 
 :: 1. Are we on Windows 10? If not, skip removal
