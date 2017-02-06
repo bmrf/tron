@@ -4,9 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 * Major breaking changes; This script version now just refers to tron.bat itself and NOT the overall Tron project version
+:: Version:       1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
+::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
-::                        Tron overall project version is now contained in \resources\functions\initialize_environment.bat. See the subreddit for more details
 ::
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
