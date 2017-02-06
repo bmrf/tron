@@ -24,6 +24,8 @@ set STAGE_5_SCRIPT_DATE=2017-02-04
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd ..
+	
 	:: Load the settings file
 	call functions\tron_settings.bat
 
