@@ -17,16 +17,15 @@ if /i "%RAW_LOGS%"=="" set RAW_LOGS=%SystemDrive%\logs
 set LOGFILE=tron_jre8_update.log
 
 :: Package to install
-set BINARY_VERSION=8u102
+set BINARY_VERSION=8u112
 set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AUTOUPDATECHECK=0 RebootYesNo=No WEB_JAVA_SECURITY_LEVEL=M
-
 
 ::::::::::
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
 set SCRIPT_VERSION=1.6.3-TRON
-set SCRIPT_UPDATED=2016-17-24
+set SCRIPT_UPDATED=2016-10-31
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%

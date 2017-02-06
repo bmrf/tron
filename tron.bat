@@ -335,6 +335,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 :: Basically we use a trick to set the global SKIP_DEFRAG variable outside of the setlocal block by stacking it on the same line so it gets executed along with ENDLOCAL
 pushd stage_6_optimize\defrag\
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
+	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "Samsung SSD" >NUL && set SKIP_DEFRAG=yes_ssd
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | findstr /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_error
 popd
