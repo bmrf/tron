@@ -10,6 +10,7 @@
 ::                      + Add flag -scs and associated variable (SKIP_CUSTOM_SCRIPTS) to allow forcibly skipping Stage 8 (custom scripts). This only has 
 ::                        effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
 ::                      - Move task "Enable F8 Key on Bootup" from tron.bat to prerun_checks_and_tasks.bat
+::                      * Update welcome screen with note about Stage 8: Custom scripts
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
 ::                OPTIONAL Command-line switches (can be combined, none are required):
@@ -59,7 +60,7 @@ SETLOCAL
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=1.0.0
-set SCRIPT_DATE=2017-02-04
+set SCRIPT_DATE=2017-02-06
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive. 
 :: We stay in the \resources directory for the rest of the script
@@ -288,7 +289,7 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * Tron does something you didn't expect and you didn't read the         *
 	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
-	echo  * Tron.bat and the supporting code and scripts I've written are free    *
+	echo  * tron.bat and the supporting code and scripts I've written are free    *
 	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
 	echo  * ^(MBAM, KVRT, etc^) are bound by their respective licenses. It is       *
 	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
@@ -384,6 +385,7 @@ echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
 echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
+echo  *  8 Custom:    If present, execute user-provided custom scripts      *
 echo  *                                                                     *
 echo  * \tron\resources\stage_9_manual_tools contains other useful utils    *
 echo  ***********************************************************************
@@ -474,7 +476,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 
 :: Expand the scrollback buffer if VERBOSE (-v) was used. This way we don't lose any output on the screen
-:: We'll also display a message below, since using the mode command flushes the scrollback and we don't want to lose the header
+:: We'll also display a message below, since using the MODE command flushes the scrollback and we don't want to lose the header
 if /i %VERBOSE%==yes mode con:lines=9000
 
 
@@ -497,7 +499,7 @@ if /i %RESUME_DETECTED%==no (
 
 :: If verbose (-v) was used, notify that we expanded the scrollback buffer
 if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME% !  VERBOSE (-v) output requested. All commands will display verbose output when possible."
-if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded scrollback buffer to accomodate increased output."
+if /i %VERBOSE%==yes call functions\log.bat "%CUR_DATE% %TIME%    Expanded the scrollback buffer to accomodate increased output."
 
 
 :: INTERNAL PREP: Tell us if the update check failed or was skipped
@@ -505,7 +507,7 @@ if %WARNINGS_DETECTED%==yes_check_update_failed call functions\log.bat "%CUR_DAT
 if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log.bat "%CUR_DATE% %TIME% ! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
 
 
-:: INTERNAL PREP: Run a quick SMART check and notify if there are any drives with problems
+:: PREP: Run a quick SMART check and notify if there are any drives with problems
 set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
 for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
 	call functions\log.bat "%CUR_DATE% %TIME% ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
