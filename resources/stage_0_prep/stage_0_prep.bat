@@ -2,7 +2,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 * script:     Update script to support standalone execution
+:: Version:       1.1.6 * script: Update script to support standalone execution
 ::                1.1.5 * Update NTP server commands with ,0x8 suffix to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
 ::                1.1.4 ! Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode. Why? Because Win10 blocks system restore point creation in Safe Mode. Why? Because Microsoft
 ::                      * Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary one
@@ -33,6 +33,8 @@ set STAGE_0_SCRIPT_DATE=2017-02-04
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd ..
+	
 	:: Load the settings file
 	call functions\tron_settings.bat
 
