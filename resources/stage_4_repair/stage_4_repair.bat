@@ -1,9 +1,9 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 4: Repair stage. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly it will error out
+::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
+:: Version:       1.2.2 * script: Update script to support standalone execution
+::                1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
 ::                1.2.0 - Remove job "Reset Filesystem permissions" and associated files
 ::                      - Remove job "Reset Registry permissions" and associated files
 ::                1.1.1 + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
@@ -29,22 +29,16 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.1
-set STAGE_4_SCRIPT_DATE=2016-11-07
+set STAGE_4_SCRIPT_VERSION=1.2.2
+set STAGE_4_SCRIPT_DATE=2017-02-04
 
-:: Quick check to see if we inherited the appropriate variables from Tron.bat
+:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	color 0c
-	echo.
-	echo  ERROR
-	echo.
-	echo   You cannot run this script directly - it must be
-	echo   called from Tron.bat during a Tron run.
-	echo.
-	echo   Navigate to Tron's root folder and execute Tron.bat
-	echo.
-	pause
-	exit /b 1
+	:: Load the settings file
+	call functions\tron_settings.bat
+
+	:: Initialize the runtime environment
+	call functions\initialize_environment.bat
 )
 
 
@@ -56,7 +50,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_4_repair begin..."
 
 
 :: JOB: MSI installer cleanup
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [MSI installer cleanup]
+title Tron v%TRON_VERSION% [stage_4_repair] [MSI installer cleanup]
 call functions\log.bat "%CUR_DATE% %TIME%    Cleaning up orphaned MSI cache files..."
 if /i %VERBOSE%==yes (
 	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
@@ -68,7 +62,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 :: JOB: Check Windows Image for corruptions (Windows 8 and up)
 if %WIN_VER_NUM% geq 6.2 (
-	title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Check]
+	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Check]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM Windows image check'..."
 	if /i %DRY_RUN%==yes goto skip_dism_image_check
 	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%RAW_LOGS%\dism_check.log"
@@ -76,7 +70,7 @@ if %WIN_VER_NUM% geq 6.2 (
 
 :: If we detect errors try to repair them
 if not %ERRORLEVEL%==0 (
-	title Tron v%SCRIPT_VERSION% [stage_4_repair] [DISM Repair]
+	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Repair]
 	if %WIN_VER_NUM% geq 6.2 (
 		call functions\log.bat "%CUR_DATE% %TIME% !  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
@@ -98,7 +92,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: System File Checker (SFC) scan
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [SFC Scan]
+title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'System File Checker'..."
 if /i %DRY_RUN%==no (
 	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
@@ -111,7 +105,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: chkdsk the system drive
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [chkdsk]
+title Tron v%TRON_VERSION% [stage_4_repair] [chkdsk]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'chkdsk'..."
 call functions\log.bat "%CUR_DATE% %TIME%    Checking %SystemDrive% for errors..."
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
@@ -126,7 +120,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Remove Microsoft telemetry (user tracking)
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [disable MS telemetry]
+title Tron v%TRON_VERSION% [stage_4_repair] [disable MS telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
@@ -237,7 +231,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 
 
 :: JOB: Disable NVIDIA telemetry (sigh...)
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
+title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Disable NVIDIA telemetry'..."
 if /i %DRY_RUN%==no (
 	schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -248,7 +242,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Network repair (minor)
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [winsock_reset]
+title Tron v%TRON_VERSION% [stage_4_repair] [winsock_reset]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Network repair'..."
 if /i %DRY_RUN%==no (
 	ipconfig /flushdns >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -260,7 +254,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Repair file extensions
-title Tron v%SCRIPT_VERSION% [stage_4_repair] [repair file extensions]
+title Tron v%TRON_VERSION% [stage_4_repair] [repair file extensions]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Repair file extensions'..."
 if /i %DRY_RUN%==no (
 	setlocal
