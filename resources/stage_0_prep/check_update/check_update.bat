@@ -1,7 +1,7 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 / Replace "SCRIPT" WITH "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
+:: Version:       1.0.7 / Replace string "SCRIPT" with "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
 ::                      * Update version comparison code to handle new v10 version string (batch can only do arithmatic comparison, not decimal)
 ::                1.0.6 ! Fix bug with missing username in %USERPROFILES% statement. Thanks to /u/TyanColte
 ::                1.0.5 ! Fix edge case where self-destruct code would be incorrectly triggered by re-using Tron's global SELF_DESTRUCT variable
@@ -76,6 +76,8 @@ if /i %CONFIG_DUMP%==yes goto :eof
 
 :: Notify if an update was found
 SETLOCAL ENABLEDELAYEDEXPANSION
+:: The goofy .= here says to take the variable and replace ("=") the character "." with nothing in the output. If, for example, we were replacing "." with ABC, it would read: %TRON_VERSION:.=ABC%
+:: Basically we're just stripping out the period since cmd.exe can't handle decimal comparison operations (facepalm)
 if /i %TRON_VERSION:.=% LSS %REPO_TRON_VERSION:.=% (
 	set CHOICE=y
 	color 8a
