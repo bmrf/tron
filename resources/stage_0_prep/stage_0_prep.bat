@@ -1,9 +1,9 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 0: Prep stage. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly it will error out
+::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 * Update NTP server commands with ,0x8 suffix to send standard client requests vs. symmetric active requests. THanks to /u/webtroter
+:: Version:       1.1.6 * script:     Update script to support standalone execution
+::                1.1.5 * Update NTP server commands with ,0x8 suffix to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
 ::                1.1.4 ! Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode. Why? Because Win10 blocks system restore point creation in Safe Mode. Why? Because Microsoft
 ::                      * Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary one
 ::                1.1.3 + Add job to capture desktop screenshot to the RAW_LOGS folder. Sometimes but a visual of the system is helpful so we capture one just in case some icons change
@@ -28,22 +28,16 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.1.5
-set STAGE_0_SCRIPT_DATE=2016-12-15
+set STAGE_0_SCRIPT_VERSION=1.1.6
+set STAGE_0_SCRIPT_DATE=2017-02-04
 
-:: Quick check to see if we inherited the appropriate variables from Tron.bat
+:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	color 0c
-	echo.
-	echo  ERROR
-	echo.
-	echo   You cannot run this script directly - it must be
-	echo   called from Tron.bat during a Tron run.
-	echo.
-	echo   Navigate to Tron's root folder and execute Tron.bat
-	echo.
-	pause
-	exit /b 1
+	:: Load the settings file
+	call functions\tron_settings.bat
+
+	:: Initialize the runtime environment
+	call functions\initialize_environment.bat
 )
 
 
@@ -59,11 +53,11 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_0_prep begin..."
 ::      as well as remove the 24 hour cooldown timer they brilliantly added in Windows 8 which prevents doing things like
 ::      creating a before/after restore point pair. Why? Because Microsoft. We also skip creating the restore point in Windows
 ::      10 if we're in Safe Mode, because it refuses to work in Safe Mode. Why? Because Microsoft.
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Create Restore Point]
+title Tron v%TRON_VERSION% [stage_0_prep] [Create Restore Point]
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	if  %SAFE_MODE%==yes (
 		call functions\log.bat "%CUR_DATE% %TIME% !  WARNING: Windows 10 blocks creating SysRestore points in Safe Mode. Why? Because Microsoft."
-		call functions\log.bat "%CUR_DATE% %TIME%    Skipping restore point creation. Reboot to Normal mode and re-run Tron if you absolutely require it."
+		call functions\log.bat "%CUR_DATE% %TIME%    Skipping restore point creation. Reboot to Normal mode and re-run Tron if you absolutely require one."
 		goto :skip_restore_point_creation
 	)
 )
@@ -80,7 +74,7 @@ if %WIN_VER_NUM% geq 6.0 (
 	REM Create the restore point
 	echo "%WIN_VER%" | findstr /i /c:"server" >NUL || (
 		call functions\log.bat "%CUR_DATE% %TIME%    Creating pre-run Restore Point..."
-		if /i %DRY_RUN%==no powershell "Checkpoint-Computer -Description 'TRON v%SCRIPT_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if /i %DRY_RUN%==no powershell "Checkpoint-Computer -Description 'TRON v%TRON_VERSION%: Pre-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 call functions\log.bat "%CUR_DATE% %TIME%    OK."
 )
@@ -88,7 +82,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    OK."
 
 
 :: JOB: Capture screenshot of the desktop. First hide all windows, then capture the screenshot, then restore all windows
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [screenshot]
+title Tron v%TRON_VERSION% [stage_0_prep] [screenshot]
 call functions\log.bat "%CUR_DATE% %TIME%    Saving screenshot of the desktop to "%RAW_LOGS%"..."
 if /i %DRY_RUN%==no (
 	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+m
@@ -99,7 +93,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: rkill
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [rkill]
+title Tron v%TRON_VERSION% [stage_0_prep] [rkill]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'rkill'..."
 call functions\log.bat "%CUR_DATE% %TIME%    If script stalls 20 min or more, kill explorer64.exe and explorer.exe with Task Manager"
 if /i %DRY_RUN%==no (
@@ -112,7 +106,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Get pre-run system state (installed programs, complete file list)
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Analyze System State]
+title Tron v%TRON_VERSION% [stage_0_prep] [Analyze System State]
 call functions\log.bat "%CUR_DATE% %TIME%    Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
@@ -125,7 +119,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Do a GUID dump before kicking everything off to make it easier for users to submit them if they forgot to do it before running Tron
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [GUID dump]
+title Tron v%TRON_VERSION% [stage_0_prep] [GUID dump]
 call functions\log.bat "%CUR_DATE% %TIME%    Dumping GUID list to "%RAW_LOGS%"..."
 if /i %DRY_RUN%==no %WMIC% product get identifyingnumber,name,version /all > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -134,7 +128,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Disable system sleep and screen saver
 if /i %DRY_RUN%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Temporarily disable system sleep and screensaver'..."
-	title Tron v%SCRIPT_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
+	title Tron v%TRON_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
 	taskkill /im "caffeine.exe" > nul 2>&1
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
@@ -143,7 +137,7 @@ if /i %DRY_RUN%==no (
 
 
 :: JOB: ProcessKiller
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [ProcessKiller]
+title Tron v%TRON_VERSION% [stage_0_prep] [ProcessKiller]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch Job 'ProcessKiller'..."
 pushd stage_0_prep\processkiller
 if /i %DRY_RUN%==no start "" /wait ProcessKiller.exe /silent
@@ -152,7 +146,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Set system clock via NTP
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [SetSystemClock]
+title Tron v%TRON_VERSION% [stage_0_prep] [SetSystemClock]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
 	:: Make sure time service is started, also force us to allow starting it in Safe Mode
@@ -167,7 +161,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Check WMI and repair if necessary
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Check+Fix WMI]
+title Tron v%TRON_VERSION% [stage_0_prep] [Check+Fix WMI]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
 setlocal enabledelayedexpansion
 if /i %DRY_RUN%==no (
@@ -183,7 +177,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Backup registry
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Registry Backup]
+title Tron v%TRON_VERSION% [stage_0_prep] [Registry Backup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Back up registry' to "%LOGPATH%"..."
 if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\registry_backup" /noconfirmdelete /noprogresswindow
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
@@ -193,7 +187,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: First check if .NET 3.5 is installed, since Stinger relies on it
 reg query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
 if %ERRORLEVEL%==0 (
-	title Tron v%SCRIPT_VERSION% [stage_0_prep] [McAfee Stinger]
+	title Tron v%TRON_VERSION% [stage_0_prep] [McAfee Stinger]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'McAfee Stinger'..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
@@ -204,7 +198,7 @@ if %ERRORLEVEL%==0 (
 
 
 :: JOB: TDSS Killer
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [TDSS Killer]
+title Tron v%TRON_VERSION% [stage_0_prep] [TDSS Killer]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'TDSS Killer'..."
 if /i %DRY_RUN%==no (
 	"stage_0_prep\tdss_killer\TDSSKiller.exe" -l "%TEMP%\tdsskiller.log" -silent -tdlfs -dcexact -accepteula -accepteulaksn
@@ -216,7 +210,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Purge oldest shadow copies
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [Purge oldest shadow copies]
+title Tron v%TRON_VERSION% [stage_0_prep] [Purge oldest shadow copies]
 :: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
 :: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
 :: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
@@ -233,7 +227,7 @@ if %WIN_VER_NUM% geq 6.1 (
 
 
 :: JOB: Reduce SysRestore space
-title Tron v%SCRIPT_VERSION% [stage_0_prep] [System Restore Modifications]
+title Tron v%TRON_VERSION% [stage_0_prep] [System Restore Modifications]
 call functions\log.bat "%CUR_DATE% %TIME%    Reducing max allowed System Restore space to 7%%%% of disk..."
 if /i %DRY_RUN%==no (
 	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
