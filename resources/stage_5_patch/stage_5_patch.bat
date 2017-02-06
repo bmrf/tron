@@ -1,9 +1,9 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 5: Patch stage. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
-::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly it will error out
+::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
+:: Version:       1.1.6 * script:  Update script to support standalone execution
+::                1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
 ::                      ! Minor bug fix; don't display "done" message if no Java installation was detected or updated
 ::                1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
 ::                1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
@@ -19,22 +19,16 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.5
-set STAGE_5_SCRIPT_DATE=2017-01-26
+set STAGE_5_SCRIPT_VERSION=1.1.6
+set STAGE_5_SCRIPT_DATE=2017-02-04
 
-:: Quick check to see if we inherited the appropriate variables from Tron.bat
+:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	color 0c
-	echo.
-	echo  ERROR
-	echo.
-	echo   You cannot run this script directly - it must be 
-	echo   called from Tron.bat during a Tron run.
-	echo.
-	echo   Navigate to Tron's root folder and execute Tron.bat
-	echo.
-	pause
-	exit /b 1
+	:: Load the settings file
+	call functions\tron_settings.bat
+
+	:: Initialize the runtime environment
+	call functions\initialize_environment.bat
 )
 	
 	
@@ -46,7 +40,7 @@ call functions\log.bat "%CUR_DATE% %TIME%   stage_5_patch begin..."
 
 
 :: Prep task: enable MSI installer in Safe Mode
-title Tron v%SCRIPT_VERSION% [stage_5_patch] [Prep]
+title Tron v%TRON_VERSION% [stage_5_patch] [Prep]
 if /i %DRY_RUN%==no (
 	if not "%SAFE_MODE%"=="" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 	net start msiserver >nul 2>&1
@@ -65,7 +59,7 @@ set SEVENZIP_DETECTED=no
 if exist "%ProgramFiles(x86)%\7-Zip" set SEVENZIP_DETECTED=yes
 if exist "%ProgramFiles%\7-Zip" set SEVENZIP_DETECTED=yes
 if %SEVENZIP_DETECTED%==yes (
-	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update 7-Zip]
+	title Tron v%TRON_VERSION% [stage_5_patch] [Update 7-Zip]
 	call functions\log.bat "%CUR_DATE% %TIME%    7-Zip detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
 	setlocal
@@ -81,7 +75,7 @@ set FLASH_DETECTED=no
 if exist "%windir%\SysWOW64\Macromed\Flash" set FLASH_DETECTED=yes
 if exist "%windir%\System32\Macromed\Flash" set FLASH_DETECTED=yes
 if %FLASH_DETECTED%==yes (
-	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Flash Player]
+	title Tron v%TRON_VERSION% [stage_5_patch] [Update Adobe Flash Player]
 	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Flash detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Adobe Flash Player'..."
 	setlocal
@@ -93,7 +87,7 @@ if %FLASH_DETECTED%==yes (
 
 :: JOB: Adobe Acrobat Reader DC
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat Reader DC*" (
-	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Adobe Reader]
+	title Tron v%TRON_VERSION% [stage_5_patch] [Update Adobe Reader]
 	call functions\log.bat "%CUR_DATE% %TIME%    Adobe Acrobat Reader DC detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Acrobat Reader DC'..."
 	setlocal
@@ -110,7 +104,7 @@ set JAVA_DETECTED=no
 if exist "%ProgramFiles(x86)%\Java\jre*" set JAVA_DETECTED=yes
 if exist "%ProgramFiles%\Java\jre*" set JAVA_DETECTED=yes
 if %JAVA_DETECTED%==yes (
-	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Update Java Runtime Environment]
+	title Tron v%TRON_VERSION% [stage_5_patch] [Update Java Runtime Environment]
 	call functions\log.bat "%CUR_DATE% %TIME%    Java Runtime detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update Java Runtime Environment'..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Checking for and removing outdated installations first..."
@@ -160,7 +154,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
 :: JOB: Windows updates
-title Tron v%SCRIPT_VERSION% [stage_5_patch] [Windows Updates]
+title Tron v%TRON_VERSION% [stage_5_patch] [Windows Updates]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
 	if /i %DRY_RUN%==no (
@@ -178,7 +172,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 :: JOB: Rebuild Windows Update base (deflates the SxS store; note that any Windows Updates installed prior to this point will no longer be uninstallable)
 :: Windows 8/2012 and up only
 if %SKIP_DISM_CLEANUP%==no (
-	title Tron v%SCRIPT_VERSION% [stage_5_patch] [Rebuild Windows Update base]
+	title Tron v%TRON_VERSION% [stage_5_patch] [Rebuild Windows Update base]
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'DISM base reset'..."
 	if /i %DRY_RUN%==no (
 		REM 7/2008R2 and up
