@@ -1,13 +1,12 @@
 :: Purpose:       Initializes Tron's environment. Called by Tron.bat at initial launch or by the individual sub-stage scripts when launched manually
 ::                This file determines Tron's overall project version and date
 ::                Do not edit this script
-:: Requirements:  1. Administrator access
-::                2. Safe mode is recommended but not required
+:: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 . Initial write, forked out of v9.9.0 of tron.bat. Version here in the comments refers to THIS SCRIPT and not Tron's version as a project
+:: Version:       10.0.0 . Initial write, forked out of v9.9.0 of tron.bat
 
 
-:: Tron Project version and date. These two variables determine the overall project version and date
+:: Tron Project version and date. These two variables determine the overall project version and date 
 set TRON_VERSION=10.0.0
 set TRON_DATE=2017-02-xx
 
