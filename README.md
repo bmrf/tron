@@ -57,7 +57,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -asu -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se
               -sk -sm -sp -spr -ss -str -sw -udl -v -x] | [-h]
 
     Optional flags (can be combined):
@@ -85,6 +85,8 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
+     
+     -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 
      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 
@@ -153,6 +155,8 @@ Keep in mind the username and password for the email account will be stored in P
 # CHANGE DEFAULTS (advanced)
 
 If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option when used.
+
+These settings are stored in: `\tron\resources\functions\tron_settings.bat`
 
 - To change the master directory where all of Tron's output goes, edit this line:
   ```
@@ -229,9 +233,13 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTO_REBOOT_DELAY=0
   ```
 
-- To skip anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
+- To skip ALL anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
   ```
   set SKIP_ANTIVIRUS_SCANS=no
+  ```
+- To skip custom scripts (stage 8) regardless whether or not `.bat` files are present in the `stage_8_custom_scripts` folder, change this to yes:
+  ```
+  set SKIP_CUSTOM_SCRIPTS=no
   ```
 
 - To skip OEM debloat, change this to `yes`:
@@ -239,7 +247,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_DEBLOAT=no
   ```
 
-- To always skip defrag, regardless whether `C:\` is an SSD or not, change this to `yes`:
+- To always skip defrag (even on mechanical drives; Tron automatically skips SSD defragmentation), change this to yes:
   ```
   set SKIP_DEFRAG=no
   ```
@@ -257,11 +265,6 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To skip Windows Event Log clearing, change this to `yes`:
   ```
   set SKIP_EVENT_LOG_CLEAR=no
-  ```
-
-- To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to everything under the `%WinDir%` directory structure, change this to `yes`:
-  ```
-  set SKIP_FILEPERMS_RESET=no
   ```
 
 - To skip scanning with Kaspersky Virus Rescue Tool (KVRT), change this to `yes`:
@@ -282,11 +285,6 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
   ```
   set SKIP_PAGEFILE_RESET=no
-  ```
-
-- To prevent Tron from granting the SYSTEM and Administrator accounts full permissions to the HKLM, HKCU, and HKCR hives, change this to `yes`:
-  ```
-  set SKIP_REGPERMS_RESET=no
   ```
 
 - To skip scanning with Sophos Anti-Virus (SAV), change this to `yes`:
@@ -339,6 +337,8 @@ Custom scripts work like so:
  - If you want to use supporting batch files but don't want Tron executing them, use the `.cmd` file extension instead of .bat and Tron will ignore them
  
  - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
+ 
+ - Use the `-scs` flag or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
 
 
@@ -354,7 +354,7 @@ Tron and any included subscripts and `.reg` files I've written are free to use/r
 
 # OTHER
 
-I try to keep everything updated. If you notice some of the packages are out of date, PM me on reddit or send me an email (listed above), I typically respond in a day or less.
+I try to respond to messages quickly. If you have a question, suggestion or problem, post it to the subreddit so everyone can get eyes on it. As a last resort you may email me directly.
 
 Hope this is helpful to other PC techs,
 
