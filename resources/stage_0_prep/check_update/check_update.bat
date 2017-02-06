@@ -1,7 +1,9 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 ! Fix bug with missing username in %USERPROFILES% statement. Thanks to /u/TyanColte
+:: Version:       1.0.7 / Replace "SCRIPT" WITH "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
+::                      * Update version comparison code to handle new v10 version string (batch can only do arithmatic comparison, not decimal)
+::                1.0.6 ! Fix bug with missing username in %USERPROFILES% statement. Thanks to /u/TyanColte
 ::                1.0.5 ! Fix edge case where self-destruct code would be incorrectly triggered by re-using Tron's global SELF_DESTRUCT variable
 ::                        check_update.bat now uses its own internal "NUKE_OLD_VERSION" variable to check if we need to cleanup after an update. Thanks /u/wogmail
 ::                1.0.4 + Add missing :self_destruct code and fix sha256sums.txt character encoding. Thanks to /u/botopz
@@ -16,14 +18,14 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.6
-set CHECK_UPDATE_VERSION=2016-11-16
+set CHECK_UPDATE_VERSION=1.0.7
+set CHECK_UPDATE_VERSION=2017-02-06
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
 set REPO_BTSYNC_KEY=BYQYYECDOJPXYA2ZNUDWDN34O2GJHBM47
-set REPO_SCRIPT_DATE=0
-set REPO_SCRIPT_VERSION=0
+set REPO_TRON_DATE=0
+set REPO_TRON_VERSION=0
 set NUKE_OLD_VERSION=no
 
 :: Quick check to see if we inherited the appropriate variables from Tron.bat
@@ -49,36 +51,40 @@ if /i "%LOGFILE%"=="" (
 
 :: wget sha256sums.txt from the repo
 stage_0_prep\check_update\wget.exe %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
-:: Assuming there was no error, go ahead and extract version number into REPO_SCRIPT_VERSION, and release date into REPO_SCRIPT_DATE
+:: Assuming there was no error, go ahead and extract version number into REPO_TRON_VERSION, and release date into REPO_TRON_DATE
 if /i %ERRORLEVEL%==0 (
 	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%b
 	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%a
 )
 if /i %ERRORLEVEL%==0 (
-	set REPO_SCRIPT_VERSION=%WORKING:~1,6%
-	set REPO_SCRIPT_DATE=%WORKING2%
+	set REPO_TRON_VERSION=%WORKING:~1,6%
+	set REPO_TRON_DATE=%WORKING2%
 )
-:: Trigger warning if we couldn't check for an update
+
+:: Trigger a warning if we couldn't check for an update
 :: We don't log anything about it yet because the log is wiped at the start of each Tron run.
 :: There is a check immediately after the log header for the update checker return code, and this is where we log it if it failed
 if not %ERRORLEVEL%==0 set WARNINGS_DETECTED=yes_update_check_failed
 
 
 :: Reset window title since wget clobbers it
-title Tron v%SCRIPT_VERSION% (%SCRIPT_DATE%)
+title Tron v%TRON_VERSION% (%TRON_DATE%)
 
+
+:: If we're just doing a config dump we don't want to be prompted to updated, so just skip everything past this point
+if /i %CONFIG_DUMP%==yes goto :eof
 
 :: Notify if an update was found
 SETLOCAL ENABLEDELAYEDEXPANSION
-if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
+if /i %TRON_VERSION:.=% LSS %REPO_TRON_VERSION:.=% (
 	set CHOICE=y
 	color 8a
 	cls
 	echo.
 	echo  ^^! A newer version of Tron is available on the official repo.
 	echo.
-	echo    Your version:   %SCRIPT_VERSION% ^(%SCRIPT_DATE%^)
-	echo    Latest version: %REPO_SCRIPT_VERSION% ^(%REPO_SCRIPT_DATE%^)
+	echo    Your version:   %TRON_VERSION% ^(%SCRIPT_DATE%^)
+	echo    Latest version: %REPO_TRON_VERSION% ^(%REPO_TRON_DATE%^)
 	echo.
 	echo    Option 1: Sync directly from repo using BT Sync read-only key:
 	echo     %REPO_BTSYNC_KEY%
@@ -96,7 +102,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 		echo.
 		echo %TIME%   Downloading new version to the desktop, please wait...
 		echo.
-		stage_0_prep\check_update\wget.exe "%REPO_URL%/Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe" -O "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+		stage_0_prep\check_update\wget.exe "%REPO_URL%/Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe" -O "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe"
 		echo.
 		echo %TIME%   Download finished.
 		echo.
@@ -120,7 +126,7 @@ if /i %SCRIPT_VERSION% LSS %REPO_SCRIPT_VERSION% (
 			echo.
 			pause
 			REM Clean up after ourselves
-			del /f /q "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_SCRIPT_VERSION% (%REPO_SCRIPT_DATE%).exe"
+			del /f /q "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe"
 			del /f /q "%TEMP%\sha256sums.txt"
 			exit /b 1
 		)
@@ -142,3 +148,8 @@ if /i %NUKE_OLD_VERSION%==yes (
 	rmdir /s /q "%CWD%"
 	exit
 )
+
+
+
+
+:eof
