@@ -2,8 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 * script: Update script to support standalone execution
-::                      + windows updates: Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
+:: Version:       1.1.6 * Update script to support standalone execution
+::                      + Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
 ::                      / change :skip_updates and associated GOTO statements to :skip_application_updates
 ::                      / change various text and strings referring to SKIP_UPDATES to SKIP_APP_UPDATES
 ::                1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
@@ -53,7 +53,7 @@ if /i %DRY_RUN%==no (
 
 :: Prep task: check for skip application patches (-sap) flag or variable and skip if used
 if /i %SKIP_APP_PATCHES%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_APP_PATCHES (-sap) set. Skipping all app patches."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_APP_PATCHES (-sap) set. Skipping all application patches."
 	goto skip_application_patches
 )
 
