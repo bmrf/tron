@@ -22,13 +22,15 @@ I got tired of running these utilities manually and decided to just script every
 
 7. [Executing Custom/3rd-party Scripts](#executing-3rd-party-custom-scripts)
 
-7. [Pack Integrity](#integrity)
+8. [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates)
 
-8. [License](#license)
+9. [Pack Integrity](#integrity)
 
-9. [Contact Info](#other)
+10. [License](#license)
 
-10. [Full description of ALL actions](#full-tron-description)
+11. [Contact Info](#other)
+
+12. [Full description of ALL actions](#full-tron-description)
 
 # USE
 
@@ -348,7 +350,23 @@ Custom scripts work like so:
  
  - Use the `-scs` flag or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
+# EXECUTING BUNDLED WSUS OFFLINE UPDATES
 
+Tron supports using bundled WSUS Offline update packages over the traditional online update method.
+
+To add offline update packages to Tron:
+
+1. Download [WSUS Offline](http://download.wsusoffline.net/)
+
+2. Run it and have it download the updates you want
+
+3. Copy the "client" folder (usually `\wsusoffline\client`) to `\tron\resources\stage_5_patch\wsus_offline`
+
+4. Make sure that "Update.cmd" is present in this path: `\tron\resources\stage_5_patch\wsus_offline\client\Update.cmd`
+
+5. Run Tron, it should automatically detect and use the offline updates
+
+If for some reason you want to skip the bundled update package on a certain system, use the `-swo` switch or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_WSUS_OFFLINE` to yes, and Tron will use the regular online update method for that run.
 
 # INTEGRITY
 
