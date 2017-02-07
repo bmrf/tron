@@ -596,7 +596,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sap` switch to skip this action
 
-5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if present
+5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, Tron executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if they're present in the relevant directory. See [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates) above for more information on using offline update packages with Tron
 
 6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
 
