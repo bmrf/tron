@@ -7,8 +7,9 @@
 :: Version:       1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
 ::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
-::                      + Add flag -scs and associated variable (SKIP_CUSTOM_SCRIPTS) to allow forcibly skipping Stage 8 (custom scripts). This only has 
+::                      + Add flag -scs and associated SKIP_CUSTOM_SCRIPTS variable to allow forcibly skipping Stage 8 (custom scripts). This only has 
 ::                        effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
+::                      / Change -sp flag and associated SKIP_PATCHES variable to -sap and SKIP_APP_PATCHES, respectively
 ::                      - Move task "Enable F8 Key on Bootup" from tron.bat to prerun_checks_and_tasks.bat
 ::                      * Update welcome screen with note about Stage 8: Custom scripts
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
@@ -36,7 +37,7 @@
 ::                      -se  Skip Event Log backup and clear (don't clear Windows Event Logs)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 ::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
-::                      -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
+::                      -sap Skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
 ::                      -ss  Skip Sophos Anti-Virus (SAV) scan
 ::                      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
@@ -90,7 +91,7 @@ if /i %HELP%==yes (
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
 	echo   Usage: %0%.bat ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
-	echo                -sdu -se -sk -sm -sp -spr -ss -str -sw -udl -v -x^] ^| ^[-h^]
+	echo                -sdu -se -sk -sm -sap -spr -ss -str -sw -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
@@ -114,7 +115,7 @@ if /i %HELP%==yes (
 	echo    -se  Skip Event Log backup and clear ^(don't clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -sp  Skip patches ^(do not patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
+	echo    -sap Skip application patches ^(don't patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
@@ -222,6 +223,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
+	echo    SKIP_APP_PATCHES:       %SKIP_APP_PATCHES%
 	echo    SKIP_CUSTOM_SCRIPTS:    %SKIP_CUSTOM_SCRIPTS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
@@ -230,7 +232,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
-	echo    SKIP_PATCHES:           %SKIP_PATCHES%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
@@ -941,7 +942,7 @@ for %%i in (%*) do (
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
-	if /i %%i==-sp set SKIP_PATCHES=yes
+	if /i %%i==-sap set SKIP_APP_PATCHES=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
