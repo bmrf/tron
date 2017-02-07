@@ -59,7 +59,7 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sb -sd -sdc -sdu
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc -sdu
               -se -sk -sm -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional flags (can be combined):
@@ -360,9 +360,9 @@ To add offline update packages to Tron:
 
 2. Run it and have it download the updates you want
 
-3. Copy the "client" folder (usually `\wsusoffline\client`) to `\tron\resources\stage_5_patch\wsus_offline`
+3. Copy the `client` folder (usually at `\wsusoffline\client`) to `\tron\resources\stage_5_patch\wsus_offline\client\`
 
-4. Make sure that "Update.cmd" is present in this path: `\tron\resources\stage_5_patch\wsus_offline\client\Update.cmd`
+4. Make sure that `Update.cmd` is present in this path: `\tron\resources\stage_5_patch\wsus_offline\client\Update.cmd`
 
 5. Run Tron, it should automatically detect and use the offline updates
 
