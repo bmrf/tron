@@ -2,7 +2,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 * script:  Update script to support standalone execution
+:: Version:       1.1.6 * script: Update script to support standalone execution
+::                      + windows updates: Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
+::                      / change :skip_updates and associated GOTO statements to :skip_application_updates
+::                      / change various text and strings referring to SKIP_UPDATES to SKIP_APP_UPDATES
 ::                1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
 ::                      ! Minor bug fix; don't display "done" message if no Java installation was detected or updated
 ::                1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
@@ -20,21 +23,21 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_5_SCRIPT_VERSION=1.1.6
-set STAGE_5_SCRIPT_DATE=2017-02-04
+set STAGE_5_SCRIPT_DATE=2017-02-07
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd ..
-	
+
 	:: Load the settings file
 	call functions\tron_settings.bat
 
 	:: Initialize the runtime environment
 	call functions\initialize_environment.bat
 )
-	
-	
-	
+
+
+
 ::::::::::::::::::::
 :: STAGE 5: Patch :: // Begin jobs
 ::::::::::::::::::::
@@ -48,10 +51,10 @@ if /i %DRY_RUN%==no (
 	net start msiserver >nul 2>&1
 )
 
-:: Prep task: check for skip patches (-sp) flag or variable and skip if used
-if /i %SKIP_PATCHES%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_PATCHES (-sp) set. Skipping all app patches."
-	goto skip_patches
+:: Prep task: check for skip application patches (-sap) flag or variable and skip if used
+if /i %SKIP_APP_PATCHES%==yes (
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_APP_PATCHES (-sap) set. Skipping all app patches."
+	goto skip_application_patches
 )
 
 
@@ -65,7 +68,7 @@ if %SEVENZIP_DETECTED%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    7-Zip detected, updating..."
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Update 7-Zip'..."
 	setlocal
-	if /i %DRY_RUN%==no call "stage_5_patch\7-Zip\7-Zip Installer.bat"	
+	if /i %DRY_RUN%==no call "stage_5_patch\7-Zip\7-Zip Installer.bat"
 	endlocal
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
@@ -151,23 +154,35 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
 
 
-:: JOB: Skip point for if -sp (skip patches) flag was used
-:skip_patches
+:: JOB: Skip point for if -sap (skip application patches) flag was used
+:skip_application_patches
 
 
 :: JOB: Windows updates
-title Tron v%TRON_VERSION% [stage_5_patch] [Windows Updates]
-call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
 if /i %SKIP_WINDOWS_UPDATES%==no (
-	if /i %DRY_RUN%==no (
-		sc config wuauserv start= demand>> "%LOGPATH%\%LOGFILE%" 2>NUL
-		net start wuauserv >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		wuauclt /detectnow /updatenow >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		ping 127.0.0.1 -n 15 >nul
+	title Tron v%TRON_VERSION% [stage_5_patch] [Windows Updates]
+	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Install Windows updates'..."
+
+	:: Detect if bundled WSUS Offline updates are included. If so, execute those instead
+	if exist stage_5_patch\wsus_offline\client\Update.cmd (
+		if /i %SKIP_WSUS_OFFLINE%==no (
+			title Tron v%TRON_VERSION% [stage_5_patch] [WSUS Offline Updates]
+			call functions\log.bat "%CUR_DATE% %TIME% !  WSUS Offline updates detected. Using bundled update package..."
+			if /i %DRY_RUN%==no call "%WSUS_OFFLINE_CMD%" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		) else (
+			call functions\log.bat "%CUR_DATE% %TIME% !  WSUS Offline updates detected, but SKIP_WSUS_OFFLINE (-swo) set."
+			call functions\log.bat "%CUR_DATE% %TIME%    Using regular online update method..."
+			if /i %DRY_RUN%==no (
+				sc config wuauserv start= demand>> "%LOGPATH%\%LOGFILE%" 2>NUL
+				net start wuauserv >> "%LOGPATH%\%LOGFILE%" 2>NUL
+				wuauclt /detectnow /updatenow >> "%LOGPATH%\%LOGFILE%" 2>NUL
+				ping 127.0.0.1 -n 15 >nul
+			)
+		)
 	)
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 ) else (
-	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-sw) set. Skipping Windows Updates."
+	call functions\log.bat "%CUR_DATE% %TIME% !  SKIP_WINDOWS_UPDATES (-swu) set. Skipping all Windows Update methods."
 )
 
 
