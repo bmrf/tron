@@ -8,3 +8,12 @@ it will skip online updates and use the bundled updates instead.
 
 You can get WSUS Offline update here:                  http://download.wsusoffline.net/
 Instruction thread on using WSUS Offline with Tron:    https://www.reddit.com/r/TronScript/comments/5dexoi/invoke_wsus_offline_from_tron_before_windows/
+
+
+Basically:
+
+1. Download WSUS Offline
+2. Run it and have it download the applicable updates you want
+3. Copy the "client" folder (usually in \wsusoffline\client) to \tron\resources\stage_5_patch\wsus_offline
+4. Make sure that "Update.cmd" is present in the client folder
+5. Run Tron, it should automatically detect and use the offline updates
