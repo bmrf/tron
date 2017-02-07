@@ -57,8 +57,8 @@ Depending how badly the system is infected, it could take anywhere from 3 to 10 
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sb -sd -sdc -sdu -se
-              -sk -sm -sp -spr -ss -str -sw -udl -v -x] | [-h]
+    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sb -sd -sdc -sdu
+              -se -sk -sm -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional flags (can be combined):
 
@@ -85,7 +85,9 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -r   Reboot automatically (auto-reboot 15 seconds after completion)
 
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
-     
+
+     -sap Skip application patches (don't patch Java Runtime, Adobe Flash or Reader)
+
      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 
      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
@@ -102,15 +104,15 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
 
-     -sp  Skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash or Reader)
-
      -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
      -ss  Skip Sophos Anti-Virus (SAV) scan
 
      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
 
-     -sw  Skip Windows Updates (do not attempt to run Windows Update)
+     -swu Skip Windows Updates entirely (ignore both WSUS Offline and online methods)
+
+     -swo Skip only bundled WSUS Offline updates (online updates still attempted)
      
      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 
@@ -123,7 +125,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -h   Display help text
 
 
-\* There is probably no -UPM flag
+\* There is probably no -upm flag
 
 
 # SCRIPT INTERRUPTION
@@ -237,6 +239,12 @@ These settings are stored in: `\tron\resources\functions\tron_settings.bat`
   ```
   set SKIP_ANTIVIRUS_SCANS=no
   ```
+   
+- To skip application patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
+  ```
+  set SKIP_APP_PATCHES=no
+  ```
+
 - To skip custom scripts (stage 8) regardless whether or not `.bat` files are present in the `stage_8_custom_scripts` folder, change this to yes:
   ```
   set SKIP_CUSTOM_SCRIPTS=no
@@ -277,11 +285,6 @@ These settings are stored in: `\tron\resources\functions\tron_settings.bat`
   set SKIP_MBAM_INSTALL=no
   ```
 
-- To skip patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
-  ```
-  set SKIP_PATCHES=no
-  ```
-
 - To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
   ```
   set SKIP_PAGEFILE_RESET=no
@@ -297,7 +300,12 @@ These settings are stored in: `\tron\resources\functions\tron_settings.bat`
   set SKIP_TELEMETRY_REMOVAL=no
   ```
 
-- To skip Windows Updates (don't attempt to run Windows Update) change this to `yes`:
+- To skip only bundled WSUS Offline updates (online updates still attempted) change this to `yes`:
+  ```
+  set SKIP_WSUS_OFFLINE=no
+  ```
+
+- To skip Windows Updates entirely (ignore both WSUS Offline and online methods), change this to `yes`:
   ```
   set SKIP_WINDOWS_UPDATES=no
   ```
@@ -562,15 +570,15 @@ Master script that launches everything else. It performs many actions on its own
 
 Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
 
-1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Use the `-sp` switch to skip this action
+1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Use the `-sap` switch to skip this action
 
-2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sp` switch to skip this action
+2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sap` switch to skip this action
 
-3. **Adobe Reader**: Standard PDF reader. Use the `-sp` switch to skip this action
+3. **Adobe Reader**: Standard PDF reader. Use the `-sap` switch to skip this action
 
-4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sp` switch to skip this action
+4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sap` switch to skip this action
 
-5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-sw` switch to skip this action
+5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if present
 
 6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
 
