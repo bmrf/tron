@@ -7,7 +7,7 @@
 
 :: Script version
 set TRON_SETTINGS_SCRIPT_VERSION=1.0.0
-set TRON_SETTINGS_SCRIPT_DATE=2014-02-06
+set TRON_SETTINGS_SCRIPT_DATE=2014-02-07
 
 
 :::::::::::::::
@@ -57,6 +57,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
+:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
 :: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
@@ -65,7 +66,6 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log backup and clear
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
 :: SKIP_MBAM_INSTALL      (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
-:: SKIP_PATCHES           (-sp)  = Set to yes to skip patches (do not patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip Telemetry Removal (just turn telemetry off instead of removing it)
@@ -84,6 +84,7 @@ set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_REBOOT_DELAY=0
 set SKIP_ANTIVIRUS_SCANS=no
+set SKIP_APP_PATCHES=no
 set SKIP_CUSTOM_SCRIPTS=no
 set SKIP_DEBLOAT=no
 set SKIP_DEFRAG=no
@@ -92,7 +93,6 @@ set SKIP_DEBLOAT_UPDATE=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_KASPERSKY_SCAN=no
 set SKIP_MBAM_INSTALL=no
-set SKIP_PATCHES=no
 set SKIP_PAGEFILE_RESET=no
 set SKIP_SOPHOS_SCAN=no
 set SKIP_TELEMETRY_REMOVAL=no
