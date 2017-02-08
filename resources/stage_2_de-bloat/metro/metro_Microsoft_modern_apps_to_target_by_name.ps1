@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.2 - Disable removal of Calendar and Mail app. Thanks to /u/Reynbou
+Version:       1.0.2 - Remove Calendar and Mail app from active target list. Thanks to /u/Reynbou
                1.0.1 + Add script version and date variables to support automatic updates at Tron runtime
 #>
 $ErrorActionPreference = "SilentlyContinue"
@@ -72,7 +72,7 @@ $PackagesToRemove = (
     # 'Microsoft.WindowsAlarms',                # 'Alarms and Clock' app
     # 'Microsoft.WindowsCalculator',            # Calculator app
     # 'Microsoft.WindowsCamera',                # Camera app
-	# 'microsoft.windowscommunicationsapps'     # 'Calendar and Mail' app
+    # 'microsoft.windowscommunicationsapps'     # 'Calendar and Mail' app
     # 'Microsoft.WindowsMaps',                  # Maps app
     # 'Microsoft.WindowsSoundRecorder',         # Sound Recorder app
     # 'Microsoft.WindowsStore',                 # Windows Store
