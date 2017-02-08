@@ -165,7 +165,7 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Check WMI and repair if necessary
 title Tron v%TRON_VERSION% [stage_0_prep] [Check+Fix WMI]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Check WMI health'..."
-setlocal enabledelayedexpansion
+SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no (
 	%WMIC% timezone >NUL
 	if /i not !ERRORLEVEL!==0 (
@@ -174,7 +174,7 @@ if /i %DRY_RUN%==no (
 		call stage_0_prep\repair_wmi\repair_wmi.bat
 	)
 )
-setlocal disabledelayedexpansion
+ENDLOCAL DISABLEDELAYEDEXPANSION
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
