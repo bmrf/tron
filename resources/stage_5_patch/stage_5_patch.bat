@@ -23,7 +23,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_5_SCRIPT_VERSION=1.1.6
-set STAGE_5_SCRIPT_DATE=2017-02-07
+set STAGE_5_SCRIPT_DATE=2017-02-08
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -75,7 +75,8 @@ if %SEVENZIP_DETECTED%==yes (
 
 
 :: JOB: Adobe Flash Player
-:: spawn FLASH_DETECTED variable, flip it if an existing Flash installation is detected
+:: Basic check for existence of a Flash installation. If ANY Flash installation is detected, launch the update script
+:: The update script has additional checks to only update existing versions (e.g. Chrome vs. Active X) if they exist on the machine
 set FLASH_DETECTED=no
 if exist "%windir%\SysWOW64\Macromed\Flash" set FLASH_DETECTED=yes
 if exist "%windir%\System32\Macromed\Flash" set FLASH_DETECTED=yes
