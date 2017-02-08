@@ -14,7 +14,7 @@ set PRERUN_CHECKS_SCRIPT_DATE=2017-02-06
 :: CHECKS ::
 ::::::::::::
 
-:: Admin rights check
+:: CHECK: Admin rights
 :: Skip this check if we're in Safe Mode because Safe Mode command prompts always start with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
@@ -36,10 +36,10 @@ if /i not "%SAFE_MODE%"=="yes" (
 		exit 1
 	)
 )
-SETLOCAL DISABLEDELAYEDEXPANSION
+ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: Check if we're on an unsupported OS. If we are, complain to the user and bail out
+:: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
 if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 	if /i %DEV_MODE%==no (
 		color 0c
@@ -60,7 +60,7 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 )
 
 
-:: Make sure we're not running from the %TEMP% directory
+:: CHECK: Make sure we're not running from the %TEMP% directory
 if "%~dp0"=="%TEMP%\tron\" (
 	color 0c
 	cls
@@ -81,7 +81,7 @@ if "%~dp0"=="%TEMP%\tron\" (
 )
 
 
-:: Make sure we're not running from %SystemDrive%\TEMP
+:: CHECK: Make sure we're not running from %SystemDrive%\TEMP
 if "%~dp0"=="%SystemDrive%\temp\tron\" (
 	color 0c
 	cls
