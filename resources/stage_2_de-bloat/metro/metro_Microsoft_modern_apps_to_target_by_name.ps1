@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
+Version:       1.0.2 - Disable removal of Calendar and Mail app. Thanks to /u/Reynbou
+               1.0.1 + Add script version and date variables to support automatic updates at Tron runtime
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +13,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.1"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-01-10"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.0.2"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-02-08"
 
 
 ###########
@@ -39,7 +40,7 @@ $PackagesToRemove = (
     'Microsoft.Getstarted',                     # 'Get Started' link
     'Microsoft.Messaging',                      # 'Messaging' app
     'Microsoft.MicrosoftJackpot',               # 'Jackpot' app
-    'Microsoft.MicrosoftJigsaw',                
+    'Microsoft.MicrosoftJigsaw',                # 'Jigsaw' app
     'Microsoft.MicrosoftOfficeHub',             
     'Microsoft.MicrosoftSudoku',                
     'Microsoft.MovieMoments',                   # imported from stage_2_de-bloat.bat
@@ -60,7 +61,6 @@ $PackagesToRemove = (
     'MicrosoftMahjong',                         # 'Mahjong' game
     'Windows.ContactSupport',                   
     'king.com.CandyCrushSodaSaga',              # Candy Crush app
-    'microsoft.windowscommunicationsapps'       # 'Calendar and Mail' app
 )
 
 # Inactive identifers
@@ -72,6 +72,7 @@ $PackagesToRemove = (
     # 'Microsoft.WindowsAlarms',                # 'Alarms and Clock' app
     # 'Microsoft.WindowsCalculator',            # Calculator app
     # 'Microsoft.WindowsCamera',                # Camera app
+	# 'microsoft.windowscommunicationsapps'     # 'Calendar and Mail' app
     # 'Microsoft.WindowsMaps',                  # Maps app
     # 'Microsoft.WindowsSoundRecorder',         # Sound Recorder app
     # 'Microsoft.WindowsStore',                 # Windows Store
