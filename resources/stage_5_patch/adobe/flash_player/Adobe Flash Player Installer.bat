@@ -1,9 +1,9 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5-TRON * Add support for standalone execution
-::                           * Improve existing installation detection; add granular tests per version. Thanks to /u/nubduck
-::                           * Catch additional Scheduled Task that gets installed
+:: Version:       1.0.5-TRON * Script now supports standalone execution (for example if you just want to update all versions of Flash on the machine)
+::                           * Improve existing Flash installation detection; add granular tests per version. Thanks to /u/nubduck
+::                           * Catch additional Flash Updater scheduled task that gets installed
 ::                1.0.4-TRON * Loopify browser process kill section
 ::                1.0.3-TRON + Add installer for Chrome version of Flash (PPAPI)
 ::                1.0.2-TRON * Make version-agnostic. Now just drop the latest Flash installers, named appropriately, in the same directory as this script
@@ -13,9 +13,6 @@
 ::                             Remove many items not necessary for Tron
 ::                             Script inherits log parameters when called by Tron
 @echo off
-
-
-
 
 
 :::::::::::::::::::::
