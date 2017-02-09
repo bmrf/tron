@@ -8,7 +8,7 @@
 ::                1.0.3-TRON + Add installer for Chrome version of Flash (PPAPI)
 ::                1.0.2-TRON * Make version-agnostic. Now just drop the latest Flash installers, named appropriately, in the same directory as this script
 ::                1.0.1-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
-::                           * Replace all hard-coded system file paths with relevant variable for better portability
+::                           * Replace all hard-coded system paths with relevant variables for better portability
 ::                1.0.0-TRON + Initial build for Tron, modified from PDQ Deploy pack installer version
 ::                             Remove many items not necessary for Tron
 ::                             Script inherits log parameters when called by Tron
@@ -19,17 +19,19 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set SCRIPT_VERSION=1.0.5-TRON
-set SCRIPT_UPDATED=2017-02-08
+set SCRIPT_UPDATED=2017-02-09
+
+:: Get in the Flash directory
+pushd %~dp0
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	pushd ..
 
 	:: Load the settings file
-	call functions\tron_settings.bat
+	call ..\..\..\functions\tron_settings.bat
 
 	:: Initialize the runtime environment
-	call functions\initialize_environment.bat
+	call ..\..\..\functions\initialize_environment.bat
 )
 
 :: Flash installation flags
@@ -40,8 +42,6 @@ set FLASH_ACTIVEX_DETECTED=no
 set FLASH_CHROME_DETECTED=no
 set FLASH_FIREFOX_DETECTED=no
 
-:: Get in the Flash directory
-pushd %~dp0
 
 
 ::::::::::::::::::
@@ -80,7 +80,7 @@ if %FLASH_CHROME_DETECTED%==yes (
 if %FLASH_FIREFOX_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%Plugin'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_24_npapi.msi" %FLAGS%
+	msiexec /i "install_flash_player_24_plugin.msi" %FLAGS%
 )
 
 
@@ -107,6 +107,8 @@ if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
 	taskkill /im "acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del /f /q "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 )
+
+popd
 
 :: Return exit code to SCCM/PDQ Deploy/Tron/etc
 exit /B %EXIT_CODE%
