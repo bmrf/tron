@@ -19,31 +19,32 @@ Version number legend:
 #########################
 Tron project version:              v10.0.0
 Significant changes:
- - All Tron configuration options moved out of tron.bat into this file: \tron\resources\functions\tron_settings.bat
+ - Tron now supports using bundled WSUS Offline update packages. Read the instructions file or Github readme for information on how to use WSUS Offline with Tron
+ - All Tron configuration options moved out of tron.bat and into: \tron\resources\functions\tron_settings.bat
    Use this to change defaults (or just drop your own custom settings file over top of the default one)
-
- - Tron project version moved out of tron.bat into a new file:          \tron\resources\functions\initialize_environment.bat
- - Most Tron prep and checks moved out of tron.bat into a new file:     \tron\resources\functions\prerun_prep_and_checks.bat
+ - Tron project version moved out of tron.bat and into:           \tron\resources\functions\initialize_environment.bat
+ - Most Tron prep and checks moved out of tron.bat and into:      \tron\resources\functions\prerun_prep_and_checks.bat
 
  - All sub-stage scripts now support standalone execution (Tron directory structure and supporting files must still be intact). Use at your own risk
  - New -scs switch and associated SKIP_CUSTOM_SCRIPTS variable. Use this to force Tron to always skip Stage 8 even if custom scripts are present
  - New -swo switch and associated SKIP_WSUS_OFFLINE variable. Use this to force Tron to ignore WSUS Offline update files if they're present
- - -sw switch renamed to -swu
- - -sp switch renamed to -sap
+ - Rename -sp switch to -sap
+ - Rename -sw switch to -swu
 
 
  * tron.bat                        v1.0.0
-    * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
-      Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
-    + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
-    + Add switch -scs and associated SKIP_CUSTOM_SCRIPTS variable to allow forcibly skipping Stage 8 (custom scripts). This only has
-      effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
-    + Add switch -swo and associated SKIP_WSUS_OFFLINE variable to allow forcibly skipping bundled WSUS Offline updates even if they're
-      present in stage_5_patch\wsus_offline\client\Update.cmd. Online Windows Updates will still be attempted.
-    / Change -sp switch and associated SKIP_PATCHES variable to -sap and SKIP_APP_PATCHES to be consistent with other skip switches
-    / Change -sw switch (SKIP_WINDOWS_UPDATE) to -swu to be consistent with other skip switches
-    - Move task "Enable F8 Key on Bootup" from tron.bat to prerun_checks_and_tasks.bat
-    * Update welcome screen with note about Stage 8: Custom scripts
+     * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
+       Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
+     + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
+     + Add switch -scs and associated SKIP_CUSTOM_SCRIPTS variable to allow forcibly skipping Stage 8 (custom scripts). This only has
+       effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
+     + Add switch -swo and associated SKIP_WSUS_OFFLINE variable to allow forcibly skipping bundled WSUS Offline updates even if they're
+       present in stage_5_patch\wsus_offline\client\Update.cmd. Online Windows Updates will still be attempted
+     / Change -sp switch and associated SKIP_PATCHES variable to -sap and SKIP_APP_PATCHES to be consistent with other skip switches
+     / Change -sw switch (SKIP_WINDOWS_UPDATE) to -swu to be consistent with other skip switches
+     - Move task "Enable F8 Key on Bootup" to prerun_checks_and_tasks.bat
+     - Move task "Create log directories if they don't exist" to initialize_environment.bat
+     * Update welcome screen with note about Stage 8: Custom scripts
 
 
 functions
@@ -61,7 +62,8 @@ functions
 
 Stage 0: Prep
  * stage_0_prep.bat                v1.1.6
-    * Update script to support standalone execution
+     * script: Update script to support standalone execution
+     ! erunt:  Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
 
  * check_update.bat                v1.0.7
  . check_update_debloat_lists.bat  v1.1.0
@@ -123,13 +125,13 @@ Stage 5: Patch
     / change various text and strings referring to SKIP_UPDATES to SKIP_APP_UPDATES
 
  . 7-Zip                           v16.04        (multi-language)
- * Adobe Flash Player              v24.0.0.186   (language ignored)
+ * Adobe Flash Player              v24.0.0.194   (language ignored)
     * Flash installation script now supports standalone execution (for example if you just want to update all versions of Flash on the machine)
     * Improve existing Flash installation detection; add granular tests per version. Thanks to /u/nubduck
     * Catch additional Flash Updater scheduled task that gets installed
 
  * Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
-    * Update installation script to block the stupid plugin Adobe loads without permission into Chrome
+    * Update installation script to block the stupid plugin Adobe loads into Chrome without permission
 
  . Java Runtime Environment        8u121         (language ignored)
  . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
