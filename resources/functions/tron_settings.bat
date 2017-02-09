@@ -7,7 +7,7 @@
 
 :: Script version
 set TRON_SETTINGS_SCRIPT_VERSION=1.0.0
-set TRON_SETTINGS_SCRIPT_DATE=2014-02-07
+set TRON_SETTINGS_SCRIPT_DATE=2017-02-09
 
 
 :::::::::::::::
@@ -69,7 +69,8 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip Telemetry Removal (just turn telemetry off instead of removing it)
-:: SKIP_WINDOWS_UPDATES   (-sw)  = Set to yes to skip Windows Updates
+:: SKIP_WINDOWS_UPDATES   (-swu) = Set to yes to skip Windows Updates entirely (ignore both WSUS Offline and online methods)
+:: SKIP_WSUS_OFFLINE      (-swo) = Set to yes to skip only bundled WSUS Offline updates (online updates still attempted)
 :: UPLOAD_DEBUG_LOGS      (-udl) = Upload debug logs. Send tron.log and the system GUID dump to the Tron developer. Please use this if possible, logs are extremely helpful in Tron development
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
@@ -97,6 +98,7 @@ set SKIP_PAGEFILE_RESET=no
 set SKIP_SOPHOS_SCAN=no
 set SKIP_TELEMETRY_REMOVAL=no
 set SKIP_WINDOWS_UPDATES=no
+set SKIP_WSUS_OFFLINE=no
 set UPLOAD_DEBUG_LOGS=no
 set UNICORN_POWER_MODE=off
 set VERBOSE=no
