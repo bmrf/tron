@@ -3,6 +3,7 @@
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.6 * script: Update script to support standalone execution
+::                      ! erunt:  Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
 ::                1.1.5 * Update NTP server commands with ,0x8 suffix to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
 ::                1.1.4 ! Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode. Why? Because Win10 blocks system restore point creation in Safe Mode. Why? Because Microsoft
 ::                      * Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary one
@@ -29,7 +30,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_0_SCRIPT_VERSION=1.1.6
-set STAGE_0_SCRIPT_DATE=2017-02-04
+set STAGE_0_SCRIPT_DATE=2017-02-09
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -132,7 +133,7 @@ if /i %DRY_RUN%==no (
 	call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Temporarily disable system sleep and screensaver'..."
 	title Tron v%TRON_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
-	taskkill /im "caffeine.exe" > nul 2>&1
+	taskkill /im "caffeine.exe" >nul 2>&1
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	call functions\log.bat "%CUR_DATE% %TIME%    Done."
 )
@@ -181,7 +182,10 @@ call functions\log.bat "%CUR_DATE% %TIME%    Done."
 :: JOB: Backup registry
 title Tron v%TRON_VERSION% [stage_0_prep] [Registry Backup]
 call functions\log.bat "%CUR_DATE% %TIME%    Launch job 'Back up registry' to "%LOGPATH%"..."
-if /i %DRY_RUN%==no stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\registry_backup" /noconfirmdelete /noprogresswindow
+if /i %DRY_RUN%==no (
+	start "" stage_0_prep\backup_registry\erunt.exe "%LOGPATH%\registry_backup" /noconfirmdelete /noprogresswindow
+	ping 127.0.0.1 -n 15 >nul
+)
 call functions\log.bat "%CUR_DATE% %TIME%    Done."
 
 
