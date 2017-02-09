@@ -7,10 +7,14 @@
 :: Version:       1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
 ::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
-::                      + Add flag -scs and associated SKIP_CUSTOM_SCRIPTS variable to allow forcibly skipping Stage 8 (custom scripts). This only has 
+::                      + Add switch -scs and associated SKIP_CUSTOM_SCRIPTS variable to allow forcibly skipping Stage 8 (custom scripts). This only has
 ::                        effect if .bat files exist in the stage_8_custom_scripts directory. If nothing is there then this option has no effect
-::                      / Change -sp flag and associated SKIP_PATCHES variable to -sap and SKIP_APP_PATCHES, respectively
-::                      - Move task "Enable F8 Key on Bootup" from tron.bat to prerun_checks_and_tasks.bat
+::                      + Add switch -swo and associated SKIP_WSUS_OFFLINE variable to allow forcibly skipping bundled WSUS Offline updates even if they're
+::                        present in stage_5_patch\wsus_offline\client\Update.cmd. Online Windows Updates will still be attempted.
+::                      / Change -sp switch and associated SKIP_PATCHES variable to -sap and SKIP_APP_PATCHES to be consistent with other skip switches
+::                      / Change -sw switch (SKIP_WINDOWS_UPDATE) to -swu to be consistent with other skip switches
+::                      - Move task "Enable F8 Key on Bootup" to prerun_checks_and_tasks.bat
+::                      - Move task "Create log directories if they don't exist" to initialize_environment.bat
 ::                      * Update welcome screen with note about Stage 8: Custom scripts
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
 ::
@@ -29,6 +33,7 @@
 ::                      -p   Preserve power settings (don't reset to Windows default)
 ::                      -r   Reboot automatically 15 seconds after script completion
 ::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
+::                      -sap Skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 ::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 ::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
@@ -37,11 +42,11 @@
 ::                      -se  Skip Event Log backup and clear (don't clear Windows Event Logs)
 ::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 ::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
-::                      -sap Skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash or Reader)
 ::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
 ::                      -ss  Skip Sophos Anti-Virus (SAV) scan
 ::                      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
-::                      -sw  Skip Windows Updates (do not attempt to run Windows Update)
+::                      -swu Skip Windows Updates entirely (ignore both WSUS Offline and online methods)
+::                      -swo Skip only bundled WSUS Offline updates (online updates still attempted)
 ::                      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 ::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 ::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -90,8 +95,8 @@ if /i %HELP%==yes (
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: %0%.bat ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
-	echo                -sdu -se -sk -sm -sap -spr -ss -str -sw -udl -v -x^] ^| ^[-h^]
+	echo   Usage: %0%.bat ^[-a -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc -sdu
+	echo                -se -sk -sm -sap -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
@@ -119,7 +124,8 @@ if /i %HELP%==yes (
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
-	echo    -sw  Skip Windows Updates ^(do not attempt to run Windows Update^)
+	echo    -swu Skip Windows Updates entirely ^(ignore both WSUS Offline and online methods^)
+	echo    -swo Skip only bundled WSUS Offline updates ^(online updates still attempted^)
 	echo    -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
@@ -128,12 +134,6 @@ if /i %HELP%==yes (
 	echo    -h   Display this help text
 	echo.
 	exit /b 0
-)
-
-
-:: INTERNAL PREP: Make log file and directories if they don't already exist
-for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
-    if not exist %%D mkdir %%D
 )
 
 
@@ -263,11 +263,8 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_DETECTED:        %RESUME_DETECTED%
 	echo    RESUME_FLAGS:           %RESUME_FLAGS%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
-	echo    SCRIPT_VERSION:         %SCRIPT_VERSION%
-	echo    SCRIPT_DATE:            %SCRIPT_DATE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
-	echo.
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
 )
@@ -946,7 +943,8 @@ for %%i in (%*) do (
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
-	if /i %%i==-sw set SKIP_WINDOWS_UPDATES=yes
+	if /i %%i==-swu set SKIP_WINDOWS_UPDATES=yes
+	if /i %%i==-swo set SKIP_WSUS_OFFLINE=yes
 	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
 	if /i %%i==-upm set UNICORN_POWER_MODE=on
 	if /i %%i==-v set VERBOSE=yes
