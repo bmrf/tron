@@ -62,8 +62,9 @@ if %WIN_VER_NUM% geq 6.0 (
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
-if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if /i %EXISTING_MBAM%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Existing MBAM installation detected. Skipping installation."
 	goto skip_mbam
