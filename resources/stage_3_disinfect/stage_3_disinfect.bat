@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 * script:      Update script to support standalone execution
+:: Version:       1.1.7 * mbam:      Improve pre-existing installation detection. Thanks to github:RedBaron2
+::                1.1.6 * script:      Update script to support standalone execution
 ::                1.1.5 ! mbam:        Fix MBAM not launching or installing bug
 ::                1.1.4 * mbam:        Update MBAM detection to include new v3.x series. Thanks to /u/Phantop
 ::                1.1.3 + certcache:   Add job to clear the CryptNet SSL certificate cache (Vista and up). Thanks to github:Itsnothectic and github:alazare619
@@ -20,8 +21,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.6
-set STAGE_3_SCRIPT_DATE=2017-02-04
+set STAGE_3_SCRIPT_VERSION=1.1.7
+set STAGE_3_SCRIPT_DATE=2017-02-20
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -62,9 +63,10 @@ if %WIN_VER_NUM% geq 6.0 (
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
-if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if /i %EXISTING_MBAM%==yes (
 	call functions\log.bat "%CUR_DATE% %TIME%    Existing MBAM installation detected. Skipping installation."
 	goto skip_mbam
