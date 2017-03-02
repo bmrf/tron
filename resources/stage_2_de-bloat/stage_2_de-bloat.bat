@@ -3,8 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 * script: Update script to support standalone execution
-::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling sync instead of ENABLING. Thanks to /u/Gyllius
+:: Version:       1.2.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
+::                1.2.7 * script: Update script to support standalone execution
+::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling OneDrive sync instead of ENABLING. Thanks to /u/Gyllius
 ::                1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
 ::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
 ::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
@@ -36,8 +37,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.7
-set STAGE_2_SCRIPT_DATE=2017-02-06
+set STAGE_2_SCRIPT_VERSION=1.2.8
+set STAGE_2_SCRIPT_DATE=2017-03-02
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -54,24 +55,24 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 :: STAGE 2: De-Bloat :: // Begin jobs
 :::::::::::::::::::::::
-call functions\log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat begin..."
+call functions\log.bat "   stage_2_de-bloat begin..."
 
 :: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of "classic" (non-"Modern") Windows programs
 if /i %SAFE_MODE%==yes (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Enable MSIServer]
-	call functions\log.bat "%CUR_DATE% %TIME%    Enabling MSIServer to allow program removal in Safe Mode..."
+	call functions\log.bat "    Enabling MSIServer to allow program removal in Safe Mode..."
 	if /i %DRY_RUN%==no (
 		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start MSIServer >nul 2>&1
 	)
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "    Done."
 )
 
 
 :: JOB: Remove crapware programs, phase 1: by specific GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
-call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 1 (by specific GUID)..."
-call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt"
+call functions\log.bat "    Attempt junkware removal: Phase 1 (by specific GUID)..."
+call functions\log.bat "    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt"
 if /i %DRY_RUN%==no (
 	REM This is required so we can check the errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -105,13 +106,13 @@ if /i %DRY_RUN%==no (
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "    Done."
 
 
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
-call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
-call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt"
+call functions\log.bat "    Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
+call functions\log.bat "    Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt"
 if /i %DRY_RUN%==no (
 	REM This is required so we can check errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -145,13 +146,13 @@ if /i %DRY_RUN%==no (
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "    Done."
 
 
 :: JOB: Remove crapware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
-call functions\log.bat "%CUR_DATE% %TIME%    Attempt junkware removal: Phase 3 (wildcard by name)..."
-call functions\log.bat "%CUR_DATE% %TIME%    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+call functions\log.bat "    Attempt junkware removal: Phase 3 (wildcard by name)..."
+call functions\log.bat "    Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
 if /i %DRY_RUN%==no ( if /i %VERBOSE%==yes ( echo Looking for: ) )
 :: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
 if /i %DRY_RUN%==no ( 
@@ -184,7 +185,7 @@ if /i %DRY_RUN%==no (
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "    Done."
 
 
 :: JOB: Remove default Metro apps (Windows 8 and up)
@@ -196,7 +197,7 @@ title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 if %WIN_VER_NUM% geq 6.2 set TARGET_METRO=yes
 if /i %PRESERVE_METRO_APPS%==yes set TARGET_METRO=no
 if /i %TARGET_METRO%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME%    Windows 8 or higher detected, removing OEM Metro apps..."
+	call functions\log.bat "    Windows 8 or higher detected, removing OEM Metro apps..."
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		REM Enable starting AppXSVC in Safe Mode
@@ -218,7 +219,7 @@ if /i %TARGET_METRO%==yes (
 			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
 		)
 	)
-	call functions\log.bat "%CUR_DATE% %TIME%    Done."
+	call functions\log.bat "    Done."
 )
 
 
@@ -233,21 +234,21 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
 
 :: 2. Was the PRESERVE_METRO_APPS (-m) switch used? If so, skip removal
 if /i %PRESERVE_METRO_APPS%==yes (
-	call functions\log.bat "%CUR_DATE% %TIME% !  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
+	call functions\log.bat " !  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
 	goto :skip_onedrive_removal
 )
 
 :: 3. Does the folder exist in the default location? If not, skip removal
 if not exist "%USERPROFILE%\OneDrive" (
-	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive folder doesn't exist in the default location. Skipping removal."
+	call functions\log.bat " !  OneDrive folder doesn't exist in the default location. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
 :: 4. Does the default folder have any files in it? If so, skip removal
-call functions\log.bat "%CUR_DATE% %TIME%    Checking if OneDrive is in use, please wait..."
+call functions\log.bat "    Checking if OneDrive is in use, please wait..."
 stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
-	call functions\log.bat "%CUR_DATE% %TIME% !  OneDrive appears to be in use. Skipping removal."
+	call functions\log.bat " !  OneDrive appears to be in use. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
@@ -257,12 +258,12 @@ for /f "usebackq tokens=3*" %%a IN (`REG QUERY "HKCU\Environment" /v OneDrive 2^
     set OneDrivePath=%%a %%b
 )
 if /i not "%OneDrivePath%"=="%USERPROFILE%\OneDrive" (
-	call functions\log.bat "%CUR_DATE% %TIME% !  Custom OneDrive folder location detected. Skipping removal."
+	call functions\log.bat " !  Custom OneDrive folder location detected. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
 :: If none of the above triggered, we're safe to remove OneDrive
-call functions\log.bat "%CUR_DATE% %TIME%    OneDrive doesn't appear to be in use. Removing..."
+call functions\log.bat "    OneDrive doesn't appear to be in use. Removing..."
 if %DRY_RUN%==no (
 	taskkill /f /im OneDrive.exe >> "%LOGPATH%\%LOGFILE%" 2>&1
 	ping 127.0.0.1 -n 4 > NUL 2>&1
@@ -283,9 +284,9 @@ if %DRY_RUN%==no (
 :: Make sure file sync isn't disabled if OneDrive wasn't removed
 if ONEDRIVE_REMOVED=no reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\OneDrive /t REG_DWORD /v DisableFileSyncNGSC /d 0x0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 
-call functions\log.bat "%CUR_DATE% %TIME%    Done."
+call functions\log.bat "    Done."
 :skip_onedrive_removal
 
 
 :: Stage complete
-call functions\log.bat "%CUR_DATE% %TIME%   stage_2_de-bloat complete."
+call functions\log.bat "   stage_2_de-bloat complete."
