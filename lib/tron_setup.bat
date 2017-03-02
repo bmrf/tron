@@ -15,4 +15,5 @@ set PATH=%PATH%;%~dp0
 :: them in an easy to understand and change way that will
 :: leave them for the user to access if the thumb drive
 :: or network drive is disconnected
-set TRON_LOG_FILE=%SystemDrive%\tron_log.txt
+REM set TRON_LOG_FILE=%SystemDrive%\tron_log.txt
+set TRON_LOG_FILE=nul
