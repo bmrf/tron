@@ -4,7 +4,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 * Update logging functions to use new log_with_date.bat. No functionality change but should help with code readability
+:: Version:       1.0.1 * Update date/time logging functions to use new log_with_date.bat. No functionality change but should help with code readability. Thanks to /u/DudeManFoo for suggestion
 ::                1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
 ::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
