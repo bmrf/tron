@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
+:: Version:       1.1.8 ! Fix bug in WSUS Offline update code due to unused variable. Thanks to /u/gayuha
+::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
 ::                1.1.6 * Update script to support standalone execution
 ::                      + Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
 ::                      / change :skip_updates and associated GOTO statements to :skip_application_updates
@@ -23,8 +24,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.7
-set STAGE_5_SCRIPT_DATE=2017-03-02
+set STAGE_5_SCRIPT_VERSION=1.1.8
+set STAGE_5_SCRIPT_DATE=2017-03-05
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -170,7 +171,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 		if /i %SKIP_WSUS_OFFLINE%==no (
 			title Tron v%TRON_VERSION% [stage_5_patch] [WSUS Offline Updates]
 			call functions\log.bat " !  WSUS Offline updates detected. Using bundled update package..."
-			if /i %DRY_RUN%==no call "%WSUS_OFFLINE_CMD%" >> "%LOGPATH%\%LOGFILE%" 2>&1
+			if /i %DRY_RUN%==no call "stage_5_patch\wsus_offline\client\Update.cmd" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		) else (
 			call functions\log.bat " !  WSUS Offline updates detected, but SKIP_WSUS_OFFLINE (-swo) set."
 			call functions\log.bat "    Using regular online update method..."
