@@ -1,14 +1,15 @@
-:: Purpose:       Initializes Tron's runtime environment. Called by Tron.bat at initial launch or by and individual sub-stage script when launched manually
+:: Purpose:       Initializes Tron runtime environment. Called by Tron.bat at initial launch or by and individual sub-stage script when launched manually
 ::                This file determines Tron's overall project version and date
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.0.0 . Initial write, forked out of v9.9.0 of tron.bat
+:: Version:       10.0.1 . No changes, increment version number only
+::                10.0.0 . Initial write, forked out of v9.9.0 of tron.bat
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date 
-set TRON_VERSION=10.0.0
-set TRON_DATE=2017-02-09
+set TRON_VERSION=10.0.1
+set TRON_DATE=2017-03-07
 
 :: Initialize script-internal variables
 set ERRORS_DETECTED=no
