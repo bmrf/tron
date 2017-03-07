@@ -346,7 +346,7 @@ Custom scripts work like so:
  
  - If you want to use supporting batch files but don't want Tron executing them, use the `.cmd` file extension instead of .bat and Tron will ignore them
  
- - It is the users responsibility what their scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
+ - It is your responsibility what your scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
  
  - Use the `-scs` flag or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
