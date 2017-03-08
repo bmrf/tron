@@ -338,15 +338,15 @@ Place any batch files you want to execute just prior to Tron completion in this 
 
 Custom scripts work like so:
 
- - If there are any `.bat` files in the `\stage_8_custom_scripts` folder, Tron will execute each one sequentially by name. When they're done, it will finish cleanup and end the script as normal
+ - If there any `.bat` files exist in `\stage_8_custom_scripts`, Tron will execute each one sequentially by name. When they're finished, Tron will clean up and end the script as normal
 
- - If there are no `.bat` files in the `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
+ - If there no `.bat` files exist in `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
  
- - Supporting files may be placed in the folder, for example any files required by the custom scripts, but Tron will ignore anything that isn't a `.bat` file
+ - Supporting files may be placed in the folder but Tron itself will ignore anything that isn't a `.bat` file 
  
- - If you want to use supporting batch files but don't want Tron executing them, use the `.cmd` file extension instead of .bat and Tron will ignore them
+ - If you want to use supporting batch files but don't want Tron executing them, use the `.cmd` file extension instead of `.bat` and Tron will ignore them
  
- - It is your responsibility what your scripts do. I will provide no support for custom scripts other than having Tron attempt to run them
+ - It is your responsibility what your scripts do. I provide no support for custom scripts other than having Tron attempt to run them
  
  - Use the `-scs` flag or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
