@@ -2,8 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 ! Fix bug in WSUS Offline update code due to unused variable. Thanks to /u/gayuha
-::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
+:: Version:       1.1.9 / Change wuauserv command in Windows Update section to set the service to AUTO instead of DEMAND. Thanks to /u/Star_9
+::                1.1.8 ! Fix bug in WSUS Offline update code due to unused variable. Thanks to /u/gayuha
+::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.6 * Update script to support standalone execution
 ::                      + Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
 ::                      / change :skip_updates and associated GOTO statements to :skip_application_updates
@@ -24,8 +25,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.1.8
-set STAGE_5_SCRIPT_DATE=2017-03-05
+set STAGE_5_SCRIPT_VERSION=1.1.9
+set STAGE_5_SCRIPT_DATE=2017-03-10
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -176,7 +177,7 @@ if /i %SKIP_WINDOWS_UPDATES%==no (
 			call functions\log_with_date.bat " !  WSUS Offline updates detected, but SKIP_WSUS_OFFLINE (-swo) set."
 			call functions\log_with_date.bat "    Using regular online update method..."
 			if /i %DRY_RUN%==no (
-				sc config wuauserv start= demand>> "%LOGPATH%\%LOGFILE%" 2>NUL
+				sc config wuauserv start= auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 				net start wuauserv >> "%LOGPATH%\%LOGFILE%" 2>NUL
 				wuauclt /detectnow /updatenow >> "%LOGPATH%\%LOGFILE%" 2>NUL
 				ping 127.0.0.1 -n 15 >nul
