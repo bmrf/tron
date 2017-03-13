@@ -366,7 +366,7 @@ To add offline update packages to Tron:
 
 5. Run Tron, it should automatically detect and use the offline updates
 
-If for some reason you want to skip the bundled update package on a certain system, use the `-swo` switch or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_WSUS_OFFLINE` to yes, and Tron will use the regular online update method for that run.
+If for some reason you want to skip the bundled update package on a certain system, use the `-swo` switch or edit [tron_settings.bat](https://github.com/bmrf/tron/blob/master/resources/functions/tron_settings.bat), set `SKIP_WSUS_OFFLINE` to yes and Tron will ignore any WSUS Offline files for that run.
 
 # INTEGRITY
 
