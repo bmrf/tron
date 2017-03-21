@@ -19,7 +19,7 @@ $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2016-11-29"
 
 Function Remove-App([String]$AppName){
     $PackageFullName = (Get-AppxPackage $AppName).PackageFullName
-    $ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -eq $AppName}).PackageName
+    $ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
     Remove-AppxPackage -package $PackageFullName | Out-Null
     Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
 }
