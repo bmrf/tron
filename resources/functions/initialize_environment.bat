@@ -8,8 +8,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date 
-set TRON_VERSION=10.0.1
-set TRON_DATE=2017-03-07
+set TRON_VERSION=10.0.2
+set TRON_DATE=2017-03-20
 
 :: Initialize script-internal variables
 set ERRORS_DETECTED=no
