@@ -31,8 +31,8 @@ Function Remove-App([String]$AppName){
 ###########
 # Active identifiers
 Remove-App "9E2F88E3.Twitter"                          # Twitter app
-Remove-App "Facebook.Facebook"                         # Facebook app
 Remove-App "D52A8D61.FarmVille2CountryEscape"          
+Remove-App "Facebook.Facebook"                         # Facebook app
 Remove-App "GAMELOFTSA.Asphalt8Airborne"               
 Remove-App "Microsoft.3DBuilder"                       # '3DBuilder' app
 Remove-App "Microsoft.Advertising.Xaml"                
@@ -68,8 +68,7 @@ Remove-App "Microsoft.XboxApp"                         # Xbox junk  unfortunatel
 Remove-App "Microsoft.ZuneMusic"                       # 'Groove Music' app
 Remove-App "Microsoft.ZuneVideo"                       # 'Groove Music' app
 Remove-App "MicrosoftMahjong"                          # 'Mahjong' game
-Remove-App "Windows.ContactSupport"                    
-Remove-App "king.com.CandyCrushSodaSaga"               # Candy Crush app
+Remove-App "Windows.ContactSupport"
 
 # Inactive identifers
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
