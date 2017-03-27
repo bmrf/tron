@@ -4,7 +4,11 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
+Version:       1.1.1 + Add missing entries Microsoft.OneConnect, Microsoft.WindowsReadingList. Thanks to /u/1nfestissumam
+                     + Add Microsoft.MicrosoftStickyNotes to disabled list (user request)
+                     - Move Microsoft.Windows.CloudExperienceHost and Windows.ContactSupport to disabled list due to erroring out
+                     - Remove entry 9E2F88E3.Twitter (moved to Metro 3rd party list)
+               1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
                1.0.3 ! Fix typo in $PackagesToRemove array. Thanks to JegElsker
                1.0.2 - Remove Calendar and Mail app from active target list. Thanks to /u/Reynbou
                1.0.1 + Add script version and date variables to support automatic updates at Tron runtime
@@ -15,8 +19,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.0"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-03-24"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.1"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-03-27"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -30,7 +34,6 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "9E2F88E3.Twitter"                          # Twitter app
 Remove-App "D52A8D61.FarmVille2CountryEscape"          
 Remove-App "Facebook.Facebook"                         # Facebook app
 Remove-App "GAMELOFTSA.Asphalt8Airborne"               
@@ -55,25 +58,17 @@ Remove-App "Microsoft.MicrosoftSudoku"
 Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
 Remove-App "Microsoft.Office.OneNote"                  # 'Onenote' app
 Remove-App "Microsoft.Office.Sway"                     # 'Sway' app
+Remove-App "Microsoft.OneConnect"                      # 'OneConnect' app
 Remove-App "Microsoft.People"                          # 'People' app
 Remove-App "Microsoft.SkypeApp"                        # 'Get Skype' link
 Remove-App "Microsoft.SkypeWiFi"                       
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.Taptiles"                        # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.Windows.CloudExperienceHost"     # 'Cloud Experience' sigh
-Remove-App "Microsoft.WindowsFeedback"                 # 'Feedback' functionality
-Remove-App "Microsoft.WindowsFeedbackHub"              # 'Feedback' functionality
-Remove-App "Microsoft.WindowsPhone"                    # 'Phone Companion' app
-Remove-App "Microsoft.XboxApp"                         # Xbox junk  unfortunately 'Microsoft.XboxGameCallableUI' and 'Microsoft.XboxIdentityProvider' can't be removed
-Remove-App "Microsoft.ZuneMusic"                       # 'Groove Music' app
-Remove-App "Microsoft.ZuneVideo"                       # 'Groove Music' app
-Remove-App "MicrosoftMahjong"                          # 'Mahjong' game
-Remove-App "Windows.ContactSupport"
 
 # Inactive identifers
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
 #Remove-App "Microsoft.BingWeather"                    # 'Weather' app
 #Remove-App "Microsoft.BioEnrollment"                  # not sure about this one
+#Remove-App "Microsoft.MicrosoftStickyNotes"           # Pulled from active list due to user requests
 #Remove-App "Microsoft.MicrosoftSolitaireCollection"   # Solitaire collection
 #Remove-App "Microsoft.Windows.Photos"                 # Photos app
 #Remove-App "Microsoft.WindowsAlarms"                  # 'Alarms and Clock' app
