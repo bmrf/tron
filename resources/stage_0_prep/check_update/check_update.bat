@@ -1,7 +1,7 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 * Update User-Agent to remove spaces
+:: Version:       1.0.9 * Update wget User-Agent declaration to remove spaces
 ::                1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
 ::                1.0.7 / Replace string "SCRIPT" with "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
 ::                      * Update version comparison code to handle new v10 version string (batch can only do arithmatic comparison, not decimal)
