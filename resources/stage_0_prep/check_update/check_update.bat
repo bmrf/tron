@@ -1,7 +1,8 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
+:: Version:       1.0.9 * Update User-Agent to remove spaces
+::                1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
 ::                1.0.7 / Replace string "SCRIPT" with "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
 ::                      * Update version comparison code to handle new v10 version string (batch can only do arithmatic comparison, not decimal)
 ::                1.0.6 ! Fix bug with missing username in %USERPROFILES% statement. Thanks to /u/TyanColte
@@ -19,8 +20,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.8
-set CHECK_UPDATE_VERSION=2017-02-24
+set CHECK_UPDATE_VERSION=1.0.9
+set CHECK_UPDATE_VERSION=2017-03-29
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
@@ -51,7 +52,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 
 :: wget sha256sums.txt from the repo
-stage_0_prep\check_update\wget.exe -U "User-Agent: Tron Update Checker/%CHECK_UPDATE_VERSION% (Windows; %WIN_VER%; %WIN_VER_NUM%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
+stage_0_prep\check_update\wget.exe --user-agent="User-Agent:Tron-Update-Checker/%CHECK_UPDATE_VERSION% (Windows; %WIN_VER%; %WIN_VER_NUM%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_TRON_VERSION, and release date into REPO_TRON_DATE
 if /i %ERRORLEVEL%==0 (
 	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%a
@@ -72,7 +73,7 @@ if not %ERRORLEVEL%==0 set WARNINGS_DETECTED=yes_update_check_failed
 title Tron v%TRON_VERSION% (%TRON_DATE%)
 
 
-:: If we're just doing a config dump we don't want to be prompted to update, so just skip everything past this point
+:: If we're just doing a config dump we don't want to be prompted to updated, so just skip everything past this point
 if /i %CONFIG_DUMP%==yes goto :eof
 
 :: Notify if an update was found
