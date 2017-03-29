@@ -72,12 +72,13 @@ if not %ERRORLEVEL%==0 set WARNINGS_DETECTED=yes_update_check_failed
 title Tron v%TRON_VERSION% (%TRON_DATE%)
 
 
-:: If we're just doing a config dump we don't want to be prompted to updated, so just skip everything past this point
+:: If we're just doing a config dump we don't want to be prompted to update, so just skip everything past this point
 if /i %CONFIG_DUMP%==yes goto :eof
 
 :: Notify if an update was found
 SETLOCAL ENABLEDELAYEDEXPANSION
-:: The goofy .= here says to take the variable and replace ("=") the character "." with nothing in the output. If, for example, we were replacing "." with ABC, it would read: %TRON_VERSION:.=ABC%
+:: The goofy .= here says to take the variable and replace any instances of "=" with nothing (the character ".") in the output. 
+:: If, for example, we were replacing "." with ABC, it would read: %TRON_VERSION:.=ABC%
 :: Basically we're just stripping out the period since cmd.exe can't handle decimal comparison operations (facepalm)
 if /i %TRON_VERSION:.=% LSS %REPO_TRON_VERSION:.=% (
 	set CHOICE=y
