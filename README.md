@@ -40,7 +40,7 @@ I got tired of running these utilities manually and decided to just script every
 
 2. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, though it generally seems to be more effective that way. Basically up to your discretion.
 
-3. Whether in Safe Mode regular mode, right-click on `tron.bat` and select "**Run as Administrator**"
+3. Whether in Safe Mode or Rgular mode, right-click on `tron.bat` and select "**Run as Administrator**"
 
 4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
 
