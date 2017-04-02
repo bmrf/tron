@@ -36,7 +36,7 @@ I got tired of running these utilities manually and decided to just script every
 
 0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. This isn't *required* but is strongly recommended.
 
-1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in /r/TronScript. If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
+1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
 2. [Boot into Safe Mode with Network Support](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, though it generally seems to be more effective that way.
 
