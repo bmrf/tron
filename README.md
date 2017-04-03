@@ -50,8 +50,6 @@ I got tired of running these utilities manually and decided to just script every
 
 By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
-Tron will briefly check for a newer version when it starts up and notify you if one is available. It will also automatically download updates to the Stage 2: De-bloat lists of unwanted programs to target.
-
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
 
@@ -424,7 +422,7 @@ Master script that launches everything else. It performs many actions on its own
 
 7. **Check for network connection**: Check for an active network connection, and skip the update checks if one isn't found
 
-7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the current outdated copy
+7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the old version
 
 8. **Update debloat lists**: Connect to Github and download the latest version of the Stage 2 debloat lists at initial launch. Use the `-sdu` (`SKIP_DEBLOAT_UPDATE`) switch to prevent this behavior. I recommend letting Tron update the lists unless you have a good, specific reason not to
 
@@ -495,9 +493,9 @@ Master script that launches everything else. It performs many actions on its own
   
   Executes only on Internet Explorer v7 and up
 
-2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners
+2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners. Note that CCleaner wipes `%AppData%` Local Storage. Edit [ccleaner.ini](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/ccleaner/ccleaner.ini) and change `(App)Local Storage*=True` to `(App)Local Storage*=False` if you don't want this behavior. Note that you must also do this for BleachBit (below)
 
-3. **[BleachBit](http://bleachbit.sourceforge.net/)**: BleachBit utility. Used to clean temp files before running AV scanners
+3. **[BleachBit](http://bleachbit.sourceforge.net/)**: BleachBit utility. Used to clean temp files before running AV scanners. Edit `BleachBit.ini` and disable any items you wish to preserve (for example, Local Storage for Chrome)
 
 4. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/tempfilecleanup/TempFileCleanup.bat)**: Script I wrote to clean some areas that other tools seem to miss
 
