@@ -67,7 +67,7 @@ SETLOCAL
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=1.0.1
-set SCRIPT_DATE=2017-03-07
+set SCRIPT_DATE=2017-04-02
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive. 
 :: We stay in the \resources directory for the rest of the script
@@ -154,7 +154,7 @@ if /i %RESUME_DETECTED%==yes (
 )
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
-	call functions\log_with_date.bat " ! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
+	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
 	REM Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
 	REM even if a reboot didn't happen
 	REM reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
@@ -167,7 +167,7 @@ if /i %RESUME_DETECTED%==yes (
 :: INTERNAL PREP: Check for active network connection
 %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 (
-	call functions\log_with_date.bat " ! Tron doesn't think we have a network connection. Skipping update checks."
+	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
 	set WARNINGS_DETECTED=yes_check_update_skipped
 )
@@ -497,13 +497,13 @@ if /i %RESUME_DETECTED%==no (
 
 
 :: If verbose (-v) was used, notify that we expanded the scrollback buffer
-if /i %VERBOSE%==yes call functions\log_with_date.bat " !  VERBOSE (-v) output requested. All commands will display verbose output when possible."
-if /i %VERBOSE%==yes call functions\log_with_date.bat "    Expanded the scrollback buffer to accomodate increased output."
+if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested. All commands will display verbose output when possible."
+if /i %VERBOSE%==yes call functions\log_with_date.bat "   Expanded the scrollback buffer to accomodate increased output."
 
 
 :: INTERNAL PREP: Tell us if the update check failed or was skipped
-if %WARNINGS_DETECTED%==yes_check_update_failed call functions\log_with_date.bat " ! WARNING: Tron update check failed."
-if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log_with_date.bat " ! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
+if %WARNINGS_DETECTED%==yes_check_update_failed call functions\log_with_date.bat "! WARNING: Tron update check failed."
+if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log_with_date.bat "! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
 
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
@@ -522,10 +522,10 @@ for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING
 if /i "%SAFE_MODE%"=="yes" (
 	if %WIN_VER_NUM% geq 6.0 (
 		title Tron v%TRON_VERSION% [stage_0_prep] [safeboot]
-		call functions\log_with_date.bat "    Setting system to always boot to Safe Mode w/ Networking..."
-		call functions\log_with_date.bat "    Will re-enable regular boot when Tron is finished."
+		call functions\log_with_date.bat "   Setting system to always boot to Safe Mode w/ Networking..."
+		call functions\log_with_date.bat "   Will re-enable regular boot when Tron is finished."
 		if /i %DRY_RUN%==no bcdedit /set {default} safeboot network >> "%LOGPATH%\%LOGFILE%"
-		call functions\log_with_date.bat "    Done."
+		call functions\log_with_date.bat "   Done."
 	)
 )
 
@@ -566,7 +566,7 @@ title Tron v%TRON_VERSION% [stage_2_de-bloat]
 if /i %SKIP_DEBLOAT%==no (
 	call stage_2_de-bloat\stage_2_de-bloat.bat
 ) else (
-	call functions\log_with_date.bat " ! SKIP_DEBLOAT (-sdb) set, skipping Stage 2..."
+	call functions\log_with_date.bat "! SKIP_DEBLOAT (-sdb) set, skipping Stage 2..."
 )
 
 
@@ -581,7 +581,7 @@ title Tron v%TRON_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call functions\log_with_date.bat " ! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (Sophos, KVRT, MBAM)."
+	call functions\log_with_date.bat "! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (Sophos, KVRT, MBAM)."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -631,28 +631,28 @@ call stage_6_optimize\stage_6_optimize.bat
 :stage_7_wrap-up
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_7_wrap-up>tron_stage.txt
-call functions\log_with_date.bat "   stage_7_wrap-up begin..."
+call functions\log_with_date.bat "  stage_7_wrap-up begin..."
 
 
 :: JOB: Reset power settings to Windows defaults
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Reset power settings]
 if %PRESERVE_POWER_SCHEME%==yes (
-	call functions\log_with_date.bat " !  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping power settings reset."
+	call functions\log_with_date.bat "!  PRESERVE_POWER_SCHEME (-p) set to "%PRESERVE_POWER_SCHEME%", skipping power settings reset."
 ) else (
-	call functions\log_with_date.bat "    Resetting Windows power settings to defaults and re-enabling screensaver..."
+	call functions\log_with_date.bat "   Resetting Windows power settings to defaults and re-enabling screensaver..."
 	if %DRY_RUN%==no (
 		REM Check for Windows XP/2k3
 		if %WIN_VER_NUM% lss 6.0 %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
 		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 )
 
 
 :: JOB: Get post-Tron system state (installed programs, complete file list) and generate the summary logs
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
-call functions\log_with_date.bat "    Calculating post-run results for summary logs..."
+call functions\log_with_date.bat "   Calculating post-run results for summary logs..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
 	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
@@ -688,12 +688,12 @@ if /i %DRY_RUN%==no (
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
-call functions\log_with_date.bat "    Done. Summary logs are at "%SUMMARY_LOGS%\""
+call functions\log_with_date.bat "   Done. Summary logs are at "%SUMMARY_LOGS%\""
 
 
 :: JOB: Collect misc logs and deposit them in the log folder
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Collect logs]
-call functions\log_with_date.bat "    Saving misc logs to "%RAW_LOGS%\"..."
+call functions\log_with_date.bat "   Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
 	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
 	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%RAW_LOGS%" >NUL
@@ -702,7 +702,7 @@ if /i %DRY_RUN%==no (
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%RAW_LOGS%\"
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Create post-run Restore Point
@@ -712,11 +712,11 @@ if %WIN_VER_NUM% geq 6.0 (
 	if %WIN_VER_NUM% geq 6.2 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
 	REM Create the restore point
 	echo "%WIN_VER%" | %FINDSTR% /i /c:"server" >NUL || (
-		call functions\log_with_date.bat "    Creating post-run Restore Point..."
+		call functions\log_with_date.bat "   Creating post-run Restore Point..."
 		if /i %DRY_RUN%==no	powershell "Checkpoint-Computer -Description 'TRON v%TRON_VERSION%: Post-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 )
-call functions\log_with_date.bat "    OK."
+call functions\log_with_date.bat "   OK."
 
 
 :: JOB: Calculate saved disk space
@@ -728,7 +728,7 @@ for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIN
 set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
-call functions\log_with_date.bat "   stage_7_wrap-up complete."
+call functions\log_with_date.bat "  stage_7_wrap-up complete."
 
 
 
@@ -739,18 +739,18 @@ call functions\log_with_date.bat "   stage_7_wrap-up complete."
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_8_custom_scripts>tron_stage.txt
 if /i %SKIP_CUSTOM_SCRIPTS%==yes (
-	call functions\log_with_date.bat " ! SKIP_CUSTOM_SCRIPTS (-scs) set to "%SKIP_CUSTOM_SCRIPTS%", skipping..."
+	call functions\log_with_date.bat "! SKIP_CUSTOM_SCRIPTS (-scs) set to "%SKIP_CUSTOM_SCRIPTS%", skipping..."
 ) else (
 	if exist stage_8_custom_scripts\*.bat (
 		echo stage_8_custom_scripts>tron_stage.txt
-		call functions\log_with_date.bat " ! Custom scripts detected, executing now..."
-		call functions\log_with_date.bat "   stage_8_custom_scripts begin..."
+		call functions\log_with_date.bat "! Custom scripts detected, executing now..."
+		call functions\log_with_date.bat "  stage_8_custom_scripts begin..."
 		if %DRY_RUN%==no for %%i in (stage_8_custom_scripts\*.bat) do (
-			call functions\log_with_date.bat "    Executing %%i..."
+			call functions\log_with_date.bat "   Executing %%i..."
 			call %%i
-			call functions\log_with_date.bat "    %%i done."
+			call functions\log_with_date.bat "   %%i done."
 		)
-		call functions\log_with_date.bat "   stage_8_custom_scripts complete."
+		call functions\log_with_date.bat "  stage_8_custom_scripts complete."
 	)
 )
 
@@ -759,7 +759,7 @@ if /i %SKIP_CUSTOM_SCRIPTS%==yes (
 :: Post-run Cleanup ::
 ::::::::::::::::::::::
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
-call functions\log_with_date.bat "    Doing miscellaneous clean up..."
+call functions\log_with_date.bat "   Doing miscellaneous clean up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
@@ -770,7 +770,7 @@ call functions\log_with_date.bat "    Doing miscellaneous clean up..."
 		bcdedit /deletevalue safeboot >nul 2>&1
 	)
 	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Shut down Caffeine which has kept the system awake during the Tron run
@@ -779,33 +779,32 @@ stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title Tron v%TRON_VERSION% (%TRON_DATE%) [DONE]
-call functions\log_with_date.bat "   TRON RUN COMPLETE."
-call functions\log_with_date.bat "   Use \tron\resources\stage_9_manual_tools if further action is required."
+call functions\log_with_date.bat "  TRON RUN COMPLETE. Use \tron\resources\stage_9_manual_tools if further action is required."
 
 
 :: Check if auto-reboot was requested
 if "%AUTO_REBOOT_DELAY%"=="0" (
-	call functions\log_with_date.bat "   Auto-reboot (-r) not selected. Reboot as soon as possible."
+	call functions\log_with_date.bat "  Auto-reboot (-r) not selected. Reboot as soon as possible."
 ) else (
-	call functions\log_with_date.bat " ! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
+	call functions\log_with_date.bat "! Auto-reboot selected. Rebooting in %AUTO_REBOOT_DELAY% seconds."
 )
 
 
 :: Check if shutdown was requested
-if /i %AUTO_SHUTDOWN%==yes call functions\log_with_date.bat " ! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds."
+if /i %AUTO_SHUTDOWN%==yes call functions\log_with_date.bat "! Auto-shutdown selected. Shutting down in %AUTO_REBOOT_DELAY% seconds."
 
 
 :: Notify that we're going to email the log file
-if /i %EMAIL_REPORT%==yes call functions\log_with_date.bat "   Email report requested. Will email logs in a few moments."
+if /i %EMAIL_REPORT%==yes call functions\log_with_date.bat "  Email report requested. Will email logs in a few moments."
 
 
 :: Upload logs if the switch was used
-if /i %UPLOAD_DEBUG_LOGS%==yes call functions\log_with_date.bat "   Debug log upload enabled (thank-you!). Will upload logs in a few moments."
+if /i %UPLOAD_DEBUG_LOGS%==yes call functions\log_with_date.bat "  Debug log upload enabled (thank-you!). Will upload logs in a few moments."
 
 
 :: Check if self-destruct was set
 if /i %SELF_DESTRUCT%==yes (
-	call functions\log_with_date.bat " ! Self-destruct selected. De-rezzing self. Goodbye..."
+	call functions\log_with_date.bat "! Self-destruct selected. De-rezzing self. Goodbye..."
 )
 
 
@@ -814,12 +813,12 @@ color 2f
 :: Were warnings detected?
 if /i not %WARNINGS_DETECTED%==no (
 	color e0
-	call functions\log_with_date.bat " ! WARNINGS were detected (%WARNINGS_DETECTED%). Recommend reviewing the log file."
+	call functions\log_with_date.bat "! WARNINGS were detected (%WARNINGS_DETECTED%). Recommend reviewing the log file."
 )
 :: Were errors detected?
 if /i not %ERRORS_DETECTED%==no (
 	color cf
-	call functions\log_with_date.bat " ! ERRORS were detected (%ERRORS_DETECTED%). Review the log file."
+	call functions\log_with_date.bat "! ERRORS were detected (%ERRORS_DETECTED%). Review the log file."
 )
 
 :: Display and log the job summary
@@ -849,9 +848,9 @@ if /i %EMAIL_REPORT%==yes (
 		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
-			call functions\log_with_date.bat "   Done."
+			call functions\log_with_date.bat "  Done."
 		) else (
-			call functions\log_with_date.bat " ^! Something went wrong, email may not have gone out. Check your settings."
+			call functions\log_with_date.bat "^! Something went wrong, email may not have gone out. Check your settings."
 		)
 	)
 )
@@ -865,9 +864,9 @@ if /i %UPLOAD_DEBUG_LOGS%==yes (
 		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
-			call functions\log_with_date.bat "   Done."
+			call functions\log_with_date.bat "  Done."
 		) else (
-			call functions\log_with_date.bat " ^! Something went wrong, logs may not have uploaded. Please notify Vocatus."
+			call functions\log_with_date.bat "^! Something went wrong, logs may not have uploaded. Please notify Vocatus."
 		)
 	)
 )
