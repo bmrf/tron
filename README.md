@@ -491,7 +491,7 @@ Master script that launches everything else. It performs many actions on its own
   rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
   ```
   
-  Executes only on Internet Explorer v7 and up
+      Executes only on Internet Explorer v7 and up
 
 2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners. Note that CCleaner wipes `%AppData%` Local Storage. Edit [ccleaner.ini](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/ccleaner/ccleaner.ini) and change `(App)Local Storage*=True` to `(App)Local Storage*=False` if you don't want this behavior. Note that you must also do this for BleachBit (below)
 
