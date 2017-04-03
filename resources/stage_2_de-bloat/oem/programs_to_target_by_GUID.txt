@@ -3,7 +3,7 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 + Add additional user-submitted GUIDs
+:: Version:       1.1.7 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -12,8 +12,8 @@
 ::::::::::
 :: PREP ::
 ::::::::::
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.6
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-03-09
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.7
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-02
 
 
 
@@ -140,6 +140,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-03-09
 {39F6E2B4-CFE8-C30A-66E8-489651F0F34C}
 
 :: Adobe Refresh Manager
+{AC76BA86-0804-1033-1959-001824211354}
 {AC76BA86-0804-1033-1959-001824202044}
 {AC76BA86-0804-1033-1959-001824147215}
 {A2BCA9F1-566C-4805-97D1-7FDC93386723}
@@ -488,6 +489,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-03-09
 {F1A0BB73-A9DC-4B18-9F20-6368191FBAC5}
 
 :: Avira Connect
+{BC5A9829-B67F-4E3A-83EE-0CDBDB6FBA1C}
 {60865E78-1AC5-4532-A6B0-4B028DE8A076}
 
 :: Avira Launcher
@@ -1691,6 +1693,7 @@ if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec 
 {5A6CB42D-AFB6-989E-E7EB-B3FF928C707F}
 
 :: Catalyst Control Center InstallProxy
+{418D5410-7A7B-315F-0CF9-A76BC6C131DC}
 {8E7B8B2D-9D9C-3213-FE46-C6B567E4CE1C}
 {83B66481-A1FC-C2CF-327A-B755E8971A82}
 {59FC0580-5DA9-32F3-CAAF-B5B6F97F6496}
@@ -3432,7 +3435,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 
 :: Intel Rapid Storage Technology // often the culprit behind BSODs when scanning drives with smartctl
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
+:: last checked: 2017-04-02
 ::  Please comment on this program at reddit.com/r/TronScript on the main release thread
+::{B66F70B4-34E5-429A-9F55-7129E0833A45}
 ::{96714280-14E6-4DF7-BACD-F797C0F17C3D}
 ::{205AE40D-8AD7-4F29-A430-DD2168DA562D}
 ::{93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
@@ -3797,6 +3802,7 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 
 :: Secure Download Manager
 {E040B65B-8683-4228-8C33-D44A141E40EA}
+{C58626D6-7EBD-460D-8B6C-75B3C3464879}
 
 :: Setup1 (??)
 {86091EC1-DD17-4814-A54B-0A634CB8D82C}
@@ -3898,6 +3904,8 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 {90150000-008F-0000-1000-0000000FF1CE}
 
 :: Microsoft Office 16 Click-to-Run
+{90150000-008C-0407-0000-0000000FF1CE}
+{90160000-008C-0416-0000-0000000FF1CE}
 {90160000-008C-0000-0000-0000000FF1CE}
 {90160000-008C-0409-0000-0000000FF1CE}
 {90160000-008F-0000-1000-0000000FF1CE}
