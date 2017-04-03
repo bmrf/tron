@@ -485,7 +485,7 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 1 code](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)*
 
-1. **Internet Explorer cleanup**: Executes only on Internet Explorer v7 and up. Runs built-in Windows tool to clean and reset Internet Explorer:
+1. **Internet Explorer cleanup**: Executes only on Internet Explorer v7 and up. Runs the following built-in Windows tool to clean and reset Internet Explorer:
 
   ```
   rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
