@@ -52,7 +52,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 
 :: wget sha256sums.txt from the repo
-stage_0_prep\check_update\wget.exe --user-agent="Tron-Update-Checker/%CHECK_UPDATE_VERSION% (Windows; %WIN_VER%; %WIN_VER_NUM%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
+stage_0_prep\check_update\wget.exe --user-agent="Tron-Update-Checker/%TRON_VERSION% (Windows; %WIN_VER%; %WIN_VER_NUM%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_TRON_VERSION, and release date into REPO_TRON_DATE
 if /i %ERRORLEVEL%==0 (
 	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%a
