@@ -1,0 +1,53 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.AAC]
+@="WMP11.AssocFile.ADTS"
+"Content Type"="audio/vnd.dlna.adts"
+"PerceivedType"="audio"
+
+[HKEY_CLASSES_ROOT\.AAC\OpenWithProgIds]
+"WMP11.AssocFile.ADTS"=hex(0):
+
+[-HKEY_CLASSES_ROOT\SystemFileAssociations\.AAC]
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS]
+@="ADTS Audio"
+"EditFlags"=hex:00,00,11,00
+"FriendlyTypeName"=hex(2):40,00,25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,\
+  00,6f,00,6f,00,74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,\
+  32,00,5c,00,75,00,6e,00,72,00,65,00,67,00,6d,00,70,00,32,00,2e,00,65,00,78,\
+  00,65,00,2c,00,2d,00,39,00,39,00,33,00,39,00,00,00
+"PreferExecuteOnMismatch"=dword:00000001
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\DefaultIcon]
+@=hex(2):25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,74,00,25,\
+  00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,77,00,6d,00,\
+  70,00,6c,00,6f,00,63,00,2e,00,64,00,6c,00,6c,00,2c,00,2d,00,37,00,33,00,30,\
+  00,00,00
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\shell]
+@="Play"
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\shell\Enqueue]
+@="&Add to Windows Media Player list"
+"MUIVerb"=hex(2):40,00,25,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,\
+  6f,00,74,00,25,00,5c,00,73,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,\
+  00,75,00,6e,00,72,00,65,00,67,00,6d,00,70,00,32,00,2e,00,65,00,78,00,65,00,\
+  2c,00,2d,00,39,00,38,00,30,00,30,00,00,00
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\shell\Enqueue\command]
+"DelegateExecute"="{45597c98-80f6-4549-84ff-752cf55e2d29}"
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\shellex\ContextMenuHandlers\PlayTo]
+@="{7AD84985-87B4-4a16-BE58-8B72A5B390F7}"
+
+[HKEY_CLASSES_ROOT\WMP11.AssocFile.ADTS\shellex\{8895b1c6-b41f-4c1c-a562-0d564250836f}]
+@="{031EE060-67BC-460d-8847-E4A7C5E45A27}"
+
+[-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.AAC]
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.AAC\OpenWithProgids]
+"WMP11.AssocFile.ADTS"=hex(0):
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.AAC\UserChoice]
+"Progid"="WMP11.AssocFile.ADTS"
