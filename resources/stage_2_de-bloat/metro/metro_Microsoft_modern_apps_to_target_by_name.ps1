@@ -4,7 +4,9 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.1 + Add missing entries Microsoft.OneConnect, Microsoft.WindowsReadingList. Thanks to /u/1nfestissumam
+Version:       1.1.2 + Add Microsoft.WindowsFeedbackHub to active apps. Thanks to /u/Phaellow
+                     + Add Microsoft.Microsoft3DViewer to inactive apps. Thanks to /u/Phaellow
+               1.1.1 + Add missing entries Microsoft.OneConnect, Microsoft.WindowsReadingList. Thanks to /u/1nfestissumam
                      + Add Microsoft.MicrosoftStickyNotes to disabled list (user request)
                      - Move Microsoft.Windows.CloudExperienceHost and Windows.ContactSupport to disabled list due to erroring out
                      - Remove entry 9E2F88E3.Twitter (moved to Metro 3rd party list)
@@ -19,8 +21,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.1"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-03-27"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.2"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-13"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -63,8 +65,10 @@ Remove-App "Microsoft.People"                          # 'People' app
 Remove-App "Microsoft.SkypeApp"                        # 'Get Skype' link
 Remove-App "Microsoft.SkypeWiFi"                       
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
+Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 
 # Inactive identifers
+#Remove-App "Microsoft.Microsoft3DViewer"              # 3D model viewer
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
 #Remove-App "Microsoft.BingWeather"                    # 'Weather' app
 #Remove-App "Microsoft.BioEnrollment"                  # not sure about this one
