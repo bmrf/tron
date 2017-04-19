@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.1 + Add flaregamesGmbH.RoyalRevolt2 to active apps. Thanks to /u//Phaellow
+Version:       1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
+               1.1.1 + Add flaregamesGmbH.RoyalRevolt2. Thanks to /u/Phaellow
                1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
                1.0.2 + Add 6Wunderkinder.Wunderlist, 2FE3CB00.PicsArt-PhotoStudio, Microsoft.NetworkSpeedTest, thanks to github:Bromeego
                1.0.1 + Add 46928bounde.EclipseManager, D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
@@ -16,8 +17,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.1"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-13"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.2"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-19"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -97,6 +98,7 @@ Remove-App "*HPRegistration*"
 Remove-App "*JigsWar*"
 Remove-App "*KasperskyLab.KasperskyNow*"
 Remove-App "*KindleforWindows8*"
+Remove-App "*king.com.CandyCrushSodaSaga*"
 Remove-App "*MAGIX.MusicMakerJam*"
 Remove-App "*McAfee*"
 Remove-App "*McAfeeInc.05.McAfeeSecurityAdvisorforASUS*"
