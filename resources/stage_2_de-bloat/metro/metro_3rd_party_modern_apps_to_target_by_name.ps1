@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
+Version:       1.1.3 + Add "Playtika.CaesarsSlotsFreeCasino" and some others
+               1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
                1.1.1 + Add flaregamesGmbH.RoyalRevolt2. Thanks to /u/Phaellow
                1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
                1.0.2 + Add 6Wunderkinder.Wunderlist, 2FE3CB00.PicsArt-PhotoStudio, Microsoft.NetworkSpeedTest, thanks to github:Bromeego
@@ -17,8 +18,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.2"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-19"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-24"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -32,15 +33,17 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "*Evernote.Evernote*"
 Remove-App "*06DAC6F6.StumbleUpon*"
 Remove-App "*134D4F5B.Box*"
 Remove-App "*1430GreenfieldTechnologie.PuzzleTouch*"
 Remove-App "*26720RandomSaladGamesLLC.HeartsDeluxe*"
 Remove-App "*26720RandomSaladGamesLLC.SimpleSolitaire*"
 Remove-App "*29982CsabaHarmath.UnCompress*"
+Remove-App "*2FE3CB00.PicsArt-PhotoStudio*"
 Remove-App "*46928bounde.EclipseManager*"
 Remove-App "*4AE8B7C2.Booking.comPartnerEdition*"
+Remove-App "*4DF9E0F8.Netflix*"
+Remove-App "*6Wunderkinder.Wunderlist*"
 Remove-App "*7906AAC0.TOSHIBACanadaPartners*"
 Remove-App "*7906AAC0.ToshibaCanadaWarrantyService*"
 Remove-App "*7digitalLtd.7digitalMusicStore*"
@@ -68,9 +71,12 @@ Remove-App "*CyberLinkCorp.ac.AcerCrystalEye*"
 Remove-App "*CyberLinkCorp.ac.SocialJogger*"
 Remove-App "*CyberLinkCorp.hs.YouCamforHP*"
 Remove-App "*CyberLinkCorp.id.PowerDVDforLenovoIdea*"
+Remove-App "*D52A8D61.FarmVille2CountryEscape*"
 Remove-App "*D5EA27B7.Duolingo-LearnLanguagesforFree*"
+Remove-App "*DB6EA5DB.CyberLinkMediaSuiteEssentials*"    # CyberLink...sigh
 Remove-App "*DailymotionSA.Dailymotion*"
 Remove-App "*DellInc.DellShop*"
+Remove-App "*Drawboard.DrawboardPDF*"
 Remove-App "*E046963F.LenovoCompanion*"
 Remove-App "*E046963F.LenovoSupport*"
 Remove-App "*E0469640.CameraMan*"
@@ -80,15 +86,17 @@ Remove-App "*E0469640.YogaCameraMan*"
 Remove-App "*E0469640.YogaPhoneCompanion*"
 Remove-App "*E0469640.YogaPicks*"
 Remove-App "*EncyclopaediaBritannica.EncyclopaediaBritannica*"
+Remove-App "*Evernote.Evernote*"
 Remove-App "*Evernote.Skitch*"
 Remove-App "*F5080380.ASUSPhotoDirector*"
 Remove-App "*F5080380.ASUSPowerDirector*"
+Remove-App "*Facebook.Facebook*"                         # Facebook app
 Remove-App "*FilmOnLiveTVFree.FilmOnLiveTVFree*"
 Remove-App "*FingertappsInstruments*"
 Remove-App "*FingertappsOrganizer*"
-Remove-App "*flaregamesGmbH.RoyalRevolt2*"
 Remove-App "*Flipboard.Flipboard*"
 Remove-App "*FreshPaint*"
+Remove-App "*GAMELOFTSA.Asphalt8Airborne*"
 Remove-App "*GAMELOFTSA.SharkDash*"
 Remove-App "*GameGeneticsApps.FreeOnlineGamesforLenovo*"
 Remove-App "*GettingStartedwithWindows8*"
@@ -98,16 +106,16 @@ Remove-App "*HPRegistration*"
 Remove-App "*JigsWar*"
 Remove-App "*KasperskyLab.KasperskyNow*"
 Remove-App "*KindleforWindows8*"
-Remove-App "*king.com.CandyCrushSodaSaga*"
 Remove-App "*MAGIX.MusicMakerJam*"
 Remove-App "*McAfee*"
 Remove-App "*McAfeeInc.05.McAfeeSecurityAdvisorforASUS*"
-Remove-App "*Microsoft.MinecraftUWP*"
 Remove-App "*MobileFileExplorer*"
 Remove-App "*MusicMakerJam*"
 Remove-App "*NAMCOBANDAIGamesInc.PAC-MANChampionshipEditionDXfo*"
 Remove-App "*NAVER.LINEwin8*"
+Remove-App "*PandoraMediaInc.29680B314EFC2*"
 Remove-App "*PinballFx2*"
+Remove-App "*Playtika.CaesarsSlotsFreeCasino*"
 Remove-App "*PublicationsInternational.iCookbookSE*"
 Remove-App "*RandomSaladGamesLLC.GinRummyProforHP*"
 Remove-App "*ShazamEntertainmentLtd.Shazam*"
@@ -127,13 +135,12 @@ Remove-App "*esobiIncorporated.newsXpressoMetro*"
 Remove-App "*fingertappsASUS.FingertappsInstrumentsrecommendedb*"
 Remove-App "*fingertappsASUS.JigsWarrecommendedbyASUS*"
 Remove-App "*fingertappsasus.FingertappsOrganizerrecommendedbyA*"
+Remove-App "*flaregamesGmbH.RoyalRevolt2*"
+Remove-App "*king.com.CandyCrushSodaSaga*"
 Remove-App "*sMedioforHP.sMedio360*"
 Remove-App "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "*toolbar*"
 Remove-App "*zuukaInc.iStoryTimeLibrary*"
-Remove-App "*6Wunderkinder.Wunderlist*"
-Remove-App "*2FE3CB00.PicsArt-PhotoStudio*"
-Remove-App "*Microsoft.NetworkSpeedTest*"
 
 # Inactive identifers
 #Remove-App "*Netflix*"
