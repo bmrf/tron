@@ -3,7 +3,11 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.9 - Remove OneDrive sync disabling fix; no longer necessary due to finding the solution related to O&OShutUp10's changes made in Stage 4. Thanks to /u/Gyllius
+:: Version:       1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder. 
+::                        This way if the script hangs we can see which entry it hung on. Thanks to /u/madbomb122
+::                      - Comment out the lines sent to console that explain where the de-bloat files are located
+::                        Just cluttered up the screen and people who really want to customize Tron will be reading the readme/instructions anyway
+::                1.2.9 - Remove OneDrive sync disabling fix; no longer necessary due to finding the solution related to O&OShutUp10's changes made in Stage 4. Thanks to /u/Gyllius
 ::                1.2.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.2.7 * script: Update script to support standalone execution
 ::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling OneDrive sync instead of ENABLING. Thanks to /u/Gyllius
@@ -13,7 +17,7 @@
 ::                1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
 ::                1.2.2 + Add resetting of UpdateExeVolatile during by_guid debloat, another measure to help prevent blocked uninstallations due to pending reboot
 ::                1.2.1 / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
-::                1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot. 
+::                1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot.
 ::                        If we detect entries in this key, we export them to RAW_LOGS and then delete them before continuing on. This should allow Tron to continue removing programs without waiting for a reboot
 ::                1.1.7 * Significantly improve robustness of OneDrive checks. OneDrive now only removed if system is Win10, folder exists in default location, and is empty. Thanks to /u/ranger_dood
 ::                1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
@@ -38,13 +42,13 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.2.9
-set STAGE_2_SCRIPT_DATE=2017-03-20
+set STAGE_2_SCRIPT_VERSION=1.3.0
+set STAGE_2_SCRIPT_DATE=2017-04-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd ..
-	
+
 	:: Load the settings file
 	call functions\tron_settings.bat
 
@@ -73,8 +77,17 @@ if /i %SAFE_MODE%==yes (
 :: JOB: Remove crapware programs, phase 1: by specific GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by specific GUID)..."
-call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt"
+	:: Calculate how many GUIDs we're searching for
+	set GUID_TOTAL=0
+	set TICKER=1
+	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+call functions\log_with_date.bat "   CHECK LOG IN THE RAW LOGS FOLDER IF SCRIPT APPEARS STALLED TO MAKE SURE IT ACTUALLY IS!"
+call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
+
+	REM Stamp the raw log file that we use to track progress through the list
+	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 1 ^(by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+
 	REM This is required so we can check the errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
@@ -86,22 +99,29 @@ if /i %DRY_RUN%==no (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
 		if not %%i==:: (
 		if not %%i==set (
-			if /i %VERBOSE%==yes echo    %%i
+			if /i %VERBOSE%==yes echo    !TICKER!/%GUID_TOTAL% %%i
+
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
-			
+
 			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
 			reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
-			
+
 			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
 				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				if /i %VERBOSE%==yes echo %CUR_DATE% %TIME% ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo %CUR_DATE% %TIME% ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+				echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
+
+			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
+			REM Not displayed to console or dumped to main log to avoid cluttering them up
+			echo %CUR_DATE% %TIME%    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			set /a TICKER=!TICKER! + 1
+
 			)
 		)
 	)
@@ -110,11 +130,20 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
+
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
-call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt"
+	:: Calculate how many GUIDs we're searching for
+	set GUID_TOTAL=0
+	set TICKER=1
+	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
+
+	REM Stamp the raw log file that we use to track progress through the list
+	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 2 ^(toolbars by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+
 	REM This is required so we can check errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
@@ -128,10 +157,10 @@ if /i %DRY_RUN%==no (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
-			
+
 			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
 			reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
-			
+
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
@@ -142,6 +171,12 @@ if /i %DRY_RUN%==no (
 				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
+
+			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
+			REM Not displayed to console or dumped to main log to avoid cluttering them up
+			echo %CUR_DATE% %TIME%    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			set /a TICKER=!TICKER! + 1
+
 			)
 		)
 	)
@@ -150,13 +185,15 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
+
 :: JOB: Remove crapware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
-call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
-if /i %DRY_RUN%==no ( if /i %VERBOSE%==yes ( echo Looking for: ) )
-:: Search through the list of programs in "programs_to_target.txt" file and uninstall them one-by-one
-if /i %DRY_RUN%==no ( 
+:: call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+if /i %DRY_RUN%==no (
+
+	REM Stamp the raw log file that we use to track progress through the list
+	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 3 ^(wildcard by name^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 	REM This is required so we can check errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -174,19 +211,25 @@ if /i %DRY_RUN%==no (
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				echo Offending entry: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
 				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
+
+			REM Running tracker a separate raw log file so we can see if the script stalls on a particular entry
+			REM Not displayed to console or dumped to main log to avoid cluttering them up
+			echo %CUR_DATE% %TIME%    Entry:  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+
 			)
 		)
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
 call functions\log_with_date.bat "   Done."
+
 
 
 :: JOB: Remove default Metro apps (Windows 8 and up)
@@ -228,7 +271,7 @@ if /i %TARGET_METRO%==yes (
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
 :: This variable is just to detect if we removed OneDrive or not. If we DIDN'T then we use it to make sure file sync isn't disabled
-set ONEDRIVE_REMOVED=no 
+set ONEDRIVE_REMOVED=no
 
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
@@ -289,3 +332,5 @@ call functions\log_with_date.bat "   Done."
 
 :: Stage complete
 call functions\log_with_date.bat "  stage_2_de-bloat complete."
+pause
+popd
