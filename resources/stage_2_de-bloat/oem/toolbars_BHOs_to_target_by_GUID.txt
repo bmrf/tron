@@ -3,24 +3,19 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 + Add additional user-submitted GUIDs
+:: Version:       1.0.6 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
-::::::::::
-:: PREP ::
-::::::::::
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.5
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-01-10
+:: PREP
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.6
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 
 
 
-:::::::::::::::
-:: GUID LIST ::
-:::::::::::::::
-
+:: GUID LIST
 :: 01NET.com Toolbar
 {8e5025c2-8ea3-430d-80b8-a14151068a6d}
 
