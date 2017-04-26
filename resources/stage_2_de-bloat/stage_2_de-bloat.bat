@@ -332,5 +332,3 @@ call functions\log_with_date.bat "   Done."
 
 :: Stage complete
 call functions\log_with_date.bat "  stage_2_de-bloat complete."
-pause
-popd
