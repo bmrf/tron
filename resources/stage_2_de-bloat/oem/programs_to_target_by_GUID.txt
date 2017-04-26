@@ -543,7 +543,6 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 
 :: Best Buy pc app
 {FBBC4667-2521-4E78-B1BD-8706F774549B}
-if exist "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" start /wait msiexec /x "%ProgramData%\{D8EAE~1\Best Buy pc app Setup.msi" /qn /norestart
 
 :: Bing Bar, Bing Rewards Client Installer and Bing Bar Platform
 {3365E735-48A6-4194-9988-CE59AC5AE503}
