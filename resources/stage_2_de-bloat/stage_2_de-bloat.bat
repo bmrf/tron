@@ -221,7 +221,7 @@ if /i %DRY_RUN%==no (
 
 			REM Running tracker a separate raw log file so we can see if the script stalls on a particular entry
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% %TIME%    Entry:  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			echo %CUR_DATE% %TIME%    %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 			)
 		)
