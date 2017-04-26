@@ -81,7 +81,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by speci
 	set GUID_TOTAL=0
 	set TICKER=1
 	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
-call functions\log_with_date.bat "   If script appears stalled here, check the PROGRESS log file in the RAW LOGS folder to see if it actually is"
+call functions\log_with_date.bat "   If script appears stalled, check the PROGRESS log file in the RAW LOGS folder to be sure it is"
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
 
