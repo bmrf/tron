@@ -9,18 +9,14 @@
 
 
 
-::::::::::
-:: PREP ::
-::::::::::
+
+:: PREP
 set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.8
 set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 
 
 
-:::::::::::::::
-:: GUID LIST ::
-:::::::::::::::
-
+:: GUID LIST
 :: Absolute Notifier // Absolute Reminder
 {40F4FF7A-B214-4453-B973-080B09CED019}
 {FB500000-0010-0000-0000-074957833700}
