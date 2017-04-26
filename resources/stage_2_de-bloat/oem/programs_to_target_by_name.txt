@@ -8,7 +8,6 @@
 ::                1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 
 
-
 :: PREP
 set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.2
 set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2017-04-25
