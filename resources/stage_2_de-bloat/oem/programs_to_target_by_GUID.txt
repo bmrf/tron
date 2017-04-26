@@ -2,7 +2,7 @@
 ::                Add any GUID uninstall commands to this list to target them for removal
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
-:: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+:: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.8 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
@@ -17,7 +17,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 
 
 :: GUID LIST
-:: Absolute Notifier // Absolute Reminder
+:: Absolute Notifier, Absolute Reminder
 {40F4FF7A-B214-4453-B973-080B09CED019}
 {FB500000-0010-0000-0000-074957833700}
 
@@ -64,7 +64,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: Acer Instant Update Service
 {D32367AC-8FCA-4DE8-A2C6-037AE14B4001}
 
-:: Acer Launch Manager // disabled by /u/vocatus for Tron, after user reports that it broke wireless button functionality
+:: Acer Launch Manager, disabled by /u/vocatus for Tron, after user reports that it broke wireless button functionality
 ::{C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
 
 :: Acer Live Updater
@@ -81,7 +81,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {E3678E72-78E3-4F91-A9FB-913876FF6DA2}
 {8BBF04F1-C68A-441C-B5EF-446EE9960EAF}
 
-:: Acer Recovery Management // Disabled by /u/kamakaze_chickn for Tron
+:: Acer Recovery Management, Disabled by /u/kamakaze_chickn for Tron
 ::{07F2005A-8CAC-4A4B-83A2-DA98A722CA61}
 
 :: Acer Touch Tools
@@ -92,7 +92,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {94389919-B0AA-4882-9BE8-9F0B004ECA35}
 {DA20E1A8-07CB-4EE7-9B72-A7E28C953F0E}
 
-:: Acer Updater // Same GUID used by "Gateway Updater" (?)
+:: Acer Updater, Same GUID used by "Gateway Updater" (?)
 {EE171732-BEB4-4576-887D-CB62727F01CA}
 
 :: Acer User Experience Improvement Program Framework and associated GUIDs
@@ -117,7 +117,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {E7C97E98-4C2D-BEAF-5D2F-CC45A2F95D90}
 {77DCDCE3-2DED-62F3-8154-05E745472D07}
 
-:: Ad-Aware Web Companion (various versions) // Ad-Aware Updater
+:: Ad-Aware Web Companion (various versions), Ad-Aware Updater
 {88B10E3E-8911-4FAC-8663-CCF6E33C58B3}
 {FABDFEBE-A430-48B4-89F2-B35594E43965}
 {902C3D36-9254-437D-98AC-913B78E60864}
@@ -188,7 +188,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {5095145F-A690-405A-9ABF-69C7A7319834}
 {B6DCCCD3-520D-4485-B642-FCC136CE12C3}
 
-:: AMD Accelerated Video Transcoding // Drag-and-Drop Transcoding
+:: AMD Accelerated Video Transcoding, Drag-and-Drop Transcoding
 {CE1C381D-4968-94B2-9D88-A007730FAE9C}
 {A6AFFBD8-D006-967F-51AF-0120F0261080}
 {8642397F-CF08-6B30-A477-A039BBAA511E}
@@ -309,7 +309,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: AMD OEM Application Profile
 {C89A97B6-F991-EBB5-77B7-927BCF420EBE}
 
-:: AMD Problem Report Wizard  //  ATI Problem Report Wizard
+:: AMD Problem Report Wizard ,  ATI Problem Report Wizard
 {149FBD36-6E9E-2035-42B0-59D91714138D}
 {8A079327-5B79-24B5-9E95-91960E763CB2}
 {C36C7280-879A-D8A7-570F-844CB6E5F7E8}
@@ -336,7 +336,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: AOLIcon (lol)
 {FFC7F03B-7069-4F7B-B0A5-9C173E898AC9}
 
-:: ArcSoft Magic-i Visual Effects 2 // ArcSoft WebCam Companion 3 and 4 // Family Paint // WebCam Message Board
+:: ArcSoft Magic-i Visual Effects 2, ArcSoft WebCam Companion 3 and 4, Family Paint, WebCam Message Board
 {B1893E3F-9BDF-443F-BED0-1AAA2D9E0D68}
 {DE8AAC73-6D8D-483E-96EA-CAEDDADB9079}
 {B77DE05C-7C84-4011-B93F-A29D0D2840F4}
@@ -483,15 +483,15 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: AVAST SecureLine
 {2CD3C92F-EDC5-4B02-9B0A-9C1D37C58EF5}
 
-:: AVG // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: AVG, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
 :: {A3E10CD4-8B55-404F-8AEE-9BB74B631E2C}
 
-:: AVG 2013 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: AVG 2013, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {C09E8C9E-A243-430E-8811-7C7C36BD8A71}
 :: {9EF01972-D320-49A9-BA40-BED677587E32}
 
-:: AVG 2014 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: AVG 2014, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {FC3B3A5D-7058-4627-9F1E-F95CC38B6054}
 :: {524569AC-B3EE-468B-BFD5-19A89EA7CE8E}
 :: {91569630-3DDC-43EB-9425-E6C41431D535}
@@ -499,7 +499,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: {B53BE722-137D-4A7C-BC7A-F495DF36AF59}
 :: {F4735E8D-3570-4606-A4E9-0BE44F3B0DFC}
 
-:: AVG 2015 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: AVG 2015, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {0959AEF9-AF64-4347-A948-1F1E9ADCFA92}
 :: {E86D1618-6B9F-45B3-94E0-20D2B38916CA}
 :: {BC8A78A0-0BDC-4C31-902C-0B7C14EEEE08}
@@ -513,7 +513,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: {CEEAE734-B717-41D1-BF50-378EC081C6B1}
 :: {6B171EFC-F41F-4055-A4DE-5B9480DA17AA}
 
-:: AVG 2016 // Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: AVG 2016, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
 :: {4812D3B9-F8DE-40EF-888E-54B2FDF21A55}
 :: {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
 :: {500609C4-E46C-4887-9466-A20EB783C57A}
@@ -589,7 +589,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: CA Pest Patrol Realtime Protection 001.001.0034
 {F05A5232-CE5E-4274-AB27-44EB8105898D}
 
-:: Camtasia (various versions) // Disabled for Tron by /u/vocatus per https://www.reddit.com/r/TronScript/comments/3nvfqj/guid_list_update_and_a_couple_of_questions/
+:: Camtasia (various versions), Disabled for Tron by /u/vocatus per https://www.reddit.com/r/TronScript/comments/3nvfqj/guid_list_update_and_a_couple_of_questions/
 :: {DB93E2C2-851F-44B2-B09C-351D2C624AE1}
 :: {7A0735CD-5B9D-4FAF-A717-CF99619DDAF8}
 :: {4974F6DC-BA3F-4708-9CF2-8F8B28A8E1C3}
@@ -1841,7 +1841,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {546D97C7-9DF6-4A2D-BE02-2C0B25FFE1E3}
 {39688AE1-0398-4133-942C-EECA9BBD64CC}
 
-:: Clickfree // Disabled by /u/kamakaze_chickn for Tron
+:: Clickfree, Disabled by /u/kamakaze_chickn for Tron
 ::{1EB9B986-CECA-4E05-B454-C9343EE9DDE7}
 
 :: Comcast Desktop Software (v1.2.0.9) 23
@@ -1857,7 +1857,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 {F7DA7A20-8EC4-4960-95E5-5531D518B97E}
 {F47C37A4-7189-430A-B81D-739FF8A7A554}
 
-:: Corel DVD MovieFactory // Photo Album // WinDVD // Direct DiscRecorder
+:: Corel DVD MovieFactory, Photo Album, WinDVD, Direct DiscRecorder
 {1DF03ECE-6AF4-414E-B118-C316F151A9A2}
 {5C1F18D2-F6B7-4242-B803-B5A78648185D}
 {50F68032-B5B7-4513-9116-C978DBD8F27A}
@@ -1931,7 +1931,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 :: CyberLink PowerBackup
 {ADD5DB49-72CF-11D8-9D75-000129760D75}
 
-:: CyberLink PowerDVD // Disabled by /u/kamakaze_chickn for Tron
+:: CyberLink PowerDVD, Disabled by /u/kamakaze_chickn for Tron
 ::{D6E853EC-8960-4D44-AF03-7361BB93227C}
 ::{DEC235ED-58A4-4517-A278-C41E8DAEAB3B}
 ::{A8516AC9-AAF1-47F9-9766-03E2D4CDBCF8}
@@ -1939,13 +1939,13 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
 ::{2BF2E31F-B8BB-40A7-B650-98D28E0F7D47}
 ::{B46BEA36-0B71-4A4E-AE41-87241643FA0A}
 
-:: CyberLink PowerDirector // PowerProducer // PowerRecover
+:: CyberLink PowerDirector, PowerProducer, PowerRecover
 {607679B0-485D-45B0-A5FA-7464130FE570}
 {B0B4F6D2-F2AE-451A-9496-6F2F6A897B32}
 {F232C87C-6E92-4775-8210-DFE90B7777D9}
 {B7A0CE06-068E-11D6-97FD-0050BACBF861}
 
-:: CyberLink PhotoDirector // PhotoNow // PhotoShowExpress // PictureMover
+:: CyberLink PhotoDirector, PhotoNow, PhotoShowExpress, PictureMover
 {5A454EC5-217A-42a5-8CE1-2DDEC4E70E01}
 {39337565-330E-4ab6-A9AE-AC81E0720B10}
 {FC6C7107-7D72-41A1-A031-3CE751159BAB}
@@ -2266,7 +2266,7 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 :: Dell Protected Workspace
 wmic product where name="Dell Protected Workspace" call uninstall /nointeractive 2>nul
 
-:: Dell QuickSet32 and QuickSet64 // Disabled by /u/kamakaze_chickn for Tron; hotkey drivers
+:: Dell QuickSet32 and QuickSet64, Disabled by /u/kamakaze_chickn for Tron; hotkey drivers
 ::{ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
 ::{C4972073-2BFE-475D-8441-564EA97DA161}
 
@@ -2279,7 +2279,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: Dell VideoStage
 {DCE0E79A-B9AC-41AC-98C1-7EF0538BCA7F}
 
-:: Dell Wave Crypto Runtime // Infrastructure Installer // Support Software Installer // ESC Home Page Plugin // Preboot Manager // Private Information Manager
+:: Dell Wave Crypto Runtime, Infrastructure Installer, Support Software Installer, ESC Home Page Plugin, Preboot Manager, Private Information Manager
 {8A2EF9A3-F1A8-4160-8C7D-4CADA7883BD1}
 {30C2392C-C7D6-4FE2-9617-05D2C6E9D3EE}
 {14CFC674-CD4F-4BE5-8B68-07BA3FE941FF}
@@ -2311,7 +2311,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: DIBS 1.7.0
 {2EA870FA-585F-4187-903D-CB9FFD21E2E0}
 
-:: Dolby Advanced Audio // Home Theater
+:: Dolby Advanced Audio, Home Theater
 {B26438B4-BF51-49C3-9567-7F14A5E40CB9}
 {936CFA73-585F-4F5E-AB62-1350FE16E5FC}
 {7E3D8FA1-6092-469A-955B-68FC4A2C67CA}
@@ -2337,7 +2337,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {400BDC41-ED37-3053-8439-CC33B6C3A352}
 {736A97C6-8766-3699-84A9-71736C5E0CE3}
 
-:: Dropbox Setup // shared with Dropbox Update Helper
+:: Dropbox Setup, shared with Dropbox Update Helper
 {099218A5-A723-43DC-8DB5-6173656A1E94}
 
 :: Dropbox Update Helper 1.3.27.33
@@ -2366,7 +2366,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {91589413-6675-4C27-8AFC-EFB9103B90A5}
 {3DC26EA7-03E3-4353-9424-EEB7A34A7504}
 
-:: Energy Star // Energy Star Digital Logo
+:: Energy Star, Energy Star Digital Logo
 {5CB22648-35F8-41BC-9C35-1E41FE6E12A5}
 {465CA2B6-98AF-4E77-BE22-A908C34BB9EC}
 {51CB3204-2129-4D74-8AF8-3AEB52793969}
@@ -2452,7 +2452,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {0C216C82-F950-4C79-A63E-322C7280AC30}
 {E8A5B78F-4456-4511-AB3D-E7BFFB974A7A}
 
-:: Fujitsu Security Panel // Security Panel for Supervisor
+:: Fujitsu Security Panel, Security Panel for Supervisor
 {17F82182-0E3D-4A14-8843-5ECBFAF4F12F}
 {0EFDF2F9-836D-4EB7-A32D-038BD3F1FB2A}
 
@@ -3134,7 +3134,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: HP Product Detection
 {A436F67F-687E-4736-BD2B-537121A804CF}
 
-:: HP Product Documentation Launcher // Product_SF_Min_QFolder // ProductContext
+:: HP Product Documentation Launcher, Product_SF_Min_QFolder, ProductContext
 {710F7B0F-A679-4314-8E69-E868B660FAEA}
 {89CEAE14-DD0F-448E-9554-15781EC9DB24}
 {414C803A-6115-4DB6-BD4E-FD81EA6BC71C}
@@ -3501,7 +3501,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {14CF9AF8-10A6-4FA7-9E57-D22DBD644C77}
 {FBBF532A-47AC-457d-AC06-0D3163D8911E}
 
-:: HP Wireless Assistant // Wireless Button Driver // Wireless Hotspot
+:: HP Wireless Assistant, Wireless Button Driver, Wireless Hotspot
 {13DCC2C7-454D-42F0-A892-E0E9A5DE4E67}
 {9AB1B6EC-AEA4-4D78-ADDB-0291BF7230F4}
 {547607B0-3294-4ECA-8F5E-921404676CBB}
@@ -3577,7 +3577,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: Intel Product Improvement Program
 {E839559D-FB5B-43EB-8AEB-CB969CA50FE1}
 
-:: Intel Rapid Storage Technology // often the culprit behind BSODs when scanning drives with smartctl
+:: Intel Rapid Storage Technology, often the culprit behind BSODs when scanning drives with smartctl
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
 :: last checked: 2017-04-02
 ::  Please comment on this program at reddit.com/r/TronScript on the main release thread
@@ -3676,7 +3676,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {DBCC73BA-C69A-4BF5-B4BF-F07501EE7039}
 {FE0133FE-9AEE-4A36-9F46-749E069540D3}
 
-:: iTunes Library Updater (non Apple PUP) // added by /u/kamakazechickn
+:: iTunes Library Updater (non Apple PUP), added by /u/kamakazechickn
 {38EE230F-F631-451F-8800-E29F5E5C9E7D}
 
 :: Java Auto Updater
@@ -3728,7 +3728,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: Lenovo Client Security - Password Manager
 {3FD730D4-755F-439B-8082-B55E00924A44}
 
-:: Lenovo ColorCorner1 // ColorCorner2 // ColorCorner3 // ColorCorner4
+:: Lenovo ColorCorner1, ColorCorner2, ColorCorner3, ColorCorner4
 {2AA72727-59CC-4915-AF99-CDF231854FCD}
 {475871E9-59B9-4E8E-8CF5-D1A4219976D7}
 {1D8267E6-F915-440C-B653-3F100CA1FA82}
@@ -3791,7 +3791,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {3963D1D4-8723-4EE4-9694-D1078BB26B75}
 {D3F38500-4C99-4E4F-9786-B907224E13A1}
 
-:: Lenovo OneKey Recovery // Disabled by /u/kamakaze_chickn for Tron
+:: Lenovo OneKey Recovery, Disabled by /u/kamakaze_chickn for Tron
 ::{46F4D124-20E5-4D12-BE52-EC177A7A4B42}
 
 :: Levovo OneKey Optimizer
@@ -3927,12 +3927,12 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 {FA8BFB25-BF48-4F8B-8859-B30810745190}
 {705B639E-FAAF-40D7-AD58-C445321C7C3F}
 
-:: Logitech eReg // Harmony Remote Software // Updater
+:: Logitech eReg, Harmony Remote Software, Updater
 {3EE9BCAE-E9A9-45E5-9B1C-83A4D357E05C}
 {53735ECE-E461-4FD0-B742-23A352436D3A}
 {B5DA9D49-9BD8-0F2F-52FC-C7E66BC8D944}
 
-:: Logitech LWS Facebook // Gallery // Help_main // Launcher // Motion Detection // Pictures And Video // Twitter // Webcam Software // WLM Plugin // YouTube Plugin
+:: Logitech LWS Facebook, Gallery, Help_main, Launcher, Motion Detection, Pictures And Video, Twitter, Webcam Software, WLM Plugin, YouTube Plugin
 {9DAEA76B-E50F-4272-A595-0124E826553D}
 {FF167195-9EE4-46C0-8CD7-FBA3457E88AB}
 {21DF0294-6B9D-4741-AB6F-B2ABFBD2387E}
@@ -3945,7 +3945,7 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 {8937D274-C281-42E4-8CDB-A0B2DF979189}
 {174A3B31-4C43-43DD-866F-73C9DB887B48}
 
-:: ScorpionSaver // ScorpionSaver Services
+:: ScorpionSaver, ScorpionSaver Services
 {9B65F9A3-9D24-452A-B6EF-1457D65E4259}
 {273E1F1A-7B1A-436C-A783-A4A8C97AD036}
 {6E810AB6-F34E-49A3-A93F-9E503660F718}
@@ -3972,7 +3972,7 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 :: Steam 1.0.0.0 (malware; not Valve's Steam)
 {AE8705FB-E13C-40A9-8A2D-68D6733FBFC2}
 
-:: SupportSoft Assisted Service 15 // SupportUtility (various versions)
+:: SupportSoft Assisted Service 15, SupportUtility (various versions)
 {3002C8EB-2A7E-419B-B77F-5AD7E9F54A5A}
 {31AF8802-BF43-4C43-984B-EC597CF51505}
 {5A3F6A80-7913-475E-8B96-477A952CFA43}
@@ -4030,7 +4030,7 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 {0398BFBC-991B-3275-9463-D2BF91B3C80B}
 {4740889B-2D03-3A6F-BC42-07C8AFDF3B2E}
 
-:: Microsoft Mouse and Keyboard Center (various versions) // Disabled by /u/kamakaze_chickn for Tron
+:: Microsoft Mouse and Keyboard Center (various versions), Disabled by /u/kamakaze_chickn for Tron
 ::{91150000-0051-0000-1000-0000000FF1CE}
 ::{7A56D81D-6406-40E7-9184-8AC1769C4D69}
 ::{B8A9EB6B-E41A-4B69-B996-3BFCFA743E5C}
@@ -4216,7 +4216,7 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 {1E067071-56A8-43EF-9526-73FF8CE5825A}
 {DEE5747D-4DF1-412F-B438-DBB7919B68B8}
 
-:: Norton 360 // Internet Security // Online Backup
+:: Norton 360, Internet Security, Online Backup
 {E4FC1ED9-E20C-4621-B834-03C388278DD8}
 {63A6E9A9-A190-46D4-9430-2DB28654AFD8}
 {7B15D70E-9449-4CFB-B9BC-798465B2BD5C}
@@ -4318,7 +4318,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: RapidBoot Shield
 {D446E416-1045-4C70-9341-F73333DCB149}
 
-:: Recovery Manager (HP Reimage Software by Cyberlink) // Disabled by /u/kamakaze_chickn for Tron
+:: Recovery Manager (HP Reimage Software by Cyberlink), Disabled by /u/kamakaze_chickn for Tron
 ::{44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5}
 ::{C7231F7C-6530-4E65-ADA6-5B392CF5BEB1}
 
@@ -4427,7 +4427,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {5EE47864-CF84-4629-86A6-50BEFF406BE5}
 {B6CF2967-C81E-40C0-9815-C05774FEF120}
 
-:: SlimCleaner Plus  //  SlimDrivers
+:: SlimCleaner Plus ,  SlimDrivers
 {3129290B-0B12-4FA9-B6FA-1E1A70E52929}
 {0C0F368E-17C4-4F28-9F1B-B1DA1D96CF7A}
 {7A3C7E05-EE37-47D6-99E1-2EB05A3DA3F7}
@@ -4443,8 +4443,8 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {B307472F-7BD9-4040-9255-CE6D6A1196A3}
 {6623AA80-69BE-4D39-852B-329DDE843FB5}
 
-:: Sonic products // Activation Module 1 // CinePlayer Decoder Pack (various versions) // DLA
-::                // Icons for Lenovo // myDVD LE // RecordNow variations
+:: Sonic products, Activation Module 1, CinePlayer Decoder Pack (various versions), DLA
+::               , Icons for Lenovo, myDVD LE, RecordNow variations
 {8D337F77-BE7F-41A2-A7CB-D5A63FD7049B}
 {21657574-BD54-48A2-9450-EB03B2C7FC29}
 {35E1EC43-D4FC-4E4A-AAB3-20DDA27E8BB0}
@@ -4547,7 +4547,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {E682702C-609C-4017-99E7-3129C163955F}
 {07441A52-E208-478A-92B7-5C337CA8C131}
 
-:: Sony VAIO Care // VAIO Care Recovery // VAIO Help and Support
+:: Sony VAIO Care, VAIO Care Recovery, VAIO Help and Support
 {D9FFE40D-1A85-4541-992C-5EF505F391A4}
 {55A60C1D-BEBF-4249-BFB2-F4E5C2E77988}
 {471F7C0A-CA3A-4F4C-8346-DE36AD5E23D1}
@@ -4555,7 +4555,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {AD3E7141-A22E-40F1-A7A4-55E898AE35E3}
 {36C5BBF0-E5BF-4DE1-B684-7E90B0C93FB5}
 
-:: Sony VAIO Control Center // CPU Fan Diagnostic // Data Restore Tool // Easy Connect
+:: Sony VAIO Control Center, CPU Fan Diagnostic, Data Restore Tool, Easy Connect
 {8E797841-A110-41FD-B17A-3ABC0641187A}
 {BCE6E3D7-B565-4E1B-AC77-F780666A35FB}
 {3267B2E9-9DF5-4251-87C8-33412234C77F}
@@ -4563,7 +4563,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {7C80D30A-AC02-4E3F-B95D-29F0E4FF937B}
 {72042FA6-5609-489F-A8EA-3C2DD650F667}
 
-:: Sony VAIO Gate // Gate Default // Help and Support // Improvement // Manual // Gesture Control
+:: Sony VAIO Gate, Gate Default, Help and Support, Improvement, Manual, Gesture Control
 {A7C30414-2382-4086-B0D6-01A88ABA21C3}
 {AE5F3379-8B81-457E-8E09-7E61D941AFA4}
 {B7546697-2A80-4256-A24B-1C33163F535B}
@@ -4600,7 +4600,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: Sony VAIO OOB (out of box experience)
 {D9777637-33B7-47A9-800C-F6A2CD4EB0FE}
 
-:: Sony VAIO Sample Contents // Satisfaction Survey // Transfer Support VAIO Update
+:: Sony VAIO Sample Contents, Satisfaction Survey, Transfer Support VAIO Update
 {547C9EB4-4CA6-402F-9D1B-8BD30DC71E44}
 {5DDAFB4B-C52E-468A-9E23-3B0CEEB671BF}
 {0899D75A-C2FC-42EA-A702-5B9A5F24EAD5}
@@ -4740,7 +4740,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {C2F94B5E-201A-4754-8F2F-4395E1D90DA3}
 {B3FF1CD9-B2F0-4D71-BB55-5F580401C48E}
 
-:: TOSHIBA Extended Tiles for Windows Mobility Center // GUID shared with TOSHIBA Disc Creator
+:: TOSHIBA Extended Tiles for Windows Mobility Center, GUID shared with TOSHIBA Disc Creator
 {5DA0E02F-970B-424B-BF41-513A5018E4C0}
 
 :: TOSHIBA Face Recognition
@@ -4790,7 +4790,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: TOSHIBARegistration
 {5AF550B4-BB67-4E7E-82F1-2C4300279050}
 
-:: TOSHIBA Recovery Media Creator // Disabled by /u/kamakaze_chickn for Tron
+:: TOSHIBA Recovery Media Creator, Disabled by /u/kamakaze_chickn for Tron
 ::{B65BBB06-1F8E-48F5-8A54-B024A9E15FDF}
 
 :: Toshiba ReelTime
@@ -4813,7 +4813,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {008D69EB-70FF-46AB-9C75-924620DF191A}
 {3FBF6F99-8EC6-41B4-8527-0A32241B5496}
 
-:: Toshiba System Driver // Disabled by /u/kamakaze_chickn for Tron
+:: Toshiba System Driver, Disabled by /u/kamakaze_chickn for Tron
 ::{16562A90-71BC-41A0-B890-D91B0C267120}
 
 :: Toshiba System Settings
@@ -4972,7 +4972,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: Windows Live Communications Platform
 {3B4E636E-9D65-4D67-BA61-189800823F52}
 
-:: Windows Live Family Safety // Disabled by Vocatus for Tron (some family systems may be using this)
+:: Windows Live Family Safety, Disabled by Vocatus for Tron (some family systems may be using this)
 ::{5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
 
 :: Windows Live Language Selector
@@ -5038,7 +5038,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: Windows Media Player Firefox Plugin
 {69FDFBB6-351D-4B8C-89D8-867DC9D0A2A4}
 
-:: WinZip (various versions) // WinZip Courier // Disabled by Vocatus for Tron
+:: WinZip (various versions), WinZip Courier, Disabled by Vocatus for Tron
 :: {CD95F661-A5C4-44F5-A6AA-ECDD91C240ED}
 :: {CD95F661-A5C4-44F5-A6AA-ECDD91C240CD}
 :: {CD95F661-A5C4-11AF-B2CC-ABCD21A325B8}
@@ -5068,7 +5068,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: Zinio Reader 4
 {7FB00B6B-6843-97EC-EED6-78BD6D35370A}
 
-:: ZoneAlarm Antivirus, Firewall, and Security // Disabled for Tron by /u/vocatus
+:: ZoneAlarm Antivirus, Firewall, and Security, Disabled for Tron by /u/vocatus
 ::{043A5C25-EC0E-4152-A53B-73065A4315DF}
 ::{537317B1-FB59-4578-953F-544914A8F25F}
 ::{9A121E1B-1E87-4F37-BC9C-F8D073047942}
