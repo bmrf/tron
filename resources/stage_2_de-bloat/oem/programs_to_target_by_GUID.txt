@@ -3,7 +3,7 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 + Add additional user-submitted GUIDs
+:: Version:       1.1.9 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.8
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-25
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 
 
 
@@ -2602,6 +2602,9 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {62230596-37E5-4618-A329-0D21F529A86F}
 {687FEF8A-8597-40b4-832C-297EA3F35817}
 
+:: HP Business Slim Keyboard
+{E9D7FD0D-CF46-4FEB-9C57-7AACCFBF6C36}
+
 :: HP BPDSoftware (various versions); known to create annoying error messages and popups at system boot
 {20D48DD8-06BA-4d5a-9796-6C7582F07947}
 {38DAE5F5-EC70-4aa5-801B-D11CA0A33B41}
@@ -2627,6 +2630,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {52B18ABC-AD5F-4C3C-B391-04F57B380449}
 
 :: HP Client Security Manager (various versions)
+{809BB764-AC06-4351-92BA-5DB208B2A5F9}
 {39930586-2677-432B-B928-F970FB43F46F}
 {3B46DFDA-6155-423B-BCBB-F1C267E4ADD9}
 {3AF15EEA-8EDF-4393-BB6C-CF8A9986486A}
@@ -2728,6 +2732,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {EF9E56EE-0243-4BAD-88F4-5E7508AA7D96}
 
 :: HP Device Access Manager
+{445183D5-4321-44A2-968A-E789B6D7512D}
 {D7BC5D88-FC93-46D6-B7B0-145C2E168A95}
 {2642BE09-1F9F-4E18-AAD4-0258B9BCE611}
 {9EC0BE64-2C6C-428A-A4C2-E7EDF831B29A}
@@ -2740,6 +2745,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {F769B78E-FF0E-4db5-95E2-9F4C8D6352FE}
 
 :: HP Discover hp Touchpoint Manager
+{480FA137-DB2E-4C1A-89EF-476E69E175ED}
 {74C4DA32-D4FD-406B-AEA3-6781757C8EC3}
 {37EC8980-A8E5-411D-8CDD-CB1CCA95057F}
 
@@ -2846,6 +2852,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {804E6C19-C29C-4C2A-AB7D-84F657F36A1A}
 
 :: HP ESU for Microsoft Windows (Windows update hijacker)
+{94D0EB60-8B2F-4A80-BA74-3D312434415F}
 {240B2BF7-E7E6-425C-A2A4-A3149189BF7F}
 {A5F1C701-E150-4A86-A7F8-9E9225C2AE52}
 {6349342F-9CEF-4A70-995A-2CF3704C2603}
@@ -2948,9 +2955,11 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {08295D09-E002-48F8-905D-34E4B08509BA}
 
 :: HP JumpStart Bridge
+{B49B976D-D9BD-4461-984F-D292FD7FD0AE}
 {9B252E0D-7B31-48A6-B01E-B5CCBA286E8E}
 
 :: HP JumpStart Launch
+{6A127C16-0770-4BFA-B42D-E13963CB5637}
 {B90CB0DE-2E60-41C4-9857-466EB98192BF}
 
 :: HP PC Hardware Diagnostics UEFI
@@ -3004,6 +3013,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 
 :: HP Notes
 {86BAB08A-5E66-4C53-82E3-C1E91673C7CA}
+
+:: HP Notifications
+{7F9760E8-51EC-4089-8C4E-94406AD07846}
 
 :: HPProductAssistant (shows up as Network, hidden)
 {7910018D-02CF-4410-A7E5-CF5C10D05B7F}
@@ -3069,9 +3081,11 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {835B275B-F29B-464B-BD4B-097FD55FAB0A}
 
 :: HP Software Setup
+{C968E860-054F-490F-95C6-C9A29601459E}
 {531000B3-DBEE-4115-BBF3-DA48B67C053F}
 
 :: HP SoftPaq Download Manager
+{92db00b4-c4ee-4893-bc4e-8be6548b2742}
 {FE465061-894A-4023-8580-56FCDD4F23F9}
 
 :: HP SystemDiagnostics
@@ -3317,6 +3331,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {A36CD345-625C-4d6c-B3E2-76E1248CB451}
 
 :: HP Support Assistant (various versions)
+{DFBDDDB3-D753-4454-84E9-2D3D96E89EFF}
 {30514137-FB26-4E1A-A3B4-5B48680F3ECE}
 {4780AF24-213D-4187-86F2-0014A6D6077B}
 {6FA09B91-5D97-45A9-95E9-50F635C98043}
@@ -3532,6 +3547,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components
+{19EF6E72-C59B-4EAC-B370-F504800EB8F5}
 {899F9754-1F6B-4EEC-8D27-25E9DF331062}
 {C2A1F9AE-5E6B-4021-B1BA-72711EC5E558}
 {0FE18988-DE59-46FB-9EE7-D40DA5E98FEA}
