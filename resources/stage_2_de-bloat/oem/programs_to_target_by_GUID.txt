@@ -65,7 +65,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {D32367AC-8FCA-4DE8-A2C6-037AE14B4001}
 
 :: Acer Launch Manager, disabled by /u/vocatus for Tron, after user reports that it broke wireless button functionality
-::{C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
+:: {C18D55BD-1EC6-466D-B763-8EEDDDA9100E}
 
 :: Acer Live Updater
 {EE26E302-876A-48D9-9058-3129E5B99999}
@@ -82,7 +82,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {8BBF04F1-C68A-441C-B5EF-446EE9960EAF}
 
 :: Acer Recovery Management, Disabled by /u/kamakaze_chickn for Tron
-::{07F2005A-8CAC-4A4B-83A2-DA98A722CA61}
+:: {07F2005A-8CAC-4A4B-83A2-DA98A722CA61}
 
 :: Acer Touch Tools
 {BB1F8130-3CB3-4896-9D28-770DFFFDE59C}
@@ -1842,7 +1842,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {39688AE1-0398-4133-942C-EECA9BBD64CC}
 
 :: Clickfree, Disabled by /u/kamakaze_chickn for Tron
-::{1EB9B986-CECA-4E05-B454-C9343EE9DDE7}
+:: {1EB9B986-CECA-4E05-B454-C9343EE9DDE7}
 
 :: Comcast Desktop Software (v1.2.0.9) 23
 {CEF7211D-CE3A-44C4-B321-D84A2099AE94}
@@ -1932,12 +1932,12 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {ADD5DB49-72CF-11D8-9D75-000129760D75}
 
 :: CyberLink PowerDVD, Disabled by /u/kamakaze_chickn for Tron
-::{D6E853EC-8960-4D44-AF03-7361BB93227C}
-::{DEC235ED-58A4-4517-A278-C41E8DAEAB3B}
-::{A8516AC9-AAF1-47F9-9766-03E2D4CDBCF8}
-::{CB099890-1D5F-11D5-9EA9-0050BAE317E1}
-::{2BF2E31F-B8BB-40A7-B650-98D28E0F7D47}
-::{B46BEA36-0B71-4A4E-AE41-87241643FA0A}
+:: {D6E853EC-8960-4D44-AF03-7361BB93227C}
+:: {DEC235ED-58A4-4517-A278-C41E8DAEAB3B}
+:: {A8516AC9-AAF1-47F9-9766-03E2D4CDBCF8}
+:: {CB099890-1D5F-11D5-9EA9-0050BAE317E1}
+:: {2BF2E31F-B8BB-40A7-B650-98D28E0F7D47}
+:: {B46BEA36-0B71-4A4E-AE41-87241643FA0A}
 
 :: CyberLink PowerDirector, PowerProducer, PowerRecover
 {607679B0-485D-45B0-A5FA-7464130FE570}
@@ -2267,8 +2267,8 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 wmic product where name="Dell Protected Workspace" call uninstall /nointeractive 2>nul
 
 :: Dell QuickSet32 and QuickSet64, Disabled by /u/kamakaze_chickn for Tron; hotkey drivers
-::{ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
-::{C4972073-2BFE-475D-8441-564EA97DA161}
+:: {ED2A3C11-3EA8-4380-B59C-F2C1832731B0}
+:: {C4972073-2BFE-475D-8441-564EA97DA161}
 
 :: Dell Resource CD
 {42929F0F-CE14-47AF-9FC7-FF297A603021}
@@ -3597,11 +3597,11 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
 :: last checked: 2017-04-02
 ::  Please comment on this program at reddit.com/r/TronScript on the main release thread
-::{CF2FF2E6-27D1-44D2-B532-1B31B731244C}
-::{B66F70B4-34E5-429A-9F55-7129E0833A45}
-::{96714280-14E6-4DF7-BACD-F797C0F17C3D}
-::{205AE40D-8AD7-4F29-A430-DD2168DA562D}
-::{93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
+:: {CF2FF2E6-27D1-44D2-B532-1B31B731244C}
+:: {B66F70B4-34E5-429A-9F55-7129E0833A45}
+:: {96714280-14E6-4DF7-BACD-F797C0F17C3D}
+:: {205AE40D-8AD7-4F29-A430-DD2168DA562D}
+:: {93F692D4-0C4D-4EED-9BFE-657C1D5959FE}
 
 :: Intel Security Assist
 {4B230374-6475-4A73-BA6E-41015E9C5013}
@@ -3808,7 +3808,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {D3F38500-4C99-4E4F-9786-B907224E13A1}
 
 :: Lenovo OneKey Recovery, Disabled by /u/kamakaze_chickn for Tron
-::{46F4D124-20E5-4D12-BE52-EC177A7A4B42}
+:: {46F4D124-20E5-4D12-BE52-EC177A7A4B42}
 
 :: Levovo OneKey Optimizer
 {D5D573DC-D989-4769-9B56-D6A7EA503D7F}
@@ -4047,11 +4047,11 @@ if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcu
 {4740889B-2D03-3A6F-BC42-07C8AFDF3B2E}
 
 :: Microsoft Mouse and Keyboard Center (various versions), Disabled by /u/kamakaze_chickn for Tron
-::{91150000-0051-0000-1000-0000000FF1CE}
-::{7A56D81D-6406-40E7-9184-8AC1769C4D69}
-::{B8A9EB6B-E41A-4B69-B996-3BFCFA743E5C}
-::{E20B2752-0909-4B28-B8A9-A9BE519CA1A1}
-::{22F9A831-CA56-4406-85FE-47FFB0472804}
+:: {91150000-0051-0000-1000-0000000FF1CE}
+:: {7A56D81D-6406-40E7-9184-8AC1769C4D69}
+:: {B8A9EB6B-E41A-4B69-B996-3BFCFA743E5C}
+:: {E20B2752-0909-4B28-B8A9-A9BE519CA1A1}
+:: {22F9A831-CA56-4406-85FE-47FFB0472804}
 
 :: Microsoft: Feedback Tool by Microsoft
 {13A5E785-5197-4EAD-8EE3-D660271E49BC}
@@ -4335,8 +4335,8 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {D446E416-1045-4C70-9341-F73333DCB149}
 
 :: Recovery Manager (HP Reimage Software by Cyberlink), Disabled by /u/kamakaze_chickn for Tron
-::{44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5}
-::{C7231F7C-6530-4E65-ADA6-5B392CF5BEB1}
+:: {44B2A0AB-412E-4F8C-B058-D1E8AECCDFF5}
+:: {C7231F7C-6530-4E65-ADA6-5B392CF5BEB1}
 
 :: RealDownloader
 {C8E8D2E3-EF6A-4B1D-A09E-7B27EBE2F3CE}
@@ -4807,7 +4807,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {5AF550B4-BB67-4E7E-82F1-2C4300279050}
 
 :: TOSHIBA Recovery Media Creator, Disabled by /u/kamakaze_chickn for Tron
-::{B65BBB06-1F8E-48F5-8A54-B024A9E15FDF}
+:: {B65BBB06-1F8E-48F5-8A54-B024A9E15FDF}
 
 :: Toshiba ReelTime
 {24811C12-F4A9-4D0F-8494-A7B8FE46123C}
@@ -4830,7 +4830,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {3FBF6F99-8EC6-41B4-8527-0A32241B5496}
 
 :: Toshiba System Driver, Disabled by /u/kamakaze_chickn for Tron
-::{16562A90-71BC-41A0-B890-D91B0C267120}
+:: {16562A90-71BC-41A0-B890-D91B0C267120}
 
 :: Toshiba System Settings
 {B040D5C9-C9AA-430A-A44E-696656012E61}
@@ -4989,7 +4989,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {3B4E636E-9D65-4D67-BA61-189800823F52}
 
 :: Windows Live Family Safety, Disabled by Vocatus for Tron (some family systems may be using this)
-::{5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
+:: {5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
 
 :: Windows Live Language Selector
 {180C8888-50F1-426B-A9DC-AB83A1989C65}
@@ -5085,9 +5085,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {7FB00B6B-6843-97EC-EED6-78BD6D35370A}
 
 :: ZoneAlarm Antivirus, Firewall, and Security, Disabled for Tron by /u/vocatus
-::{043A5C25-EC0E-4152-A53B-73065A4315DF}
-::{537317B1-FB59-4578-953F-544914A8F25F}
-::{9A121E1B-1E87-4F37-BC9C-F8D073047942}
+:: {043A5C25-EC0E-4152-A53B-73065A4315DF}
+:: {537317B1-FB59-4578-953F-544914A8F25F}
+:: {9A121E1B-1E87-4F37-BC9C-F8D073047942}
 
 :: Zune Desktop Theme
 {76BA306B-2AA0-47C0-AB6B-F313AB56C136}
