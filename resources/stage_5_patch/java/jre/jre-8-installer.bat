@@ -2,6 +2,7 @@
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: History:       1.6.4-TRON * Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
+::                           * Expand uninstaller portion to catch ALL versions of JRE instead of just JRE8
 ::                1.6.3-TRON ! Fix missing percentage sign around SystemDrive variable
 ::                1.6.2-TRON * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
 ::                1.6.1-TRON / Branch into Tron-specific version
@@ -44,13 +45,13 @@ if not exist %RAW_LOGS% mkdir %RAW_LOGS%
 ::::::::::::::::::
 :: First remove previous versions of the JRE
 echo %CUR_DATE% %TIME%   Uninstalling all versions of JRE prior to installation of current version...>> "%RAW_LOGS%\%LOGFILE%"
-wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
-wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
-:: Sometimes the previous line doesn't work for whatever reason, so we run this line as well
-wmic product where "name like 'Java 8 Update%%'" uninstall /nointeractive 2>NUL
+wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__1_0__F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
+wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__1_0___F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
+:: Sometimes the previous lines don't work for whatever reason, so we run this as well
+wmic product where "name like 'Java%%Update%%'" uninstall /nointeractive 2>NUL
 
 
-:: Nothing below this line will log correctly, because MSI logs in a different format than the standard "echo >> %logfile%" commands. Haven't had time to find a workaround.
+:: Nothing below this line logs correctly because msiexec logs in a different format than the standard "echo >> %logfile%" commands. Haven't had time to find a workaround.
 
 :: Detect system architecture and install appropriate version
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
