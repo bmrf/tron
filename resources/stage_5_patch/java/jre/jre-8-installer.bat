@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.6.3-TRON ! Fix missing percentage sign around SystemDrive variable
+:: History:       1.6.4-TRON * Expand JRE8 mask to catch versions over 99 (3-digit identifier vs. 2). Thanks to /u/flash44007
+::                1.6.3-TRON ! Fix missing percentage sign around SystemDrive variable
 ::                1.6.2-TRON * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
 ::                1.6.1-TRON / Branch into Tron-specific version
 ::                           * Switch to version-agnostic installation, will now detect system architecture and run appropriate installer
@@ -17,7 +18,7 @@ if /i "%RAW_LOGS%"=="" set RAW_LOGS=%SystemDrive%\logs
 set LOGFILE=tron_jre8_update.log
 
 :: Package to install
-set BINARY_VERSION=8u102
+set BINARY_VERSION=8u131
 set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AUTOUPDATECHECK=0 RebootYesNo=No WEB_JAVA_SECURITY_LEVEL=M
 
 
@@ -25,8 +26,8 @@ set FLAGS=ALLUSERS=1 /qn /norestart /l %RAW_LOGS%\%LOGFILE% JU=0 JAVAUPDATE=0 AU
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set SCRIPT_VERSION=1.6.3-TRON
-set SCRIPT_UPDATED=2016-17-24
+set SCRIPT_VERSION=1.6.4-TRON
+set SCRIPT_UPDATED=2017-05-04
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -42,12 +43,13 @@ if not exist %RAW_LOGS% mkdir %RAW_LOGS%
 :: INSTALLATION ::
 ::::::::::::::::::
 :: First remove previous versions of the JRE
-echo %CUR_DATE% %TIME%   Uninstalling all versions of JRE 8 x64 prior to installation of current version...>> "%RAW_LOGS%\%LOGFILE%"
-wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F864180__FF}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
+echo %CUR_DATE% %TIME%   Uninstalling all versions of JRE prior to installation of current version...>> "%RAW_LOGS%\%LOGFILE%"
+wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__180__F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
+wmic product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F__180___F_}'" call uninstall /nointeractive>> "%RAW_LOGS%\%LOGFILE%" 2>NUL
 :: Sometimes the previous line doesn't work for whatever reason, so we run this line as well
-wmic product where "name like 'Java 8 Update __ (64-bit)'" uninstall /nointeractive 2>NUL
+wmic product where "name like 'Java 8 Update%%'" uninstall /nointeractive 2>NUL
 
-:: This line installs the package from a local directory (if all files are in the same directory)
+
 :: Nothing below this line will log correctly, because MSI logs in a different format than the standard "echo >> %logfile%" commands. Haven't had time to find a workaround.
 
 :: Detect system architecture and install appropriate version
