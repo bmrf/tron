@@ -83,7 +83,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by speci
 	set TICKER=1
 	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
 
-if /i %VERBOSE%==no (	
+if /i %VERBOSE%==no (
 	set LINE_COUNT=0
 	set DIGIT_COUNT=1
 	set BSPACE_COUNT=1
@@ -147,7 +147,7 @@ if /i %DRY_RUN%==no (
 				<nul set /p =%BSPACE%
 				)
 			) else (
-			    echo. 
+			    echo[ 
 			)
 		)
 	)
@@ -227,7 +227,7 @@ if /i %DRY_RUN%==no (
 				<nul set /p =%BSPACE%
 				)
 			) else (
-			    echo. 
+			    echo[ 
 			)
 		)
 	)
@@ -297,7 +297,7 @@ if /i %DRY_RUN%==no (
 				<nul set /p =%BSPACE%
 				)
 			) else (
-			    echo. 
+			    echo[ 
 			)
 		)
 	)
