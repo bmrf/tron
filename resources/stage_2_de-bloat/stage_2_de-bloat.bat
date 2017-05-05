@@ -102,6 +102,7 @@ if /i %DRY_RUN%==no (
 
 	REM Verbose output check
 	if /i %VERBOSE%==yes echo Looking for:
+	if /i %VERBOSE%==no <nul set /p /a =Total Lines:!TOTAL_LINES! on 
 
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
@@ -183,6 +184,7 @@ if /i %DRY_RUN%==no (
 
 	REM Verbose output check
 	if /i %VERBOSE%==yes echo Looking for:
+	if /i %VERBOSE%==no <nul set /p /a =Total Lines:!TOTAL_LINES! on 
 
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
@@ -258,6 +260,7 @@ if /i %DRY_RUN%==no (
 
 	REM Verbose output check
 	if /i %VERBOSE%==yes echo Looking for:
+	if /i %VERBOSE%==no <nul set /p /a =Total Lines:!TOTAL_LINES! on 
 
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
