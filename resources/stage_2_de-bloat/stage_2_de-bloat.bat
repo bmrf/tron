@@ -56,6 +56,7 @@ if /i "%LOGFILE%"=="" (
 	call functions\initialize_environment.bat
 )
 
+for /F "tokens=1 delims=# " %%a in ('"prompt #$H# & echo on & for %%b in (1) do rem"') do set "BSPACE=%%a"
 
 :::::::::::::::::::::::
 :: STAGE 2: De-Bloat :: // Begin jobs
@@ -81,6 +82,14 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by speci
 	set GUID_TOTAL=0
 	set TICKER=1
 	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+
+if /i %VERBOSE%==no (	
+	set LINE_COUNT=0
+	set DIGIT_COUNT=1
+	set BSPACE_COUNT=1
+	set DIGIT=10
+	for /F %%i in ('findstr "." stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /c /v ""') do set TOTAL_LINES=%%i
+)
 call functions\log_with_date.bat "   If script appears stalled, check the PROGRESS log in the RAW LOGS folder to be sure it is"
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
@@ -96,6 +105,10 @@ if /i %DRY_RUN%==no (
 
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
+		if /i %VERBOSE%==no (
+			set /A LINE_COUNT=!LINE_COUNT! + 1
+			<nul set /p /a =!LINE_COUNT!
+		)
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
 		if not %%i==:: (
 		if not %%i==set (
@@ -121,7 +134,20 @@ if /i %DRY_RUN%==no (
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
 			echo %CUR_DATE% %TIME%    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 			set /a TICKER=!TICKER! + 1
-
+			
+			)
+		)
+		if /i %VERBOSE%==no (
+			if !LINE_COUNT!==!DIGIT! (
+				set /A DIGIT=!DIGIT! * 10 
+				set /A BSPACE_COUNT=!BSPACE_COUNT! + 1
+			)
+			if not !LINE_COUNT!==%TOTAL_LINES% (
+				for /L %%A IN (1,1,!BSPACE_COUNT!) DO (
+				<nul set /p =%BSPACE%
+				)
+			) else (
+			    echo. 
 			)
 		)
 	)
@@ -138,6 +164,14 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars
 	set GUID_TOTAL=0
 	set TICKER=1
 	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+
+if /i %VERBOSE%==no (
+	set LINE_COUNT=0
+	set DIGIT_COUNT=1
+	set BSPACE_COUNT=1
+	set DIGIT=10
+	for /F %%i in ('findstr "." stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| find /c /v ""') do set TOTAL_LINES=%%i
+)
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
 
@@ -153,6 +187,10 @@ if /i %DRY_RUN%==no (
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
+		if /i %VERBOSE%==no (
+			set /A LINE_COUNT=!LINE_COUNT! + 1
+			<nul set /p /a =!LINE_COUNT!
+		)
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
@@ -179,6 +217,19 @@ if /i %DRY_RUN%==no (
 
 			)
 		)
+		if /i %VERBOSE%==no (
+			if !LINE_COUNT!==!DIGIT! (
+				set /A DIGIT=!DIGIT! * 10 
+				set /A BSPACE_COUNT=!BSPACE_COUNT! + 1
+			)
+			if not !LINE_COUNT!==%TOTAL_LINES% (
+				for /L %%A IN (1,1,!BSPACE_COUNT!) DO (
+				<nul set /p =%BSPACE%
+				)
+			) else (
+			    echo. 
+			)
+		)
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
@@ -190,6 +241,13 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
 :: call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+if /i %VERBOSE%==no (
+	set LINE_COUNT=0
+	set DIGIT_COUNT=1
+	set BSPACE_COUNT=1
+	set DIGIT=10
+	for /F %%i in ('findstr "." stage_2_de-bloat\oem\programs_to_target_by_name.txt ^| find /c /v ""') do set TOTAL_LINES=%%i
+)
 if /i %DRY_RUN%==no (
 
 	REM Stamp the raw log file that we use to track progress through the list
@@ -204,6 +262,10 @@ if /i %DRY_RUN%==no (
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
+		if /i %VERBOSE%==no (
+			set /A LINE_COUNT=!LINE_COUNT! + 1
+			<nul set /p /a =!LINE_COUNT!
+		)
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
@@ -223,6 +285,19 @@ if /i %DRY_RUN%==no (
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
 			echo %CUR_DATE% %TIME%    %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
+			)
+		)
+		if /i %VERBOSE%==no (
+			if !LINE_COUNT!==!DIGIT! (
+				set /A DIGIT=!DIGIT! * 10 
+				set /A BSPACE_COUNT=!BSPACE_COUNT! + 1
+			)
+			if not !LINE_COUNT!==%TOTAL_LINES% (
+				for /L %%A IN (1,1,!BSPACE_COUNT!) DO (
+				<nul set /p =%BSPACE%
+				)
+			) else (
+			    echo. 
 			)
 		)
 	)
