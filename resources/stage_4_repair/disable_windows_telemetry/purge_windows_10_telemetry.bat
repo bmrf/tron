@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
+:: Version:       1.1.9-TRON * Update Spybot Anti-Beacon to v1.6.0.42
+::                1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
 ::                1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
 ::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
 ::                           ! Fix broken path on Spybot call. Thanks to /u/Seascan
@@ -32,8 +33,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.8-TRON
-set SCRIPT_UPDATED=2016-11-10
+set SCRIPT_VERSION=1.1.9-TRON
+set SCRIPT_UPDATED=2017-05-14
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -72,7 +73,7 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%     Uninstalling bad updates, please wait..."
+call functions\log.bat "     Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
@@ -168,13 +169,13 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%     Blocking bad updates, please wait..."
+call functions\log.bat "     Blocking bad updates, please wait..."
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
@@ -188,13 +189,13 @@ start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3021917 3015249 3014
 
 popd
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-call functions\log.bat "%CUR_DATE% %TIME%     Removing telemetry-related scheduled tasks..."
+call functions\log.bat "     Removing telemetry-related scheduled tasks..."
 
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
@@ -276,13 +277,13 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-call functions\log.bat "%CUR_DATE% %TIME%     Removing bad services, please wait..."
+call functions\log.bat "     Removing bad services, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
@@ -342,13 +343,13 @@ if "%VERBOSE%"=="yes" (
 	sc config XboxNetApiSvc start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "%CUR_DATE% %TIME%     Toggling official MS telemetry registry entries..."
+call functions\log.bat "     Toggling official MS telemetry registry entries..."
 
 if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
@@ -423,29 +424,29 @@ if "%VERBOSE%"=="yes" (
 	
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
-call functions\log.bat "%CUR_DATE% %TIME%     Applying Spybot Anti-Beacon protections, please wait..."
-	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.5.0.35.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Applying Spybot Anti-Beacon protections, please wait..."
+	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: OandOShutUp10 IMMUNIZATIONS
-call functions\log.bat "%CUR_DATE% %TIME%     Applying OandOShutUp10 protections, please wait..."
+call functions\log.bat "     Applying OandOShutUp10 protections, please wait..."
 	stage_4_repair\disable_windows_telemetry\OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-call functions\log.bat "%CUR_DATE% %TIME%     Done
+call functions\log.bat "     Done
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS
-call functions\log.bat "%CUR_DATE% %TIME%     Null-routing bad hosts, please wait..."
+call functions\log.bat "     Null-routing bad hosts, please wait..."
 
 :: Run this command to flush ALL routes IMMEDIATELY. It will delete your default route so you'll need to reboot or do an ipconfig /release & ipconfig /renew to get back online
 ::route -f
@@ -662,13 +663,13 @@ if "%VERBOSE%"=="yes" (
 	route -p add 65.52.100.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
-call functions\log.bat "%CUR_DATE% %TIME%     Miscellaneous cleanup, please wait..."
+call functions\log.bat "     Miscellaneous cleanup, please wait..."
 
 :: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
 if "%VERBOSE%"=="yes" (
@@ -706,4 +707,4 @@ if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %Progra
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
