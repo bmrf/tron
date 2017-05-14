@@ -706,6 +706,7 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Create post-run Restore Point
+:: note: pre-run restore point is created in stage_0_prep.bat
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
 	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
