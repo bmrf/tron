@@ -1,9 +1,9 @@
 :: Purpose:       List of specific GUIDs to target for removal. Called by Tron in Stage 2: De-bloat
 ::                Add any GUID uninstall commands to this list to target them for removal
-::                Any line that starts with "::" or the word "set" will be ignored by Tron
+::                Any line that starts with ":: " or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.9 + Add additional user-submitted GUIDs
+:: Version:       1.2.0 + Add additional user-submitted GUIDs
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.9
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.2.0
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-05-20
 
 
 
@@ -144,6 +144,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {39F6E2B4-CFE8-C30A-66E8-489651F0F34C}
 
 :: Adobe Refresh Manager
+{AC76BA86-0804-1033-1959-001824225037}
 {AC76BA86-0804-1033-1959-001824211354}
 {AC76BA86-0804-1033-1959-001824202044}
 {AC76BA86-0804-1033-1959-001824147215}
@@ -484,6 +485,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 {2CD3C92F-EDC5-4B02-9B0A-9C1D37C58EF5}
 
 :: AVG, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: {FA46D289-E8EA-4222-AF8F-B205214947FA}
 :: {5893E1FC-A43A-4F82-8EB6-FF61DC84A92B
 :: {A3E10CD4-8B55-404F-8AEE-9BB74B631E2C}
 
@@ -521,7 +523,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-04-29
 :: AVG CloudCare Installer
 {F25B2530-8CA0-4C34-8DD6-47EC256A2319}
 
-:: AVG PC TuneUp 2015
+:: AVG PC TuneUp
+{149D912F-03DB-4895-913E-820CB11965C0}
 {4AC74ED1-719B-46DA-8B8A-340FBF892291}
 {A996C182-3724-4DF1-A4BC-66154FE57DFE}
 
@@ -2347,6 +2350,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {F7A70D00-F283-45C8-B163-49EC365D7E27}
 
 :: DTS Sound
+{5A5BA3BD-630B-4707-A46C-788CF6A82AD9}
 {793B70D2-41E9-46AB-9DDC-B34C99D07DB5}
 {F8EB8FFC-C535-49A1-A84D-CC75CB2D6ADA}
 {1BDEB6E2-6706-4132-A5D3-99190C6BECD8}
@@ -2571,8 +2575,8 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 
 :: HP Active Support Library
 {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
-::%ProgramFiles%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
-::%ProgramFiles(x86)%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
+:: %ProgramFiles%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
+:: %ProgramFiles(x86)%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
 
 :: HP Advisor
 {403996EB-2DCE-4C43-A2B8-2B956880772D}
@@ -2716,7 +2720,8 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 :: HP D2400_Help
 {7EF7CCB0-52BF-4947-BE6E-E47D586E8842}
 
-:: HP Deskjet 2510 series Setup Guide
+:: HP Deskjet 25xx series Setup Guide
+{1CDFD3C9-BDF8-4DDC-BDA2-EBC53F938B5F}
 {216C7F38-4BBC-4E9A-8392-C9FA21B54386}
 
 :: HP Deskjet Series Help
@@ -2818,7 +2823,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 
 :: HP Easy Setup - Frontend
 {40F7AED3-0C7D-4582-99F6-484A515C73F2}
-::"%ProgramFiles%\InstallShield Installation Information\{40F7AED3-0C7D-4582-99F6-484A515C73F2}\setup.exe" -l0x9  -removeonly
+:: "%ProgramFiles%\InstallShield Installation Information\{40F7AED3-0C7D-4582-99F6-484A515C73F2}\setup.exe" -l0x9  -removeonly
 
 :: HP Energy Star
 {FC0ADA4D-8FA5-4452-8AFF-F0A0BAC97EF7}
@@ -2832,6 +2837,11 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {607F50D9-40BD-4F17-A584-152F563293B4}
 
 :: HP ePrint SW
+{EFDACC2F-510D-4A1A-A988-196D58B4B915}
+{7ADB025F-BFB1-480B-B3BF-B2FF8F115FB8}
+{E2A0A04B-C0A4-49F5-A496-4B93E1D0710D}
+{7855A8A5-0B5B-41A9-AC8B-A50405FB72FE}
+{3C246BB4-8985-480D-8163-0E075A23AB04}
 {43A0376E-98FD-4F90-9A1B-3919FE251526}
 {16F81622-4570-41B1-90A2-33B1C5B3A74F}
 {FEBD4219-6ED8-4B1E-85A0-EC783211905E}
@@ -3023,6 +3033,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies
+{EA4DB54A-FAE0-4FDA-A66D-AEB8F5FFBE83}
 {9913BFAE-5E18-4863-8354-452337781573}
 {61812F25-2589-498B-AED9-40CBC641247E}
 {B681524D-7924-4B83-A551-EF4A3CB2790B}
@@ -4011,8 +4022,8 @@ if exist "%LOCALAPPDATA%\Pokki\Engine\HostAppService.exe" "%LOCALAPPDATA%\Pokki\
 {307032B2-6AF2-46D7-B933-62438DEB2B9A}
 
 :: McAfee LiveSafe - Internet Security
-if exist "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
-if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll::uninstall.html /id:uninstall
+if exist "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" "%ProgramFiles(x86)%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll:: uninstall.html /id:uninstall
+if exist "%ProgramFiles%\McAfee\MSC\mcuihost.exe" "%ProgramFiles%\McAfee\MSC\mcuihost.exe" /body:misp://MSCJsRes.dll:: uninstall.html /id:uninstall
 
 :: McAfee TechMate
 {9B2F78A8-8260-4FCF-A482-85C88978DE8A}
@@ -4712,6 +4723,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: TOSHIBA Assist
 {1B87C40B-A60B-4EF3-9A68-706CF4B69978}
 
+:: TOSHIBA Battery Check Utility
+{5468E297-7EF8-4CB3-A091-F8714147793F}
+
 :: Toshiba Bluetooth Statck for Windows by Toshiba
 {230D1595-57DA-4933-8C4E-375797EBB7E1}
 {CEBB6BFB-D708-4F99-A633-BC2600E01EF6}
@@ -4892,12 +4906,14 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {40C4903E-EDFB-4CAE-A611-41FEBA585921}
 
 :: Real Networks Video Downloader, VideoManager, VideoToolkit
+{8B6202FD-3790-4DD4-B343-51736F7FF4E5}
 {62796191-6F12-4ABE-BA8B-B4D4A266C997}
 {E60AFF01-6087-47BD-8272-61FA3CFC309D}
 {6F0FA48E-DAEE-4CCE-BA6A-68C25E27BC85}
 {9C618A4D-5428-41B7-8A25-36B311FF8C77}
 
 :: WD Quick View, SmartWare
+{507B1304-194A-4204-A9D9-9BAAF51EF760}
 {7AE43D6C-B3F1-448D-AD84-1CDC7AC6EBC7}
 {79966948-BECF-4CB1-A79F-E76C830A17D2}
 
