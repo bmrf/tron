@@ -95,8 +95,13 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo Looking for:
 
 	REM Loop through the file...
+	set Count=0
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
+		if %%i==::: (
+			set /A Count=Count+1
+			echo Section-!Count! Done
+		)
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    !TICKER!/%GUID_TOTAL% %%i
@@ -151,8 +156,13 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo Looking for:
 
 	REM Loop through the file...
+	set count=0
 	for /f %%i in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
+		if %%i==::: (
+			set /A Count=Count+1
+			echo Section-!Count! Done
+		)
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
