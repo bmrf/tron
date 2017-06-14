@@ -156,7 +156,7 @@ call functions\log_with_date.bat "   Done."
 :: JOB: Do a GUID dump before kicking everything off to make it easier for users to submit them if they forgot to do it before running Tron
 title Tron v%TRON_VERSION% [stage_0_prep] [GUID dump]
 call functions\log_with_date.bat "   Dumping GUID list to "%RAW_LOGS%"..."
-if /i %DRY_RUN%==no %WMIC% product get identifyingnumber,name,version /all > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+if /i %DRY_RUN%==no <NUL %WMIC% product get identifyingnumber,name,version /all > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
 call functions\log_with_date.bat "   Done."
 
 
@@ -200,7 +200,7 @@ title Tron v%TRON_VERSION% [stage_0_prep] [Check+Fix WMI]
 call functions\log_with_date.bat "   Launch job 'Check WMI health'..."
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no (
-	%WMIC% timezone >NUL
+	<NUL %WMIC% timezone >NUL
 	if /i not !ERRORLEVEL!==0 (
 		call functions\log_with_date.bat "!  WMI appears to be broken. Calling WMI repair sub-script."
 		call functions\log_with_date.bat "              This will take time, please be patient..."

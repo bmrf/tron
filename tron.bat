@@ -508,7 +508,7 @@ if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log_with_date.ba
 
 :: PREP: Run a quick SMART check and notify if there are any drives with problems
 set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
-for /f %%i in ('%WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
+for /f %%i in ('^<NUL %WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
 	call functions\log.bat " ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
 	call functions\log.bat " SMART errors can mean a drive is close to failure"
 	call functions\log.bat " Recommend you back the system up BEFORE running Tron."
@@ -909,7 +909,7 @@ exit /B
 :::::::::::::::
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
-for /f %%a in ('%WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 

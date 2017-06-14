@@ -207,7 +207,7 @@ if /i %DRY_RUN%==no (
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
-			"%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (

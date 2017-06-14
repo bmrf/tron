@@ -42,7 +42,7 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 	call functions\log_with_date.bat " !  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset."
 ) else (
 	call functions\log_with_date.bat "    Resetting page file settings to Windows defaults..."
-	if /i %DRY_RUN%==no %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if /i %DRY_RUN%==no <NUL %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
 	call functions\log_with_date.bat "    Done."
 )
 
