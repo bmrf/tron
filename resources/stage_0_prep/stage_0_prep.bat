@@ -2,9 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 / Move job "Reduce System Restore Space" to beginning of Stage 0, ahead of "Create Pre-Run System Restore Point"
-::                      / Move job "Purge oldest shadow copies" to beginning of Stage 0, ahead of "Reduce System Restore Space"
-::                      * Increase system restore allowed space from 7% to 10%
+:: Version:       1.1.8 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+::                        Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.6 * script: Update script to support standalone execution
 ::                      ! erunt:  Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
@@ -34,7 +33,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_0_SCRIPT_VERSION=1.1.8
-set STAGE_0_SCRIPT_DATE=2017-05-14
+set STAGE_0_SCRIPT_DATE=2017-06-20
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -53,34 +52,6 @@ if /i "%LOGFILE%"=="" (
 :: STAGE 0: PREP :: // Begin jobs
 :::::::::::::::::::
 call functions\log_with_date.bat "  stage_0_prep begin..."
-
-
-:: JOB: Purge oldest shadow copies
-title Tron v%TRON_VERSION% [stage_0_prep] [Purge oldest shadow copies]
-:: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
-:: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
-:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
-if %WIN_VER_NUM% geq 6.1 (
-	call functions\log_with_date.bat "   Launch job 'Purge oldest Shadow Copy set (Win7 and up)'..."
-	if /i %DRY_RUN%==no (
-		:: Force allow us to start VSS service in Safe Mode
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
-		net start VSS >nul 2>&1
-		vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
-	)
-	call functions\log_with_date.bat "   Done."
-)
-
-
-:: JOB: Reduce SysRestore space
-:: note: Default is 15% on Vista and 5% on 7
-title Tron v%TRON_VERSION% [stage_0_prep] [System Restore Modifications]
-call functions\log_with_date.bat "   Reducing max allowed System Restore space to 10%%%% of disk..."
-if /i %DRY_RUN%==no (
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000010 /f>> "%LOGPATH%\%LOGFILE%"
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000010 /f>> "%LOGPATH%\%LOGFILE%"
-)
-call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
@@ -245,6 +216,34 @@ if /i %DRY_RUN%==no (
 	del "%TEMP%\tdsskiller.log" 2>NUL
 )
 call functions\log_with_date.bat "   Done."
+
+
+:: JOB: Purge oldest shadow copies
+title Tron v%TRON_VERSION% [stage_0_prep] [Purge oldest shadow copies]
+:: Only versions of Windows older than Vista had "Microsoft" as the first part of their title, so if
+:: we don't find "Microsoft" in the first 9 characters we can safely assume we're not on XP/2k3
+:: Then we check for Vista, because vssadmin on Vista doesn't support deleting old copies. Sigh.
+if %WIN_VER_NUM% geq 6.1 (
+	call functions\log_with_date.bat "   Launch job 'Purge oldest Shadow Copy set (Win7 and up)'..."
+	if /i %DRY_RUN%==no (
+		:: Force allow us to start VSS service in Safe Mode
+		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
+		net start VSS >nul 2>&1
+		vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
+	)
+	call functions\log_with_date.bat "   Done."
+)
+
+
+:: JOB: Reduce SysRestore space
+title Tron v%TRON_VERSION% [stage_0_prep] [System Restore Modifications]
+call functions\log_with_date.bat "   Reducing max allowed System Restore space to 7%%%% of disk..."
+if /i %DRY_RUN%==no (
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+)
+call functions\log_with_date.bat "   Done."
+
 
 
 
