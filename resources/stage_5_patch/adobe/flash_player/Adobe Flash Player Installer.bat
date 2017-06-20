@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5-TRON * Script now supports standalone execution (for example if you just want to update all versions of Flash on the machine)
+:: Version:       1.0.6-TRON * Port over task to delete PPAPI Notifier from PDQ Deploy Pack project. Thanks to github:rfg76
+::                1.0.5-TRON * Script now supports standalone execution (for example if you just want to update all versions of Flash on the machine)
 ::                           * Improve existing Flash installation detection; add granular tests per version. Thanks to /u/nubduck
 ::                           * Catch additional Flash Updater scheduled task that gets installed
 ::                1.0.4-TRON * Loopify browser process kill section
@@ -18,8 +19,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.5-TRON
-set SCRIPT_UPDATED=2017-02-09
+set SCRIPT_VERSION=1.0.6-TRON
+set SCRIPT_UPDATED=2017-06-20
 
 :: Get in the Flash directory
 pushd %~dp0
@@ -101,6 +102,7 @@ del /F /Q "%SystemDrive%\Windows\tasks\Adobe Acrobat Update Task*" >> "%LOGPATH%
 del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Acrobat Update Task*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player PPAPI Notifier*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Delete the annoying Acrobat tray icon
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
