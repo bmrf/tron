@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
+:: Version:       1.1.9 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+::                        Relevant pull: https://github.com/bmrf/tron/pull/108
+::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.7 * script:     Update script to support standalone execution
 ::                1.1.6 ! duplicates: Fix broken duplicate file cleanup of Downloads folder due to accidentally putting quote markes around the path to the profile list text file
 ::                1.1.5 ! ccleaner:   Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin
@@ -23,8 +25,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.8
-set STAGE_1_SCRIPT_DATE=2017-03-02
+set STAGE_1_SCRIPT_VERSION=1.1.9
+set STAGE_1_SCRIPT_DATE=2017-06-20
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -42,31 +44,31 @@ if /i "%LOGFILE%"=="" (
 ::::::::::::::::::::::::
 :: STAGE 1: TEMPCLEAN :: // Begin jobs
 ::::::::::::::::::::::::
-call functions\log_with_date.bat "   stage_1_tempclean begin..."
+call functions\log_with_date.bat "  stage_1_tempclean begin..."
 
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
 if %WIN_VER_NUM% geq 6.0 (
 	title Tron v%TRON_VERSION% [stage_1_tempclean] [Clean Internet Explorer]
-	call functions\log_with_date.bat "    Launch job 'Clean Internet Explorer'..."
+	call functions\log_with_date.bat "   Launch job 'Clean Internet Explorer'..."
 	if /i %DRY_RUN%==no rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
-	call functions\log_with_date.bat "    Done."
+	call functions\log_with_date.bat "   Done."
 )
 
 
 :: JOB: TempFileCleanup.bat
 title Tron v%TRON_VERSION% [stage_1_tempclean] [TempFileCleanup]
-call functions\log_with_date.bat "    Launch job 'TempFileCleanup'..."
+call functions\log_with_date.bat "   Launch job 'TempFileCleanup'..."
 if /i %DRY_RUN%==no call stage_1_tempclean\tempfilecleanup\TempFileCleanup.bat >> "%LOGPATH%\%LOGFILE%" 2>NUL
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: CCleaner
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
-call functions\log_with_date.bat "    Launch job 'CCleaner'..."
+call functions\log_with_date.bat "   Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
-	if /i %VERBOSE%==yes call functions\log_with_date.bat " !  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
+	if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
 	if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	:: Hardcoded delay to let CCleaner finish
@@ -75,12 +77,12 @@ if /i %DRY_RUN%==no (
 	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
 	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: BleachBit
 title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
-call functions\log_with_date.bat "    Launch job 'BleachBit'..."
+call functions\log_with_date.bat "   Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
 
 	if %VERBOSE%==yes (
@@ -93,12 +95,12 @@ if /i %DRY_RUN%==no (
 	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	ping 127.0.0.1 -n 12 >NUL
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Delete duplicate files in the "Downloads" folder of each user profile
 title Tron v%TRON_VERSION% [stage_1_tempclean] [Clean Duplicate Downloads]
-call functions\log_with_date.bat "    Launch job 'Clean duplicate files from Download folders'..."
+call functions\log_with_date.bat "   Launch job 'Clean duplicate files from Download folders'..."
 if %DRY_RUN%==no (
 	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
 	dir "%USERPROFILES%\" /B > "%TEMP%\userlist.txt"
@@ -132,12 +134,12 @@ if %DRY_RUN%==no (
 	)
 	del /s /q "%TEMP%\userlist.txt" >nul 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: USB Device Cleanup
 title Tron v%TRON_VERSION% [stage_1_tempclean] [USB Device Cleanup]
-call functions\log_with_date.bat "    Launch job 'USB Device Cleanup'..."
+call functions\log_with_date.bat "   Launch job 'USB Device Cleanup'..."
 if /i %DRY_RUN%==no (
 	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
 		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -t -n
@@ -147,36 +149,36 @@ if /i %DRY_RUN%==no (
 		"stage_1_tempclean\usb_cleanup\DriveCleanup x86.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Clear Windows event logs
 title Tron v%TRON_VERSION% [stage_1_tempclean] [Clear Windows Event Logs]
-call functions\log_with_date.bat "    Launch job 'Clear Windows event logs'..."
+call functions\log_with_date.bat "   Launch job 'Clear Windows event logs'..."
 if /i %SKIP_EVENT_LOG_CLEAR%==yes (
-	call functions\log_with_date.bat " ! SKIP_EVENT_LOG_CLEAR ^(-se^) set. Skipping Event Log clear."
+	call functions\log_with_date.bat "! SKIP_EVENT_LOG_CLEAR (-se) set. Skipping Event Log clear."
 	goto skip_event_log_clear
 )
-call functions\log_with_date.bat "     Saving logs to "%BACKUPS%" first..."
+call functions\log_with_date.bat "    Saving logs to "%BACKUPS%" first..."
 :: Backup all logs first. Redirect error output to NUL (2>nul) because due to the way WMI formats lists, there is
 :: a trailing blank line which messes up the last iteration of the FOR loop, but we can safely suppress errors from it
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no for /f %%i in ('^<NUL %WMIC% nteventlog where "filename like '%%'" list instance') do %WMIC% nteventlog where "filename like '%%%%i%%'" backupeventlog "%BACKUPS%\%%i.evt" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 ENDLOCAL DISABLEDELAYEDEXPANSION
-call functions\log_with_date.bat "     Backups done, now clearing..."
+call functions\log_with_date.bat "    Backups done, now clearing..."
 :: Clear the logs
 if /i %DRY_RUN%==no <NUL %WMIC% nteventlog where "filename like '%%'" cleareventlog >> "%LOGPATH%\%LOGFILE%"
 :: Alternate Vista-and-up only method
 :: if /i %DRY_RUN%==no for /f %%x in ('wevtutil el') do wevtutil cl "%%x" 2>NUL
 
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 :skip_event_log_clear
 
 
 
 :: JOB: Clear Windows Update cache
 title Tron v%TRON_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
-call functions\log_with_date.bat "    Launch job 'Clear Windows Update cache'..."
+call functions\log_with_date.bat "   Launch job 'Clear Windows Update cache'..."
 if /i %DRY_RUN%==no (
 	:: Allow us to start the service in Safe Mode
 	if %SAFE_MODE%==yes reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\WUAUSERV" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -184,9 +186,9 @@ if /i %DRY_RUN%==no (
 	if exist %windir%\softwaredistribution\download rmdir /s /q %windir%\softwaredistribution\download >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 
 :: Stage complete
-call functions\log_with_date.bat "   stage_1_tempclean complete."
+call functions\log_with_date.bat "  stage_1_tempclean complete."
