@@ -3,7 +3,9 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder. 
+:: Version:       1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+::                        Relevant pull: https://github.com/bmrf/tron/pull/108
+::                1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder. 
 ::                        This way if the script hangs we can see which entry it hung on. Thanks to /u/madbomb122
 ::                      - Comment out the lines sent to console that explain where the de-bloat files are located
 ::                        Just cluttered up the screen and people who really want to customize Tron will be reading the readme/instructions anyway
@@ -42,8 +44,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.0
-set STAGE_2_SCRIPT_DATE=2017-04-25
+set STAGE_2_SCRIPT_VERSION=1.3.1
+set STAGE_2_SCRIPT_DATE=2017-06-20
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
