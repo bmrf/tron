@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 * Update date/time logging functions to use new log_with_date.bat. No functionality change but should help with code readability. Thanks to /u/DudeManFoo
+:: Version:       1.0.2 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+::                        Relevant pull: https://github.com/bmrf/tron/pull/108
+::                1.0.1 * Update date/time logging functions to use new log_with_date.bat. No functionality change but should help with code readability. Thanks to /u/DudeManFoo
 ::                1.0.0 * Major breaking changes; VERSION in this script now just refers to tron.bat and NOT the overall Tron project version
 ::                        Tron overall project version now resides in \resources\functions\initialize_environment.bat. See that file for more details
 ::                      + Add REPO_TRON_VERSION and REPO_TRON_DATE to config dump (-c) output
@@ -66,8 +68,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.0.1
-set SCRIPT_DATE=2017-04-02
+set SCRIPT_VERSION=1.0.2
+set SCRIPT_DATE=2017-06-20
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive. 
 :: We stay in the \resources directory for the rest of the script
@@ -706,7 +708,6 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Create post-run Restore Point
-:: note: pre-run restore point is created in stage_0_prep.bat
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
 	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
