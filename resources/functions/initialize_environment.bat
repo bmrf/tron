@@ -30,11 +30,11 @@ set FIND=%SystemRoot%\System32\find.exe
 set FINDSTR=%SystemRoot%\System32\findstr.exe
 
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
-for /f %%a in ('%WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Get Time Zone name and value
-for /f "USEBACKQ skip=1 delims=" %%i IN (`%WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
+for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
 
 :: Resume-related stuff (resuming from an interrupted run)
 set RESUME_STAGE=0
