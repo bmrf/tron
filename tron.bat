@@ -27,7 +27,7 @@
 ::                      -a   Automatic exection mode (no welcome screen or prompts; implies -e)
 ::                      -c   Config dump (display config. Can be used with other flags to see what
 ::                           WOULD happen, but script will never execute if this flag is used)
-::                      -d   DrTRON_VERSIONy run (run through script without executing any jobs)
+::                      -d   Dry run (run through script without executing any jobs)
 ::                      -dev Override OS detection (allow running on unsupported Windows versions)
 ::                      -e   Accept EULA (suppress disclaimer warning screen)
 ::                      -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
