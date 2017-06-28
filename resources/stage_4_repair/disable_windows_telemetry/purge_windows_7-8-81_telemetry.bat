@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1-TRON * Embed contents of 'disable_telemetry_registry_entries.reg' directly into the script. Removes dependence on an external file
+:: Version:       1.1.2-TRON + Add additional scheduled tasks to remove. Thanks to /u/MirageESO
+::                1.1.1-TRON * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 ::                1.1.0-TRON + Add updates 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 from http://www.overclock.net/t/1587577/windows-7-updates-list-descriptions-windows-10-preparation-telemetry
 ::                             Thanks to /u/HeyYou13
 ::                1.0.9-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
@@ -34,8 +35,8 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.1-TRON
-set SCRIPT_UPDATED=2016-09-26
+set SCRIPT_VERSION=1.1.2-TRON
+set SCRIPT_UPDATED=2017-06-28
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -80,7 +81,7 @@ if %ABORT%==yes (
 
 :::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%     Uninstalling bad updates, please wait..."
+call functions\log.bat "     Uninstalling bad updates, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	REM Update adds ITraceRelogger interface support
@@ -262,40 +263,42 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-call functions\log.bat "%CUR_DATE% %TIME%     Blocking bad updates, please wait..."
+call functions\log.bat "     Blocking bad updates, please wait..."
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\disable_windows_telemetry 2>NUL
+pushd stage_4_repair\disable_windows_telemetry >NUL
 
 :: Batch 1
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 971033 3123862 3112336 3090045 3083711 3083710  
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 971033 3123862 3112336 3090045 3083711 3083710  
 :: Batch 2
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3081954 3081454 3081437 3080351 3080149 3075249 3074677 3072318 3068708 3068707 3064683 3058168 3046480 3044374 3035583
 :: Batch 3
-start "" /b /wait cscript.exe "block_windows_updates.vbs" 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
+start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
 
 popd
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-call functions\log.bat "%CUR_DATE% %TIME%     Removing telemetry-related scheduled tasks..."
+call functions\log.bat "     Removing telemetry-related scheduled tasks..."
 
 if "%VERBOSE%"=="yes" (
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\AitAgent"
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
 	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\BthSQM"
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
 	schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
@@ -303,10 +306,12 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
 ) else (
+	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\AitAgent" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\BthSQM" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -315,13 +320,13 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-call functions\log.bat "%CUR_DATE% %TIME%     Removing bad services, please wait..."
+call functions\log.bat "     Removing bad services, please wait..."
 
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
@@ -341,13 +346,13 @@ if "%VERBOSE%"=="yes" (
 	sc stop RemoteRegistry >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "%CUR_DATE% %TIME%     Toggling official MS telemetry registry entries..."
+call functions\log.bat "     Toggling official MS telemetry registry entries..."
 
 if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
@@ -407,17 +412,17 @@ if "%VERBOSE%"=="yes" (
 	%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISC
-call functions\log.bat "%CUR_DATE% %TIME%     Miscellaneous cleanup, please wait..."
+call functions\log.bat "     Miscellaneous cleanup, please wait..."
 
 :: Kill pending tracking reports
 if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
-call functions\log.bat "%CUR_DATE% %TIME%     Done."
+call functions\log.bat "     Done."
