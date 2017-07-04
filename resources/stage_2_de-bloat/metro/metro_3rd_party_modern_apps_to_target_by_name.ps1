@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.3 + Add "Playtika.CaesarsSlotsFreeCasino" and some others
+Version:       1.1.4 + Add *A278AB0D.MarchofEmpires*, *KeeperSecurityInc.Keeper*, *ThumbmunkeysLtd.PhototasticCollage*. Thanks to /u/Phaellow
+               1.1.3 + Add Playtika.CaesarsSlotsFreeCasino and some others
                1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
                1.1.1 + Add flaregamesGmbH.RoyalRevolt2. Thanks to /u/Phaellow
                1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
@@ -18,8 +19,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.3"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-24"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.4"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-07-04"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -48,6 +49,7 @@ Remove-App "*7906AAC0.TOSHIBACanadaPartners*"
 Remove-App "*7906AAC0.ToshibaCanadaWarrantyService*"
 Remove-App "*7digitalLtd.7digitalMusicStore*"
 Remove-App "*9E2F88E3.Twitter*"
+Remove-App "*A278AB0D.MarchofEmpires*"
 Remove-App "*A34E4AAB.YogaChef*"
 Remove-App "*AD2F1837.HP*"
 Remove-App "*ASUSCloudCorporation.MobileFileExplorer*"
@@ -105,6 +107,7 @@ Remove-App "*HPConnectedPhotopoweredbySnapfish*"
 Remove-App "*HPRegistration*"
 Remove-App "*JigsWar*"
 Remove-App "*KasperskyLab.KasperskyNow*"
+Remove-App "*KeeperSecurityInc.Keeper*"
 Remove-App "*KindleforWindows8*"
 Remove-App "*MAGIX.MusicMakerJam*"
 Remove-App "*McAfee*"
@@ -122,6 +125,7 @@ Remove-App "*ShazamEntertainmentLtd.Shazam*"
 Remove-App "*SymantecCorporation.NortonStudio*"
 Remove-App "*TelegraphMediaGroupLtd.TheTelegraphforLenovo*"
 Remove-App "*TheNewYorkTimes.NYTCrossword*"
+Remove-App "*ThumbmunkeysLtd.PhototasticCollage*"
 Remove-App "*TripAdvisorLLC.TripAdvisorHotelsFlightsRestaurants*"
 Remove-App "*TuneIn.TuneInRadio*"
 Remove-App "*UptoElevenDigitalSolution.mysms-Textanywhere*"
