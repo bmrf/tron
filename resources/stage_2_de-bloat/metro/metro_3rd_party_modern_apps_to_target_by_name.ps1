@@ -56,6 +56,7 @@ Remove-App "*ASUSCloudCorporation.MobileFileExplorer*"
 Remove-App "*AccuWeather.AccuWeatherforWindows8*"
 Remove-App "*AcerIncorporated.AcerExplorer*"
 Remove-App "*AcerIncorporated.GatewayExplorer*"
+Remove-App "*ActiproSoftwareLLC*"                        # Code Writer app
 Remove-App "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
 Remove-App "*AdobeSystemsIncorporated.AdobeRevel*"
 Remove-App "*Amazon.com.Amazon*"
