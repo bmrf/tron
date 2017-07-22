@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 / Debug Log Upload: Replace PendingFileRename attachment with the system desktop screenshot instead, since this is often more helpful in troubleshooting
+:: Version:       1.0.4 ! Fix bug in debug log upload code
+::                1.0.3 / Debug Log Upload: Replace PendingFileRename attachment with the system desktop screenshot instead, since this is often more helpful in troubleshooting
 ::                        BE AWARE A SCREENSHOT OF THE DESKTOP CAN CONTAIN PERSONAL INFORMATION, PLEASE ONLY USE THE -UDL SWITCH IF YOU'RE AWARE OF THIS!
 ::                1.0.2 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
@@ -70,8 +71,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.0.3
-set SCRIPT_DATE=2017-06-28
+set SCRIPT_VERSION=1.0.4
+set SCRIPT_DATE=2017-07-22
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive. 
 :: We stay in the \resources directory for the rest of the script
@@ -865,7 +866,7 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %UPLOAD_DEBUG_LOGS%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot_%DTS:~0,12%.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log_with_date.bat "  Done."
