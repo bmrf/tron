@@ -57,6 +57,7 @@ Remove-App "Microsoft.Messaging"                       # 'Messaging' app
 Remove-App "Microsoft.MicrosoftJackpot"                # 'Jackpot' app
 Remove-App "Microsoft.MicrosoftJigsaw"                 # 'Jigsaw' app
 Remove-App "Microsoft.MicrosoftOfficeHub"
+Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # 'Power BI' app - Business analytics
 Remove-App "Microsoft.MicrosoftSudoku"
 Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
 Remove-App "Microsoft.Office.OneNote"                  # 'Onenote' app
