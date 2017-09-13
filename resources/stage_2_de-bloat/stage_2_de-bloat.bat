@@ -114,14 +114,14 @@ if /i %DRY_RUN%==no (
 				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo %CUR_DATE% %TIME% ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
-				echo %CUR_DATE% %TIME% ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+				if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
 
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% %TIME%    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 			set /a TICKER=!TICKER! + 1
 
 			)
@@ -176,7 +176,7 @@ if /i %DRY_RUN%==no (
 
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% %TIME%    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 			set /a TICKER=!TICKER! + 1
 
 			)
@@ -223,7 +223,7 @@ if /i %DRY_RUN%==no (
 
 			REM Running tracker a separate raw log file so we can see if the script stalls on a particular entry
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% %TIME%    %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			echo %CUR_DATE% !TIME!    %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 			)
 		)
