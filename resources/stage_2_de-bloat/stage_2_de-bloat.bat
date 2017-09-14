@@ -83,7 +83,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by speci
 	:: Calculate how many GUIDs we're searching for
 	set GUID_TOTAL=0
 	set TICKER=1
-	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+	for /f %%i in ('findstr /R /N "^.*" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
 call functions\log_with_date.bat "   If script appears stalled, check the PROGRESS log in the RAW LOGS folder to be sure it is"
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
@@ -103,6 +103,7 @@ if /i %DRY_RUN%==no (
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    !TICKER!/%GUID_TOTAL% %%i
+			if /i %VERBOSE%==no title Tron v%TRON_VERSION% [GUID: %%i -- !TICKER!/%GUID_TOTAL%]
 
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
 
@@ -140,7 +141,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars
 	:: Calculate how many GUIDs we're searching for
 	set GUID_TOTAL=0
 	set TICKER=1
-	for /F %%i in ('findstr /R /N "^{" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| find /C ":"') do set GUID_TOTAL=%%i
+	for /f %%i in ('findstr /R /N "^.*" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
 
@@ -159,6 +160,8 @@ if /i %DRY_RUN%==no (
 		if not %%i==:: (
 		if not %%i==set (
 			if /i %VERBOSE%==yes echo    %%i
+			if /i %VERBOSE%==no title Tron v%TRON_VERSION% [GUID: %%i -- !TICKER!/%GUID_TOTAL%]
+
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
 
 			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
