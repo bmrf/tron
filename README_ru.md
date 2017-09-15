@@ -384,7 +384,7 @@ Tron и любые используемые им скрипты и `.reg` фай
 
 Если вы чувствуете себя сверх-щедрыми:
 	```
-	1AVytToucSJMKZAqAEYVxqZvyt1U1uobXL
+	1Bfxpo1WqTGwRXZKrwYZV2zvJ4ggyj9GE1
 	```
 
 
