@@ -384,11 +384,14 @@ Hope this is helpful to other PC techs,
 
 – Vocatus
 
-If you feel overly charitable, bitcoin donations are accepted at this address:
+If you feel overly charitable, donations are accepted at these addresses:
 
-```
-1Biw8gx2kD7mZf66ZdNgB9tG1pE9YA3kEd
-```
+
+Bitcoin: `1Biw8gx2kD7mZf66ZdNgB9tG1pE9YA3kEd`
+
+Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
+
+Monero: `46ZUK4VDLLz3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6CFAnPSo`
 
 
 # FULL TRON DESCRIPTION
