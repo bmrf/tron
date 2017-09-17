@@ -383,9 +383,11 @@ Tron и любые используемые им скрипты и `.reg` фай
 - Vocatus
 
 Если вы чувствуете себя сверх-щедрыми:
-	```
-	1Bfxpo1WqTGwRXZKrwYZV2zvJ4ggyj9GE1
-	```
+
+Bitcoin: `1Bfxpo1WqTGwRXZKrwYZV2zvJ4ggyj9GE1`
+
+Monero: `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6Hh2QHtyHWnQFDgFUCJ`
+
 
 
 # FULL TRON DESCRIPTION (Полное описание)
