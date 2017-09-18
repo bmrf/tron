@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 - Remove 137 duplicate or unecessary lines
+:: Version:       1.2.6 - Remove 137 duplicate or unecessary lines
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.2.5
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-09-14
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.2.6
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-09-18
 
 
 
@@ -378,6 +378,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-09-14
 {4F524A2D-5350-4500-76A7-A758B70C2802}
 
 :: ASPCA and CWA Reminder misc programs (we-care.com Macy's nagware)
+{26B4D0E1-6F6D-48DF-8719-80276A259F7E}
 {7E482AF6-AA1F-4CC5-BA13-0536675F5744}
 {987F1753-1F42-4DF2-A5EA-0CCB777F3EB0}
 {E4FB0B39-C991-4EE7-95DD-1A1A7857D33D}
@@ -2116,6 +2117,7 @@ if exist %SystemDrive%\dell\dbrm rd /s /q %SystemDrive%\dell\dbrm
 {C7FB1A71-D808-4CD2-997D-837B39EA7EB0}
 
 :: Dell Digital Delivery
+{F91BF1B5-4213-440C-8539-C6EB2F1D1734}
 {AB7F2792-2ED1-4C5C-9F28-680E5110BF72}
 {99B7C4B5-DC14-441D-A5B6-7340F682BC81}
 {4688EB75-28E2-4731-9BCB-55E624F7CD45}
@@ -2237,6 +2239,7 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 {644B991F-B109-4360-9DA3-40CDAD13961C}
 
 :: Dell SupportAssistAgent
+{B57A8AFE-6735-4497-BD52-BD2F838F5CF0}
 {1AE53ECE-2255-4191-998B-07741E5EFCDA}
 {0E90A990-44A8-4C9C-9CA3-C68CA577419B}
 {2568546E-EAF1-49C2-BC7D-FD8B45965F89}
@@ -2265,6 +2268,8 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 {D850CB7E-72BC-4510-BA4F-48932BFAB295}
 
 :: Dell Update
+{F91263FA-BE4D-439D-9C0A-2E7204E0E9E3}
+{5F641343-FA40-4084-855A-7FA3251783DC}
 {92F651D9-4431-469E-9B11-299D007AF656}
 {49655877-33CF-4C8A-B07C-9694935431E4}
 {D5A4BC07-13BB-4D8B-A9DA-77AC5D953A19}
@@ -2863,6 +2868,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {1F7473D9-6C0B-4F5A-8FA4-AB8AD78CBE54}
 
 :: HP Dropbox Plugin
+{23617173-F935-4C17-A323-EB1207F3ED49}
 {D12BC084-97D6-438A-AA7C-5962608D17A0}
 {19EDEC5D-055E-4AD0-88AC-C342608FC47E}
 {3E261474-8DF2-463B-984E-0B6396F58D1C}
@@ -2888,6 +2894,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {0FA995CC-C849-4755-B14B-5404CC75DC24}
 
 :: HP ENVY xxxx series Help
+{CB5C9CB2-B471-42CC-93E6-D0E15021D5C2}
 {5845A5C9-AA03-4D91-9793-1A2563CE0129}
 {95BECC50-22B4-4FCA-8A2E-BF77713E6D3A}
 {3B1BE080-D477-4B94-AAE4-8B0BEC5D0CE3}
@@ -2960,6 +2967,7 @@ for /r "%ProgramFiles%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i
 for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
 
 :: HP Google Drive Plugin (wtf??)
+{AFF80405-E56A-48E7-98FC-8E46E261949F}
 {BFA42100-DB54-467A-BB87-CF70732B4065}
 {1B225296-B1F1-40B3-8427-844E97CB2D1B}
 {9469285B-AB76-434A-8533-2EE643318F2E}
@@ -3051,6 +3059,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: HP Picasso Media Center Add-In
 {55979C41-7D6A-49CC-B591-64AC1BBE2C8B}
 
+:: HP Product FWUpdater
+{0BE47A0B-0151-45E7-8015-FF148E0AEE4F}
+
 :: HP MarketResearch
 {95D08F4E-DFC2-4ce3-ACB7-8C8E206217E9}
 {D360FA88-17C8-4F14-B67F-13AAF9607B12}
@@ -3100,6 +3111,8 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies
+{CE8D3871-0B4C-45A8-8380-1F1BBD4AD33D}
+{03EDBA70-A4E9-4AC9-A76A-8EE5172684BF}
 {EA4DB54A-FAE0-4FDA-A66D-AEB8F5FFBE83}
 {9913BFAE-5E18-4863-8354-452337781573}
 {61812F25-2589-498B-AED9-40CBC641247E}
@@ -3235,6 +3248,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {6E4EE9B5-F69D-4455-B430-40FA5F0DC988}
 
 :: HP Product Improvement Study (various versions)
+{3A6A347A-300F-46C9-83BE-27D67B02857A}
 {0E8EC6E3-3AD8-4AB0-8EB3-AA835A20EDD7}
 {E3D43596-7E26-479E-B718-77CB3D9270F6}
 {A90F92B7-3C3F-4AEF-B281-31DD17BB73CA}
@@ -4367,6 +4381,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: PlayStationStore (hidden)
 {0E532C84-4275-41B3-9D81-D4A1A20D8EE7}
 
+:: Premium Service Agreement
+{C33AA6D6-F5EC-48F3-AFDC-8141345D473A}
+
 :: PressReader
 {912CED74-88D3-4C5B-ACB0-132318649765}
 
@@ -4435,6 +4452,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {2DFF31F9-7893-4922-AF66-C9A1EB4EBB31}
 
 :: Roxio GUIDs; too many to list, Google for individual GUIDs if a Roxio program you want to keep is getting removed
+{04F3038E-4120-44CC-B330-E05F737246A5}
 {9D6DFAD6-09E5-445E-A4B5-A388FEEBD90D}
 {11F93B4B-48F0-4A4E-AE77-DFA96A99664B}
 {098122AB-C605-4853-B441-C0A4EB359B75}
