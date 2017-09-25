@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
+:: Version:       1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
+::                1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
 ::                1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder. 
@@ -45,8 +46,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.2
-set STAGE_2_SCRIPT_DATE=2017-09-14
+set STAGE_2_SCRIPT_VERSION=1.3.3
+set STAGE_2_SCRIPT_DATE=2017-09-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -83,8 +84,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by speci
 	:: Calculate how many GUIDs we're searching for
 	set GUID_TOTAL=0
 	set TICKER=1
-	for /f %%i in ('findstr /R /N "^.*" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
-call functions\log_with_date.bat "   If script appears stalled, check the PROGRESS log in the RAW LOGS folder to be sure it is"
+	for /f %%i in ('%FINDSTR% /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| %FIND% /C ":"') do set GUID_TOTAL=%%i
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
 
@@ -133,6 +133,7 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
+pause
 
 
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
@@ -141,7 +142,7 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars
 	:: Calculate how many GUIDs we're searching for
 	set GUID_TOTAL=0
 	set TICKER=1
-	for /f %%i in ('findstr /R /N "^.*" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
+	for /f %%i in ('%FINDSTR% /R /N "^{" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
 if /i %DRY_RUN%==no (
 
