@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.276 + Add additional user-submitted entries
+:: Version:       1.2.7 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
