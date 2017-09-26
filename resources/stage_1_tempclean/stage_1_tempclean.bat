@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.9 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+:: Version:       1.2.0 ! Temporarily disable CCleaner until Piriform gets their mess figured out
+::                1.1.9 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.7 * script:     Update script to support standalone execution
@@ -25,8 +26,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.1.9
-set STAGE_1_SCRIPT_DATE=2017-06-20
+set STAGE_1_SCRIPT_VERSION=1.2.0
+set STAGE_1_SCRIPT_DATE=2017-09-26
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -66,17 +67,18 @@ call functions\log_with_date.bat "   Done."
 :: JOB: CCleaner
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
-call functions\log_with_date.bat "   Launch job 'CCleaner'..."
-if /i %DRY_RUN%==no (
-	if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
-	if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	:: Hardcoded delay to let CCleaner finish
-	ping 127.0.0.1 -n 180 > nul 2>&1
-	:: Now we kill it in case it's hung
-	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
-	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
-)
+:: Temporarily commented out 2017-09-26 due to Piriform hack. Will re-enable in a couple versions
+REM call functions\log_with_date.bat "   Launch job 'CCleaner'..."
+REM if /i %DRY_RUN%==no (
+	REM if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
+	REM if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	REM if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	REM :: Hardcoded delay to let CCleaner finish
+	REM ping 127.0.0.1 -n 180 > nul 2>&1
+	REM :: Now we kill it in case it's hung
+	REM if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
+	REM if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
+REM )
 call functions\log_with_date.bat "   Done."
 
 
