@@ -4,7 +4,9 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.3 + Add various entries
+Version:       1.1.5 + Add Zune entries, thanks to /u/ComputeGuy
+               1.1.4 + Add various entries, thanks to github:kronflux
+               1.1.3 + Add various entries
                1.1.2 + Add Microsoft.WindowsFeedbackHub to active apps. Thanks to /u/Phaellow
                      + Add Microsoft.Microsoft3DViewer to inactive apps. Thanks to /u/Phaellow
                1.1.1 + Add missing entries Microsoft.OneConnect, Microsoft.WindowsReadingList. Thanks to /u/1nfestissumam
@@ -22,8 +24,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.3"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-04-24"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.5"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-10-02"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -68,11 +70,10 @@ Remove-App "Microsoft.SkypeApp"                        # 'Get Skype' link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
+Remove-App "Microsoft.Zune*"                           # 'Zune' collection of apps
 
 # Inactive identifers
 #Remove-App "*Microsoft.XboxApp*"
-#Remove-App "*Microsoft.ZuneMusic*"
-#Remove-App "*Microsoft.ZuneVideo*"
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
 #Remove-App "Microsoft.BingWeather"                    # 'Weather' app
 #Remove-App "Microsoft.BioEnrollment"                  # not sure about this one
