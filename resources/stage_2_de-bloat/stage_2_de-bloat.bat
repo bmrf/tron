@@ -133,8 +133,6 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
-pause
-
 
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
