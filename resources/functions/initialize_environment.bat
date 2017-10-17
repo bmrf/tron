@@ -3,12 +3,12 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.2.3 . Increment version number
+:: Version:       10.2.5 . Increment version number
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date 
-set TRON_VERSION=10.2.3
-set TRON_DATE=2017-09-18
+set TRON_VERSION=10.2.5
+set TRON_DATE=2017-10-17
 
 :: Initialize script-internal variables
 set ERRORS_DETECTED=no
