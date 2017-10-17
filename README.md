@@ -52,6 +52,7 @@ By default the master log file is at `C:\Logs\tron\tron.log`. If you want to cha
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
+If you run with the `-udl` switch, it will automatically email me the run logs at the end of the script. Not required but greatly appreciated if you do it.
 
 # COMMAND-LINE USE
 
