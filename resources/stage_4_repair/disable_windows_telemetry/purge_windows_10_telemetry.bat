@@ -459,6 +459,10 @@ call functions\log.bat "     Null-routing bad hosts, please wait..."
 
 :: Run this command to clear persistent routes only, takes effect at reboot. This will undo all the below changes
 ::reg delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
+
+:: The reason we can't do this via firewall ACL entries or host file entries is because Windows maliciously ignores any rules blocking access to telemetry servers.
+:: Currently the only known solution is installing null-routes in the route table.
+
 if "%VERBOSE%"=="yes" (
 	:: a-0001.a-msedge.net
 	route -p add 204.79.197.200/32 0.0.0.0
