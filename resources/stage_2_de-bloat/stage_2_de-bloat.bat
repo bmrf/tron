@@ -3,7 +3,8 @@
 ::                2. Safe mode is strongly recommended (though not required)
 ::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
+:: Version:       1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
+::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
 ::                1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
 ::                1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
@@ -46,8 +47,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.3
-set STAGE_2_SCRIPT_DATE=2017-09-25
+set STAGE_2_SCRIPT_VERSION=1.3.4
+set STAGE_2_SCRIPT_DATE=2017-10-24
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -333,6 +334,16 @@ if %DRY_RUN%==no (
 
 call functions\log_with_date.bat "   Done."
 :skip_onedrive_removal
+
+
+:: JOB: Disable "how-to" tips appearing in Win8+
+if /i "%WIN_VER:~0,9%"=="Windows 1" ( 
+	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
+	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
+	powershell "New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' -Name 'DisableSoftLanding' -PropertyType DWORD -Value '1' | Out-Null"
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	call functions\log_with_date.bat "   Done."
+)
 
 
 :: Stage complete
