@@ -6,7 +6,9 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.1.9-TRON * Update Spybot Anti-Beacon to v1.6.0.42
+:: Version:       1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to /u/tylerwatt12
+::                             thread: https://www.reddit.com/r/sysadmin/comments/777vt2/the_windows_fall_creators_update_has_been/
+::                1.1.9-TRON * Update Spybot Anti-Beacon to v1.6.0.42
 ::                1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
 ::                1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
 ::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
@@ -33,8 +35,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.9-TRON
-set SCRIPT_UPDATED=2017-05-14
+set SCRIPT_VERSION=1.2.0-TRON
+set SCRIPT_UPDATED=2017-10-24
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -286,9 +288,9 @@ call functions\log.bat "     Done."
 call functions\log.bat "     Removing bad services, please wait..."
 
 if "%VERBOSE%"=="yes" (
-	:: Diagnostic Tracking
+	:: Diagnostic Tracking; changed delete to disable on 2017-08-28 per https://www.reddit.com/r/TronScript/comments/6vjeap/connected_user_experience_and_telemetry_service/dm2dv3d/?context=3
 	sc stop Diagtrack
-	sc delete Diagtrack
+	sc disable Diagtrack
 
 	:: Remote Registry (disable only)
 	sc config remoteregistry start= disabled
@@ -316,7 +318,7 @@ if "%VERBOSE%"=="yes" (
 ) else (
 	:: Diagnostic Tracking
 	sc stop Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc delete Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc disable Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Remote Registry (disable only)
 	sc config remoteregistry start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -382,6 +384,8 @@ if "%VERBOSE%"=="yes" (
 	
 	REM Disable Cortana globally
 	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d "0" /f
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d "0" /f
 
 	REM Disable "Search online and include web results"
 	%windir%\system32\reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f
@@ -417,6 +421,8 @@ if "%VERBOSE%"=="yes" (
 	
 	REM Disable Cortana globally
 	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	REM Disable "Search online and include web results"
 	%windir%\system32\reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
