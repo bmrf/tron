@@ -566,21 +566,17 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
-2. **Registry permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on HKLM, HKCU, and HKCR hives. This is an add-only permissions operation (does not remove any permissions). Use the `-srr` flag skips this operation
+2. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
-3. **Filesystem permissions reset**: Grant `SYSTEM` and `Administrator` users full permissions on everything in the `%WinDir%` directory tree. Use the `-sfr` flag skips this operation
+3. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
 
-4. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
+4. **Disable Windows "telemetry"**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. Tron removes the "bad" updates Microsoft pushed to Windows 7/8/8.1 systems after the Windows 10 release. These updates backport the surveillance/spyware functions that are by default present in Windows 10. See the code ([Win7/8/8.1](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_7-8-81_telemetry.bat), [Win10](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_10_telemetry.bat)) to see exactly which KB's are removed. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features, including automatically applying all the immunizations from the [Spybot Anti-Beacon](https://www.safer-networking.org/spybot-anti-beacon/) and [O&O ShutUp10](https://www.oo-software.com/en/shutup10) tools. Go over the code in `\tron\resources\stage_4_repair\disable_windows_telemetry\` to see exactly what is removed and disabled. NOTE: This section takes a LONG time to run, DO NOT CANCEL IT. Use the -str switch to just turn telemetry off instead of removing it
 
-5. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
+5. **Disable Windows 10 upgrade**: Disables the Windows 10 upgrade nagger on Windows 7/8/8.1 by flipping the appropriate registry switches. Users can still manually upgrade the machine if they desire, but it will no longer nag via the system tray, auto-download, or auto-install Windows 10 without their permission
 
-6. **Disable Windows "telemetry"**: Disable Windows "telemetry" (user tracking), Windows 7 and up only. Tron removes the "bad" updates Microsoft pushed to Windows 7/8/8.1 systems after the Windows 10 release. These updates backport the surveillance/spyware functions that are by default present in Windows 10. See the code ([Win7/8/8.1](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_7-8-81_telemetry.bat), [Win10](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_10_telemetry.bat)) to see exactly which KB's are removed. Tron also stops and deletes the `DiagTrack` ("Diagnostics Tracking Service") service. If the system is running Windows 10, Tron does a more in-depth disabling of the Windows telemetry features, including automatically applying all the immunizations from the [Spybot Anti-Beacon](https://www.safer-networking.org/spybot-anti-beacon/) and [O&O ShutUp10](https://www.oo-software.com/en/shutup10) tools. Go over the code in `\tron\resources\stage_4_repair\disable_windows_telemetry\` to see exactly what is removed and disabled. NOTE: This section takes a LONG time to run, DO NOT CANCEL IT. Use the -str switch to just turn telemetry off instead of removing it
+6. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`, `netsh interface ip delete arpcache`, `netsh winsock reset catalog`
 
-7. **Disable Windows 10 upgrade**: Disables the Windows 10 upgrade nagger on Windows 7/8/8.1 by flipping the appropriate registry switches. Users can still manually upgrade the machine if they desire, but it will no longer nag via the system tray, auto-download, or auto-install Windows 10 without their permission
-
-8. **Network repair**: Tron performs minor network repair. Specifically it runs these commands: `ipconfig /flushdns`, `netsh interface ip delete arpcache`, `netsh winsock reset catalog`
-
-9. **File extension repair**: Tron repairs most default file extensions with a batch file that loops through a series of registry files stored in `\tron\resources\stage_4_repair\repair_file_extensions\`
+7. **File extension repair**: Tron repairs most default file extensions with a batch file that loops through a series of registry files stored in `\tron\resources\stage_4_repair\repair_file_extensions\`
 
 
 ## STAGE 5: Patch
