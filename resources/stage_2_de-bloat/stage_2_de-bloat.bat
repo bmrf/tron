@@ -1,7 +1,6 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 2: De-bloat. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
-::                3. Called from tron.bat. If you try to run this script directly it will error out
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
 ::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
