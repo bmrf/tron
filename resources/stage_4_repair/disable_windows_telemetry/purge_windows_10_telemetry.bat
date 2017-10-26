@@ -7,6 +7,7 @@
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
 :: Version:       1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to /u/tylerwatt12
+::                           ! Fix syntax error in DiagTrack service disabling. Thanks to /u/KiranOtter
 ::                             thread: https://www.reddit.com/r/sysadmin/comments/777vt2/the_windows_fall_creators_update_has_been/
 ::                1.1.9-TRON * Update Spybot Anti-Beacon to v1.6.0.42
 ::                1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
@@ -36,7 +37,7 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 set SCRIPT_VERSION=1.2.0-TRON
-set SCRIPT_UPDATED=2017-10-24
+set SCRIPT_UPDATED=2017-10-26
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -290,7 +291,7 @@ call functions\log.bat "     Removing bad services, please wait..."
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking; changed delete to disable on 2017-08-28 per https://www.reddit.com/r/TronScript/comments/6vjeap/connected_user_experience_and_telemetry_service/dm2dv3d/?context=3
 	sc stop Diagtrack
-	sc disable Diagtrack
+	sc config Diagtrack start= disabled
 
 	:: Remote Registry (disable only)
 	sc config remoteregistry start= disabled
@@ -318,7 +319,7 @@ if "%VERBOSE%"=="yes" (
 ) else (
 	:: Diagnostic Tracking
 	sc stop Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc disable Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config Diagtrack start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Remote Registry (disable only)
 	sc config remoteregistry start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
