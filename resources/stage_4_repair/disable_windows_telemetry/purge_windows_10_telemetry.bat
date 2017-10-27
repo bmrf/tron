@@ -1,5 +1,5 @@
 :: Purpose:       Purges Windows 10 telemetry
-:: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
+:: Requirements:  Called from Tron ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 ::                code heavily borrowed from:
 ::                  - Aegis project: https://voat.co/v/technology/comments/459263
@@ -43,7 +43,7 @@ set SCRIPT_UPDATED=2017-10-26
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
-	set VERBOSE=yes
+	set VERBOSE=no
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| find "ProductName"') DO set WIN_VER=%%i %%j
 	for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| find "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
