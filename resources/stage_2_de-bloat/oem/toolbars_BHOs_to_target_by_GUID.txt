@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 + Add additional user-submitted entries
+:: Version:       1.0.9 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.8
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-10-17
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.9
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-10-27
 
 
 
@@ -388,6 +388,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-10-17
 {338B4DFE-2E2C-4338-9E41-E176D497299E}
 
 :: Bing Bar / Bing Bar Helper
+{9FA13759-5C2B-4177-9DDC-0038F8B5BEFD}
 {FF6DD716-7B10-4269-9F19-FFB07AC4CD95}
 {3365E735-48A6-4194-9988-CE59AC5AE503}
 {3611CA6C-5FCA-4900-A329-6A118123CCFC}
