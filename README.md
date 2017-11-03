@@ -656,5 +656,3 @@ Tron does not run these automatically because most do not support command-line u
 11. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
 12. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
-
-13. **VirusTotal uploader tool**: Uploads a file directly to VirusTotal for scanning
