@@ -159,7 +159,7 @@ Keep in mind the username and password for the email account will be stored in P
 
 If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option when used.
 
-These settings are stored in: `\tron\resources\functions\tron_settings.bat`
+Edit this file: `\tron\resources\functions\tron_settings.bat`
 
 - To change the master directory where all of Tron's output goes, edit this line:
   ```
