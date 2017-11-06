@@ -375,7 +375,7 @@ if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
 
 :: INTERNAL PREP: Welcome screen
 cls
-echo  **********************  TRON v%TRON_VERSION% (%TRON_DATE%)  *********************
+echo  *********************  TRON v%TRON_VERSION% (%TRON_DATE%)  *********************
 echo  * Script to automate a series of cleanup/disinfection tools           *
 echo  * Author: vocatus on reddit.com/r/TronScript                          *
 echo  *                                                                     *
