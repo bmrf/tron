@@ -89,7 +89,7 @@ call functions\log_with_date.bat "   OK."
 
 :: JOB: Capture screenshot of the desktop. First hide all windows, then capture the screenshot, then restore all windows
 title Tron v%TRON_VERSION% [stage_0_prep] [screenshot]
-call functions\log_with_date.bat "   Saving screenshot of the desktop to "%RAW_LOGS%"..."
+call functions\log_with_date.bat "   Saving desktop screenshot to "%RAW_LOGS%"..."
 if /i %DRY_RUN%==no (
 	stage_0_prep\capture_screenshot\nircmdc.exe sendkeypress rwin+m
 	stage_0_prep\capture_screenshot\nircmdc.exe cmdwait 500 savescreenshotfull "%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot_%DTS:~0,12%.png"
@@ -101,9 +101,9 @@ call functions\log_with_date.bat "   Done."
 :: JOB: rkill
 title Tron v%TRON_VERSION% [stage_0_prep] [rkill]
 call functions\log_with_date.bat "   Launch job 'rkill'..."
-call functions\log_with_date.bat "   If script stalls 20 min or more, kill explorer64.exe and explorer.exe with Task Manager"
+call functions\log_with_date.bat "   If script stalls 20 min or more, kill solitaire64.exe and solitaire.exe with Task Manager"
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\explorer.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
+	stage_0_prep\rkill\solitaire.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
