@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 + Add additional user-submitted entries
+:: Version:       1.1.0 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.0.9
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-10-27
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.0
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-07
 
 
 
@@ -165,10 +165,11 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-10-27
 {A531D99C-5A22-449b-83DA-872725C6D0ED}
 {85F5CF95-EC8F-49fc-BB3F-38C79455CBA2}
 
+:: Amazon Assistant (browser plugin)
+{0617A4D9-7DDA-4100-9978-3BEBB44F5939}
+
 :: Amazon Browser App
 {0A7D6F3C-F2AB-48ED-BE23-99791BFF87D6}
-
-:: Amazon Browser Bar Toolbar
 
 :: Amazon Music Importer 
 {EE54B7D5-57E0-A190-5D10-0982B52DF050}
