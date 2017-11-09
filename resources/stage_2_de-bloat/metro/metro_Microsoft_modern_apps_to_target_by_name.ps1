@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.5 + Add Zune entries, thanks to /u/ComputeGuy
+Version:       1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
+               1.1.5 + Add Zune entries, thanks to /u/ComputeGuy
                1.1.4 + Add various entries, thanks to github:kronflux
                1.1.3 + Add various entries
                1.1.2 + Add Microsoft.WindowsFeedbackHub to active apps. Thanks to /u/Phaellow
