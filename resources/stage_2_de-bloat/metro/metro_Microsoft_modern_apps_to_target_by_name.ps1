@@ -29,10 +29,10 @@ $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-10-02"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
-    $PackageFullName = (Get-AppxPackage $AppName).PackageFullName
-    $ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -eq $AppName}).PackageName
-    Remove-AppxPackage -package $PackageFullName | Out-Null
-    Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
+  $PackageFullName = (Get-AppxPackage $AppName).PackageFullName
+  $ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
+  Remove-AppxPackage -package $PackageFullName | Out-Null
+  Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
 }
 
 ###########
@@ -88,3 +88,4 @@ Remove-App "Microsoft.Zune*"                           # 'Zune' collection of ap
 #Remove-App "Microsoft.WindowsSoundRecorder"           # Sound Recorder app
 #Remove-App "Microsoft.WindowsStore"                   # Windows Store
 #Remove-App "Microsoft.windowscommunicationsapps"      # 'Calendar and Mail' app
+#Remove-App "Microsoft.MSPaint"                        # MS Paint (Paint 3D)
