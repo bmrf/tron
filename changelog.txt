@@ -14,6 +14,97 @@ Version number legend:
 
 
 
+#########################
+# v10.3.1 // 2017-11-16 #
+#########################
+Project version:                   v10.3.1
+ . tron.bat                        v1.0.4
+
+functions
+ . initialize_environment.bat      v10.2.6
+ . prerun_checks_and_tasks.bat     v1.0.0
+ . tron_settings.bat               v1.0.0
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.1.8
+ . check_update.bat                v1.0.7
+ . check_update_debloat_lists.bat  v1.1.0
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.2579
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.1
+ . nircmdc                         v2.81
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.1.9
+ * CCleaner                        v5.37.6309
+ . BleachBit                       v1.12
+ . finddupe.exe                    v1.23
+ . TempFileCleanup                 v1.1.4-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.3.4
+ . programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.1.8
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.19.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ . Malwarebytes included defs:     2017-10-19
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.3
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.5.0.35
+ * O&O ShutUp10                    v1.6.1394
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.1
+ . 7-Zip                           v16.04        (multi-language)
+ * Adobe Flash Player              v27.0.0.187   (language ignored)
+ . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
+ . Java Runtime Environment        8u152         (language ignored)
+ . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.6
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2017-11-06
+ . Defraggler                      v2.21.0.993
+
+Stage 7: Wrap-up
+ . SwithMail.exe                   v2.1.8.0
+
+Stage 8: Custom Scripts
+ . Tron will auto-execute any .bat file placed in this directory, prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ . AdwCleaner                      v7.0.4.0
+ . Autoruns                        v13.80
+ . BlueScreenView                  v1.55
+ * ComboFix                        v17.11.14.1
+ . Junkware Removal Tool           v8.1.4.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.51 x64
+ . PC Hunter                       v1.51 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
 
 #########################
 # v10.3.0 // 2017-11-06 #
