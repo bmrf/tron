@@ -2672,6 +2672,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: DIBS 1.7.0
 {2EA870FA-585F-4187-903D-CB9FFD21E2E0}
 
+:: Digital Cable Advisor
+{07ECF9FC-BB47-4325-8345-7BFEC708DDD7}
+
 :: Dolby Advanced Audio, Home Theater
 {B26438B4-BF51-49C3-9567-7F14A5E40CB9}
 {936CFA73-585F-4F5E-AB62-1350FE16E5FC}
@@ -2694,6 +2697,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: Driver Manager 8.1
 {27F1E086-5691-4EB8-8BA1-5CBA87D67EB5}
+
+:: DriversCloud.com
+{8A6F0F58-AE48-4F4C-A06F-C391AB17069C}
 
 :: Dropbox Trials (various sizes)
 {0867A88D-764F-366E-9E21-130DA8B472C3}
@@ -2778,6 +2784,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: Facebook Games Arcade
 {AA936BCA-D4C1-41ED-BBB5-DFFC384E6DF2}
+
+:: Facebook Gameroom
+{62E64CE0-AA1E-4F83-BC24-86D9AD6A1C30}
 
 :: Facebook Messenger 2.1.4814.0
 {7204BDEE-1A48-4D95-A964-44A9250B439E}
@@ -3147,6 +3156,7 @@ for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist 
 {D9D8900B-CFEB-44C6-B417-D6308B5B145D}
 
 :: HP Documentation
+{04839EBF-E4B6-441D-B312-01E03D5D287A}
 {2032D55B-645D-4A90-98B0-F5C9B20B9537}
 {39FCC6B7-FFF5-4075-A5E8-B5CEBD54C331}
 {2385DA7C-F545-4E66-A968-D464F0519425}
@@ -3368,6 +3378,9 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 
 :: HP PC Hardware Diagnostics UEFI
 {DD43EA67-DAF3-4879-BFF7-E534675BDEA5}
+
+:: HP Performance Advisor
+{3183E2B8-1B3B-4671-AB66-547AD62A78F1}
 
 :: HP Photosmart
 {4E484899-4F93-4086-88BA-56BDDF47A776}
@@ -4021,6 +4034,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
 :: last checked: 2017-04-02
 ::  Please comment on this program at reddit.com/r/TronScript on the main release thread
+:: {27DEA29A-222C-45F8-B70D-0A7B303FC71B}
 :: {CF2FF2E6-27D1-44D2-B532-1B31B731244C}
 :: {B66F70B4-34E5-429A-9F55-7129E0833A45}
 :: {96714280-14E6-4DF7-BACD-F797C0F17C3D}
