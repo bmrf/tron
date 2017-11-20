@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo for suggestion
+:: Version:       1.2.4 ! Fix bug where DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
+::                1.2.3 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.2.2 * script: Update script to support standalone execution
 ::                1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
 ::                1.2.0 - Remove job "Reset Filesystem permissions" and associated files
@@ -30,8 +31,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.3
-set STAGE_4_SCRIPT_DATE=2017-03-02
+set STAGE_4_SCRIPT_VERSION=1.2.4
+set STAGE_4_SCRIPT_DATE=2017-11-20
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -49,54 +50,61 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::
 :: STAGE 4: Repair :: // Begin jobs
 :::::::::::::::::::::
-call functions\log_with_date.bat "   stage_4_repair begin..."
+call functions\log_with_date.bat "  stage_4_repair begin..."
 
 
 :: JOB: MSI installer cleanup
 title Tron v%TRON_VERSION% [stage_4_repair] [MSI installer cleanup]
-call functions\log_with_date.bat "    Cleaning up orphaned MSI cache files..."
+call functions\log_with_date.bat "   Cleaning up orphaned MSI cache files..."
 if /i %VERBOSE%==yes (
 	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
 ) else (
 	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G! >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Check Windows Image for corruptions (Windows 8 and up)
 if %WIN_VER_NUM% geq 6.2 (
 	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Check]
-	call functions\log_with_date.bat "    Launch job 'DISM Windows image check'..."
-	if /i %DRY_RUN%==yes goto skip_dism_image_check
-	Dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%RAW_LOGS%\dism_check.log"
+	
+	:: Check if we were requested to skip DISM cleanup
+	if /i %SKIP_DISM_CLEANUP%==yes (
+		call functions\log_with_date.bat "!  SKIP_DISM_CLEANUP (-sdc) set. Skipping DISM cleanup."
+		goto skip_dism_cleanup
+		)
+	
+	call functions\log_with_date.bat "   Launch job 'DISM Windows image check'..."
+	if /i %DRY_RUN%==yes goto skip_dism_cleanup
+	dism /Online /NoRestart /Cleanup-Image /ScanHealth /Logpath:"%RAW_LOGS%\dism_check.log"
 )
 
 :: If we detect errors try to repair them
 if not %ERRORLEVEL%==0 (
 	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Repair]
 	if %WIN_VER_NUM% geq 6.2 (
-		call functions\log_with_date.bat " !  DISM: Image corruption detected. Attempting repair..."
+		call functions\log_with_date.bat "!  DISM: Image corruption detected. Attempting repair..."
 		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
-		Dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%RAW_LOGS%\dism_repair.log"
+		dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%RAW_LOGS%\dism_repair.log"
 	)
 ) else (
-	call functions\log_with_date.bat "    DISM: No image corruption detected."
+	call functions\log_with_date.bat "   DISM: No image corruption detected."
 )
 
 :: Add the DISM logs to the main Tron log
 if %WIN_VER_NUM% gtr 6.2 (
-	call functions\log_with_date.bat "    Compiling DISM logs into main Tron log..."
+	call functions\log_with_date.bat "   Compiling DISM logs into main Tron log..."
 	if exist "%RAW_LOGS%\dism_check.log" type "%RAW_LOGS%\dism_check.log" >> "%LOGPATH%\%LOGFILE%"
 	if exist "%RAW_LOGS%\dism_repair.log" type "%RAW_LOGS%\dism_repair.log" >> "%LOGPATH%\%LOGFILE%"
 )
 
-:skip_dism_image_check
-call functions\log_with_date.bat "    Done."
+:skip_dism_cleanup
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: System File Checker (SFC) scan
 title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
-call functions\log_with_date.bat "    Launch job 'System File Checker'..."
+call functions\log_with_date.bat "   Launch job 'System File Checker'..."
 if /i %DRY_RUN%==no (
 	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
 	if %WIN_VER_NUM% geq 6.0 (
@@ -104,28 +112,28 @@ if /i %DRY_RUN%==no (
 		%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: chkdsk the system drive
 title Tron v%TRON_VERSION% [stage_4_repair] [chkdsk]
-call functions\log_with_date.bat "    Launch job 'chkdsk'..."
-call functions\log_with_date.bat "    Checking %SystemDrive% for errors..."
+call functions\log_with_date.bat "   Launch job 'chkdsk'..."
+call functions\log_with_date.bat "   Checking %SystemDrive% for errors..."
 :: Run a read-only scan and look for errors. Schedule a scan at next reboot if errors found
 if /i %DRY_RUN%==no %SystemRoot%\System32\chkdsk.exe %SystemDrive%
 if /i not %ERRORLEVEL%==0 (
-	call functions\log_with_date.bat " !  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
+	call functions\log_with_date.bat "!  Errors found on %SystemDrive%. Scheduling full chkdsk at next reboot."
 	if /i %DRY_RUN%==no fsutil dirty set %SystemDrive%
 ) else (
-	call functions\log_with_date.bat "    No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
+	call functions\log_with_date.bat "   No errors found on %SystemDrive%. Skipping full chkdsk at next reboot."
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Remove Microsoft telemetry (user tracking)
 title Tron v%TRON_VERSION% [stage_4_repair] [disable MS telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
-	call functions\log_with_date.bat " !  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
+	call functions\log_with_date.bat "!  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
 	REM Only disable telemetry, don't completely purge it
 	if %VERBOSE%==yes (
 		REM GPO options to disable telemetry
@@ -189,10 +197,10 @@ if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 
 :: Windows 10 version
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
-	call functions\log_with_date.bat "    Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
-	call functions\log_with_date.bat "    THIS TAKES A WHILE - BE PATIENT!!"
+	call functions\log_with_date.bat "   Launch job 'Kill Microsoft telemetry (user tracking) (Win10)'..."
+	call functions\log_with_date.bat "   THIS TAKES A WHILE - BE PATIENT!!"
 	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_10_telemetry.bat
-	call functions\log_with_date.bat "    Done. Enjoy your privacy."
+	call functions\log_with_date.bat "   Done. Enjoy your privacy."
 )
 
 :: Spawn temporary variable to check for Win7 and 8. Ugly hack but at least it works
@@ -201,9 +209,9 @@ if /i "%WIN_VER:~0,9%"=="Windows 7" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,9%"=="Windows 8" set RUN_7_OR_8_TELEM=yes
 if /i "%WIN_VER:~0,19%"=="Windows Server 2012" set RUN_7_OR_8_TELEM=yes
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
-	call functions\log_with_date.bat "    Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
+	call functions\log_with_date.bat "   Launch job 'Kill Microsoft telemetry (user tracking) (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no call stage_4_repair\disable_windows_telemetry\purge_windows_7-8-81_telemetry.bat
-	call functions\log_with_date.bat "    Done. Enjoy your privacy."
+	call functions\log_with_date.bat "   Done. Enjoy your privacy."
 )
 :skip_telem_removal
 
@@ -211,7 +219,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 :: JOB: Disable Windows 10 Upgrade (Win7/8/8.1 only)
 :: Just re-use the temp variable from the above job since it will tell us whether we're on 7 or 8
 if /i "%RUN_7_OR_8_TELEM%"=="yes" (
-	call functions\log_with_date.bat "    Launch job 'Disable Windows 10 Upgrade nagger (Win7/8/8.1)'..."
+	call functions\log_with_date.bat "   Launch job 'Disable Windows 10 Upgrade nagger (Win7/8/8.1)'..."
 	if /i %DRY_RUN%==no ( 
 		REM Only disable telemetry, don't completely purge it
 		REM "DisableOSUpgrade" disables/hides the taskbar app to prevent users from making a reservation and upgrading manually
@@ -229,46 +237,46 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 		REM "DisableGWX" is the upgrade nagger/popup
 		%windir%\system32\reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GWX" /v "DisableGWX" /t REG_DWORD /d "1" /f
 	)
-	call functions\log_with_date.bat "    Done."
+	call functions\log_with_date.bat "   Done."
 )
 
 
 :: JOB: Disable NVIDIA telemetry (sigh...)
 title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
-call functions\log_with_date.bat "    Launch job 'Disable NVIDIA telemetry'..."
+call functions\log_with_date.bat "   Launch job 'Disable NVIDIA telemetry'..."
 if /i %DRY_RUN%==no (
 	schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Network repair (minor)
 title Tron v%TRON_VERSION% [stage_4_repair] [winsock_reset]
-call functions\log_with_date.bat "    Launch job 'Network repair'..."
+call functions\log_with_date.bat "   Launch job 'Network repair'..."
 if /i %DRY_RUN%==no (
 	ipconfig /flushdns >> "%LOGPATH%\%LOGFILE%" 2>&1
 	:: Below command probably not necessary, but just in case there are dodgy static ARP entries
 	netsh interface ip delete arpcache >> "%LOGPATH%\%LOGFILE%" 2>&1
 	netsh winsock reset catalog >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Repair file extensions
 title Tron v%TRON_VERSION% [stage_4_repair] [repair file extensions]
-call functions\log_with_date.bat "    Launch job 'Repair file extensions'..."
+call functions\log_with_date.bat "   Launch job 'Repair file extensions'..."
 if /i %DRY_RUN%==no (
 	setlocal
 	call stage_4_repair\repair_file_extensions\repair_file_extensions.bat
 	endlocal
 )
-call functions\log_with_date.bat "    Done."
+call functions\log_with_date.bat "   Done."
 
 
 
 
 
 :: Stage complete
-call functions\log_with_date.bat "   stage_4_repair complete."
+call functions\log_with_date.bat "  stage_4_repair complete."
