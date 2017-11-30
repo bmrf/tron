@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.3 + Add additional user-submitted entries
+:: Version:       1.3.4 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.3.3
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-29
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.3.4
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-30
 
 
 
@@ -230,6 +230,10 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-29
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
 
 :: AMD Catalyst Control Center Next Localization
+{07BFBD5C-2F63-6828-1B61-B41A44113F3B}
+{D74218A3-C503-57EF-AC9F-2220082E7ADE}
+{D7D20EB4-BD89-05C0-05C6-33E5B762989E}
+{DA433FCF-90A1-19A5-65A7-FDF82DE4826D}
 {3E196AAF-F81C-B384-E2AB-28EE2398FE5F}
 {42B2B472-DF5A-B0F2-60E7-1717630322FF}
 {44ED2CDA-4197-E9E9-B328-26E1FB749116}
@@ -740,6 +744,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-29
 :: {6B171EFC-F41F-4055-A4DE-5B9480DA17AA}
 
 :: AVG 2016, Disabled for Tron by /u/vocatus on feedback from /u/ComputersByte, /u/spexdi, /u/Chimaera12 and /u/agent-squirrel
+:: {FD1B6759-5334-4703-AB1B-C4AFB31A61D3}
+:: {1A64F7DC-A3F6-4A96-BB0F-F085C73EB71A}
 :: {E6CF0766-938B-48C1-B2E0-921076CAE649}
 :: {4812D3B9-F8DE-40EF-888E-54B2FDF21A55}
 :: {5F717F1E-A958-47A7-9602-4D9DDC8E0E03}
@@ -3712,6 +3718,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {531000B3-DBEE-4115-BBF3-DA48B67C053F}
 
 :: HP SoftPaq Download Manager
+{cf084e57-80c2-4eb5-8e01-0bab6c1a84e5}
 {68E1C9E9-1606-49AF-9978-573148CED9E4}
 {fc153673-e23b-4908-93b9-164cc056a3c4}
 {85e65e57-1427-437c-a510-313d48989f8f}
@@ -3949,6 +3956,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {A36CD345-625C-4d6c-B3E2-76E1248CB451}
 
 :: HP Support Assistant (various versions)
+{56D27851-B9A6-430F-875A-E2D7A3802C7B}
 {05F81C27-62A5-4A0C-8519-60CB66CF87C6}
 {DFBDDDB3-D753-4454-84E9-2D3D96E89EFF}
 {30514137-FB26-4E1A-A3B4-5B48680F3ECE}
@@ -3991,6 +3999,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {76272057-98E0-4DC4-AAC3-10C546C47195}
 
 :: HP Support Solutions Framework
+{E7F7C2F3-0BEF-471A-A6F3-4B43002034F4}
 {63F82052-C045-4F97-A3CA-C41D2CCA1FFA}
 {183BD477-774B-4700-B40B-EE43886E74D2}
 {8F1A441E-AD6D-4732-BD6A-F38D5F1D1E47}
