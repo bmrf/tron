@@ -89,7 +89,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
-     -sap Skip application patches (don't patch Java Runtime, Adobe Flash or Reader)
+     -sap Skip application patches (don't patch 7-Zip, Java Runtime, or Adobe Flash)
 
      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 
@@ -248,7 +248,7 @@ Edit this file: `\tron\resources\functions\tron_settings.bat`
   set SKIP_ANTIVIRUS_SCANS=no
   ```
    
-- To skip application patches (don't patch 7-Zip, Java, Adobe Flash and Reader) change this to `yes`:
+- To skip application patches (don't patch 7-Zip, Java Runtime or Adobe Flash) change this to `yes`:
   ```
   set SKIP_APP_PATCHES=no
   ```
@@ -596,13 +596,11 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sap` switch to skip this action
 
-3. **Adobe Reader**: Standard PDF reader. Use the `-sap` switch to skip this action
+3. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sap` switch to skip this action
 
-4. **Java Runtime Environment**: I personally hate Java, but it is still widely used, so we at least get the system on the latest version. Use the `-sap` switch to skip this action
+4. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, Tron executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if they're present in the relevant directory. See [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates) above for more information on using offline update packages with Tron
 
-5. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, Tron executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if they're present in the relevant directory. See [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates) above for more information on using offline update packages with Tron
-
-6. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
+5. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
 
 
 ## STAGE 6: Optimize
