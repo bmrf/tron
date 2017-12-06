@@ -148,6 +148,8 @@ Remove-App "*sMedioforHP.sMedio360*"
 Remove-App "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "*toolbar*"
 Remove-App "*zuukaInc.iStoryTimeLibrary*"
+Remove-App "*A278AB0D.DisneyMagicKingdoms*"
+Remove-App "*828B5831.HiddenCityMysteryofShadows*"
 
 # Inactive identifers
 #Remove-App "*Netflix*"
