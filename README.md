@@ -142,9 +142,7 @@ More details about this function can be found in the [list of all actions Tron p
 
 # SAFE MODE
 
-When Tron launches it will briefly check if the computer is in Safe Mode with Networking, and if not it will prompt you to automatically reboot into it.
-
-Tron doesn't *need* to be run in Safe Mode, but it is **strongly recommended**. 
+In older versions of Tron (v10.3.1 and back), Safe Mode was recommended vs. Normal/Regular mode (Windows boot mode). The current recommendation has changed starting in v10.4.0, and I recommend first running in Normal/Regular mode, and only attempting a run in Safe Mode if that fails.
 
 
 # EMAIL REPORT
