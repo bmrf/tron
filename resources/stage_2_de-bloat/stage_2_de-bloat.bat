@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
+:: Version:       1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
+::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
 ::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
 ::                1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
 ::                1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
@@ -46,8 +47,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.4
-set STAGE_2_SCRIPT_DATE=2017-10-24
+set STAGE_2_SCRIPT_VERSION=1.3.5
+set STAGE_2_SCRIPT_DATE=2017-12-06
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -339,8 +340,10 @@ call functions\log_with_date.bat "   Done."
 if /i "%WIN_VER:~0,9%"=="Windows 1" ( 
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
-	powershell "New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' -Name 'DisableSoftLanding' -PropertyType DWORD -Value '1' | Out-Null"
-	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if /i %DRY_RUN%==no (
+		powershell "New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' -force -Name 'DisableSoftLanding' -PropertyType DWORD -Value '1' | Out-Null"
+		reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
 	call functions\log_with_date.bat "   Done."
 )
 
