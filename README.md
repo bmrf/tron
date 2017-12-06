@@ -38,9 +38,9 @@ I got tired of running these utilities manually and decided to just script every
 
 1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
-2. [Boot into "Safe Mode with Network Support"](#safe-mode). If you skip this step Tron will prompt you to automatically reboot into Safe Mode. NOTE: Sometimes Tron works better in Normal mode, and sometimes Safe Mode. You don't *have* to run Tron in Safe Mode, though it generally seems to be more effective that way. Basically up to your discretion.
+2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended for a first go around.
 
-3. Whether in Safe Mode or Regular mode, right-click on `tron.bat` and select "**Run as Administrator**"
+3. Right-click on `tron.bat` and select "**Run as Administrator**"
 
 4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
 
@@ -52,18 +52,20 @@ By default the master log file is at `C:\Logs\tron\tron.log`. If you want to cha
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
-If you run with the `-udl` switch, it will automatically email me the run logs at the end of the script. Not required but greatly appreciated if you do it.
+If you run with the `-udl` switch, it will automatically email me the run logs at the end of the script. Not required but greatly appreciated if you can.
 
 # COMMAND-LINE USE
 
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
-    tron.bat [-a -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc -sdu
-              -se -sk -sm -spr -ss -str -swo -swu -udl -v -x] | [-h]
+    tron.bat [-a -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
+              -sdu -se -sk -sm -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional flags (can be combined):
 
      -a   Automatic mode (no welcome screen or prompts; implies -e)
+     
+     -asm Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
      
      -c   Config dump (display current config. Can be used with other
           flags to see what WOULD happen, but script will never execute
@@ -113,7 +115,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -swu Skip Windows Updates entirely (ignore both WSUS Offline and online methods)
 
-     -swo Skip only bundled WSUS Offline updates (online updates still attempted)
+     -swo Skip user-supplied WSUS Offline updates (if they exist; online updates still attempted)
      
      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
 
@@ -194,6 +196,11 @@ Edit this file: `\tron\resources\functions\tron_settings.bat`
 - To always run automatically (no welcome screen, implies acceptance of EULA), change this to `yes`:
   ```
   set AUTORUN=no
+  ```
+  
+  - To always reboot to Safe Mode for autorun (requires that AUTORUN also be set to yes), change this to `yes`:
+  ```
+  set AUTORUN_IN_SAFE_MODE=no
   ```
 
 - To do a dry run (don't actually execute jobs), change this to `yes`:
