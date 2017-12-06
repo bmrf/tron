@@ -3,11 +3,12 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
+:: Version:       1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
+::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
 
 :: Script version
-set TRON_SETTINGS_SCRIPT_VERSION=1.0.0
-set TRON_SETTINGS_SCRIPT_DATE=2017-02-09
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.1
+set TRON_SETTINGS_SCRIPT_DATE=2017-12-06
 
 
 :::::::::::::::
@@ -47,6 +48,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: ! These are Tron's defaults. All settings here are overridden if their respective command-line flag is used
 ::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
+:: AUTORUN_IN_SAFE_MODE   (-asm) = Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
 :: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -63,18 +65,19 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
 :: SKIP_DISM_CLEANUP      (-sdc) = Skip DISM Cleanup (SxS component store deflation)
 :: SKIP_DEBLOAT_UPDATE    (-sdu) = Set to yes to prevent Tron from auto-updating the stage 2 debloat lists prior to Stage 0 execution
-:: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log backup and clear
+:: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clear (don't backup and clear Windows Event Logs)
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
 :: SKIP_MBAM_INSTALL      (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip Telemetry Removal (just turn telemetry off instead of removing it)
 :: SKIP_WINDOWS_UPDATES   (-swu) = Set to yes to skip Windows Updates entirely (ignore both WSUS Offline and online methods)
-:: SKIP_WSUS_OFFLINE      (-swo) = Set to yes to skip only bundled WSUS Offline updates (online updates still attempted)
+:: SKIP_WSUS_OFFLINE      (-swo) = Set to yes to skip user-supplied WSUS Offline updates (if they exist; online updates still attempted)
 :: UPLOAD_DEBUG_LOGS      (-udl) = Upload debug logs. Send tron.log and the system GUID dump to the Tron developer. Please use this if possible, logs are extremely helpful in Tron development
 :: VERBOSE                (-v)   = When possible, show as much output as possible from each program Tron calls (e.g. Sophos, KVRT, etc). NOTE: This is often much slower
 :: SELF_DESTRUCT          (-x)   = Set to yes to have Tron automatically delete itself after running. Leaves logs intact
 set AUTORUN=no
+set AUTORUN_IN_SAFE_MODE=no
 set DRY_RUN=no
 set DEV_MODE=no
 set EULA_ACCEPTED=no
