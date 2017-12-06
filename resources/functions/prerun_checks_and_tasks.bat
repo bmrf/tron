@@ -1,14 +1,15 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 + Add automatic update of drivedb.h prior to scanning hard drives. This ensures we're always on the latest definitions file
+:: Version:       1.0.2 * Don't download drivedb.h definitions file if doing a dry run
+::                1.0.1 + Add automatic update of drivedb.h prior to scanning hard drives. This ensures we're always on the latest definitions file
 ::                        Silently fails if no network connection
 ::                1.0.0 . Initial write, forked out of v9.9.0 of tron.bat
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.1
-set PRERUN_CHECKS_SCRIPT_DATE=2017-11-06
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.2
+set PRERUN_CHECKS_SCRIPT_DATE=2017-12-06
 
 
 
@@ -113,7 +114,7 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 pushd stage_6_optimize\defrag\
 
 	:: Check for an updated drivedb.h
-	update-smart-drivedb.exe /S
+	if /i %DRY_RUN%==no update-smart-drivedb.exe /S
 
 	:: Do the scan
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
