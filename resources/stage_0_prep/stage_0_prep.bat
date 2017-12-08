@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
+:: Version:       1.1.9 + Add killing of HelpPane.exe if it exists
+::                1.1.8 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.6 * script: Update script to support standalone execution
@@ -32,8 +33,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.1.8
-set STAGE_0_SCRIPT_DATE=2017-06-20
+set STAGE_0_SCRIPT_VERSION=1.1.9
+set STAGE_0_SCRIPT_DATE=2017-12-08
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -52,6 +53,10 @@ if /i "%LOGFILE%"=="" (
 :: STAGE 0: PREP :: // Begin jobs
 :::::::::::::::::::
 call functions\log_with_date.bat "  stage_0_prep begin..."
+
+
+:: JOB (silent): Kill helppane.exe if it's running (Usually on Win10+ in safe mode)
+taskkill /f /im HelpPane.exe /t >nul 2>&1
 
 
 :: JOB: Create pre-run Restore Point so we can roll the system back if anything blows up
