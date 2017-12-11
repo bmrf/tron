@@ -1,15 +1,17 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 * Don't download drivedb.h definitions file if doing a dry run
+:: Version:       1.0.4 ! Fix syntax error in IF statement: Wrap paths in quotes to handle special characters and spaces
+::                1.0.3 * Don't download drivedb.h definitions file if in either autorun mode
+::                1.0.2 * Don't download drivedb.h definitions file if doing a dry run
 ::                1.0.1 + Add automatic update of drivedb.h prior to scanning hard drives. This ensures we're always on the latest definitions file
 ::                        Silently fails if no network connection
 ::                1.0.0 . Initial write, forked out of v9.9.0 of tron.bat
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.2
-set PRERUN_CHECKS_SCRIPT_DATE=2017-12-06
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.4
+set PRERUN_CHECKS_SCRIPT_DATE=2017-12-11
 
 
 
@@ -58,51 +60,44 @@ if "%WIN_VER:~0,19%"=="Windows Server 2016" (
 		echo    your already non-existent warranty!
 		echo.
 		pause
-		exit 1
+		exit 3
 	)
 )
 
 
-:: CHECK: Make sure we're not running from the %TEMP% directory
-if "%~dp0"=="%TEMP%\tron\" (
+
+:: CHECK: Prohibited directory execution
+:: Why? because people have some bizarre obsession with running from the System temp folder
+:: or some other random location instead of from the desktop as instructed
+set RUNDIR=%~dp0
+if "%RUNDIR:~0,7%"=="%SystemDrive%\tron" set BAD_RUNPATH=yes
+if "%RUNDIR:~0,7%"=="%SystemDrive%\temp" set BAD_RUNPATH=yes
+if "%RUNDIR%"=="%TEMP%\tron\tron\resources\functions\" set BAD_RUNPATH=yes
+if "%RUNDIR%"=="%TEMP%\tron\resources\functions\" set BAD_RUNPATH=yes
+if "%RUNDIR%"=="%TEMP%\resources\functions\" set BAD_RUNPATH=yes
+if %BAD_RUNPATH%==yes (
 	color 0c
 	cls
 	echo.
 	echo  ERROR
 	echo.
-	echo  Tron is running from the Windows TEMP directory. Tron
-	echo  cannot run from the TEMP directory as it's one of the
-	echo  first places to get wiped when Tron starts. Run Tron
-	echo  directly from your Desktop. Example of correct path:
+	echo  ...guess who didn't read the instructions? You.
+	echo.
+	echo  Tron is running from a temp directory. Tron cannot run
+	echo  from temp directories as they're some of the first 
+	echo  places to get wiped when the script starts. Run Tron
+	echo  directly from the Desktop. Example of a correct path:
 	echo.
 	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
 	echo.
-	echo  Tron will now quit.
+	echo  Go read the instructions, clown.
+	echo.
+	echo  Goodbye.
 	echo.
 	pause
-	exit 1
+	exit 5
 )
 
-
-:: CHECK: Make sure we're not running from %SystemDrive%\TEMP
-if "%~dp0"=="%SystemDrive%\temp\tron\" (
-	color 0c
-	cls
-	echo.
-	echo  ERROR
-	echo.
-	echo  Tron is running from %SystemDrive%\TEMP. Tron cannot
-	echo  run from this location as it's one of the first
-	echo  places to get wiped when Tron starts. Run Tron
-	echo  directly from your Desktop. Example of correct path:
-	echo.
-	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
-	echo.
-	echo  Tron will now quit.
-	echo.
-	pause
-	exit 1
-)
 
 
 
@@ -113,9 +108,9 @@ if "%~dp0"=="%SystemDrive%\temp\tron\" (
 :: TASK: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 pushd stage_6_optimize\defrag\
 
-	:: Check for an updated drivedb.h
-	if /i %DRY_RUN%==no update-smart-drivedb.exe /S
-
+	:: Check for an updated drivedb.h, but only if we're not in autorun OR doing a dry run
+	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( update-smart-drivedb.exe /S ) ) )
+	
 	:: Do the scan
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
