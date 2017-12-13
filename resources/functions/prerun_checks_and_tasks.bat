@@ -81,9 +81,6 @@ if %BAD_RUNPATH%==yes (
 	echo.
 	echo  ERROR
 	echo.
-	echo  Looks like someone didn't read the instructions which are...
-	echo  appropriately enough, named "INSTRUCTIONS -- YES ACTUALLY READ THEM"
-	echo.
 	echo  Tron is running from a temp location or the root of %SystemDrive%.
 	echo  Tron cannot run from these locations as they're some of the
 	echo  first places to get cleaned when the script starts. Run Tron
@@ -91,7 +88,10 @@ if %BAD_RUNPATH%==yes (
 	echo.
 	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
 	echo.
-	echo  Maybe go avail yourself of the instructions...
+	echo  Go avail yourself of the instructions which are named,
+	echo  appropriately enough...
+	echo.
+	echo  "INSTRUCTIONS -- YES ACTUALLY READ THEM.txt"
 	echo.
 	echo  Goodbye.
 	echo.
