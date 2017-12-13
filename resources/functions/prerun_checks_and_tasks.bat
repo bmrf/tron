@@ -81,16 +81,20 @@ if %BAD_RUNPATH%==yes (
 	echo.
 	echo  ERROR
 	echo.
-	echo  ...guess who didn't read the instructions? You.
+	echo  ...Did you read the instructions?
 	echo.
-	echo  Tron is running from a temp directory. Tron cannot run
-	echo  from temp directories as they're some of the first 
-	echo  places to get wiped when the script starts. Run Tron
-	echo  directly from the Desktop. Example of a correct path:
+	echo  Tron is running from a temp directory or other 
+	echo  blacklisted location. Tron cannot run from
+	echo  temp directories as they're some of the first 
+	echo  places to get wiped when the script starts, and
+	echo  there are a few locations reserved for use by Tron.
+	echo.
+	echo  We suggest that you run Tron directly from the Desktop.
+	echo.
+	echo  Example of a correct path:
 	echo.
 	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
 	echo.
-	echo  Go read the instructions, clown.
 	echo.
 	echo  Goodbye.
 	echo.
