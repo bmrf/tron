@@ -450,44 +450,44 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 0 code](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/stage_0_prep.bat)*
 
-2. **Create System Restore point**: Create a pre-run system restore point. Vista and up only, client OS's only (not supported on Server OS's, and on Windows 10 does not work if the system is in any form of Safe Mode. This is a known bug, and I spent hours trying to find a workaround but was not able to find a solution, so if you absolutely require a system restore point, recommend running in normal mode
+1. **Create System Restore point**: Create a pre-run system restore point. Vista and up only, client OS's only (not supported on Server OS's, and on Windows 10 does not work if the system is in any form of Safe Mode. This is a known bug, and I spent hours trying to find a workaround but was not able to find a solution, so if you absolutely require a system restore point, recommend running in normal mode
 
-3. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` ([link](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/processkiller/whitelist.txt))
+2. **[Rkill](http://www.bleepingcomputer.com/download/rkill/)**: Rkill is an anti-malware prep tool; it looks for and kills a number of known malware that interfere with removal tools. Rkill will NOT kill any process listed in `\resources\stage_0_prep\rkill\rkill_process_whitelist.txt` ([link](https://github.com/bmrf/tron/blob/master/resources/stage_0_prep/processkiller/whitelist.txt))
 
-4. **Create pre-run profile**: Dump list of installed programs and list of all files on the system so we can compare later and see exactly what was removed
+3. **Create pre-run profile**: Dump list of installed programs and list of all files on the system so we can compare later and see exactly what was removed
 
-5. **GUID dump**: Dump list of all installed program GUIDs. These dumps are useful in helping the project bolster the blacklist of known-bad GUIDs
+4. **GUID dump**: Dump list of all installed program GUIDs. These dumps are useful in helping the project bolster the blacklist of known-bad GUIDs
 
-6. **ProcessKiller**: Utility provided by [/u/cuddlychops06](https://www.reddit.com/user/cuddlychops06) which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+5. **ProcessKiller**: Utility provided by [/u/cuddlychops06](https://www.reddit.com/user/cuddlychops06) which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
 
-7. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command:
+6. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command:
    ```
    bcdedit /set {default} safeboot network
    ```
 
-8. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
+7. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
 
-9. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+8. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-10. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
+9. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
   ```
 
-11. **[TDSS Killer](http://usa.kaspersky.com/downloads/TDSSKiller)**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+10. **[TDSS Killer](http://usa.kaspersky.com/downloads/TDSSKiller)**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-12. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
+11. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
 
-13. **VSS purge**: Purge oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+12. **VSS purge**: Purge oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-14. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
+13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-15. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
+14. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
