@@ -4,7 +4,10 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.4 + Add *A278AB0D.MarchofEmpires*, *KeeperSecurityInc.Keeper*, *ThumbmunkeysLtd.PhototasticCollage*. Thanks to /u/Phaellow
+Version:       1.1.7 + Add *A278AB0D.DisneyMagicKingdoms* and *828B5831.HiddenCityMysteryofShadows*. Thanks to github:colepnc
+               1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
+               1.1.5 + Add various entries, thanks to github:kronflux
+               1.1.4 + Add *A278AB0D.MarchofEmpires*, *KeeperSecurityInc.Keeper*, *ThumbmunkeysLtd.PhototasticCollage*. Thanks to /u/Phaellow
                1.1.3 + Add Playtika.CaesarsSlotsFreeCasino and some others
                1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
                1.1.1 + Add flaregamesGmbH.RoyalRevolt2. Thanks to /u/Phaellow
@@ -19,8 +22,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.4"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-07-04"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.7"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2017-12-14"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -48,8 +51,10 @@ Remove-App "*6Wunderkinder.Wunderlist*"
 Remove-App "*7906AAC0.TOSHIBACanadaPartners*"
 Remove-App "*7906AAC0.ToshibaCanadaWarrantyService*"
 Remove-App "*7digitalLtd.7digitalMusicStore*"
+Remove-App "*828B5831.HiddenCityMysteryofShadows*"
 Remove-App "*89006A2E.AutodeskSketchBook*"
 Remove-App "*9E2F88E3.Twitter*"
+Remove-App "*A278AB0D.DisneyMagicKingdoms*"
 Remove-App "*A278AB0D.MarchofEmpires*"
 Remove-App "*A34E4AAB.YogaChef*"
 Remove-App "*AD2F1837.HP*"
@@ -148,8 +153,6 @@ Remove-App "*sMedioforHP.sMedio360*"
 Remove-App "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "*toolbar*"
 Remove-App "*zuukaInc.iStoryTimeLibrary*"
-Remove-App "*A278AB0D.DisneyMagicKingdoms*"
-Remove-App "*828B5831.HiddenCityMysteryofShadows*"
 
 # Inactive identifers
 #Remove-App "*Netflix*"
