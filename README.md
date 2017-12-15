@@ -439,7 +439,7 @@ Master script that launches everything else. It performs many actions on its own
 
 9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
 
-10. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`
+10. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
 
    Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
