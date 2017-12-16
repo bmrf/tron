@@ -4,7 +4,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 * Update code to support new -asm flag and alter original -a flag behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
+:: Version:       1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
+::                1.0.6 ! Bugfixes for -a and -asm flags. Thanks to u/agent-squirrel
+::                1.0.5 * Update code to support new -asm flag and alter original -a flag behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
 ::                      - Remove "System is not in Safe Mode" warning. Tron is shifting emphasis away from running in Safe Mode since it's not technically required
 ::                      * Move help output (-h) to it's own function at the bottom of the script instead of cluttering up the pre-run section
 ::                1.0.4 ! Fix bug in debug log upload code
@@ -26,42 +28,7 @@
 ::                      - Move task "Create log directories if they don't exist" to initialize_environment.bat
 ::                      * Update welcome screen with note about Stage 8: Custom scripts
 :: Usage:         Run this script as an Administrator (Safe Mode preferred but not required), follow the prompts, and reboot when finished. That's it.
-::
-::                OPTIONAL Command-line switches (can be combined, none are required):
-::                      -a   Automatic exection mode (no welcome screen or prompts; implies -e)
-::                      -asm Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
-::                      -c   Config dump (display config. Can be used with other flags to see what
-::                           WOULD happen, but script will never execute if this flag is used)
-::                      -d   Dry run (run through script without executing any jobs)
-::                      -dev Override OS detection (allow running on unsupported Windows versions)
-::                      -e   Accept EULA (suppress disclaimer warning screen)
-::                      -er  Email a report when finished. Requires you to configure SwithMailSettings.xml
-::                      -h   Display help text
-::                      -m   Preserve OEM Metro apps (don't remove them)
-::                      -np  Skip the pause at the end of script
-::                      -o   Power off after running (overrides -r)
-::                      -p   Preserve power settings (don't reset to Windows default)
-::                      -r   Reboot automatically 15 seconds after script completion
-::                      -sa  Skip ALL antivirus scans (KVRT, MBAM, SAV)
-::                      -sap Skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash or Reader)
-::                      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
-::                      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
-::                      -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
-::                      -sdc Skip DISM Cleanup (SxS component store deflation)
-::                      -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
-::                      -se  Skip Event Log clear (don't backup and clear Windows Event Logs)
-::                      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
-::                      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
-::                      -spr Skip page file settings reset (don't set to "Let Windows manage the page file")
-::                      -ss  Skip Sophos Anti-Virus (SAV) scan
-::                      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
-::                      -swu Skip Windows Updates entirely (ignore both WSUS Offline and online methods)
-::                      -swo Skip user-supplied WSUS Offline updates (if they exist; online updates still attempted)
-::                      -udl Upload debug logs. Send tron.log and the system GUID dump to the Tron developer
-::                      -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
-::                      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
-::
-::                If you don't like Tron's defaults (and don't want to use the command-line) edit the settings in \tron\resources\functions\tron_settings.bat
+::                Read the included instructions file for information on changing the default run options, using command-line switches, bundling your own scripts, and much more.
 ::
 ::                "Do not withhold good from those to whom it is due, when it is in your power to act." -p3:27
 
@@ -75,10 +42,10 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.0.5
-set SCRIPT_DATE=2017-12-06
+set SCRIPT_VERSION=1.0.7
+set SCRIPT_DATE=2017-12-16
 
-:: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive. 
+:: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
 %~d0 2>NUL
 pushd "%~dp0" 2>NUL
@@ -88,8 +55,8 @@ pushd resources
 call functions\tron_settings.bat
 
 :: Initialize the runtime environment
-call functions\initialize_environment.bat
-title Tron v%TRON_VERSION% (%TRON_DATE%)
+:: We need to pass all CLI flags (%*) so that if we're resuming and -resume is used, initialize_environment.bat has access to it to detect a resume state
+call functions\initialize_environment.bat %*
 
 :: Show help if requested
 for %%i in (%*) do ( if /i %%i==-h ( call :display_help && exit /b 0) )
@@ -100,13 +67,17 @@ call functions\prerun_checks_and_tasks.bat
 :: Parse command-line arguments. If used these will override related settings specified in tron_settings.bat.
 call :parse_cmdline_args %*
 
+:: Make sure user didn't pass -a and -asm together
+if /i %AUTORUN%==yes (
+if /i %AUTORUN_IN_SAFE_MODE%==yes ( cls && echo. && echo ERROR: You cannot use -a and -asm together. Pick one or the other. && exit /b 1 ) )
+
 :: INTERNAL PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if /i %RESUME_DETECTED%==yes (
 	REM Quick check for a faulty resume detection
 	if not exist tron_stage.txt (
-		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
+		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 		goto autorun_check
 	)
 
@@ -117,9 +88,6 @@ if /i %RESUME_DETECTED%==yes (
 if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
 if /i %RESUME_DETECTED%==yes (
 	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
-	REM Reset the RunOnce flag in case we get interrupted again. Disabled for now, just to prevent resume-looping where we keep trying to resume
-	REM even if a reboot didn't happen
-	REM reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >NUL
 	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
@@ -127,8 +95,12 @@ if /i %RESUME_DETECTED%==yes (
 
 
 :: INTERNAL PREP: Check for active network connection
+set NETWORK_AVAILABLE=yes
 %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 (
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+%WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+if /i %NETWORK_AVAILABLE%==no (
 	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
 	set WARNINGS_DETECTED=yes_check_update_skipped
@@ -138,6 +110,7 @@ if /i not %ERRORLEVEL%==0 (
 :: INTERNAL PREP: Check for updates
 if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
 if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
+if /i %AUTORUN_IN_SAFE_MODE%==yes set SKIP_CHECK_UPDATE=yes
 if /i %SKIP_CHECK_UPDATE%==no (
 	cls
 	echo.
@@ -173,8 +146,8 @@ if /i %CONFIG_DUMP%==yes (
 	echo    AUTORUN:                %AUTORUN%
 	echo    AUTORUN_IN_SAFE_MODE:   %AUTORUN_IN_SAFE_MODE%
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
-	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
+	echo    CONFIG_DUMP:            %CONFIG_DUMP%
 	echo    DRY_RUN:                %DRY_RUN%
 	echo    DEV_MODE:               %DEV_MODE%
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
@@ -205,6 +178,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    VERBOSE:                %VERBOSE%
 	echo.
 	echo  Script-internal variables:
+	echo    BAD_RUNPATH:            %BAD_RUNPATH%
 	echo    CUR_DATE:               %CUR_DATE%
 	echo    DTS:                    %DTS%
 	echo    FIND:                   %FIND%
@@ -213,6 +187,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    FREE_SPACE_BEFORE:      %FREE_SPACE_BEFORE%
 	echo    FREE_SPACE_SAVED:       %FREE_SPACE_SAVED%
 	echo    HELP:                   %HELP%
+	echo    NETWORK_AVAILABLE:      %NETWORK_AVAILABLE%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
 	echo    TEMP:                   !TEMP!
@@ -234,9 +209,12 @@ if /i %CONFIG_DUMP%==yes (
 )
 
 
-:: INTERNAL PREP: Act on autorun flag. Skip safe mode, admin rights, and EULA checks. I assume if you use the auto flag (-a) you know what you're doing
+:: INTERNAL PREP: Autorun check. Skip EULA, Safe Mode but no Network, Welcome Screen and Email Report checks.
+::                I assume if you use either of the auto flags (-a, -asm) you know what you're doing
 :autorun_check
 if /i %AUTORUN%==yes goto execute_jobs
+if /i %AUTORUN_IN_SAFE_MODE%==yes goto execute_jobs
+
 
 
 :: INTERNAL PREP: Display the annoying disclaimer screen. Sigh
@@ -251,11 +229,11 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  * Tron does something you didn't expect and you didn't read the         *
 	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
-	echo  * tron.bat and the supporting code and scripts I've written are free    *
-	echo  * and open-source under the MIT License. All 3rd-party tools Tron calls *
-	echo  * ^(MBAM, KVRT, etc^) are bound by their respective licenses. It is       *
-	echo  * YOUR RESPONSIBILITY to determine if you have the rights to use these  *
-	echo  * tools in whatever environment you're in.                              *
+	echo  * tron.bat and the supporting code and scripts are free and open-source *
+	echo  * under the MIT License. All 3rd-party tools Tron calls ^(MBAM, KVRT,    *
+	echo  * etc^) are bound by their respective licenses. It is YOUR               *
+	echo  * RESPONSIBILITY to determine if you have the rights to use these tools *
+	echo  * in whatever environment you're in.                                    *
 	echo  *                                                                       *
 	echo  * BOTTOM LINE: By running Tron you accept complete responsibility for   *
 	echo  * anything that happens. There is NO WARRANTY, you run it at your OWN   *
@@ -381,24 +359,31 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 :: EXECUTE JOBS ::
 ::::::::::::::::::
 :execute_jobs
+echo execute_jobs>tron_stage.txt
+:: Stamp CLI flags so we can resume if we get interrupted by a reboot
+if /i not "%*"=="" echo %*> tron_flags.txt
+
+
 :: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong
-if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
+if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
 
 
-:: Check if AUTORUN_IN_SAFE_MODE flag was used in conjunction with AUTORUN. If true, reboot.
-if /i %AUTORUN%==yes (
-	if /i %AUTORUN_IN_SAFE_MODE%==yes (
-		if /i not "%SAFE_MODE%"=="yes" (
-			call functions\log.bat " ! AUTORUN_IN_SAFE_MODE (-asm) used, but we're not in Safe Mode. Rebooting in 15 seconds."
-			if /i %DRY_RUN%==no (
-				bcdedit /set {default} safeboot network
-				shutdown -r -f -t 15
-				pause
-				exit
-			)
+:: Make sure we're actually in Safe Mode if AUTORUN_IN_SAFE_MODE was requested
+if /i %AUTORUN_IN_SAFE_MODE%==yes (
+	if /i not "%SAFE_MODE%"=="yes" (
+		cls
+		echo.
+		call functions\log.bat " ! AUTORUN_IN_SAFE_MODE (-asm) used, but we're not in Safe Mode. Rebooting in 10 seconds."
+		echo.
+		if /i %DRY_RUN%==no (
+			bcdedit /set {default} safeboot network >nul 2>&1
+			shutdown -r -f -t 10 >nul 2>&1
+			pause
+			exit 4
 		)
 	)
 )
+
 
 
 :: UPM detection circuit #2
@@ -466,10 +451,8 @@ if /i "%SAFE_MODE%"=="yes" (
 :: STAGE 0: PREP ::
 :::::::::::::::::::
 :stage_0_prep
-:: Stamp current stage and CLI flags so we can resume if we get interrupted by a reboot
-:: Don't stamp anything to the flags file if no CLI flags were used
+:: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_0_prep>tron_stage.txt
-if /i not "%*"=="" echo %*> tron_flags.txt
 title Tron v%TRON_VERSION% [stage_0_prep]
 echo.
 call stage_0_prep\stage_0_prep.bat
@@ -691,7 +674,7 @@ if /i %SKIP_CUSTOM_SCRIPTS%==yes (
 ::::::::::::::::::::::
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
 call functions\log_with_date.bat "   Doing miscellaneous clean up..."
-	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "tron_resume" >nul 2>&1
+	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
@@ -755,7 +738,7 @@ if /i not %ERRORS_DETECTED%==no (
 :: Display and log the job summary
 echo.
 call functions\log.bat "-------------------------------------------------------------------------------"
-call functions\log.bat "   TRON v%TRON_VERSION% (%TRON_DATE%) complete"
+call functions\log.bat "   Tron v%TRON_VERSION% (%TRON_DATE%) complete"
 call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line switches: %*"
@@ -765,10 +748,11 @@ call functions\log.bat "                          Free space before Tron run: %F
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
 call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
 call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
+call functions\log.bat "                          Debug logs uploaded?: %UPLOAD_DEBUG_LOGS%"
 call functions\log.bat ""
 call functions\log.bat "     * If you see negative disk space don't panic. Due to how some of Tron's"
-call functions\log.bat "       functions work, actual disk space reclaimed will not be visible until"
-call functions\log.bat "       after a reboot."
+call functions\log.bat "       functions work, actual space reclaimed will not be visible until after"
+call functions\log.bat "       a reboot."
 call functions\log.bat "-------------------------------------------------------------------------------"
 
 
@@ -821,14 +805,16 @@ if /i %SELF_DESTRUCT%==yes (
 	%SystemDrive%
 	cd \
 	rmdir /s /q "%CWD%"
-	exit
+	exit 0
 )
-
+echo on
 :end_and_skip_shutdown
 echo.
 if /i %NO_PAUSE%==no pause
+if /i not %ERRORS_DETECTED%==no exit /b 1
+if /i not %WARNINGS_DETECTED%==no exit /b 2
+exit /b 0
 ENDLOCAL
-exit /B
 :: That's all, folks
 
 
@@ -845,7 +831,7 @@ goto :eof
 
 :: Parse CLI arguments and flip the appropriate variables
 :parse_cmdline_args
-:: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty. 
+:: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty.
 :: CLI_ARGUMENTS is used in three places: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI arguments to the log file at the beginning
 if /i not "%*"=="" (set CLI_ARGUMENTS=%*) else (set CLI_ARGUMENTS=No CLI switches used)
 for %%i in (%*) do (
@@ -891,12 +877,12 @@ goto :eof
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: tron.bat ^[-a -asm -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
+	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
 	echo                    -sdu -se -sk -sm -sap -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
-	echo    -a   Automatic execution mode ^(no welcome screen or prompts; implies -e^)
-	echo    -asm Automatically reboot to Safe Mode ^(MUST be used with -a, otherwise ignored^)
+	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
+	echo    -asm Automatic mode ^(no welcome screen or prompts; implies -e; reboots to Safe Mode first^)
 	echo    -c   Config dump ^(display config. Can be used with other flags to see what
 	echo         WOULD happen, but script will never execute if this flag is used^)
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
@@ -917,7 +903,7 @@ goto :eof
 	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -sap Skip application patches ^(don't patch 7-Zip, Java Runtime, Adobe Flash or Reader^)
+	echo    -sap Skip application patches ^(don't patch 7-Zip, Java Runtime, or Adobe Flash^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
