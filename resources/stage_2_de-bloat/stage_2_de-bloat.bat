@@ -2,13 +2,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
+:: Version:       1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
+::                1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
 ::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
 ::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
 ::                1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
 ::                1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
-::                1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder. 
+::                1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder.
 ::                        This way if the script hangs we can see which entry it hung on. Thanks to /u/madbomb122
 ::                      - Comment out the lines sent to console that explain where the de-bloat files are located
 ::                        Just cluttered up the screen and people who really want to customize Tron will be reading the readme/instructions anyway
@@ -47,8 +48,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.5
-set STAGE_2_SCRIPT_DATE=2017-12-06
+set STAGE_2_SCRIPT_VERSION=1.3.6
+set STAGE_2_SCRIPT_DATE=2017-12-28
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -238,6 +239,20 @@ call functions\log_with_date.bat "   Done."
 
 
 
+:: JOB: Remove crapware programs, phase 4: auxiliary WildTangent scan
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Auxiliary WildTangent scan]
+call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (Auxiliary WildTangent scan)..."
+if /i %DRY_RUN%==no (
+	REM Gateway Games (Gateway-branded WildTangent games)
+	REM These two FOR loops should catch ALL Gateway games, in theory at least
+	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+	if exist "%ProgramFiles%\Gateway Games" ( for /r "%ProgramFiles%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
+	if exist "%ProgramFiles(x86)%\Gateway Games" ( for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
+)
+call functions\log_with_date.bat "   Done."
+
+
+
 :: JOB: Remove default Metro apps (Windows 8 and up)
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove default metro apps]
 :: This command will re-install ALL default Windows 10 apps:
@@ -337,7 +352,7 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Disable "how-to" tips appearing in Win8+
-if /i "%WIN_VER:~0,9%"=="Windows 1" ( 
+if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
 	if /i %DRY_RUN%==no (
