@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 + Add additional user-submitted entries
+:: Version:       1.1.1 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.0
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-07
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.1
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-19
 
 
 
@@ -221,6 +221,8 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2017-11-07
 {201f27d4-3704-41d6-89c1-aa35e39143ed}
 
 :: Ask Toolbar / Search App / Installer / Ask.com Updater / Shopping App
+{41444150-2D43-322D-4700-A758B70C2801}
+{4F524A2D-5637-006A-76A7-A758B70C1500}
 {4F524A2D-5637-4300-76A7-A758B70C0700}
 {3cb073f3-be3c-4e8f-942d-8a747b54486f}
 {41524553-2D53-5000-76A7-7A786E7484D7}
