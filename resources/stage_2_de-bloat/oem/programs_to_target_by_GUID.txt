@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.8 + Add additional user-submitted entries
+:: Version:       1.3.9 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.3.8
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-19
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.3.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-21
 
 
 
@@ -4568,6 +4568,16 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components
+{284AD7FA-9046-48DD-B71A-316B89365EED}
+{4EB05024-F740-48CF-B9B0-62A041E22D5C}
+{6574B7E5-BC77-4EE6-8319-C18FD8B0C960}
+{92FC2CD6-763D-48BD-9631-1813C128EF7F}
+{93CB4DD0-E7C1-4800-9B55-8F99A9FA2AE6}
+{AC4709F9-831D-4EDD-B8E8-83AC7C563B66}
+{B36B82CF-9729-4B02-B1BE-0D12A10C0626}
+{C72F5F83-E423-4634-A41F-1E509F2DFAF0}
+{D3AFAF97-DE96-4C14-98B2-D8AF5DF59812}
+{EA30CEC3-9CC5-4C80-AE8E-209A6F894961}
 {E3949C37-F476-4A0D-8E0D-67578C515940}
 {DEDA24FF-BA95-42E7-B914-639D32515511}
 {0763F399-E88D-4B65-9AB8-A93629DF5084}
