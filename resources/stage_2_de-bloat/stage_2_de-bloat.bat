@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
+:: Version:       1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
 ::                1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
 ::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
 ::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
@@ -48,11 +49,12 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.6
-set STAGE_2_SCRIPT_DATE=2017-12-28
+set STAGE_2_SCRIPT_VERSION=1.3.7
+set STAGE_2_SCRIPT_DATE=2018-01-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd %~dp0
 	pushd ..
 
 	:: Load the settings file
