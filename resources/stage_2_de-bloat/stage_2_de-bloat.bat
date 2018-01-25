@@ -3,6 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
 ::                1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
 ::                1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
 ::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
@@ -44,8 +45,6 @@
 ::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
-
-setlocal EnableExtensions EnableDelayedExpansion
 
 
 :::::::::::::::::::::
@@ -200,7 +199,7 @@ call functions\log_with_date.bat "   Done."
 :: JOB: Remove crapware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
-:: call functions\log_with_date.bat "   Tweak here: \resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt"
+setlocal EnableExtensions EnableDelayedExpansion
 if /i %DRY_RUN%==no (
 
 	REM Stamp the raw log file that we use to track progress through the list
@@ -213,12 +212,11 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo Looking for:
 
 	REM Loop through the file...
-	for /f "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
-		set x=%%i
-		set x=!x:~0,3!
+	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
-		if not "!x!"==":: " (
-		if not "!x!"=="set" (
+		if not %%i==:: (
+		if not %%i==set (
+			if /i %VERBOSE%==yes echo    %%i
 			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
@@ -240,6 +238,7 @@ if /i %DRY_RUN%==no (
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
+endlocal DisableExtensions DisableDelayedExpansion
 call functions\log_with_date.bat "   Done."
 
 
