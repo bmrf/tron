@@ -45,6 +45,8 @@
 ::                1.0.0 + Initial write
 @echo off
 
+setlocal EnableExtensions EnableDelayedExpansion
+
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
@@ -211,11 +213,12 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo Looking for:
 
 	REM Loop through the file...
-	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
+	for /f "tokens=*" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
+		set x=%%i
+		set x=!x:~0,3!
 		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
-		if not %%i==:: (
-		if not %%i==set (
-			if /i %VERBOSE%==yes echo    %%i
+		if not "!x!"==":: " (
+		if not "!x!"=="set" (
 			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
 			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
