@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+:: Version:       1.1.9 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.1.7 * mbam:      Improve pre-existing installation detection. Thanks to github:RedBaron2
 ::                1.1.6 * script:      Update script to support standalone execution
 ::                1.1.5 ! mbam:        Fix MBAM not launching or installing bug
@@ -22,11 +23,12 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.8
-set STAGE_3_SCRIPT_DATE=2017-03-02
+set STAGE_3_SCRIPT_VERSION=1.1.9
+set STAGE_3_SCRIPT_DATE=2018-01-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd %~dp0
 	pushd ..
 	
 	:: Load the settings file
