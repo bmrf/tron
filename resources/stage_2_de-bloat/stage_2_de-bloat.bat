@@ -4,6 +4,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
+::                      ! Fix faulty detection of OneDrive being "in use" due to existence of desktop.ini in the default folder. Thanks to github:YodaDaCoda
 ::                1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
 ::                1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
 ::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
@@ -292,11 +293,15 @@ if /i %TARGET_METRO%==yes (
 )
 
 
+
 :: JOB: Remove forced OneDrive integration
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
 
 :: This variable is just to detect if we removed OneDrive or not. If we DIDN'T then we use it to make sure file sync isn't disabled
 set ONEDRIVE_REMOVED=no
+
+:: Make sure the presence of desktop.ini doesn't incorrectly trip the 'onedrive is in use' check
+if exist "%USERPROFILE%\OneDrive\desktop.ini" del /f /q "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
 
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
