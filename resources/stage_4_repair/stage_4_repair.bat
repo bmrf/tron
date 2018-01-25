@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 ! Fix bug where DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
+:: Version:       1.2.5 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.2.4 ! Fix bug where DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
 ::                1.2.3 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.2.2 * script: Update script to support standalone execution
 ::                1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
@@ -31,11 +32,12 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.4
-set STAGE_4_SCRIPT_DATE=2017-11-20
+set STAGE_4_SCRIPT_VERSION=1.2.5
+set STAGE_4_SCRIPT_DATE=2018-01-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
+	pushd %~dp0
 	pushd ..
 	
 	:: Load the settings file
