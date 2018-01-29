@@ -556,10 +556,6 @@ Master script that launches everything else. It performs many actions on its own
 
 3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
 
-  ```
-  -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
-  ```
-
 4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
 
 
