@@ -365,7 +365,6 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
 	if /i %DRY_RUN%==no (
-		powershell "New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent' -force -Name 'DisableSoftLanding' -PropertyType DWORD -Value '1' | Out-Null"
 		reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
