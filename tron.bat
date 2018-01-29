@@ -106,7 +106,7 @@ set NETWORK_AVAILABLE=yes
     if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
     if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
-:: We default to checking for updates and only DON'T check if we can actively verify no existence of the relevant "subnet mask" string
+:: We default to checking for updates and only DON'T check if we can actively verify no existence of a relevant "subnet mask" string
 if /i %NETWORK_AVAILABLE%==no (
 	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
@@ -815,7 +815,7 @@ if /i %SELF_DESTRUCT%==yes (
 	rmdir /s /q "%CWD%"
 	exit 0
 )
-echo on
+
 :end_and_skip_shutdown
 echo.
 if /i %NO_PAUSE%==no pause
