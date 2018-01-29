@@ -56,13 +56,13 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
 SYSTEM_LANGUAGE=undetected
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0409"
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0409" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0407"
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0407" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=de
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "040C"
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "040C" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=fr
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0C0A"
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0C0A" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=es
 
 
