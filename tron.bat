@@ -4,7 +4,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
+:: Version:       1.0.8 * Improve network detection routine to address possibility of multiple languages in ipconfig output
+::                1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
 ::                1.0.6 ! Bugfixes for -a and -asm flags. Thanks to u/agent-squirrel
 ::                1.0.5 * Update code to support new -asm flag and alter original -a flag behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
 ::                      - Remove "System is not in Safe Mode" warning. Tron is shifting emphasis away from running in Safe Mode since it's not technically required
@@ -42,8 +43,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.0.7
-set SCRIPT_DATE=2017-12-16
+set SCRIPT_VERSION=1.0.8
+set SCRIPT_DATE=2018-01-29
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -96,10 +97,16 @@ if /i %RESUME_DETECTED%==yes (
 
 :: INTERNAL PREP: Check for active network connection
 set NETWORK_AVAILABLE=yes
-%WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-::%WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
-::if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+    
+    :: English
+    if %SYSTEM_LANGUAGE%=en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
+    if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+
+    :: German
+    if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
+    if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+
+:: We default to checking for updates and only DON'T check if we can actively verify no existence of the relevant "subnet mask" string
 if /i %NETWORK_AVAILABLE%==no (
 	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
@@ -190,6 +197,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    NETWORK_AVAILABLE:      %NETWORK_AVAILABLE%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
+    echo    SYSTEM_LANGUAGE:        %SYSTEM_LANGUAGE%
 	echo    TEMP:                   !TEMP!
 	echo    TARGET_METRO:           %TARGET_METRO%
 	echo    TIME:                   %TIME%
