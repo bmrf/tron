@@ -98,8 +98,8 @@ if /i %RESUME_DETECTED%==yes (
 set NETWORK_AVAILABLE=yes
 %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-%WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+::%WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
+::if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 if /i %NETWORK_AVAILABLE%==no (
 	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
