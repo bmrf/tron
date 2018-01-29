@@ -685,13 +685,15 @@ call functions\log_with_date.bat "   Doing miscellaneous clean up..."
 	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
-	:: Skip these during a dry run because they toss errors to the log file. Not actually a problem, just an annoyance
+	:: Skip these during a dry run because they toss errors. Not actually a problem, just an annoyance
 	if %DRY_RUN%==no (
 		bcdedit /deletevalue {current} safeboot >nul 2>&1
 		bcdedit /deletevalue {default} safeboot >nul 2>&1
 		bcdedit /deletevalue safeboot >nul 2>&1
 	)
-	del /f /q "%TEMP%\tron_smart_results.txt" 2>NUL
+	del /f /q "%TEMP%\tron_smart_results.txt" >nul 2>&1
+    del /f /q OOSU10.ini >nul 2>&1
+    del /f /q SIV_DBGOUT.log >nul 2>&1
 call functions\log_with_date.bat "   Done."
 
 
