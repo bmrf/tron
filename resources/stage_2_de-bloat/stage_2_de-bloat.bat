@@ -200,6 +200,7 @@ call functions\log_with_date.bat "   Done."
 :: JOB: Remove crapware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
+call functions\log_with_date.bat "   ERRORS ABOUT 'SHUTTING DOWN' ARE SAFE TO IGNORE"
 setlocal EnableExtensions EnableDelayedExpansion
 if /i %DRY_RUN%==no (
 
