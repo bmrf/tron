@@ -1,8 +1,7 @@
 :: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC. All Windows versions XP and up are supported
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
-:: Requirements:  1. Administrator access
-::                2. Safe mode is recommended (though not required)
+:: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.8 * Improve network detection routine to address possibility of multiple languages in ipconfig output
 ::                1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
