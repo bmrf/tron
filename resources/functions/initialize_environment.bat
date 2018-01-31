@@ -1,4 +1,4 @@
-:: Purpose:       Initializes Tron runtime environment. Called by Tron.bat at initial launch or by and individual sub-stage script when launched manually
+:: Purpose:       Initializes Tron runtime environment. Called by Tron.bat at initial launch or by an individual sub-stage script when launched manually
 ::                This file determines Tron's overall project version and date
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
