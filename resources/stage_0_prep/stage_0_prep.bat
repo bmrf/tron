@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.0 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+:: Version:       1.2.1 + Add job to (temporarily) stop the Themes service
+::                1.2.0 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.9 + Add killing of HelpPane.exe if it exists
 ::                1.1.8 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
@@ -34,8 +35,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.0
-set STAGE_0_SCRIPT_DATE=2018-01-25
+set STAGE_0_SCRIPT_VERSION=1.2.1
+set STAGE_0_SCRIPT_DATE=2018-01-31
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -56,6 +57,14 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::
 call functions\log_with_date.bat "  stage_0_prep begin..."
 
+
+:: JOB: Temporarily stop "Themes" service
+title Tron v%TRON_VERSION% [stage_0_prep] [stop_themes]
+call functions\log_with_date.bat "   Temporarily stopping Themes service..."
+if /i %DRY_RUN%==no (
+	net stop themes >nul 2>&1
+)
+call functions\log_with_date.bat "   Done."
 
 :: JOB (silent): Kill helppane.exe if it's running (Usually on Win10+ in safe mode)
 taskkill /f /im HelpPane.exe /t >nul 2>&1
