@@ -97,13 +97,13 @@ if /i %RESUME_DETECTED%==yes (
 :: INTERNAL PREP: Check for active network connection
 set NETWORK_AVAILABLE=yes
     
-    :: English
-    if %SYSTEM_LANGUAGE%=en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
-    if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: English
+if %SYSTEM_LANGUAGE%==en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
-    :: German
-    if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
-    if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: German
+if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 :: We default to checking for updates and only DON'T check if we can actively verify no existence of a relevant "subnet mask" string
 if /i %NETWORK_AVAILABLE%==no (
