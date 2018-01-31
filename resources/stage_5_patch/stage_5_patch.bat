@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+:: Version:       1.2.3 ! Remove dead code that was incorrectly still attempting to install Acrobat Reader DC updates
+::                1.2.2 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.1 * Update Windows Defender prior to Windows update. Helps fix bug where sometimes Windows Update won't work until Defender update runs. Thanks to /u/bubonis
 ::                1.2.0 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
@@ -29,8 +30,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.2.2
-set STAGE_5_SCRIPT_DATE=2018-01-25
+set STAGE_5_SCRIPT_VERSION=1.2.3
+set STAGE_5_SCRIPT_DATE=2018-01-31
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -94,18 +95,6 @@ if %FLASH_DETECTED%==yes (
 	call functions\log_with_date.bat "   Launch job 'Update Adobe Flash Player'..."
 	setlocal
 	if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player Installer.bat"
-	endlocal
-	call functions\log_with_date.bat "   Done."
-)
-
-
-:: JOB: Adobe Acrobat Reader DC
-if exist "%ProgramFiles(x86)%\Adobe\Acrobat Reader DC*" (
-	title Tron v%TRON_VERSION% [stage_5_patch] [Update Adobe Reader]
-	call functions\log_with_date.bat "   Adobe Acrobat Reader DC detected, updating..."
-	call functions\log_with_date.bat "   Launch job 'Update Acrobat Reader DC'..."
-	setlocal
-	if /i %DRY_RUN%==no call "stage_5_patch\adobe\reader_dc\Adobe Acrobat Reader DC.bat"
 	endlocal
 	call functions\log_with_date.bat "   Done."
 )
