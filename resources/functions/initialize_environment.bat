@@ -55,15 +55,22 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
-SYSTEM_LANGUAGE=undetected
+set SYSTEM_LANGUAGE=undetected
+:: English
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0409" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
+:: German
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0407" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=de
+:: French
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "040C" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=fr
+:: Spanish
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0C0A" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=es
+:: Turkish
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "041F" >nul 2>&1
+if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
 
 
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
