@@ -3,12 +3,12 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.4.4 . Increment version number
+:: Version:       10.4.5 . Increment version number
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date 
-set TRON_VERSION=10.4.4
-set TRON_DATE=2018-01-29
+set TRON_VERSION=10.4.5
+set TRON_DATE=2018-02-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -27,6 +27,10 @@ set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 set SKIP_CHECK_UPDATE=no
+set SYSTEM_LANGUAGE=undetected
+set WIN_VER=undetected
+set WIN_VER_NUM=undetected
+
 
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
@@ -49,13 +53,10 @@ if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
 if /i "%1"=="-resume" set RESUME_DETECTED=yes
 
 :: Detect the version of Windows we're on. This determines a few things later on
-set WIN_VER=undetected
-set WIN_VER_NUM=undetected
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
-set SYSTEM_LANGUAGE=undetected
 :: English
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0409" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
