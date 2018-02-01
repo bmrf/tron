@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+:: Version:       1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
+::                1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
 ::                      ! Fix faulty detection of OneDrive being "in use" due to existence of desktop.ini in the default folder. Thanks to github:YodaDaCoda
 ::                1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
@@ -51,8 +52,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.7
-set STAGE_2_SCRIPT_DATE=2018-01-25
+set STAGE_2_SCRIPT_VERSION=1.3.8
+set STAGE_2_SCRIPT_DATE=2018-02-01
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -95,7 +96,8 @@ call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wa
 if /i %DRY_RUN%==no (
 
 	REM Stamp the raw log file that we use to track progress through the list
-	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 1 ^(by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+	REM DISABLED since we have the handy title bar ticker now
+	REM echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 1 ^(by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 	REM This is required so we can check the errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -129,7 +131,9 @@ if /i %DRY_RUN%==no (
 
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			
+			REM Iterate our tick counter
 			set /a TICKER=!TICKER! + 1
 
 			)
@@ -151,7 +155,8 @@ call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wa
 if /i %DRY_RUN%==no (
 
 	REM Stamp the raw log file that we use to track progress through the list
-	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 2 ^(toolbars by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+	REM DISABLED since we have the handy title bar ticker
+	REM echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 2 ^(toolbars by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 	REM This is required so we can check errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
@@ -185,7 +190,9 @@ if /i %DRY_RUN%==no (
 
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+			
+			REM Iterate our counter
 			set /a TICKER=!TICKER! + 1
 
 			)
@@ -205,6 +212,7 @@ setlocal EnableExtensions EnableDelayedExpansion
 if /i %DRY_RUN%==no (
 
 	REM Stamp the raw log file that we use to track progress through the list
+	REM this one is still enabled since we're not displaying the name to the title bar
 	echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 3 ^(wildcard by name^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
 	REM This is required so we can check errorlevel inside the FOR loop
