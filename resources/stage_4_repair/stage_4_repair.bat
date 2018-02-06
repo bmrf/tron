@@ -33,11 +33,11 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_4_SCRIPT_VERSION=1.2.5
-set STAGE_4_SCRIPT_DATE=2018-01-25
+set STAGE_4_SCRIPT_DATE=2018-01-29
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	pushd %~dp0
+	pushd "%~dp0"
 	pushd ..
 	
 	:: Load the settings file
