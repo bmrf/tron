@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 + Add support for detection of Internet connection on French language systems. Thanks to u/mr_marmotte
+:: Version:       1.1.0 / Move network connection detection code into initialize_environment.bat
+::                1.0.9 + Add support for detection of Internet connection on French language systems. Thanks to u/mr_marmotte
 ::                1.0.8 * Improve network detection routine to address possibility of multiple languages in ipconfig output
 ::                1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
 ::                1.0.6 ! Bugfixes for -a and -asm flags. Thanks to u/agent-squirrel
@@ -43,8 +44,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.0.9
-set SCRIPT_DATE=2018-02-01
+set SCRIPT_VERSION=1.1.0
+set SCRIPT_DATE=2018-02-06
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -95,23 +96,7 @@ if /i %RESUME_DETECTED%==yes (
 )
 
 
-:: INTERNAL PREP: Check for active network connection
-set NETWORK_AVAILABLE=yes
-    
-:: English
-if %SYSTEM_LANGUAGE%==en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-
-:: German
-if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-
-:: French
-if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-
-
-:: We default to checking for updates and only DON'T check if we can actively verify no existence of a relevant "subnet mask" string
+:: INTERNAL PREP: Skip update check if we don't have a network connection
 if /i %NETWORK_AVAILABLE%==no (
 	call functions\log_with_date.bat "! Tron doesn't think we have a network connection. Skipping update checks."
 	set SKIP_CHECK_UPDATE=yes
