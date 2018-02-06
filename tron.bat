@@ -398,7 +398,7 @@ cls
 if /i %RESUME_DETECTED%==no (
 	echo. > "%LOGPATH%\%LOGFILE%"
 	call functions\log.bat "-------------------------------------------------------------------------------"
-	call functions\log.bat "   Tron v%TRON_VERSION% (%TRON_DATE%)"
+	call functions\log.bat " Tron v%TRON_VERSION% (%TRON_DATE%)"
 	call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
@@ -738,7 +738,7 @@ if /i not %ERRORS_DETECTED%==no (
 :: Display and log the job summary
 echo.
 call functions\log.bat "-------------------------------------------------------------------------------"
-call functions\log.bat "   Tron v%TRON_VERSION% (%TRON_DATE%) complete"
+call functions\log.bat " Tron v%TRON_VERSION% (%TRON_DATE%) complete"
 call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
 call functions\log.bat "                          Executed as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
 call functions\log.bat "                          Command-line switches: %*"
