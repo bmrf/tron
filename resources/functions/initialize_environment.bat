@@ -78,7 +78,7 @@ reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | 
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
 
 
-:: Check for network connection. We assume it's available unless we actively detect it isn't
+:: Detect network connection. We assume it's available unless we actively detect it isn't
 set NETWORK_AVAILABLE=yes
 :: English
 if %SYSTEM_LANGUAGE%==en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
