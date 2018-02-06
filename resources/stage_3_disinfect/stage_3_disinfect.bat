@@ -2,9 +2,10 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.9 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+:: Version:       1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
+::                1.1.9 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.1.7 * mbam:      Improve pre-existing installation detection. Thanks to github:RedBaron2
+::                1.1.7 * mbam:        Improve pre-existing installation detection. Thanks to github:RedBaron2
 ::                1.1.6 * script:      Update script to support standalone execution
 ::                1.1.5 ! mbam:        Fix MBAM not launching or installing bug
 ::                1.1.4 * mbam:        Update MBAM detection to include new v3.x series. Thanks to /u/Phantop
@@ -23,14 +24,14 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.1.9
-set STAGE_3_SCRIPT_DATE=2018-01-25
+set STAGE_3_SCRIPT_VERSION=1.2.0
+set STAGE_3_SCRIPT_DATE=2018-02-06
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd %~dp0
 	pushd ..
-	
+
 	:: Load the settings file
 	call functions\tron_settings.bat
 
@@ -127,10 +128,19 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 	call functions\log_with_date.bat "   Scanning output is REDUCED by default (use -v to show)..."
 	if /i %DRY_RUN%==no (
 		echo.
+
+		REM Check whether or not we have a network connection and activate the appropriate config file
+		if exist stage_3_disinfect\sophos_virus_remover\config.xml del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if /i %NETWORK_AVAILABLE%==no (
+			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_no.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
+		) else (
+			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_no.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
+		)
+
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
 		if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
 		if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
-		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%"
+		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
