@@ -1,7 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 ! Fix syntax error in IF statement: Wrap paths in quotes to handle special characters and spaces
+:: Version:       1.0.5 * Don't check for drivedb.h updates if NETWORK_AVAILABLE is set to no
+::                1.0.4 ! Fix syntax error in IF statement: Wrap paths in quotes to handle special characters and spaces
 ::                1.0.3 * Don't download drivedb.h definitions file if in either autorun mode
 ::                1.0.2 * Don't download drivedb.h definitions file if doing a dry run
 ::                1.0.1 + Add automatic update of drivedb.h prior to scanning hard drives. This ensures we're always on the latest definitions file
@@ -10,8 +11,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.4
-set PRERUN_CHECKS_SCRIPT_DATE=2017-12-11
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.5
+set PRERUN_CHECKS_SCRIPT_DATE=2018-02-06
 
 
 
@@ -88,7 +89,7 @@ if %BAD_RUNPATH%==yes (
 	echo.
 	echo   "%USERPROFILE%\Desktop\tron\tron.bat"
 	echo.
-	echo  Go avail yourself of the instructions which are named,
+	echo  Go avail yourself of Step 1 of the instructions, which are named,
 	echo  appropriately enough...
 	echo.
 	echo  "INSTRUCTIONS -- YES ACTUALLY READ THEM.txt"
@@ -109,8 +110,12 @@ if %BAD_RUNPATH%==yes (
 :: TASK: Detect Solid State hard drives or Virtual Machine installation (determines if post-run defrag executes or not)
 pushd stage_6_optimize\defrag\
 
-	:: Check for an updated drivedb.h, but only if we're not in autorun OR doing a dry run
-	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( update-smart-drivedb.exe /S ) ) )
+	:: Check for an updated drivedb.h, but ONLY if:
+	:: a. not in a dry run
+	:: b. not in autorun
+	:: c. not in autorun (safe mode)
+	:: d. network IS available
+	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( if /i %NETWORK_AVAILABLE%==yes ( update-smart-drivedb.exe /S ) ) ) )
 	
 	:: Do the scan
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
