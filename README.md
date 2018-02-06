@@ -38,7 +38,7 @@ I got tired of running these utilities manually and decided to just script every
 
 1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
-2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended for a first go around.
+2. Tron can be run with Windows in either or Regular mode. Regular mode is generally recommended for a first go around.
 
 3. Right-click on `tron.bat` and select "**Run as Administrator**"
 
@@ -437,13 +437,11 @@ Master script that launches everything else. It performs many actions on its own
 
 8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-9. **Detect Safe Mode**: Detect whether or not we're in Safe Mode and notify the user if we're not. If not, Tron will prompt to automatically reboot into Safe Mode with Networking.
-
-10. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
+9. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
 
    Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
-11. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
+10. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
 
 ## STAGE 0: Prep
