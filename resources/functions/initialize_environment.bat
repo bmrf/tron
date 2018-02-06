@@ -3,11 +3,11 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.4.5 . Increment version number
+:: Version:       10.4.x . Increment version number
 
 
-:: Tron Project version and date. These two variables determine the overall project version and date 
-set TRON_VERSION=10.4.5
+:: Tron Project version and date. These two variables determine the overall project version and date
+set TRON_VERSION=10.4.x
 set TRON_DATE=2018-02-xx
 
 :: Set window title
@@ -23,6 +23,7 @@ set FREE_SPACE_AFTER=0
 set FREE_SPACE_BEFORE=0
 set FREE_SPACE_SAVED=0
 set HELP=no
+set NETWORK_AVAILABLE=undetected
 set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
@@ -30,7 +31,6 @@ set SKIP_CHECK_UPDATE=no
 set SYSTEM_LANGUAGE=undetected
 set WIN_VER=undetected
 set WIN_VER_NUM=undetected
-
 
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
@@ -41,8 +41,10 @@ set FINDSTR=%SystemRoot%\System32\findstr.exe
 for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
+
 :: Get Time Zone name and value
 for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
+
 
 :: Resume-related stuff (resuming from an interrupted run)
 set RESUME_STAGE=0
@@ -52,9 +54,11 @@ reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "*tron_resu
 if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
 if /i "%1"=="-resume" set RESUME_DETECTED=yes
 
+
 :: Detect the version of Windows we're on. This determines a few things later on
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
 for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
+
 
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
 :: English
@@ -74,11 +78,25 @@ reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | 
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
 
 
+:: Check for network connection. We assume it's available unless we actively detect it isn't
+set NETWORK_AVAILABLE=yes
+:: English
+if %SYSTEM_LANGUAGE%==en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: German
+if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: French
+if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+
+
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
 set USERPROFILES=%CD%
 popd
-	
+
+
 :: Build log directories if they don't already exist
 for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
 	if not exist %%D mkdir %%D
