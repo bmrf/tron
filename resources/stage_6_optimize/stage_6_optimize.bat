@@ -22,7 +22,7 @@ set STAGE_6_SCRIPT_DATE=2018-01-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
-	pushd %~dp0
+	pushd "%~dp0"
 	pushd ..
 	
 	:: Load the settings file
