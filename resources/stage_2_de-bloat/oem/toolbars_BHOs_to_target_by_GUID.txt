@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 + Add additional user-submitted entries
+:: Version:       1.1.3 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.2
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.3
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-02-07
 
 
 
@@ -171,7 +171,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Amazon Browser App
 {0A7D6F3C-F2AB-48ED-BE23-99791BFF87D6}
 
-:: Amazon Music Importer 
+:: Amazon Music Importer
 {EE54B7D5-57E0-A190-5D10-0982B52DF050}
 
 :: AliBar BHO / B1 Toolbar
@@ -337,7 +337,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 {95B7759C-8C7F-4BF1-B163-73684A933233}
 
 :: AVG PC Tuneup 2011 / 2014 / AVG Driver Updater / AVG Security Toolbar
-{50316C0A-CC2A-460A-9EA5-F486E54AC17D}_is1 
+{50316C0A-CC2A-460A-9EA5-F486E54AC17D}_is1
 {8CD86D42-C4DD-4E40-9211-164DFFBCA4DB}
 {01BD4FC9-2F86-4706-A62E-774BB7E9D308}
 {E5D31C47-7177-443A-B65D-333F5ED6CCD0}
@@ -373,10 +373,10 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Bestgame Toolbar
 {899cac9d-533d-45c2-8a07-afb42425b544}
 
-:: BetterCareerSearch Toolbar 
+:: BetterCareerSearch Toolbar
 {7ff70c81-f37a-4d7b-9d30-ba8ee8c80d5f}
 
-:: BEtteerPPriceoCChec 
+:: BEtteerPPriceoCChec
 {4E5FE462-1A84-47B4-3411-C72434AAD86C}
 
 :: Bekko Search Bar 1.0 Toolbar
@@ -429,7 +429,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Blingee Toolbar
 {D1121FE0-0145-44C9-AA35-72071AC20A9B}
 
-:: Blipshot One Click Screenshots 
+:: Blipshot One Click Screenshots
 {0B750649-0E5A-78CB-A6AE-E2D6E2AD8882}
 
 :: BlockAndSurf
@@ -657,7 +657,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Discover USA Toolbar
 {48405d3d-2674-4cd8-b1ef-9a719443bd3f}
 
-:: DiSecOUnntLLocator 
+:: DiSecOUnntLLocator
 {194FED75-9C74-BDB7-53F8-8CFFEF1AFEC9}
 
 :: DocuCom PDF Toolbar
@@ -697,7 +697,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Driver Whiz
 {97BBECCF-B1FD-4010-8D4B-EFC9E3CCEECF}
 
-:: Driver Support 
+:: Driver Support
 {597FB4A5-DD86-4316-A410-7E8074CC2CCE}
 
 :: Driver Manager
@@ -774,7 +774,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: ExSetraCooupon
 {98449C67-C7AF-BB53-112D-26C916814611}
 
-:: Extreme Blocker 
+:: Extreme Blocker
 {37476589-E48E-439E-A706-56189E2ED4C4}_is1
 
 :: EZDownloader
@@ -917,7 +917,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 {C424171E-592A-415a-9EB1-DFD6D95D3530}
 {2D1DDD38-CE4D-459b-A01C-F11BC92D5B69}
 
-:: Google Toolbar / Google Update Helper / Google Web Accelerator 
+:: Google Toolbar / Google Update Helper / Google Web Accelerator
 {18455581-E099-4BA8-BC6B-F34B2F06600C}
 {2318C2B1-4965-11d4-9B18-009027A5CD4F}
 {DBEA1034-5882-4A88-8033-81C4EF0CFA29}
@@ -974,7 +974,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: HottieStar / HotVideoBar Toolbar
 {D45817B8-3EAD-4d1d-8FCA-EC63A8E35DE2}
 
-:: HomeTab 6.4 
+:: HomeTab 6.4
 {764f9059-6965-4561-95b6-916ca8d5f8f7}_is1
 
 :: HP SimplePass Toolbar
@@ -1001,7 +1001,8 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 {977AE9CC-AF83-45E8-9E03-E2798216E2D5}
 {1FAFD711-ABF9-4F6A-8130-5166C7371427}
 
-:: IE SweetPacks Toolbar 
+:: IE SweetPacks Toolbar
+{96E2E493-C484-43E3-9B95-D62EE7D40D3A}
 {F4E33CE5-A7AB-4F68-A7E7-F0AA84EF2D9E}
 {C3E85EE9-5892-4142-B537-BCEB3DAC4C3D}
 
@@ -1329,7 +1330,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Music Oasis by W3i
 {c6c214df-2922-4809-94aa-f4d67d4451ec}
 
-:: Muvic Smartbar 
+:: Muvic Smartbar
 {C8428739-5207-4817-9F19-69FA77018633}
 
 :: MyAshampoo Toolbar
@@ -1424,7 +1425,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: OTS Software Toolbar
 {e41b29e5-88b5-40b1-903e-080e0f2c4b65}
 
-:: Outspark Toolbar 
+:: Outspark Toolbar
 {94709E6D-4459-4223-9730-18F5763CA1E6}
 {efa37648-2754-4e3b-ad97-dc088c8805cd}
 
@@ -1539,7 +1540,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: PriceSparrow by Ciuvo
 {3F2DC1E7-A56F-49D8-B0CF-DB2300594497}
 
-:: Performance Optimizer 
+:: Performance Optimizer
 {5F189DF5-2D05-472B-9091-84D9848AE48B}{892cc6a3}
 
 :: Pro PC Cleaner
@@ -1679,16 +1680,16 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: RSA Toolbar
 {749F8452-7D28-4658-A903-9B047E5A2CE8}
 
-:: RuoyaulCoupaonn 
+:: RuoyaulCoupaonn
 {40DC4B27-4588-C56F-7737-D03A0ACE4383}
 
 :: Safefinder Smartbar
 {FA6289D6-676C-4497-88CC-9E2E15488944}
 
-:: Safety Optimizer 
+:: Safety Optimizer
 {3A7C5D21-A152-4242-9353-E03089932A81}_is1
 
-:: Safer-Surf 
+:: Safer-Surf
 {9c069507-b3c8-491f-8c69-e5a2aae87bb0}
 
 :: saferwweb
@@ -1865,7 +1866,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Snap.Do
 {D5E50D52-C658-4C16-9722-9F9B057B5F0F}
 
-:: SoccerInferno Toolbar 
+:: SoccerInferno Toolbar
 {c5a318c1-d1d9-41f0-85fe-41cc9fb25e75}
 
 :: Soda PDF / PDF 7 Toolbar
@@ -1937,7 +1938,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Streaming Search MP3 Toolbar
 {C86FF9FA-AEED-451B-A9CC-39A53173AE2E}
 
-:: Starware Casual Games Toolbar 
+:: Starware Casual Games Toolbar
 {45a2e207-6bba-49e0-bce2-e2542f0ad7b7}
 
 :: Sticky Password Toolbar
@@ -2042,7 +2043,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: TotalRecipeSearch Toolbar
 {a0154e07-2b48-475c-a82a-80efd84ea33e}
 
-:: topbuyer 
+:: topbuyer
 {FE139F4C-CE5B-121A-8A2D-191FA2226094}
 
 :: tPerfectCoupon
@@ -2229,7 +2230,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: Windows Live Toolbar
 {995F1E2E-F542-4310-8E1D-9926F5A279B3}
 
-:: Windows Live Toolbar Beta Toolbar 
+:: Windows Live Toolbar Beta Toolbar
 {21FA44EF-376D-4D53-9B0F-8A89D3229068}
 
 :: Window Resizer / cheuApp4all
@@ -2241,10 +2242,10 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 :: WiseConvert 2.1 Toolbar
 {ecce0073-a837-45a2-95b9-600420505f7e}
 
-:: Wisdom-soft Toolbar 
+:: Wisdom-soft Toolbar
 {6dfc55bb-bfff-485a-9709-90c3fdf6db58}
 
-:: WiseConvert / 2.2 / G2 / G3 Toolbar 
+:: WiseConvert / 2.2 / G2 / G3 Toolbar
 {ebd898f8-fcf6-4694-bc3b-eabc7271eeb1}
 {b81767e1-672d-4da1-b5cc-d277185815a6}
 {ac955a4e-5a9c-4d20-8751-a7eac17ac342}
@@ -2311,7 +2312,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-01-31
 {4BBD417F-13B6-4477-B7C2-AE705864058D}
 {5CDFBF03-D1B2-466B-AA19-B10FDA43E2BB}
 
-:: YTD Video Downloader 4.9 
+:: YTD Video Downloader 4.9
 {1a413f37-ed88-4fec-9666-5c48dc4b7bb7}
 
 :: Zend Studio Toolbar
