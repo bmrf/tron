@@ -73,6 +73,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 call functions\log_with_date.bat "  stage_2_de-bloat begin..."
 
+
 :: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of "classic" (non-"Modern") Windows programs
 if /i %SAFE_MODE%==yes (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Enable MSIServer]
@@ -331,7 +332,7 @@ if not exist "%USERPROFILE%\OneDrive" (
 call functions\log_with_date.bat "   Checking if OneDrive is in use, please wait..."
 stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
-	call functions\log_with_date.bat "!  OneDrive appears to be in use. Skipping removal."
+	call functions\log_with_date.bat "!  OneDrive appears to be in use (files exist in the OneDrive folder). Skipping removal."
 	goto :skip_onedrive_removal
 )
 
