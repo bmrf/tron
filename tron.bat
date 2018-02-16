@@ -3,7 +3,9 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 / Move network connection detection code into initialize_environment.bat
+:: Version:       1.1.1 + Add uploading of Metro app list dump if -udl switch is used
+::                1.1.0 / Move network connection detection code into initialize_environment.bat
+::                      + Add display of whether or not warnings and errors were detected to end-screen
 ::                1.0.9 + Add support for detection of Internet connection on French language systems. Thanks to u/mr_marmotte
 ::                1.0.8 * Improve network detection routine to address possibility of multiple languages in ipconfig output
 ::                1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
@@ -44,8 +46,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.0
-set SCRIPT_DATE=2018-02-06
+set SCRIPT_VERSION=1.1.1
+set SCRIPT_DATE=2018-02-16
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -693,7 +695,7 @@ stage_0_prep\caffeine\caffeine.exe -appexit
 
 :: Notify of Tron completion
 title Tron v%TRON_VERSION% (%TRON_DATE%) [DONE]
-call functions\log_with_date.bat "  TRON RUN COMPLETE. Use \tron\resources\stage_9_manual_tools if further action is required."
+call functions\log_with_date.bat "  TRON RUN COMPLETE. Use \resources\stage_9_manual_tools if further action is required."
 
 
 :: Check if auto-reboot was requested
@@ -748,6 +750,7 @@ call functions\log.bat "                          Free space before Tron run: %F
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% MB"
 call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% MB *"
 call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
+call functions\log.bat "                          Warnings detected?:   %WARNINGS_DETECTED%"
 call functions\log.bat "                          Debug logs uploaded?: %UPLOAD_DEBUG_LOGS%"
 call functions\log.bat ""
 call functions\log.bat "     * If you see negative disk space don't panic. Due to how some of Tron's"
@@ -776,7 +779,9 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %UPLOAD_DEBUG_LOGS%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%userprofile%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+
+		if /i %WIN_VER_NUM% GEQ 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+		if /i %WIN_VER_NUM% LSS 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log_with_date.bat "  Done."
