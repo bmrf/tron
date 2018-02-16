@@ -55,11 +55,15 @@ if /i %DRY_RUN%==no (
 	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
 	:: Get list of all files
 	stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
-	:: Parse everything
-		REM Step 1: Find FILES that were deleted (second line is to strip everything trailing the first comma from the output)
-		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" > "%TEMP%\temp.txt"
-		for /f "tokens=1 delims=," %%a in ("%TEMP%\temp.txt") do echo %%a >> %SUMMARY_LOGS%\tron_removed_files.txt
 
+		REM Parse everything
+
+		REM Step 1: Find FILES that were deleted and dump them to summary logs
+		stage_0_prep\log_tools\comm\diff.exe --changed-group-format='%%^<' --unchanged-group-format='' %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" | %find% /i /v "Filename,Size" | %find% /i /v "'''" > "%TEMP%\tron_diff_temp.txt"
+
+		REM Strip out random one-apostrophe lines
+		findstr /v /r "^'" "%TEMP%\tron_diff_temp.txt" > %SUMMARY_LOGS%\tron_removed_files.txt
+		
 		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
 		REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
 		copy /y %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\before.txt >NUL
@@ -81,7 +85,7 @@ if /i %DRY_RUN%==no (
 		if %ERRORLEVEL%==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
 
 		REM Cleanup
-		del /f /q "%TEMP%\temp.txt" 2>NUL
+		del /f /q "%TEMP%\tron_diff_temp.txt" 2>NUL
 		del /f /q %RAW_LOGS%\before*txt 2>NUL
 		del /f /q %RAW_LOGS%\after*txt 2>NUL
 	)
