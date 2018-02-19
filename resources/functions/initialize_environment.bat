@@ -3,11 +3,11 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.4.x . Increment version number
+:: Version:       10.4.8 . Increment version number
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.4.x
+set TRON_VERSION=10.4.8
 set TRON_DATE=2018-02-xx
 
 :: Set window title
@@ -32,12 +32,14 @@ set SYSTEM_LANGUAGE=undetected
 set WIN_VER=undetected
 set WIN_VER_NUM=undetected
 
+
 :: Force path to some system utilities in case the system PATH is messed up
 set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
 set FINDSTR=%SystemRoot%\System32\findstr.exe
 
-:: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
+
+:: Get the date into ISO 8601 standard format (yyyy-mm-dd)
 for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
@@ -87,7 +89,7 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: French
-if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
+if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
