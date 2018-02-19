@@ -255,8 +255,8 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Remove crapware programs, phase 4: auxiliary WildTangent scan
-title Tron v%TRON_VERSION% [stage_2_de-bloat] [Auxiliary WildTangent scan]
-call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (Auxiliary WildTangent scan)..."
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [auxiliary WildTangent scan]
+call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (auxiliary WildTangent scan)..."
 if /i %DRY_RUN%==no (
 	REM Gateway Games (Gateway-branded WildTangent games)
 	REM These two FOR loops should catch ALL Gateway games, in theory at least
