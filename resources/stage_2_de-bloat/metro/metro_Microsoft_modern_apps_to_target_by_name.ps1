@@ -32,26 +32,37 @@ $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-02-16"
 $Win10Apps = @(
     "*Microsoft.MinecraftUWP*",
     "*Microsoft.NetworkSpeedTest*",
-    "Microsoft.3DBuilder",
-    "Microsoft.Bing*",
-    "Microsoft.CommsPhone",
+    "*Microsoft.WindowsReadingList*",
+    "Microsoft.3DBuilder", # 3DBuilder app
+    "Microsoft.BingFinance", # Money app - Financial news
+    "Microsoft.BingFoodAndDrink", # Food and Drink app
+    "Microsoft.BingHealthAndFitness", # Health and Fitness app
+    "Microsoft.BingNews", # Generic news app
+    "Microsoft.BingSports", # Sports app - Sports news
+    "Microsoft.BingTranslator", # Translator app - Bing Translate
+    "Microsoft.BingTravel", # Travel app
+    "Microsoft.CommsPhone", # Phone app
     "Microsoft.ConnectivityStore",
-    "Microsoft.GetHelp",
-    "Microsoft.Getstarted",
-    "Microsoft.Messaging",
-    "Microsoft.MicrosoftJackpot",
-    "Microsoft.MicrosoftJigsaw",
+    "Microsoft.FreshPaint", # Canvas app
+    "Microsoft.GetHelp", # Get Help link
+    "Microsoft.Getstarted", # Get Started link
+    "Microsoft.Messaging", # Messaging app
+    "Microsoft.MicrosoftJackpot", # Jackpot app
+    "Microsoft.MicrosoftJigsaw", # Jigsaw app
     "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.MicrosoftPowerBIForWindows", # Power BI app - Business analytics
     "Microsoft.MicrosoftSudoku",
-    "Microsoft.Office.OneNote",
-    "Microsoft.Office.Sway",
-    "Microsoft.OneConnect",
-    "Microsoft.People",
-    "Microsoft.SkypeApp",
+    "Microsoft.MovieMoments", # imported from stage_2_de-bloat.bat
+    "Microsoft.Office.OneNote", # Onenote app
+    "Microsoft.Office.Sway", # Sway app
+    "Microsoft.OneConnect", # OneConnect app
+    "Microsoft.People", # People app
+    "Microsoft.SkypeApp", # Get Skype link
     "Microsoft.SkypeWiFi",
-    "Microsoft.WindowsFeedbackHub",
-    "Microsoft.Zune*",
-    "Microsoft.Advertising*"
+    "Microsoft.Studios.Wordament", # imported from stage_2_de-bloat.bat
+    "Microsoft.WindowsFeedbackHub", # Feedback app
+    "Microsoft.Zune*", # Zune collection of apps
+    "Microsoft.Advertising*", # Advertising framework
 )
 
 # Query the packages once
