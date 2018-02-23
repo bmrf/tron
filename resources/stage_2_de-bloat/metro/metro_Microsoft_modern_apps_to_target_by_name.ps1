@@ -62,7 +62,7 @@ $Win10Apps = @(
     "Microsoft.Studios.Wordament", # imported from stage_2_de-bloat.bat
     "Microsoft.WindowsFeedbackHub", # Feedback app
     "Microsoft.Zune*", # Zune collection of apps
-    "Microsoft.Advertising*", # Advertising framework
+    "Microsoft.Advertising*" # Advertising framework
 )
 
 # Query the packages once
