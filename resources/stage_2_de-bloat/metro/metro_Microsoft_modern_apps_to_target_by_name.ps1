@@ -29,52 +29,59 @@ $ErrorActionPreference = "SilentlyContinue"
 $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.7"
 $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-02-16"
 
-# Build the removal function
-Function Remove-App([String]$AppName){
-	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
-	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	Remove-AppxPackage -package $PackageFullName | Out-Null
-	Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
+$Win10Apps = @(
+    "*Microsoft.MinecraftUWP*",
+    "*Microsoft.NetworkSpeedTest*",
+    "*Microsoft.WindowsReadingList*",
+    "Microsoft.3DBuilder", # 3DBuilder app
+    "Microsoft.BingFinance", # Money app - Financial news
+    "Microsoft.BingFoodAndDrink", # Food and Drink app
+    "Microsoft.BingHealthAndFitness", # Health and Fitness app
+    "Microsoft.BingNews", # Generic news app
+    "Microsoft.BingSports", # Sports app - Sports news
+    "Microsoft.BingTranslator", # Translator app - Bing Translate
+    "Microsoft.BingTravel", # Travel app
+    "Microsoft.CommsPhone", # Phone app
+    "Microsoft.ConnectivityStore",
+    "Microsoft.FreshPaint", # Canvas app
+    "Microsoft.GetHelp", # Get Help link
+    "Microsoft.Getstarted", # Get Started link
+    "Microsoft.Messaging", # Messaging app
+    "Microsoft.MicrosoftJackpot", # Jackpot app
+    "Microsoft.MicrosoftJigsaw", # Jigsaw app
+    "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.MicrosoftPowerBIForWindows", # Power BI app - Business analytics
+    "Microsoft.MicrosoftSudoku",
+    "Microsoft.MovieMoments", # imported from stage_2_de-bloat.bat
+    "Microsoft.Office.OneNote", # Onenote app
+    "Microsoft.Office.Sway", # Sway app
+    "Microsoft.OneConnect", # OneConnect app
+    "Microsoft.People", # People app
+    "Microsoft.SkypeApp", # Get Skype link
+    "Microsoft.SkypeWiFi",
+    "Microsoft.Studios.Wordament", # imported from stage_2_de-bloat.bat
+    "Microsoft.WindowsFeedbackHub", # Feedback app
+    "Microsoft.Zune*", # Zune collection of apps
+    "Microsoft.Advertising*" # Advertising framework
+)
+
+# Query the packages once
+$AppxPackages = Get-AppxPackage
+$AppxProPackages = Get-AppxProvisionedPackage -Online
+
+
+foreach ($app in $Win10Apps) {
+    # Installed packages
+    $AppxPackages | Where-Object { $_.PackageFullName -like $app } | ForEach-Object {
+        Start-Job -Name "Remove $app" -ScriptBlock { Remove-AppxPackage -Package $_.PackageFullName }
+        Wait-Job -Name "Remove $app"
+    } | Out-Null
+    # Provisioned packages
+    $AppxProPackages | Where-Object { $_.PackageName -like $app } | ForEach-Object {
+        Start-Job -Name "Remove $app - provisioned" -ScriptBlock { Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName }
+        Wait-Job -Name "Remove $app - provisioned"
+    } | Out-Null
 }
-
-###########
-# EXECUTE #
-###########
-# Active identifiers
-Remove-App "*Microsoft.MinecraftUWP*"
-Remove-App "*Microsoft.NetworkSpeedTest*"
-Remove-App "*Microsoft.WindowsReadingList*"
-Remove-App "Microsoft.3DBuilder"                       # 3DBuilder app
-Remove-App "Microsoft.Advertising*"                    # Advertising framework
-Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
-Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
-Remove-App "Microsoft.BingHealthAndFitness"            # Health and Fitness app
-Remove-App "Microsoft.BingNews"                        # Generic news app
-Remove-App "Microsoft.BingSports"                      # Sports app - Sports news
-Remove-App "Microsoft.BingTranslator"                  # Translator app - Bing Translate
-Remove-App "Microsoft.BingTravel"                      # Travel app
-Remove-App "Microsoft.CommsPhone"                      # Phone app
-Remove-App "Microsoft.ConnectivityStore"
-Remove-App "Microsoft.FreshPaint"                      # Canvas app
-Remove-App "Microsoft.GetHelp"                         # Get Help link
-Remove-App "Microsoft.Getstarted"                      # Get Started link
-Remove-App "Microsoft.Messaging"                       # Messaging app
-Remove-App "Microsoft.MicrosoftJackpot"                # Jackpot app
-Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
-Remove-App "Microsoft.MicrosoftOfficeHub"
-Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # Power BI app - Business analytics
-Remove-App "Microsoft.MicrosoftSudoku"
-Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.Office.OneNote"                  # Onenote app
-Remove-App "Microsoft.Office.Sway"                     # Sway app
-Remove-App "Microsoft.OneConnect"                      # OneConnect app
-Remove-App "Microsoft.People"                          # People app
-Remove-App "Microsoft.SkypeApp"                        # Get Skype link
-Remove-App "Microsoft.SkypeWiFi"
-Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
-Remove-App "Microsoft.Zune*"                           # Zune collection of apps
-
 
 # Inactive identifers
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
