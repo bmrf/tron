@@ -1,5 +1,5 @@
 :: Purpose:       List of specific programs to target by name and wildcard. Called by Tron in Stage 2: De-bloat
-::                Add any GUID uninstall commands to this list to target them for removal
+::                Add any name to this list to target them for removal
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
