@@ -605,9 +605,9 @@ Tron updates these programs if they exist on the system. If a program does not e
 
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-    Use the `-spr` flag skips this action
+    Use the `-spr` flag to sskip this action
 
-2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD. Use the `-sd` flag forces Tron to ALWAYS skip defrag
+2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD, or if any SMART errors are detected. Use the `-sd` flag forces Tron to ALWAYS skip defrag
 
 
 ## STAGE 7: Wrap-up
