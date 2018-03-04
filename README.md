@@ -456,36 +456,38 @@ Master script that launches everything else. It performs many actions on its own
 
 4. **GUID dump**: Dump list of all installed program GUIDs. These dumps are useful in helping the project bolster the blacklist of known-bad GUIDs
 
-5. **ProcessKiller**: Utility provided by [/u/cuddlychops06](https://www.reddit.com/user/cuddlychops06) which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+5. **Metro app list dump**: Dump list of all Metro apps on the system. This is useful for helping the project bolster the blacklist of Metro apps to remove
 
-6. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command:
+6. **ProcessKiller**: Utility provided by [/u/cuddlychops06](https://www.reddit.com/user/cuddlychops06) which kills various userland processes. We use this to further kill anything that might interfere with Tron. ProcessKiller will kill everything in userland EXCEPT: `ClassicShellService.exe`, `explorer.exe`, `dwm.exe`, `cmd.exe`, `mbam.exe`, `teamviewer.exe`, `TeamViewer_Service.exe`, `Taskmgr.exe`, `Teamviewer_Desktop.exe`, `MsMpEng.exe`, `tv_w32.exe`, `VTTimer.exe`, `Tron.bat`, `rkill.exe`, `rkill64.exe`, `rkill.com`, `rkill64.com`, `conhost.exe`, `dashost.exe`, `wget.exe`
+
+7. **Safe mode**: Set system to reboot into Safe Mode with Networking if a reboot occurs. Removes this and resets to normal bootup at the end of the script. Accomplished via this command:
    ```
    bcdedit /set {default} safeboot network
    ```
 
-7. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
+8. **Set system time via NTP**: Set the system clock to sync against the following NTP servers, in this order: `2.pool.ntp.org`, `time.windows.com`, `time.nist.gov`
 
-8. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
+9. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-9. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
+10. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
   ```
 
-10. **[TDSS Killer](http://usa.kaspersky.com/downloads/TDSSKiller)**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
+11. **[TDSS Killer](http://usa.kaspersky.com/downloads/TDSSKiller)**: Anti-rootkit utility from Kaspersky Labs. Tron executes TDSSKiller as follows:
 
   ```
   tdsskiller.exe -l %TEMP%\tdsskiller.log -silent -tdlfs -dcexact -accepteula -accepteulaksn
   ```
 
-11. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
+12. **Backup registry:**: Use [erunt](http://www.larshederer.homepage.t-online.de/erunt/) to backup the registry prior to commencing scans
 
-12. **VSS purge**: Purge oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
+13. **VSS purge**: Purge oldest set of Volume Shadow Service files (basically snapshot-in-time copies of files). Malware can often hide out here
 
-13. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
+14. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-14. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
+15. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
