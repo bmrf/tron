@@ -584,9 +584,9 @@ Master script that launches everything else. It performs many actions on its own
 
 *[link to Stage 5 code](https://github.com/bmrf/tron/blob/master/resources/stage_5_patch/stage_5_patch.bat)*
 
-Tron updates these programs if they exist on the system. If a program does not exist, it is skipped:
+Tron updates these programs if they exist on the system. If a program does not already exist on the system, it is not installed:
 
-1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Far superior to just about everything (including the venerable WinRAR). Use the `-sap` switch to skip this action
+1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Use the `-sap` switch to skip this action
 
 2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sap` switch to skip this action
 
@@ -605,7 +605,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-    Use the `-spr` flag to sskip this action
+    Use the `-spr` flag to skip this action
 
 2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD, or if any SMART errors are detected. Use the `-sd` flag forces Tron to ALWAYS skip defrag
 
@@ -620,7 +620,7 @@ Tron updates these programs if they exist on the system. If a program does not e
 
 3. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
-4. **upload debug logs**: Upload 'tron.log' and the system GUID dump (list of all installed program GUIDs) to the Tron developer (vocatus). Please use this option if possible, log files are extremely helpful in developing Tron! NOTE: `tron.log` can contain personal information like names of files on the system, the computer name, user name, etc, so if you're concerned about this please look through a Tron log first to understand what will be sent. I don't care what files are on random systems on the Internet, but just something to be aware of
+4. **upload debug logs**: Upload 'tron.log' and the system GUID dump (list of all installed program GUIDs) and Metro app list dump to the Tron developer (vocatus). Please use this option if possible, log files are extremely helpful in developing Tron! NOTE: `tron.log` can contain personal information like names of files on the system, the computer name, user name, etc, so if you're concerned about this please look through a Tron log first to understand what will be sent. I don't care what files are on random systems on the Internet, but just something to be aware of
 
 ## STAGE 8: Custom Scripts
 
