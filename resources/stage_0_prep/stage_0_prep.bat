@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 + Add job to dump Metro apps on Windows 8+ and up. This is so they can be sent via -udl switch if used
+:: Version:       1.2.3 / Reduce output from Metro App dump since we don't care about the fully-qualified App name
+::                1.2.2 + Add job to dump Metro apps on Windows 8+ and up. This is so they can be sent via -udl switch if used
 ::                1.2.1 + Add job to (temporarily) stop the Themes service
 ::                1.2.0 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.9 + Add killing of HelpPane.exe if it exists
@@ -36,8 +37,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.2
-set STAGE_0_SCRIPT_DATE=2018-02-16
+set STAGE_0_SCRIPT_VERSION=1.2.3
+set STAGE_0_SCRIPT_DATE=2018-03-05
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -152,7 +153,7 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_0_prep] [Metro app dump]
 if /i %WIN_VER_NUM% geq 6.2 (
 	call functions\log_with_date.bat "   Dumping Metro app list to "%RAW_LOGS%"..."
-	if /i %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Select Name, PackageFullName" > "%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+	if /i %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Select Name" > "%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
 	call functions\log_with_date.bat "   Done."
 )
 
