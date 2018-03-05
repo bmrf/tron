@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 + Add additional user-submitted entries
+:: Version:       1.1.4 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.3
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-02-07
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.4
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-05
 
 
 
@@ -329,6 +329,7 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-02-07
 {8E5E2654-AD2D-48bf-AC2D-D17F00898D06}
 
 :: Avery Toolbar
+{41565256-3700-A76A-76A7-A758B70C1801}
 {41565256-3700-A76A-76A7-7A786E7484D7}
 {8D20B4D7-3422-4099-9332-39F27E617A6F}
 {41565256-3700-A76A-76A7-A758B70C1D00}
