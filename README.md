@@ -342,9 +342,9 @@ Place any batch files you want to execute just prior to Tron completion in this 
 
 Custom scripts work like so:
 
- - If there any `.bat` files exist in `\stage_8_custom_scripts`, Tron will execute each one sequentially by name. When they're finished, Tron will clean up and end the script as normal
+ - If any `.bat` files exist in `\stage_8_custom_scripts`, Tron will execute each one sequentially by name. When they're finished, Tron will clean up and end the script as normal
 
- - If there no `.bat` files exist in `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
+ - If no `.bat` files exist in `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
  
  - Supporting files may be placed in the folder but Tron itself will ignore anything that isn't a `.bat` file 
  
