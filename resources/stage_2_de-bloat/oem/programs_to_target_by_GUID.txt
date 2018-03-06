@@ -12,7 +12,7 @@
 
 :: PREP
 set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.4.4
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-05
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-06
 
 
 
@@ -232,6 +232,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-05
 {509E2F77-9E85-EDA9-1EBA-B79B080A3394}
 
 :: AMD Catalyst Control Center - Branding
+{CB79256B-C0E0-40C6-8EB7-BDD796203581}
 {08523528-BA2F-43BB-87E3-252C081872B9}
 {8602621D-737D-4E80-BACF-E322538F3706}
 {4D6873BC-73C0-487D-A4B4-BA78D9EF465C}
@@ -251,6 +252,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-05
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
 
 :: AMD Catalyst Control Center Next Localization
+{D9B815AA-CF4D-08E0-338E-6D9E4074CFC8}
+{DAB44116-0266-C65B-B643-AC11217C3041}
 {DF0D7C1C-72B6-9FFB-DF66-B3720237BB80}
 {7ADBE369-E788-6AA4-475A-9583670E6F2A}
 {7AEBE733-FCAE-C7CD-092B-8BD38B0B33A3}
@@ -2970,6 +2973,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-03-05
 {9285EABA-D88C-4A8A-6E9D-5F55BF03E46F}
 
 :: ccc-utility64
+{345841F8-F9F9-9910-134E-49162B7FDDAD}
 {D38D01CC-7008-508F-0745-04947C2988CA}
 {9A6AC2C6-7701-A2D1-F9F6-50E026E6D179}
 {948B1FD6-9F98-47EE-AABF-8697F2FD44B0}
@@ -3285,6 +3289,7 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 {7B7D73E7-79D5-4133-AB7A-E27BB5F64725}
 
 :: Dell Help and Support
+{457EFE69-8F49-43E0-80F9-1DEF4F7690C2}
 {E8669F4E-F2BE-48A9-B5A5-0BC12CA4CB4F}
 {A00269ED-FD88-4907-834B-60B70DCE82C5}
 {E474CE8D-1D47-4C68-8845-F5DA9DE26D72}
@@ -3783,6 +3788,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {DFB497E0-CE3F-40FC-9596-FC7A48775DE4}
 
 :: HP 64 Bit HP CIO Components Installer
+{284F4C1C-380D-4F10-88C8-1F9E386EFE98}
 {83C03F51-FB1D-492F-9021-AB8A469333A7}
 {68451E5C-0A9C-4D5C-8D06-6E296242E908}
 {13DA9C7C-EBFB-40D0-94A1-55B42883DF21}
@@ -3818,8 +3824,6 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: HP Active Support Library
 {0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}
-:: %ProgramFiles%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
-:: %ProgramFiles(x86)%\InstallShield Installation Information\{0A47BAFF-D4FF-4BD3-96CA-02A22EA62722}\setup.exe -runfromtemp -l0x0409
 
 :: HP Advisor
 {403996EB-2DCE-4C43-A2B8-2B956880772D}
@@ -3842,6 +3846,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: HP Batery Calibration
 {634AC01E-49DB-4AD2-B87C-90D4DCC6AFA1}
+
+:: HP BIOS Configuration Utility
+{1DE3319A-EA65-48E9-A3C4-38AC920BDF16}
 
 :: HP Boot Optimizer
 {1341D838-719C-4A05-B50F-49420CA1B4BB}
@@ -3895,6 +3902,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: HP Client Services
 {28074A47-851D-4599-A270-87609F58EB57}
+
+:: HP Collaboration Keyboard Runtime
+{4FBF7DF0-E6F9-4F1F-AC66-6D3AC9B6C51F}
 
 :: HP Clock
 {0EEC4E49-D4C2-4E23-87F2-B5641F1A09E4}
@@ -4173,12 +4183,6 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {88B2E402-DE40-4422-9CCB-D285F8602C93}
 {415FA9AD-DA10-4ABE-97B6-5051D4795C90}
 
-:: HP Games
-:: These two FOR loops should catch ALL HP games, in theory at least
-:: Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
-for /r "%ProgramFiles%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
-for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
-
 :: HP Google Drive Plugin (wtf??)
 {63BCC696-0FB4-4E9C-8144-2DA4F248FC17}
 {AFF80405-E56A-48E7-98FC-8E46E261949F}
@@ -4270,6 +4274,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {B90CB0DE-2E60-41C4-9857-466EB98192BF}
 
 :: HP PC Hardware Diagnostics UEFI
+{924D3ABC-FC75-4042-9DDB-FB846A45848D}
 {DD43EA67-DAF3-4879-BFF7-E534675BDEA5}
 
 :: HP Performance Advisor
@@ -4331,6 +4336,7 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {86BAB08A-5E66-4C53-82E3-C1E91673C7CA}
 
 :: HP Notifications
+{A4F64FA9-6A38-4720-AC7E-7FB4567C7268}
 {322CA07F-488F-4579-AABB-7EB46AB74EE7}
 {7F9760E8-51EC-4089-8C4E-94406AD07846}
 
@@ -4906,6 +4912,8 @@ for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i"
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components
+{9515A836-1BB3-40BA-AD09-61341192C110}
+{14899202-91EC-4FC4-AFFC-2BB6A129B9CB}
 {F83D891F-98D0-43A3-A4E8-4F3C80E44111}
 {FBEE457C-4750-4506-92A4-13C298742EC5}
 {CCCB484E-79D5-4398-9377-CA6EEB6B53AE}
@@ -5866,6 +5874,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {BFD96B89-B769-4CD6-B11E-E79FFD46F067}
 
 :: RapidBoot Shield
+{5E2652DF-743F-482B-A593-C95F431A5769}
 {C83D5AA1-6A1F-4102-8F7F-C0230DD31FC0}
 {D446E416-1045-4C70-9341-F73333DCB149}
 
