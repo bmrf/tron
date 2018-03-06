@@ -9,7 +9,7 @@ There are five files in these sub-directories that determine what Tron targets f
 You can customize any of these files to tweak what Tron targets for removal.
 
 
-# \oem\programs_to_target_by_name.txt
+#  \oem\programs_to_target_by_name.txt
 
  Insert program NAMES, one per line, into the file. Tron will try to uninstall any program
  whose name matches one of the names in this file. Don't put any special characters around
@@ -34,7 +34,7 @@ So in this example,  Dell%%  would catch and attempt to remove both "Dell Gettin
 
 #  \oem\toolbars_BHOs_to_target_by_GUID.txt
 
- List specific GUIDs to target, one per line. TThis file is commented like batch but technically plain text.
+ List specific GUIDs to target, one per line. This file is commented like batch but technically plain text.
  It's separate from programs_to_target_by_GUID.txt just for organization; Tron executes both files
  the same way.
 
@@ -43,14 +43,16 @@ So in this example,  Dell%%  would catch and attempt to remove both "Dell Gettin
 #  \metro\metro_3rd_party_modern_apps_to_target_by_name.ps1
 
  This is a Powershell script listing pre-loaded 3rd-party "Modern" apps. Add any 3rd-party "Modern"
- apps you want to remove to this list.
+ apps you want to remove to this list. This file may also be executed directly from an administrator-privileged
+ PowerShell session.
 
 
 
 #  \metro\metro_Microsoft_modern_apps_to_target_by_name.ps1
 
  This is a Powershell script listing pre-loaded Microsoft "Modern" apps. Customize this list to tweak
- which official Microsoft "modern" apps get removed.
+ which official Microsoft "modern" apps get removed. This file may also be executed directly from an administrator-privileged
+ PowerShell session.
 
 
 
