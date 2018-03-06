@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
+:: Version:       1.3.9 * Expand de-bloat phase 4 to include HP Games
+::                1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
 ::                1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
 ::                      ! Fix faulty detection of OneDrive being "in use" due to existence of desktop.ini in the default folder. Thanks to github:YodaDaCoda
@@ -52,8 +53,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.8
-set STAGE_2_SCRIPT_DATE=2018-02-01
+set STAGE_2_SCRIPT_VERSION=1.3.9
+set STAGE_2_SCRIPT_DATE=2018-03-06
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -254,15 +255,21 @@ call functions\log_with_date.bat "   Done."
 
 
 
-:: JOB: Remove crapware programs, phase 4: auxiliary WildTangent scan
-title Tron v%TRON_VERSION% [stage_2_de-bloat] [auxiliary WildTangent scan]
-call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (auxiliary WildTangent scan)..."
+:: JOB: Remove crapware programs, phase 4: auxiliary WildTangent and HP Games scans
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [auxiliary scans]
+call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (auxiliary HP and Wild Tangent Games scans)..."
 if /i %DRY_RUN%==no (
 	REM Gateway Games (Gateway-branded WildTangent games)
 	REM These two FOR loops should catch ALL Gateway games, in theory at least
 	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
 	if exist "%ProgramFiles%\Gateway Games" ( for /r "%ProgramFiles%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 	if exist "%ProgramFiles(x86)%\Gateway Games" ( for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
+	
+	REM HP Games
+	REM These two FOR loops should catch ALL HP games, in theory at least
+	REM Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+	if exist "%ProgramFiles%\HP Games" ( for /r "%ProgramFiles%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
+	if exist "%ProgramFiles(x86)%\HP Games" ( for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 )
 call functions\log_with_date.bat "   Done."
 
@@ -310,9 +317,6 @@ if /i %TARGET_METRO%==yes (
 :: This variable is just to detect if we removed OneDrive or not. If we DIDN'T then we use it to make sure file sync isn't disabled
 set ONEDRIVE_REMOVED=no
 
-:: Make sure the presence of desktop.ini doesn't incorrectly trip the 'onedrive is in use' check
-if exist "%USERPROFILE%\OneDrive\desktop.ini" del /f /q "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
-
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
 
@@ -322,6 +326,7 @@ if /i %PRESERVE_METRO_APPS%==yes (
 	goto :skip_onedrive_removal
 )
 
+
 :: 3. Does the folder exist in the default location? If not, skip removal
 if not exist "%USERPROFILE%\OneDrive" (
 	call functions\log_with_date.bat "!  OneDrive folder not in the default location. Skipping removal just in case."
@@ -330,7 +335,9 @@ if not exist "%USERPROFILE%\OneDrive" (
 
 :: 4. Does the default folder have any files in it? If so, skip removal
 call functions\log_with_date.bat "   Checking if OneDrive is in use, please wait..."
-stage_2_de-bloat\onedrive_removal\diruse.exe /q:1 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+::    First, delete desktop.ini so it doesn't incorrectly trip the 'onedrive is in use' check
+if exist "%USERPROFILE%\OneDrive\desktop.ini" del /f /q "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
+stage_2_de-bloat\onedrive_removal\diruse.exe /q:1.2 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
 	call functions\log_with_date.bat "!  OneDrive appears to be in use (files exist in the OneDrive folder). Skipping removal."
 	goto :skip_onedrive_removal
