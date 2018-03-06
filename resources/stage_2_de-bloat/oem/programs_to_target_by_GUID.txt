@@ -4432,6 +4432,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {92db00b4-c4ee-4893-bc4e-8be6548b2742}
 {FE465061-894A-4023-8580-56FCDD4F23F9}
 
+:: HP Sure Click Application Support for Windows
+{05E84D51-5242-46BA-B24E-ABBC65BDBAF7}
+
 :: HP SystemDiagnostics
 {3CF78481-FB7B-4B51-99A2-D5E0CD0B3AAF}
 
