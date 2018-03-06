@@ -2,9 +2,10 @@
 Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
                Add any AppX uninstall commands to this list to target them for removal
 Requirements:  1. Administrator access
-               2. Windows 7 and up
+               2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.8 + Add *CandyCrush* and SpotifyAB.Spotify*
+Version:       1.1.9 + Add more user-submitted entries
+               1.1.8 + Add *CandyCrush* and SpotifyAB.Spotify*
                1.1.7 + Add *A278AB0D.DisneyMagicKingdoms* and *828B5831.HiddenCityMysteryofShadows*. Thanks to github:colepnc
                1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
                1.1.5 + Add various entries, thanks to github:kronflux
@@ -23,8 +24,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.8"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-02-16"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.9"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -150,12 +151,32 @@ Remove-App "*fingertappsASUS.JigsWarrecommendedbyASUS*"
 Remove-App "*fingertappsasus.FingertappsOrganizerrecommendedbyA*"
 Remove-App "*flaregamesGmbH.RoyalRevolt2*"
 Remove-App "*king.com.BubbleWitch3Saga*"
-Remove-App "*king.com.CandyCrushSodaSaga*"
+Remove-App "*king.com.CandyCrush*"
 Remove-App "*sMedioforHP.sMedio360*"
 Remove-App "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "*toolbar*"
 Remove-App "*zuukaInc.iStoryTimeLibrary*"
+Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
+Remove-App "64885BlueEdge.OneCalendar*"
+Remove-App "A278AB0D.DragonManiaLegends*"
+Remove-App "AD2F1837.DiscoverHPTouchpointManager*"
+Remove-App "AD2F1837.HPJumpStart*"
+Remove-App "ActiproSoftwareLLC.562882FEEB491*"
+Remove-App "DolbyLaboratories.DolbyAccess*"
+Remove-App "DriverToaster*"
+Remove-App "ESPNInc.WatchESPN*"
+Remove-App "Facebook.317180B0BB486*"
+Remove-App "Facebook.InstagramBeta*"
+Remove-App "HuluLLC.HuluPlus*"
+Remove-App "K-NFBReadingTechnologiesI.BookPlace*"
+Remove-App "LenovoCorporation.LenovoID*"
+Remove-App "LenovoCorporation.LenovoSettings*"
+Remove-App "NBCUniversalMediaLLC.NBCSportsLiveExtra*"
 Remove-App "SpotifyAB.Spotify*"
+Remove-App "SpotifyAB.SpotifyMusic*"
+Remove-App "ToshibaAmericaInformation.ToshibaCentral*"
+Remove-App "Vimeo.Vimeo*"
+Remove-App "WinZipComputing.WinZipUniversal*"
 
 # Inactive identifers
 #Remove-App "*Netflix*"

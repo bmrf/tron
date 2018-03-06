@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 7 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.7 + Add Microsoft.GetHelp
+Version:       1.1.8 + Add additional user-submitted entries
+               1.1.7 + Add Microsoft.GetHelp
                1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
                1.1.5 + Add Zune entries, thanks to /u/ComputeGuy
                1.1.4 + Add various entries, thanks to github:kronflux
@@ -26,8 +27,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.7"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-02-16"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.8"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -41,9 +42,6 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "*Microsoft.MinecraftUWP*"
-Remove-App "*Microsoft.NetworkSpeedTest*"
-Remove-App "*Microsoft.WindowsReadingList*"
 Remove-App "Microsoft.3DBuilder"                       # 3DBuilder app
 Remove-App "Microsoft.Advertising*"                    # Advertising framework
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
@@ -64,7 +62,9 @@ Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
 Remove-App "Microsoft.MicrosoftOfficeHub"
 Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # Power BI app - Business analytics
 Remove-App "Microsoft.MicrosoftSudoku"
+Remove-App "Microsoft.MinecraftUWP*"
 Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
+Remove-App "Microsoft.NetworkSpeedTest*"
 Remove-App "Microsoft.Office.OneNote"                  # Onenote app
 Remove-App "Microsoft.Office.Sway"                     # Sway app
 Remove-App "Microsoft.OneConnect"                      # OneConnect app
@@ -73,6 +73,7 @@ Remove-App "Microsoft.SkypeApp"                        # Get Skype link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
+Remove-App "Microsoft.WindowsReadingList*"
 Remove-App "Microsoft.Zune*"                           # Zune collection of apps
 
 
