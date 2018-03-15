@@ -4,15 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.9 + Add more user-submitted entries
-               1.1.8 + Add *CandyCrush* and SpotifyAB.Spotify*
-               1.1.7 + Add *A278AB0D.DisneyMagicKingdoms* and *828B5831.HiddenCityMysteryofShadows*. Thanks to github:colepnc
-               1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
-               1.1.5 + Add various entries, thanks to github:kronflux
-               1.1.4 + Add *A278AB0D.MarchofEmpires*, *KeeperSecurityInc.Keeper*, *ThumbmunkeysLtd.PhototasticCollage*. Thanks to /u/Phaellow
-               1.1.3 + Add Playtika.CaesarsSlotsFreeCasino and some others
-               1.1.2 + Add *king.com.CandyCrushSodaSaga*. Thanks to /u/Phaellow
-               1.1.1 + Add flaregamesGmbH.RoyalRevolt2. Thanks to /u/Phaellow
+Version:       1.2.0 + Add more user-submitted entries
                1.1.0 * Update script to use cleaner removal function. Thanks to /u/madbomb122
                1.0.2 + Add 6Wunderkinder.Wunderlist, 2FE3CB00.PicsArt-PhotoStudio, Microsoft.NetworkSpeedTest, thanks to github:Bromeego
                1.0.1 + Add 46928bounde.EclipseManager, D5EA27B7.Duolingo-LearnLanguagesforFree, thanks to /u/phobos258
@@ -24,8 +16,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.9"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.0"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-15"
 
 # Build the removal function
 Function Remove-App([String]$AppName){
@@ -39,43 +31,7 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "*06DAC6F6.StumbleUpon*"
-Remove-App "*134D4F5B.Box*"
-Remove-App "*1430GreenfieldTechnologie.PuzzleTouch*"
-Remove-App "*26720RandomSaladGamesLLC.HeartsDeluxe*"
-Remove-App "*26720RandomSaladGamesLLC.SimpleSolitaire*"
-Remove-App "*29982CsabaHarmath.UnCompress*"
-Remove-App "*2FE3CB00.PicsArt-PhotoStudio*"
-Remove-App "*46928bounde.EclipseManager*"
-Remove-App "*4AE8B7C2.Booking.comPartnerEdition*"
-Remove-App "*4DF9E0F8.Netflix*"
-Remove-App "*6Wunderkinder.Wunderlist*"
-Remove-App "*7906AAC0.TOSHIBACanadaPartners*"
-Remove-App "*7906AAC0.ToshibaCanadaWarrantyService*"
-Remove-App "*7digitalLtd.7digitalMusicStore*"
-Remove-App "*828B5831.HiddenCityMysteryofShadows*"
-Remove-App "*89006A2E.AutodeskSketchBook*"
-Remove-App "*9E2F88E3.Twitter*"
-Remove-App "*A278AB0D.DisneyMagicKingdoms*"
-Remove-App "*A278AB0D.MarchofEmpires*"
-Remove-App "*A34E4AAB.YogaChef*"
-Remove-App "*AD2F1837.HP*"
-Remove-App "*ASUSCloudCorporation.MobileFileExplorer*"
-Remove-App "*AccuWeather.AccuWeatherforWindows8*"
-Remove-App "*AcerIncorporated.AcerExplorer*"
-Remove-App "*AcerIncorporated.GatewayExplorer*"
-Remove-App "*ActiproSoftwareLLC*"                        # Code Writer app
-Remove-App "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
-Remove-App "*AdobeSystemsIncorporated.AdobeRevel*"
-Remove-App "*Amazon.com.Amazon*"
-Remove-App "*AppUp.IntelAppUpCatalogueAppWorldwideEdition*"
-Remove-App "*B9ECED6F.ASUSGIFTBOX*"
-Remove-App "*BD9B8345.AlbumbySony*"
-Remove-App "*BD9B8345.MusicbySony*"
-Remove-App "*BD9B8345.Socialife*"
-Remove-App "*BD9B8345.VAIOCare*"
-Remove-App "*BD9B8345.VAIOMessageCenter*"
-Remove-App "*CandyCrush*"
+Remove-App "*CandyCrushSodaSaga"
 Remove-App "*ChaChaSearch.ChaChaPushNotification*"
 Remove-App "*ClearChannelRadioDigital.iHeartRadio*"
 Remove-App "*CrackleInc.Crackle*"
@@ -156,12 +112,51 @@ Remove-App "*sMedioforHP.sMedio360*"
 Remove-App "*sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "*toolbar*"
 Remove-App "*zuukaInc.iStoryTimeLibrary*"
+Remove-App "06DAC6F6.StumbleUpon*"
+Remove-App "134D4F5B.Box*"
+Remove-App "1430GreenfieldTechnologie.PuzzleTouch*"
+Remove-App "26720RandomSaladGamesLLC.HeartsDeluxe*"
+Remove-App "26720RandomSaladGamesLLC.SimpleSolitaire*"
+Remove-App "29982CsabaHarmath.UnCompress*"
+Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
+Remove-App "46928bounde.EclipseManager*"
+Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
+Remove-App "4DF9E0F8.Netflix*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
 Remove-App "64885BlueEdge.OneCalendar*"
+Remove-App "6Wunderkinder.Wunderlist*"
+Remove-App "7906AAC0.TOSHIBACanadaPartners*"
+Remove-App "7906AAC0.ToshibaCanadaWarrantyService*"
+Remove-App "7digitalLtd.7digitalMusicStore*"
+Remove-App "828B5831.HiddenCityMysteryofShadows"
+Remove-App "828B5831.HiddenCityMysteryofShadows*"
+Remove-App "89006A2E.AutodeskSketchBook"
+Remove-App "89006A2E.AutodeskSketchBook*"
+Remove-App "9E2F88E3.Twitter"
+Remove-App "A278AB0D.DisneyMagicKingdoms"
+Remove-App "A278AB0D.DisneyMagicKingdoms*"
+Remove-App "A278AB0D.DragonManiaLegends"
 Remove-App "A278AB0D.DragonManiaLegends*"
-Remove-App "AD2F1837.DiscoverHPTouchpointManager*"
-Remove-App "AD2F1837.HPJumpStart*"
+Remove-App "A278AB0D.MarchofEmpires"
+Remove-App "A278AB0D.MarchofEmpires*"
+Remove-App "A34E4AAB.YogaChef*"
+Remove-App "AD2F1837.HP*"
+Remove-App "ASUSCloudCorporation.MobileFileExplorer*"
+Remove-App "AccuWeather.AccuWeatherforWindows8*"
+Remove-App "AcerIncorporated.AcerExplorer*"
+Remove-App "AcerIncorporated.GatewayExplorer*"
+Remove-App "ActiproSoftwareLLC*"                        # Code Writer app
 Remove-App "ActiproSoftwareLLC.562882FEEB491*"
+Remove-App "AdobeSystemsIncorporated.AdobePhotoshopExpress*"
+Remove-App "AdobeSystemsIncorporated.AdobeRevel*"
+Remove-App "Amazon.com.Amazon*"
+Remove-App "AppUp.IntelAppUpCatalogueAppWorldwideEdition*"
+Remove-App "B9ECED6F.ASUSGIFTBOX*"
+Remove-App "BD9B8345.AlbumbySony*"
+Remove-App "BD9B8345.MusicbySony*"
+Remove-App "BD9B8345.Socialife*"
+Remove-App "BD9B8345.VAIOCare*"
+Remove-App "BD9B8345.VAIOMessageCenter*"
 Remove-App "DolbyLaboratories.DolbyAccess*"
 Remove-App "DriverToaster*"
 Remove-App "ESPNInc.WatchESPN*"
@@ -177,6 +172,8 @@ Remove-App "SpotifyAB.SpotifyMusic*"
 Remove-App "ToshibaAmericaInformation.ToshibaCentral*"
 Remove-App "Vimeo.Vimeo*"
 Remove-App "WinZipComputing.WinZipUniversal*"
+Remove-App "king.com.BubbleWitch3Saga*"
+Remove-App "king.com.CandyCrushSodaSaga"
 
 # Inactive identifers
 #Remove-App "*Netflix*"
