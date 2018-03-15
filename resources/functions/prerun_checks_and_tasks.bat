@@ -1,7 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 * Don't check for drivedb.h updates if NETWORK_AVAILABLE is set to no
+:: Version:       1.0.6 / Import SMART problem code checks from tron.bat
+::                1.0.5 * Don't check for drivedb.h updates if NETWORK_AVAILABLE is set to no
 ::                1.0.4 ! Fix syntax error in IF statement: Wrap paths in quotes to handle special characters and spaces
 ::                1.0.3 * Don't download drivedb.h definitions file if in either autorun mode
 ::                1.0.2 * Don't download drivedb.h definitions file if doing a dry run
@@ -11,8 +12,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.5
-set PRERUN_CHECKS_SCRIPT_DATE=2018-02-06
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.6
+set PRERUN_CHECKS_SCRIPT_DATE=2018-03-15
 
 
 
