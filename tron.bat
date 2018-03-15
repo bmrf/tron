@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 + Add upload of Metro app list dump if -udl switch is used
+:: Version:       1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
+::                1.1.1 + Add upload of Metro app list dump if -udl switch is used
 ::                      / Move Stage 7 code out of tron.bat into it's own discrete script
 ::                1.1.0 / Move network connection detection code into initialize_environment.bat
 ::                      + Add display of whether or not warnings and errors were detected to end-screen
@@ -47,8 +48,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.1
-set SCRIPT_DATE=2018-03-06
+set SCRIPT_VERSION=1.1.2
+set SCRIPT_DATE=2018-03-15
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -190,7 +191,8 @@ if /i %CONFIG_DUMP%==yes (
 	echo    NETWORK_AVAILABLE:      %NETWORK_AVAILABLE%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
-    echo    SYSTEM_LANGUAGE:        %SYSTEM_LANGUAGE%
+    echo    SMART_PROBLEM_CODE:     %SMART_PROBLEM_CODE%
+	echo    SYSTEM_LANGUAGE:        %SYSTEM_LANGUAGE%
 	echo    TEMP:                   !TEMP!
 	echo    TARGET_METRO:           %TARGET_METRO%
 	echo    TIME:                   %TIME%
@@ -423,16 +425,14 @@ if %WARNINGS_DETECTED%==yes_check_update_failed call functions\log_with_date.bat
 if %WARNINGS_DETECTED%==yes_check_update_skipped call functions\log_with_date.bat "! NOTE: Tron doesn't think the system has a network connection. Update checks were skipped."
 
 
-:: PREP: Run a quick SMART check and notify if there are any drives with problems
-set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
-for /f %%i in ('^<NUL %WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
-	call functions\log.bat " ^^^! WARNING: SMART check indicates at least one drive with '%%i' status"
-	call functions\log.bat " SMART errors can mean a drive is close to failure"
-	call functions\log.bat " Recommend you back the system up BEFORE running Tron."
+:: INTERNAL PREP: Check if we had SMART disk errors and warn about it if so. This is detected in prerun_checks_and_tasks.bat
+if /i not %SMART_PROBLEM_CODE%==undetected (
+	call functions\log_with_date.bat "! WARNING: SMART check indicated at least one drive with '%SMART_PROBLEM_CODE%' status"
+	call functions\log.bat "                                  SMART errors can mean a drive is close to failure"
+	call functions\log.bat "                                  Recommend you back the system up BEFORE running Tron"
+	call functions\log.bat "                                  Defrag will be skipped as a precaution"
 	color 0e
-	set WARNINGS_DETECTED=yes
 )
-
 
 :: INTERNAL PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
@@ -455,7 +455,6 @@ if /i "%SAFE_MODE%"=="yes" (
 :: Stamp current stage so we can resume if we get interrupted by a reboot
 echo stage_0_prep>tron_stage.txt
 title Tron v%TRON_VERSION% [stage_0_prep]
-echo.
 call stage_0_prep\stage_0_prep.bat
 
 
