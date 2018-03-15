@@ -1,7 +1,6 @@
 :: Purpose:       Tron's settings script, called when it launches. Customize this file to change how Tron behaves. 
 ::                Sub-stage scripts also call this file if they're launched directly.
-:: Requirements:  1. Administrator access
-::                2. Safe mode is recommended but not required
+:: Requirements:  n/a
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
 ::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
@@ -48,7 +47,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: ! These are Tron's defaults. All settings here are overridden if their respective command-line flag is used
 ::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
-:: AUTORUN_IN_SAFE_MODE   (-asm) = Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
+:: AUTORUN_IN_SAFE_MODE   (-asm) = Automatic execution (no welcome screen or prompts), implies -e, autoboots to Safe Mode
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
 :: DEV_MODE               (-dev) = Override OS detection and allow running Tron on unsupported OS's
 :: EULA_ACCEPTED          (-e)   = Accept EULA (suppress disclaimer warning screen)
@@ -59,7 +58,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
-:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip, Java Runtime, Adobe Flash Player and Adobe Reader)
+:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip, Java Runtime, or Adobe Flash Player)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
 :: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type

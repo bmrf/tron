@@ -116,11 +116,20 @@ pushd stage_6_optimize\defrag\
 	:: c. not in autorun (safe mode)
 	:: d. network IS available
 	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( if /i %NETWORK_AVAILABLE%==yes ( update-smart-drivedb.exe /S ) ) ) )
-	
+
 	:: Do the scan
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
-	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_error
+	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_disk_smart_read_error&&set WARNINGS_DETECTED=yes_disk_smart_read_error
+
+	:: Look for known problem codes and set skip_defrag if so
+	set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
+	for /f %%i in ('^<NUL %WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
+		set SMART_PROBLEM_CODE=%%i
+		set SKIP_DEFRAG=yes_disk_smart_problem_code
+		set WARNINGS_DETECTED=yes_disk_smart_problem_code
+	)
+
 popd
 
 

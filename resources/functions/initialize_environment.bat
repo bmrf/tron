@@ -3,12 +3,12 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.4.8 . Increment version number
+:: Version:       10.4.9 . Increment version number
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.4.8
-set TRON_DATE=2018-02-xx
+set TRON_VERSION=10.4.9
+set TRON_DATE=2018-03-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -28,6 +28,7 @@ set SAFE_MODE=no
 if /i "%SAFEBOOT_OPTION%"=="MINIMAL" set SAFE_MODE=yes
 if /i "%SAFEBOOT_OPTION%"=="NETWORK" set SAFE_MODE=yes
 set SKIP_CHECK_UPDATE=no
+set SMART_PROBLEM_CODE=undetected
 set SYSTEM_LANGUAGE=undetected
 set WIN_VER=undetected
 set WIN_VER_NUM=undetected
