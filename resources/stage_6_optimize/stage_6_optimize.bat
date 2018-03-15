@@ -1,8 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 6: Optimize stage. Called by tron.bat and returns control when finished
-:: Requirements:  1. Administrator access
-::                2. Safe mode is recommended but not required
+:: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+:: Version:       1.0.8 * Improve SMART detection routing to also flag problem codes and set the appropriate variables
+::                1.0.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.0.6 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                        Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.0.5 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
@@ -17,8 +17,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_6_SCRIPT_VERSION=1.0.7
-set STAGE_6_SCRIPT_DATE=2018-01-25
+set STAGE_6_SCRIPT_VERSION=1.0.8
+set STAGE_6_SCRIPT_DATE=2018-03-15
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -55,10 +55,9 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 if /i "%SKIP_DEFRAG%"=="yes" call functions\log_with_date.bat "!  SKIP_DEFRAG (-sd) set. Skipping defrag of %SystemDrive%."
 if /i "%SKIP_DEFRAG%"=="yes_ssd" call functions\log_with_date.bat "   Solid State hard drive detected. Skipping defrag of %SystemDrive%."
 if /i "%SKIP_DEFRAG%"=="yes_vm" call functions\log_with_date.bat "   Virtual Machine detected. Skipping defrag of %SystemDrive%."
-if /i "%SKIP_DEFRAG%"=="yes_error" (
-	call functions\log_with_date.bat "!  WARNING: Error reading %SystemDrive% disk stats. Skipping defrag as a precaution."
-	set WARNINGS_DETECTED=yes
-)
+if /i "%SKIP_DEFRAG%"=="yes_disk_smart_read_error" call functions\log_with_date.bat "!  WARNING: Error reading %SystemDrive% disk stats. Skipping defrag as a precaution."
+if /i "%SKIP_DEFRAG%"=="yes_disk_smart_problem_code" call functions\log_with_date.bat "!  WARNING: Disk threw SMART problem code '%SMART_PROBLEM_CODE%'. Skipping defrag as a precaution."
+
 if /i "%SKIP_DEFRAG%"=="no" (
 	title Tron v%TRON_VERSION% [stage_6_optimize] [Defrag]
 	call functions\log_with_date.bat "   Launch job 'Defrag %SystemDrive%'..."
