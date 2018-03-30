@@ -6,16 +6,17 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to /u/tylerwatt12
-::                           ! Fix syntax error in DiagTrack service disabling. Thanks to /u/KiranOtter
+:: Version:       1.2.1-TRON + Add disabling of "show fun tips, tricks and hints" on the lock screen. Thanks to u/mikargibbros
+::                1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to u/tylerwatt12
+::                           ! Fix syntax error in DiagTrack service disabling. Thanks to u/KiranOtter
 ::                             thread: https://www.reddit.com/r/sysadmin/comments/777vt2/the_windows_fall_creators_update_has_been/
 ::                1.1.9-TRON * Update Spybot Anti-Beacon to v1.6.0.42
-::                1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to /u/TootZoot and /u/Falkerz
+::                1.1.8-TRON + Add registry keys to disable Cortana and Web Search from Start Menu globally. Thanks to u/TootZoot and u/Falkerz
 ::                1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
-::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to /u/Seascan
-::                           ! Fix broken path on Spybot call. Thanks to /u/Seascan
+::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to u/Seascan
+::                           ! Fix broken path on Spybot call. Thanks to u/Seascan
 ::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file 
-::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to /u/T_Belfs
+::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to u/T_Belfs
 ::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
 ::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon
 ::                <-- obsolete changelog comments removed -->
@@ -36,8 +37,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.0-TRON
-set SCRIPT_UPDATED=2017-10-26
+set SCRIPT_VERSION=1.2.1-TRON
+set SCRIPT_UPDATED=2018-03-30
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -717,5 +718,13 @@ if "%VERBOSE%"=="yes" (
 if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ >NUL 2>&1
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
+
+
+:: Kill "show fun tips, hints and tricks" on the lock screen
+%windir%\system32\reg.exe load HKEY_LOCAL_MACHINE\defuser %USERPROFILES%\default\ntuser.dat >NUL 2>&1
+%windir%\system32\reg.exe add "HKEY_LOCAL_MACHINE\defuser\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /V RotatingLockScreenOverlayEnabled /T REG_DWORD /D 00000000 /F >NUL 2>&1
+%windir%\system32\reg.exe unload HKEY_LOCAL_MACHINE\defuser >NUL 2>&1
+
+
 
 call functions\log.bat "     Done."
