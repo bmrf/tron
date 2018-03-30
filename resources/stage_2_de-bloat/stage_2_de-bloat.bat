@@ -336,6 +336,7 @@ if not exist "%USERPROFILE%\OneDrive" (
 :: 4. Does the default folder have any files in it? If so, skip removal
 call functions\log_with_date.bat "   Checking if OneDrive is in use, please wait..."
 ::    First, delete desktop.ini so it doesn't incorrectly trip the 'onedrive is in use' check
+if exist "%USERPROFILE%\OneDrive\desktop.ini" %SystemRoot%\System32\attrib.exe -s -h "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
 if exist "%USERPROFILE%\OneDrive\desktop.ini" del /f /q "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
 stage_2_de-bloat\onedrive_removal\diruse.exe /q:1.2 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
