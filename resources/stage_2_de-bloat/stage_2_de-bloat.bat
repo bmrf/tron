@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.9 * Expand de-bloat phase 4 to include HP Games
+:: Version:       1.4.0 ! Fix bug in OneDrive folder in use detection due to windows silently ignoring commands. Thanks to github:rasa
+::                1.3.9 * Expand de-bloat phase 4 to include HP Games
 ::                1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
 ::                1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
@@ -53,8 +54,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.3.9
-set STAGE_2_SCRIPT_DATE=2018-03-06
+set STAGE_2_SCRIPT_VERSION=1.4.0
+set STAGE_2_SCRIPT_DATE=2018-03-30
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
