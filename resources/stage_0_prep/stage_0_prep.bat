@@ -38,7 +38,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_0_SCRIPT_VERSION=1.2.3
-set STAGE_0_SCRIPT_DATE=2018-03-05
+set STAGE_0_SCRIPT_DATE=2018-03-30
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -121,7 +121,7 @@ title Tron v%TRON_VERSION% [stage_0_prep] [rkill]
 call functions\log_with_date.bat "   Launch job 'rkill'..."
 call functions\log_with_date.bat "   If script stalls 20 min or more, kill solitaire64.exe and solitaire.exe with Task Manager"
 if /i %DRY_RUN%==no (
-	stage_0_prep\rkill\solitaire.exe -s -l "%TEMP%\tron_rkill.log" -w "stage_0_prep\rkill\rkill_process_whitelist.txt"
+	stage_0_prep\rkill\solitaire.exe -s -l "%TEMP%\tron_rkill.log" -w "%~dp0\stage_0_prep\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	del "%TEMP%\tron_rkill.log" 2>NUL
 	if exist "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" del "%HOMEDRIVE%\%HOMEPATH%\Desktop\Rkill.txt" 2>NUL
