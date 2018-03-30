@@ -20,7 +20,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set SCRIPT_VERSION=1.0.6-TRON
-set SCRIPT_UPDATED=2017-06-20
+set SCRIPT_UPDATED=2018-03-30
 
 :: Get in the Flash directory
 pushd %~dp0
@@ -72,16 +72,16 @@ if exist "%windir%\System32\macromed\flash\*plugin.exe" set FLASH_FIREFOX_DETECT
 :: Perform removal and fresh installation of those existing versions
 if %FLASH_ACTIVEX_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%ActiveX'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_26_active_x.msi" %FLAGS%
+	msiexec /i "install_flash_player_28_active_x.msi" %FLAGS%
 )
 if %FLASH_CHROME_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%PPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_26_ppapi.msi" %FLAGS%
+	msiexec /i "install_flash_player_28_ppapi.msi" %FLAGS%
 )
 if %FLASH_FIREFOX_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%Plugin'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_26_plugin.msi" %FLAGS%
+	msiexec /i "install_flash_player_28_plugin.msi" %FLAGS%
 )
 
 
