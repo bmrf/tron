@@ -3,12 +3,11 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       10.4.9 . Increment version number
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.4.9
-set TRON_DATE=2018-03-xx
+set TRON_VERSION=10.5.0
+set TRON_DATE=2018-04-04
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
