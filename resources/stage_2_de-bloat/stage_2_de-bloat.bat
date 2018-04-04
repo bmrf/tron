@@ -55,7 +55,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_2_SCRIPT_VERSION=1.4.0
-set STAGE_2_SCRIPT_DATE=2018-03-30
+set STAGE_2_SCRIPT_DATE=2018-04-04
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -135,7 +135,7 @@ if /i %DRY_RUN%==no (
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
 			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
-			
+
 			REM Iterate our tick counter
 			set /a TICKER=!TICKER! + 1
 
@@ -194,7 +194,7 @@ if /i %DRY_RUN%==no (
 			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
 			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
-			
+
 			REM Iterate our counter
 			set /a TICKER=!TICKER! + 1
 
@@ -265,7 +265,7 @@ if /i %DRY_RUN%==no (
 	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
 	if exist "%ProgramFiles%\Gateway Games" ( for /r "%ProgramFiles%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 	if exist "%ProgramFiles(x86)%\Gateway Games" ( for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
-	
+
 	REM HP Games
 	REM These two FOR loops should catch ALL HP games, in theory at least
 	REM Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
@@ -368,6 +368,13 @@ if %DRY_RUN%==no (
 	rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	:: Use Microsoft/Sysinternals movefile if access was denied in the previous 3 commands
+	if /i not %ERRORLEVEL%==0 (
+		stage_2_de-bloat\movefile\movefile.exe "%LocalAppData%\Microsoft\OneDrive" "" /accepteula >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_2_de-bloat\movefile\movefile.exe "%ProgramData%\Microsoft OneDrive" "" /accepteula >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_2_de-bloat\movefile\movefile.exe "%SystemDrive%\OneDriveTemp" "" /accepteula >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
+
 	REM These two registry entries disable OneDrive links in the Explorer side pane
 	reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
