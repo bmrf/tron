@@ -641,6 +641,9 @@ if /i not %ERRORS_DETECTED%==no (
 	call functions\log_with_date.bat "! ERRORS were detected (%ERRORS_DETECTED%). Review the log file."
 )
 
+:: UPM detection circuit
+if /i %UNICORN_POWER_MODE%==on color DF
+
 :: Display and log the job summary
 echo.
 call functions\log.bat "-------------------------------------------------------------------------------"
