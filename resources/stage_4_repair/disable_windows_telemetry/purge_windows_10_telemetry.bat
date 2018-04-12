@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.2.1-TRON + Add disabling of "show fun tips, tricks and hints" on the lock screen. Thanks to u/mikargibbros
+:: Version:       1.2.2-TRON + Add additional XBox Live services to disable list
+::                1.2.1-TRON + Add disabling of "show fun tips, tricks and hints" on the lock screen. Thanks to u/mikargibbros
 ::                1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to u/tylerwatt12
 ::                           ! Fix syntax error in DiagTrack service disabling. Thanks to u/KiranOtter
 ::                             thread: https://www.reddit.com/r/sysadmin/comments/777vt2/the_windows_fall_creators_update_has_been/
@@ -37,8 +38,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.1-TRON
-set SCRIPT_UPDATED=2018-03-30
+set SCRIPT_VERSION=1.2.2-TRON
+set SCRIPT_UPDATED=2018-04-12
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 if /i "%LOGPATH%"=="" (
@@ -314,9 +315,13 @@ if "%VERBOSE%"=="yes" (
 	sc stop XblAuthManager
 	sc stop XblGameSave
 	sc stop XboxNetApiSvc
+	sc stop XboxGipSvc
+	sc stop xbgm
 	sc config XblAuthManager start= disabled
 	sc config XblGameSave start= disabled
 	sc config XboxNetApiSvc start= disabled
+	sc config XboxGipSvc start= disabled
+	sc config xbgm start= disabled
 ) else (
 	:: Diagnostic Tracking
 	sc stop Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -339,12 +344,16 @@ if "%VERBOSE%"=="yes" (
 	sc config Wecsvc start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	:: Xbox Live services
-	sc stop XblAuthManager >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc stop XblGameSave >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc stop XboxNetApiSvc >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XblAuthManager start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XblGameSave start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XboxNetApiSvc start= disabled >> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc stop XblAuthManager>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc stop XblGameSave>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc stop XboxNetApiSvc>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc stop XboxGipSvc>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc stop xbgm>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblAuthManager start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblGameSave start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XboxNetApiSvc start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XboxGipSvc start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config xbgm start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 call functions\log.bat "     Done."
