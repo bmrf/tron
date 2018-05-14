@@ -32,19 +32,54 @@ if /i not "%SAFE_MODE%"=="yes" (
 		echo.
 		echo  ERROR
 		echo.
-		echo  Tron doesn't think it is running as an Administrator.
-		echo  Tron MUST be run with full Administrator rights to
-		echo  function correctly.
+		echo  Tron doesn't appear to be running as an Administrator.
+		echo  Tron MUST be run with FULL Administrator rights to
+		echo  function. Tron will now attempt to auto-elevate itself. 
+		echo  Press any key now to skip the 10 second countdown and
+		echo  request a UAC prompt immediately. Press Ctrl+C to
+		echo  stop this process and terminate tron.
 		echo.
-		echo  Close this window and re-run Tron as an Administrator.
-		echo  ^(right-click tron.bat and click "Run as Administrator"^)
 		echo.
-		pause
-		exit 1
+		timeout /t 10
 	)
 )
+:: If tron isn't running as administrator, request a UAC prompt.
 ENDLOCAL DISABLEDELAYEDEXPANSION
+:: SC by Cyberponk, adapted and imported for tron by Steets.
+setlocal ENABLEDELAYEDEXPANSION & set "_FilePath=%~1"
+  if NOT EXIST "!_FilePath!" (echo/tron is running elevated.)
+  :: UAC.ShellExecute only works with 8.3 filename, so use %~s1
+  set "_FN=_%~ns1" & echo/%TEMP%| findstr /C:"(" >nul && (echo/ERROR: %%TEMP%% path can not contain parenthesis &pause &endlocal &fc;: 2>nul & goto:eof)
+  :: Remove parenthesis from the temp filename
+  set _FN=%_FN:(=%
+  set _vbspath="%temp:~%\%_FN:)=%.vbs" & set "_batpath=%temp:~%\%_FN:)=%.bat"
 
+  :: Check to see if the window was successfully elevated.
+  fltmc >nul 2>&1 || goto :_getElevation
+
+  :: The elelation has succeeded.
+  (if exist %_vbspath% ( del %_vbspath% )) & (if exist %_batpath% ( del %_batpath% )) 
+  :: Set ERRORLEVEL 0, set original folder and exit
+  endlocal & CD /D "%~dp1" & ver >nul & exit
+
+  :_getElevation
+  echo Requesting Elevation...
+  :: Try to create %_vbspath% file. If failed, exit with ERRORLEVEL 1
+  echo/Set UAC = CreateObject^("Shell.Application"^) > %_vbspath% || (echo/&echo/Unable to create %_vbspath% & endlocal &md; 2>nul &goto:eof) 
+  echo/UAC.ShellExecute "%_batpath%", "", "", "runas", 1 >> %_vbspath% & echo/wscript.Quit(1)>> %_vbspath%
+  :: Try to create %_batpath% file. If failed, exit with ERRORLEVEL 1
+  echo/@%* > "%_batpath%" || (echo/&echo/Unable to create %_batpath% & endlocal &md; 2>nul &goto:eof)
+  echo/@if %%errorlevel%%==9009 (echo/^&echo/Admin user could not read the batch file. If running from a mapped drive or UNC path, check if Admin user can read it.)^&echo/^& @if %%errorlevel%% NEQ 0 pause >> "%_batpath%"
+
+  :: Run %_vbspath%, that calls %_batpath%, calling the original file
+  %_vbspath% && (echo/&echo/Failed to run VBscript %_vbspath% &endlocal &md; 2>nul & goto:eof)
+
+  :: VBS script ran, exit with ERRORLEVEL -1
+  echo/&echo/Elevation was requested on a new CMD window &endlocal &fc;: 2>nul & goto:eof
+
+  :eof
+  fltmc >nul 2>&1 || goto :_getElevation
+  exit
 
 :: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
 if "%WIN_VER:~0,19%"=="Windows Server 2016" (
