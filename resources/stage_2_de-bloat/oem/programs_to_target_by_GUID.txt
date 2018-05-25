@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.6 + Add additional user-submitted entries
+:: Version:       1.4.7 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.4.6
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-05-21
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.4.7
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-05-25
 
 
 
@@ -4760,9 +4760,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {A35E58D6-2A0F-4051-983B-79342081338E}
 {452479C5-0118-48E9-AA69-0A7339F95FC8}
 
-:: HP Security Assistant
-{ED6CD3AC-616B-4B20-BCF3-6E637B92A5AD}
-{ED1BD69A-07E3-418C-91F1-D856582581BF}
+:: HP Security Assistant // disabled because it apparently causes a popup window that stalls the script
+:: {ED6CD3AC-616B-4B20-BCF3-6E637B92A5AD}
+:: {ED1BD69A-07E3-418C-91F1-D856582581BF}
 
 :: HP Setup
 {438363A8-F486-4C37-834C-4955773CB3D3}
