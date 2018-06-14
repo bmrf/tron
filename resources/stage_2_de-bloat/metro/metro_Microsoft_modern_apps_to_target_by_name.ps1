@@ -35,7 +35,7 @@ $AppxCount = 0
 Function Remove-App([String]$AppName){
 	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
 	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	$Job = "TronScript"+$AppxCount
+	$Job = "TronScriptMS"+$AppxCount
 	Start-Job -Name $Job -ScriptBlock { 
 		Remove-AppxPackage -Package $using:PackageFullName | Out-null
 		Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
@@ -114,5 +114,5 @@ Remove-App "Microsoft.Zune*"                           # Zune collection of apps
 # DO NOT REMOVE OR CHANGE (needs to be at end of script)
 # Waits for Apps to be removed before Script Closes
 Write-Output 'Finishing App Removal, Please Wait...'
-Wait-Job -Name "TronScript*"
-Remove-Job -Name "TronScript*"
+Wait-Job -Name "TronScriptMS*"
+Remove-Job -Name "TronScriptMS*"
