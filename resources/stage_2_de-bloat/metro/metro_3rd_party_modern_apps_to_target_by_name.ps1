@@ -19,7 +19,7 @@ $AppxCount = 0
 Function Remove-App([String]$AppName){
 	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
 	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	$Job = "TronScript"+$AppxCount
+	$Job = "TronScript3rd"+$AppxCount
 	Start-Job -Name $Job -ScriptBlock { 
 		Remove-AppxPackage -Package $using:PackageFullName | Out-null
 		Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
@@ -188,5 +188,5 @@ Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 # DO NOT REMOVE OR CHANGE (needs to be at end of script)
 # Waits for Apps to be removed before Script Closes
 Write-Output 'Finishing App Removal, Please Wait...'
-Wait-Job -Name "TronScript*"
-Remove-Job -Name "TronScript*"
+Wait-Job -Name "TronScript3rd*"
+Remove-Job -Name "TronScript3rd*"
