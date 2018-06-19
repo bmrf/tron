@@ -38,7 +38,7 @@ I got tired of running these utilities manually and decided to just script every
 
 1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
-2. Tron can be run with Windows in either or Regular mode. Regular mode is generally recommended for a first go around.
+2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended for a first go around.
 
 3. Right-click on `tron.bat` and select "**Run as Administrator**"
 
