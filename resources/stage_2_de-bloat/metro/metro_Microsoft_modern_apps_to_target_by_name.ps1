@@ -1,8 +1,8 @@
 <#
 Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
-               Add any AppX package names to the $PackagesToRemove array to target them for removal
+               Add any AppX uninstall commands to this list to target them for removal
 Requirements:  1. Administrator access
-               2. Windows 7 and up
+               2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 Version:       1.1.8 + Add additional user-submitted entries
                1.1.7 + Add Microsoft.GetHelp
@@ -31,11 +31,16 @@ $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.8"
 $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
 
 # Build the removal function
+$AppxCount = 0
 Function Remove-App([String]$AppName){
 	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
-	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	Remove-AppxPackage -package $PackageFullName | Out-Null
-	Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
+	$ProPackageFullName = (Get-AppxProvisionedPackage -online | Where-Object {$_.Displayname -like $AppName}).PackageName
+	$Job = "TronScriptMS"+$AppxCount
+	Start-Job -Name $Job -ScriptBlock {
+		Remove-AppxPackage -Package $using:PackageFullName | Out-null
+		Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
+	}
+	$AppxCount++
 }
 
 ###########
@@ -102,3 +107,12 @@ Remove-App "Microsoft.Zune*"                           # Zune collection of apps
 #Remove-App "Microsoft.XboxGameOverlay"
 #Remove-App "Microsoft.XboxIdentityProvider"
 #Remove-App "Microsoft.XboxSpeechToTextOverlay"
+
+##########
+# Finish #
+##########
+# DO NOT REMOVE OR CHANGE (needs to be at end of script)
+# Waits for Apps to be removed before Script Closes
+Write-Output 'Finishing App Removal, Please Wait...'
+Wait-Job -Name "TronScriptMS*"
+Remove-Job -Name "TronScriptMS*"
