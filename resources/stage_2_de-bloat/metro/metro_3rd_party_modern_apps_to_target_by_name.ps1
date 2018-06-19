@@ -15,11 +15,16 @@ $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.2"
 $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-05-21"
 
 # Build the removal function
+$AppxCount = 0
 Function Remove-App([String]$AppName){
 	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
 	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	Remove-AppxPackage -package $PackageFullName | Out-Null
-	Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
+	$Job = "TronScript3rd"+$AppxCount
+	Start-Job -Name $Job -ScriptBlock { 
+		Remove-AppxPackage -Package $using:PackageFullName | Out-null
+		Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
+	}
+	$AppxCount++
 }
 
 ###########
@@ -176,3 +181,12 @@ Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 
 # Inactive identifers
 #Remove-App "*Netflix*"
+
+##########
+# Finish #
+##########
+# DO NOT REMOVE OR CHANGE (needs to be at end of script)
+# Waits for Apps to be removed before Script Closes
+Write-Output 'Finishing App Removal, Please Wait...'
+Wait-Job -Name "TronScript3rd*"
+Remove-Job -Name "TronScript3rd*"
