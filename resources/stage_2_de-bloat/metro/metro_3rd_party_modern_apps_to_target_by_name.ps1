@@ -14,13 +14,41 @@ $ErrorActionPreference = "SilentlyContinue"
 $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.2"
 $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-05-21"
 
-# Build the removal function
+
+# Needed for Removal
+$AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
+$Script:AppxCount3rd = 0
+
+# App Removal function
 Function Remove-App([String]$AppName){
-	$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
-	$ProPackageFullName = (Get-AppxProvisionedPackage -online | where {$_.Displayname -like $AppName}).PackageName
-	Remove-AppxPackage -package $PackageFullName | Out-Null
-	Remove-AppxProvisionedPackage -online -packagename $ProPackageFullName | Out-Null
+	If($AppxPackages.DisplayName -match $AppName) {
+		$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
+		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
+	
+		If($ProPackageFullName -is [array]){
+			For($i=0 ;$i -lt $ProPackageFullName.Length ;$i++) {
+				$Script:AppxCount3rd++
+				$Job = "TronScript3rd$AppxCount3rd"
+				$PackageF = $PackageFullName[$i]
+				$ProPackage = $ProPackageFullName[$i]
+				write-output "$AppxCount3rd - $PackageF"
+				Start-Job -Name $Job -ScriptBlock { 
+					Remove-AppxPackage -Package $using:PackageF | Out-null
+					Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackage | Out-null
+				} | Out-null
+			}
+		} Else {
+			$Script:AppxCount3rd++
+			$Job = "TronScript3rd$AppxCount3rd"
+			write-output "$AppxCount3rd - $PackageFullName"
+			Start-Job -Name $Job -ScriptBlock { 
+				Remove-AppxPackage -Package $using:PackageFullName | Out-null
+				Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
+			} | Out-null
+		}
+	}
 }
+
 
 ###########
 # EXECUTE #
@@ -69,7 +97,6 @@ Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
 Remove-App "37442SublimeCo.AlarmClockForYou"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
-Remove-App "4DF9E0F8.Netflix*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
 Remove-App "64885BlueEdge.OneCalendar*"
 Remove-App "6Wunderkinder.Wunderlist*"
@@ -77,13 +104,10 @@ Remove-App "7906AAC0.TOSHIBACanadaPartners*"
 Remove-App "7906AAC0.ToshibaCanadaWarrantyService*"
 Remove-App "7EE7776C.LinkedInforWindows"
 Remove-App "7digitalLtd.7digitalMusicStore*"
-Remove-App "828B5831.HiddenCityMysteryofShadows"
 Remove-App "828B5831.HiddenCityMysteryofShadows*"
-Remove-App "89006A2E.AutodeskSketchBook"
 Remove-App "89006A2E.AutodeskSketchBook*"
 Remove-App "9E2F88E3.Twitter"
 Remove-App "A278AB0D.DisneyMagicKingdoms*"
-Remove-App "A278AB0D.DragonManiaLegends"
 Remove-App "A278AB0D.DragonManiaLegends*"
 Remove-App "A278AB0D.MarchofEmpires*"
 Remove-App "A34E4AAB.YogaChef*"
@@ -174,5 +198,15 @@ Remove-App "king.com.CandyCrushSodaSaga"
 Remove-App "sMedioforHP.sMedio360*"
 Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 
+
 # Inactive identifers
 #Remove-App "*Netflix*"
+
+##########
+# Finish #
+##########
+# DO NOT REMOVE OR CHANGE (needs to be at end of script)
+# Waits for Apps to be removed before Script Closes
+Write-Output 'Finishing App Removal, Please Wait...'
+Wait-Job -Name "TronScript3rd*" | Out-null
+Remove-Job -Name "TronScript3rd*" | Out-null
