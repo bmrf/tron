@@ -32,16 +32,17 @@ $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
-$Script:AppxCountMS = 0
+$ProPackage = Get-AppxPackage | select-object PackageFullName, Name
+$Script:AppxCount3rd = 0
 
 # App Removal function
 Function Remove-App([String]$AppName){
-	If($AppxPackages.DisplayName -match $AppName) {
-		$PackageFullName = (Get-AppxPackage $AppName).PackageFullName
+	If($AppxPackages.DisplayName -match $AppName -or $ProPackage.Name -match $AppName ) {
+		$PackageFullName = ($ProPackage | where {$_.Name -like $AppName}).PackageFullName
 		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
 	
-		If($ProPackageFullName -is [array]){
-			For($i=0 ;$i -lt $ProPackageFullName.Length ;$i++) {
+		If($PackageFullName -is [array]){
+			For($i=0 ;$i -lt $PackageFullName.Length ;$i++) {
 				$Script:AppxCountMS++
 				$Job = "TronScriptMS$AppxCountMS"
 				$PackageF = $PackageFullName[$i]
