@@ -17,7 +17,7 @@ $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-05-21"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
-$ProPackage = Get-AppxPackage | select-object PackageFullName, Name
+$ProPackage = Get-AppxPackage -AllUsers | select-object PackageFullName, Name
 $Script:AppxCount3rd = 0
 
 # App Removal function
