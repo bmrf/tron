@@ -67,11 +67,11 @@ call functions\initialize_environment.bat %*
 :: Show help if requested
 for %%i in (%*) do ( if /i %%i==-h ( call :display_help && exit /b 0) )
 
-:: Do the pre-run checks and tasks (Admin rights check, temp directory check, SSD check etc)
-call functions\prerun_checks_and_tasks.bat
-
 :: Parse command-line arguments. If used these will override related settings specified in tron_settings.bat.
 call :parse_cmdline_args %*
+
+:: Do the pre-run checks and tasks (Admin rights check, temp directory check, SSD check etc)
+call functions\prerun_checks_and_tasks.bat
 
 :: Make sure user didn't pass -a and -asm together
 if /i %AUTORUN%==yes (
