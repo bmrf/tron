@@ -72,16 +72,16 @@ if exist "%windir%\System32\macromed\flash\*plugin.exe" set FLASH_FIREFOX_DETECT
 :: Perform removal and fresh installation of those existing versions
 if %FLASH_ACTIVEX_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%ActiveX'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_29_active_x.msi" %FLAGS%
+	msiexec /i "install_flash_player_30_active_x.msi" %FLAGS%
 )
 if %FLASH_CHROME_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%PPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_29_ppapi.msi" %FLAGS%
+	msiexec /i "install_flash_player_30_ppapi.msi" %FLAGS%
 )
 if %FLASH_FIREFOX_DETECTED%==yes (
 	wmic product where "name like 'Adobe Flash Player%%Plugin'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	wmic product where "name like 'Adobe Flash Player%%NPAPI'" uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	msiexec /i "install_flash_player_29_plugin.msi" %FLAGS%
+	msiexec /i "install_flash_player_30_plugin.msi" %FLAGS%
 )
 
 
