@@ -11,8 +11,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.2"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-05-21"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-03"
 
 
 # Needed for Removal
@@ -208,6 +208,6 @@ Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 ##########
 # DO NOT REMOVE OR CHANGE (needs to be at end of script)
 # Waits for Apps to be removed before Script Closes
-Write-Output 'Finishing App Removal, Please Wait...'
+Write-Output 'Finishing app removal, please wait...'
 Wait-Job -Name "TronScript3rd*" | Out-null
 Remove-Job -Name "TronScript3rd*" | Out-null
