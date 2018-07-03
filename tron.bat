@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
+:: Version:       1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
+::                1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
 ::                1.1.1 + Add upload of Metro app list dump if -udl switch is used
 ::                      / Move Stage 7 code out of tron.bat into it's own discrete script
 ::                1.1.0 / Move network connection detection code into initialize_environment.bat
@@ -48,8 +49,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.2
-set SCRIPT_DATE=2018-03-15
+set SCRIPT_VERSION=1.1.3
+set SCRIPT_DATE=2018-07-03
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
