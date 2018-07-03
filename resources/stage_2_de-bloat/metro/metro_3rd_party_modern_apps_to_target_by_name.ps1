@@ -11,19 +11,19 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.4"
 $METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-03"
 
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
-$ProPackage = Get-AppxPackage -AllUsers | select-object PackageFullName, Name
+$ProPackageList = Get-AppxPackage -AllUsers | select-object PackageFullName, Name
 $Script:AppxCount3rd = 0
 
 # App Removal function
 Function Remove-App([String]$AppName){
 	If($AppxPackages.DisplayName -match $AppName -or $ProPackage.Name -match $AppName ) {
-		$PackageFullName = ($ProPackage | where {$_.Name -like $AppName}).PackageFullName
+		$PackageFullName = ($ProPackageList | where {$_.Name -like $AppName}).PackageFullName
 		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
 	
 		If($PackageFullName -is [array]){

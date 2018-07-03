@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.0 * Implement removal process improvements, thanks to github:madbomb22
+Version:       1.2.1 * Fixed variable re-use, thanks to github:madbomb22
+               1.2.0 * Implement removal process improvements, thanks to github:madbomb22
                1.1.8 + Add additional user-submitted entries
                1.1.7 + Add Microsoft.GetHelp
                1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
@@ -28,18 +29,18 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.0"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.1"
 $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-04"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
-$ProPackage = Get-AppxPackage -AllUsers | select-object PackageFullName, Name
+$ProPackageList = Get-AppxPackage -AllUsers | select-object PackageFullName, Name
 $Script:AppxCount3rd = 0
 
 # App Removal function
 Function Remove-App([String]$AppName){
 	If($AppxPackages.DisplayName -match $AppName -or $ProPackage.Name -match $AppName ) {
-		$PackageFullName = ($ProPackage | where {$_.Name -like $AppName}).PackageFullName
+		$PackageFullName = ($ProPackageList | where {$_.Name -like $AppName}).PackageFullName
 		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
 	
 		If($PackageFullName -is [array]){
