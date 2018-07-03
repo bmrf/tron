@@ -4,6 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
+Version:       1.2.1 * Fixed variable re-use, thanks to github:madbomb22
+               1.2.0 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
