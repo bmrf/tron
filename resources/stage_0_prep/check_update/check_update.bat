@@ -1,7 +1,8 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 * Update wget User-Agent declaration to remove spaces
+:: Version:       1.1.0 ! Use usebackq option on the for loops that parse the version number, to allow quote-wrapping the file path to properly handle usernames with special characters in them. Thanks to u/xulafu
+::                1.0.9 * Update wget User-Agent declaration to remove spaces
 ::                      / Simplify custom User-Agent
 ::                1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
 ::                1.0.7 / Replace string "SCRIPT" with "TRON" in REPO_SCRIPT_VERSION, REPO_SCRIPT_DATE, SCRIPT_VERSION, and SCRIPT_DATE variables (to support Tron v10.0.0)
@@ -21,8 +22,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.0.9
-set CHECK_UPDATE_VERSION=2017-04-02
+set CHECK_UPDATE_VERSION=1.1.0
+set CHECK_UPDATE_VERSION=2018-07-03
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
@@ -55,14 +56,16 @@ if /i "%LOGFILE%"=="" (
 :: wget sha256sums.txt from the repo
 stage_0_prep\check_update\wget.exe --user-agent="Tron-Update-Checker/%TRON_VERSION% (%WIN_VER%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_TRON_VERSION, and release date into REPO_TRON_DATE
+:: We use usebackq here to allow us to quote-wrap the path to sha256sums.txt to properly handle usernames with special characters ( c:\users\rose&emma\appdata\.. etc )
 if /i %ERRORLEVEL%==0 (
-	for /f "tokens=4 delims=,()" %%a in (%TEMP%\sha256sums.txt) do set WORKING=%%a
-	for /f "tokens=1,2,3 delims= " %%a in (%TEMP%\sha256sums.txt) do set WORKING2=%%b
+	for /f "usebackq tokens=4 delims=,()" %%a in ("%TEMP%\sha256sums.txt") do set WORKING=%%a
+	for /f "usebackq tokens=1,2,3 delims= " %%a in ("%TEMP%\sha256sums.txt") do set WORKING2=%%b
 )
 if /i %ERRORLEVEL%==0 (
 	set REPO_TRON_DATE=%WORKING%
 	set REPO_TRON_VERSION=%WORKING2:~1,6%
 )
+
 
 :: Trigger a warning if we couldn't check for an update
 :: We don't log anything about it yet because the log is wiped at the start of each Tron run.
@@ -79,7 +82,7 @@ if /i %CONFIG_DUMP%==yes goto :eof
 
 :: Notify if an update was found
 SETLOCAL ENABLEDELAYEDEXPANSION
-:: The goofy .= here says to take the variable and replace any instances of "=" with nothing (the character ".") in the output. 
+:: The goofy .= here says to take the variable and replace any instances of "=" with nothing (the character ".") in the output.
 :: If, for example, we were replacing "." with ABC, it would read: %TRON_VERSION:.=ABC%
 :: Basically we're just stripping out the period since cmd.exe can't handle decimal comparison operations (facepalm)
 if /i %TRON_VERSION:.=% LSS %REPO_TRON_VERSION:.=% (
