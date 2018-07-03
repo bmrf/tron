@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.0 ! Fix bug in OneDrive folder in use detection due to windows silently ignoring commands. Thanks to github:rasa
+:: Version:       1.4.1 * Prefix calls to powershell with start /wait to prevent continuing the script before they're finished executing. Thanks to github:madbomb122
+::                      * Use %REG% instead of relative calls
+::                1.4.0 ! Fix bug in OneDrive folder in use detection due to windows silently ignoring commands. Thanks to github:rasa
 ::                1.3.9 * Expand de-bloat phase 4 to include HP Games
 ::                1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
 ::                1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -54,8 +56,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.0
-set STAGE_2_SCRIPT_DATE=2018-04-04
+set STAGE_2_SCRIPT_VERSION=1.4.1
+set STAGE_2_SCRIPT_DATE=2018-07-03
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -81,7 +83,7 @@ if /i %SAFE_MODE%==yes (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Enable MSIServer]
 	call functions\log_with_date.bat "   Enabling MSIServer to allow program removal in Safe Mode..."
 	if /i %DRY_RUN%==no (
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
+		%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\MSIServer" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start MSIServer >nul 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
@@ -119,14 +121,14 @@ if /i %DRY_RUN%==no (
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
 
 			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
-			reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
+			%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
 
 			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
-			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
+			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
 				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 				if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
 				echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
@@ -178,14 +180,14 @@ if /i %DRY_RUN%==no (
 			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
 
 			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
-			reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
+			%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
 
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
-			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
+			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
 				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
 				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
@@ -232,11 +234,11 @@ if /i %DRY_RUN%==no (
 			if /i %VERBOSE%==yes echo    %%i
 			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
 			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
-			reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
+			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
 				echo Offending entry: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
 				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
 				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
@@ -289,7 +291,7 @@ if /i %TARGET_METRO%==yes (
 	:: Force allowing us to start AppXSVC service in Safe Mode. AppXSVC is the MSI Installer equivalent for "apps" (vs. programs)
 	if /i %DRY_RUN%==no (
 		REM Enable starting AppXSVC in Safe Mode
-		if /i "%SAFE_MODE%"=="yes" reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
+		if /i "%SAFE_MODE%"=="yes" %REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\AppXSVC" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start AppXSVC >nul 2>&1
 		REM Enable scripts in PowerShell
 		powershell "Set-ExecutionPolicy Unrestricted -force 2>&1 | Out-Null"
@@ -297,14 +299,14 @@ if /i %TARGET_METRO%==yes (
 		REM Windows 8/8.1 version
 		if /i "%WIN_VER:~0,9%"=="Windows 8" (
 			REM In Windows 8/8.1 we can blast ALL AppX/Metro/"Modern App" apps because unlike in Windows 10, the "core" apps (calculator, paint, etc) aren't in the "modern" format
-			powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
-			powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
+			start /wait powershell "Get-AppXProvisionedPackage -online | Remove-AppxProvisionedPackage -online 2>&1 | Out-Null"
+			start /wait powershell "Get-AppxPackage -AllUsers | Remove-AppxPackage 2>&1 | Out-Null"
 		)
 		REM Windows 10 version
 		if /i "%WIN_VER:~0,9%"=="Windows 1" (
 			REM Call the external PowerShell scripts to do removal of Microsoft and 3rd party OEM Modern Apps
-			START /WAIT powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
-			START /WAIT powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
+			start /wait powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
+			start /wait powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
 		)
 	)
 	call functions\log_with_date.bat "   Done."
@@ -347,7 +349,7 @@ if /i not %ERRORLEVEL%==0 (
 
 :: 5. Does the registry indicate the OneDrive folder has been moved? If so, skip removal
 set OneDrivePath=%USERPROFILE%\OneDrive
-for /f "usebackq tokens=3*" %%a IN (`REG QUERY "HKCU\Environment" /v OneDrive 2^>nul`) DO (
+for /f "usebackq tokens=3*" %%a IN (`%REG% QUERY "HKCU\Environment" /v OneDrive 2^>nul`) DO (
     set OneDrivePath=%%a %%b
 )
 if /i not "%OneDrivePath%"=="%USERPROFILE%\OneDrive" (
@@ -376,8 +378,8 @@ if %DRY_RUN%==no (
 	)
 
 	REM These two registry entries disable OneDrive links in the Explorer side pane
-	reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%REG% add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%REG% add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t reg_dword /d 0 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	set ONEDRIVE_REMOVED=yes
 )
 
@@ -391,7 +393,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
 	if /i %DRY_RUN%==no (
-		reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
 )
