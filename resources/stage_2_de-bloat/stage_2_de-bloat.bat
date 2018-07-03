@@ -332,7 +332,7 @@ if /i %PRESERVE_METRO_APPS%==yes (
 
 :: 3. Does the folder exist in the default location? If not, skip removal
 if not exist "%USERPROFILE%\OneDrive" (
-	call functions\log_with_date.bat "!  OneDrive folder not in the default location. Skipping removal just in case."
+	call functions\log_with_date.bat "!  OneDrive folder not in the default location. Skipping removal."
 	goto :skip_onedrive_removal
 )
 
