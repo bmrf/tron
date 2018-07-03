@@ -1,7 +1,7 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 ! Use usebackq option on the for loops that parse the version number, to allow quote-wrapping the file path to properly handle usernames with special characters in them. Thanks to u/xulafu
+:: Version:       1.1.0 ! Use 'usebackq' on for loops that parse the version number, to allow quote-wrapping the file path to properly handle usernames with special characters. Thanks to u/xulafu
 ::                1.0.9 * Update wget User-Agent declaration to remove spaces
 ::                      / Simplify custom User-Agent
 ::                1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
@@ -13,7 +13,8 @@
 ::                1.0.4 + Add missing :self_destruct code and fix sha256sums.txt character encoding. Thanks to /u/botopz
 ::                1.0.3 - Remove '--ca-certificate=stage_0_prep\check_update\bmrf.org.pem' declarative from wget calls, due to upgrading Tron's internal wget version to v1.18
 ::                1.0.2 + Import REPO_URL, REPO_BTSYNC_KEY, REPO_SCRIPT_DATE and REPO_SCRIPT_VERSION variables from tron.bat since they're only relevant here
-::                1.0.1 ! Fix SSL encryption on update check and new version download. Previously we were skipping certificate checking due to cert errors. With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
+::                1.0.1 ! Fix SSL encryption on update check and new version download. Previously we were skipping certificate checking due to cert errors. 
+::                        With this fix we now properly use the bundled .pem certificate to establish an SSL connection to the repo
 ::                1.0.0 + Initial write
 @echo off
 
