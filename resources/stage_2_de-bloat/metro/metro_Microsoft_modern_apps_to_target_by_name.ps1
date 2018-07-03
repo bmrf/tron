@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.1.8 + Add additional user-submitted entries
+Version:       1.2.0 * Implement removal process improvements, thanks to github:madbomb22
+               1.1.8 + Add additional user-submitted entries
                1.1.7 + Add Microsoft.GetHelp
                1.1.6 ! Fix function evalution of * character. Thanks to u/madbomb122 and u/phant0md
                1.1.5 + Add Zune entries, thanks to /u/ComputeGuy
@@ -27,8 +28,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.1.8"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-03-06"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.0"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-04"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -134,7 +135,7 @@ Remove-App "Microsoft.Zune*"                           # Zune collection of apps
 # Finish #
 ##########
 # DO NOT REMOVE OR CHANGE (needs to be at end of script)
-# Waits for Apps to be removed before Script Closes
-Write-Output 'Finishing App Removal, Please Wait...'
+# Waits for Apps to be removed before script closes
+Write-Output 'Finishing app removal, please wait...'
 Wait-Job -Name "TronScriptMS*" | Out-Null
 Remove-Job -Name "TronScriptMS*" | Out-Null
