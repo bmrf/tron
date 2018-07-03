@@ -2,7 +2,8 @@
 :: Requirements:  Broken WMI configuration
 :: Author:        Originally taken from http://craighassan.com/fix-wmi-batch-file/
 ::                Modified by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 + Initial write
+:: Version:       1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
+::                1.0.0 + Initial write
 SETLOCAL
 
 
@@ -18,8 +19,8 @@ SETLOCAL
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.0
-set SCRIPT_UPDATED=2015-09-28
+set SCRIPT_VERSION=1.0.1
+set SCRIPT_UPDATED=2018-07-04
 
 @echo OFF
 REM Test and attempt repair of WMI
@@ -27,7 +28,7 @@ REM
 REM 1. Restart WinMgmts and all dependendency services
 REM 2. Verify / Salvage / Reset Repository and restart services
 REM 3. Rebuild WMI Repository and restart services
-REM
+
 
 set LERR=0
 set ATTEMPT=0
@@ -45,11 +46,11 @@ GOTO ERR
 set ATTEMPT=1
 set LERR=1001
 echo 1. RESTARTING WMI... ATTEMPT:%ATTEMPT%...&
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 1. RESTARTING WMI... Stopping "%%a"...& net stop "%%a" /y> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 1. RESTARTING WMI... Stopping "%%a"...& net stop "%%a" /y> nul
 echo 1. RESTARTING WMI... Stopping WinMgmt& net stop winmgmt /y> nul& sc stop winmgmt> nul
 ping 127.0.0.1 -n 5
 echo 1. RESTARTING WMI... Starting WinMgmt& sc start winmgmt> nul
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 1. RESTARTING WMI... Starting "%%a"...& sc start "%%a"> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 1. RESTARTING WMI... Starting "%%a"...& sc start "%%a"> nul
 GOTO BEGINCHK
 
 
@@ -70,11 +71,11 @@ IF %ERRORLEVEL%==0 GOTO SKIPRESET
 set LERR=2004
 
 :SKIPRESET
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 2. REPAIRING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 2. REPAIRING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
 echo 2. REPAIRING WMI REPOSITORY... Stopping WinMgmt& net stop winmgmt /y> nul& sc stop winmgmt> nul
 ping 127.0.0.1 -n 5
 echo 2. REPAIRING WMI REPOSITORY.. Starting WinMgmt& sc start winmgmt> nul
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 2. REPAIRING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 2. REPAIRING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
 GOTO BEGINCHK
 
 
@@ -82,7 +83,7 @@ GOTO BEGINCHK
 set ATTEMPT=3
 set LERR=3001
 echo 3. REBUILDING WMI REPOSITORY... ATTEMPT:%ATTEMPT%...
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 3. REBUILDING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 3. REBUILDING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
 echo 3. REBUILDING WMI REPOSITORY... Stopping BITS& net stop BITS /y> nul& sc stop BITS> nul
 ping 127.0.0.1 -n 5
 echo 3. REBUILDING WMI REPOSITORY... Stopping WinMgmt& net stop winmgmt /y> nul& sc stop winmgmt> nul
@@ -99,10 +100,10 @@ echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (cimwin32.mfl)& mofcomp cimw
 echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (rsop.mof)& mofcomp rsop.mof
 echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (rsop.mfl)& mofcomp rsop.mfl
 echo 3. REBUILDING WMI REPOSITORY... Registering DLLs
-for /f %%s in (‘dir /b /s *.dll’) do echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (%%s)& regsvr32 /s %%s> nul
+for /f %%s in ('dir /b /s *.dll') do echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (%%s)& regsvr32 /s %%s> nul
 echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs
-for /f %%s in (‘dir /b *.mof’) do echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (%%s)& mofcomp %%s> nul
-for /f %%s in (‘dir /b *.mfl’) do echo 3. REBUILDING WMI REPOSITORY... Compiling MFLs (%%s)& mofcomp %%s> nul
+for /f %%s in ('dir /b *.mof') do echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (%%s)& mofcomp %%s> nul
+for /f %%s in ('dir /b *.mfl') do echo 3. REBUILDING WMI REPOSITORY... Compiling MFLs (%%s)& mofcomp %%s> nul
 
 echo 3. REBUILDING WMI REPOSITORY... Registering .exe's
 for %%i in (*.exe) do call :FixSrv %%i
@@ -116,7 +117,7 @@ for %%i in (*.exe) do call :FixSrv %%i
 echo 3. REBUILDING WMI REPOSITORY... Starting WinMgmt& sc start winmgmt> nul
 ping 127.0.0.1 -n 5
 echo 3. REBUILDING WMI REPOSITORY... Starting BITS& sc start BITS> nul
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 3. REBUILDING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 3. REBUILDING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
 timeout /t 10
 echo 3. REBUILDING WMI REPOSITORY... 1. Verifying...& %windir%\system32\wbem\winmgmt /verifyrepository
 IF %ERRORLEVEL%==0 GOTO SKIPRESET
@@ -127,11 +128,11 @@ set LERR=3003
 echo 3. REBUILDING WMI REPOSITORY... 3. Resetting...& %windir%\system32\wbem\winmgmt /resetrepository
 set LERR=3004
 :SKIPRESET
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 3. REBUILDING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 3. REBUILDING WMI REPOSITORY... Stopping "%%a"...& net stop "%%a" /y> nul
 echo 3. REBUILDING WMI REPOSITORY... Stopping WinMgmt& net stop winmgmt /y> nul& sc stop winmgmt> nul
 ping 127.0.0.1 -n 5
 echo 3. REBUILDING WMI REPOSITORY... Starting WinMgmt& sc start winmgmt> nul
-for /f "tokens=2 delims= " %%a in (‘sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"‘) do echo 3. REBUILDING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
+for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_NAME"') do echo 3. REBUILDING WMI REPOSITORY... Starting "%%a"...& sc start "%%a"> nul
 GOTO BEGINCHK
 
 :ERR
