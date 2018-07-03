@@ -16,6 +16,197 @@ Version legend:
 
 
 #########################
+# v10.5.2 // 2018-07-04 #
+#########################
+ * tron.bat                        v1.1.3
+    ! Fix for case where -dev switch wouldn't work as intended. Thanks to github:justinhachemeister
+	* Replace calls to reg.exe with hardcoded calls to %REG%; should help on systems with broken system PATH
+
+functions
+ . initialize_environment.bat      v10.5.2
+ . prerun_checks_and_tasks.bat     v1.0.6
+ . tron_settings.bat               v1.0.1
+
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.2
+ * check_update.bat                v1.1.0
+    ! Crash fix for usernames with special characters in them. Thanks to u/xulafu
+
+ . check_update_debloat_lists.bat  v1.1.0
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.2823
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.1
+ . nircmdc                         v2.81
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.1
+ * CCleaner                        v5.44.6575
+ . BleachBit                       v2.0.0
+ . finddupe.exe                    v1.23
+ . TempFileCleanup                 v1.1.4-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ * stage_2_de-bloat.bat            v1.4.1
+    ! Fix path comparison bug in OneDrive checks. Thanks to u/mikargibbros and u/rorywilliamstwin
+
+
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.0
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ . Malwarebytes included defs:     2018-05-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.5
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.5.0.35
+ . O&O ShutUp10                    v1.6.1396
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.3
+ . 7-Zip                           v18.05        (multi-language)
+ . Adobe Flash Player              v29.0.0.171   (language ignored)
+ . Java Runtime Environment        8u172         (language ignored)
+ . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.8
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2018-02-01
+ . Defraggler                      v2.21.0.993
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.0
+ . SwithMail.exe                   v2.1.8.0
+
+Stage 8: Custom Scripts
+ . Tron will auto-execute any .bat file placed in this directory, prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v7.2.1.0
+ . Autoruns                        v13.82
+ . BlueScreenView                  v1.55
+ * ComboFix                        v18.6.17.1
+ . Junkware Removal Tool           v8.1.4.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.51 x64
+ . PC Hunter                       v1.51 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
+# v10.5.1 // 2018-05-21 #
+#########################
+ . tron.bat                        v1.1.2
+
+functions
+ . initialize_environment.bat      v10.5.1
+ . prerun_checks_and_tasks.bat     v1.0.6
+ . tron_settings.bat               v1.0.1
+
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.2
+ . check_update.bat                v1.0.7
+ . check_update_debloat_lists.bat  v1.1.0
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.2763
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.1
+ . nircmdc                         v2.81
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.1
+ * CCleaner                        v5.42.6499
+ . BleachBit                       v2.0.0
+ . finddupe.exe                    v1.23
+ . TempFileCleanup                 v1.1.4-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.0
+ . programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.0
+ . Sophos Virus Removal Tool       v2.6.1
+ * Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ . Malwarebytes included defs:     2018-05-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.5
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.5.0.35
+ * O&O ShutUp10                    v1.6.1396
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.3
+ * 7-Zip                           v18.05        (multi-language)
+ * Adobe Flash Player              v29.0.0.171   (language ignored)
+ * Java Runtime Environment        8u172         (language ignored)
+ . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.8
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2018-02-01
+ . Defraggler                      v2.21.0.993
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.0
+ . SwithMail.exe                   v2.1.8.0
+
+Stage 8: Custom Scripts
+ . Tron will auto-execute any .bat file placed in this directory, prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v7.1.1.0
+ . Autoruns                        v13.82
+ . BlueScreenView                  v1.55
+ * ComboFix                        v18.5.17.1
+ . Junkware Removal Tool           v8.1.4.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.51 x64
+ . PC Hunter                       v1.51 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
 # v10.5.0 // 2018-04-04 #
 #########################
  * tron.bat                        v1.1.2
@@ -52,10 +243,10 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.4.0
- . programs_to_target_by_GUID.txt
+ * programs_to_target_by_GUID.txt
  . toolbars_BHOs_to_target_by_GUID.txt
  . programs_to_target_by_name.txt
- . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
