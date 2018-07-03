@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5-TRON ! Fix syntax bug that was preventing CBS log cleanup. Thanks to github:jonasjovaisas
+:: Version:       1.1.6-TRON * Use %REG% instead of relative calls
+::                1.1.5-TRON ! Fix syntax bug that was preventing CBS log cleanup. Thanks to github:jonasjovaisas
 ::                1.1.4-TRON + Add cleanup of Dr. Watson log files. Thanks to github:nemchik
 ::                1.1.3-TRON * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
 ::                1.1.2-TRON / Change lines that delete Chrome Local Storage to only remove data for websites, not extensions. Thanks to github:kezxo
@@ -38,8 +39,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.5-TRON
-set SCRIPT_UPDATED=2017-12-18
+set SCRIPT_VERSION=1.1.6-TRON
+set SCRIPT_UPDATED=2018-07-03
 
 
 ::::::::::::::::::::::::::
@@ -171,7 +172,7 @@ if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
 
 :: JOB: Clear MUI cache
-reg delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
+%REG% delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> %LOGPATH%\%LOGFILE%
@@ -205,7 +206,7 @@ if %WIN_VER_NUM% lss 6.0 (
 )
 
 :: JOB: Disable Windows Tour bubble popup (Windows XP only; new user accounts only)
-if %WIN_VER_NUM% lss 6.0 reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Applets\Tour" /v RunCount /t REG_DWORD /d 00000000 /f
+if %WIN_VER_NUM% lss 6.0 %REG% add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Applets\Tour" /v RunCount /t REG_DWORD /d 00000000 /f
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
 echo %WIN_VER% | findstr /i /c:"server" >NUL
