@@ -4,6 +4,7 @@
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
+::                      * Replace all relative references to reg.exe with hard-coded %REG% (set in initialize_environment.bat). Thanks to u/SkyPork for reporting
 ::                1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
 ::                1.1.1 + Add upload of Metro app list dump if -udl switch is used
 ::                      / Move Stage 7 code out of tron.bat into it's own discrete script
@@ -84,7 +85,7 @@ if /i %AUTORUN_IN_SAFE_MODE%==yes ( cls && echo. && echo ERROR: You cannot use -
 if /i %RESUME_DETECTED%==yes (
 	REM Quick check for a faulty resume detection
 	if not exist tron_stage.txt (
-		reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
+		%REG% delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 		goto autorun_check
 	)
 
@@ -369,7 +370,7 @@ if /i not "%*"=="" echo %*> tron_flags.txt
 
 
 :: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong
-if /i %DRY_RUN%==no reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
+if /i %DRY_RUN%==no %REG% add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
 
 
 :: Make sure we're actually in Safe Mode if AUTORUN_IN_SAFE_MODE was requested
@@ -579,7 +580,7 @@ if /i %SKIP_CUSTOM_SCRIPTS%==yes (
 ::::::::::::::::::::::
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
 call functions\log_with_date.bat "   Doing miscellaneous clean up..."
-	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
+	%REG% delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	:: Skip these during a dry run because they toss errors. Not actually a problem, just an annoyance
