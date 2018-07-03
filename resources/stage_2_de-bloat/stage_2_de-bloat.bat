@@ -303,8 +303,8 @@ if /i %TARGET_METRO%==yes (
 		REM Windows 10 version
 		if /i "%WIN_VER:~0,9%"=="Windows 1" (
 			REM Call the external PowerShell scripts to do removal of Microsoft and 3rd party OEM Modern Apps
-			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
-			powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
+			START /WAIT powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
+			START /WAIT powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
 		)
 	)
 	call functions\log_with_date.bat "   Done."
