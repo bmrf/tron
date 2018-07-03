@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 / Reduce output from Metro App dump since we don't care about the fully-qualified App name
+:: Version:       1.2.4 * Use %REG% instead of relative calls
+::                1.2.3 / Reduce output from Metro App dump since we don't care about the fully-qualified App name
 ::                1.2.2 + Add job to dump Metro apps on Windows 8+ and up. This is so they can be sent via -udl switch if used
 ::                1.2.1 + Add job to (temporarily) stop the Themes service
 ::                1.2.0 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -37,8 +38,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.3
-set STAGE_0_SCRIPT_DATE=2018-03-30
+set STAGE_0_SCRIPT_VERSION=1.2.4
+set STAGE_0_SCRIPT_DATE=2018-07-03
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -90,7 +91,7 @@ if %WIN_VER_NUM% geq 6.0 (
 	REM Win7 and up only: Remove the cooldown timer (via reg command) and enable System Restore
 	if %WIN_VER_NUM% geq 6.1 (
 		if /i %DRY_RUN%==no (
-			reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
+			%REG% add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
 			powershell "Enable-ComputerRestore -Drive "%SystemDrive%" | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
@@ -183,7 +184,7 @@ title Tron v%TRON_VERSION% [stage_0_prep] [SetSystemClock]
 call functions\log_with_date.bat "   Launch Job 'Set system clock via NTP'..."
 if /i %DRY_RUN%==no (
 	:: Make sure time service is started, also force us to allow starting it in Safe Mode
-	if %SAFE_MODE%==yes reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if %SAFE_MODE%==yes %REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /config /syncfromflags:manual /manualpeerlist:"2.pool.ntp.org,0x8 time.windows.com,0x8 time.nist.gov,0x8" >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -221,7 +222,7 @@ call functions\log_with_date.bat "   Done."
 
 :: JOB: McAfee Stinger
 :: First check if .NET 3.5 is installed, since Stinger relies on it
-reg query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
+%REG% query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
 if %ERRORLEVEL%==0 (
 	title Tron v%TRON_VERSION% [stage_0_prep] [McAfee Stinger]
 	call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
@@ -254,7 +255,7 @@ if %WIN_VER_NUM% geq 6.1 (
 	call functions\log_with_date.bat "   Launch job 'Purge oldest Shadow Copy set (Win7 and up)'..."
 	if /i %DRY_RUN%==no (
 		:: Force allow us to start VSS service in Safe Mode
-		reg add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
+		%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\VSS" /ve /t reg_sz /d Service /f >nul 2>&1
 		net start VSS >nul 2>&1
 		vssadmin delete shadows /for=%SystemDrive% /oldest /quiet >nul 2>&1
 	)
