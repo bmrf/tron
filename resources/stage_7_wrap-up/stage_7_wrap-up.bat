@@ -110,7 +110,7 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
 	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
-	if %WIN_VER_NUM% geq 6.2 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
+	if %WIN_VER_NUM% geq 6.2 %REG% add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
 	REM Create the restore point
 	echo "%WIN_VER%" | %FINDSTR% /i /c:"server" >NUL || (
 		call functions\log_with_date.bat "   Creating post-run Restore Point..."
