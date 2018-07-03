@@ -4,6 +4,7 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.4.1 * Prefix calls to powershell with start /wait to prevent continuing the script before they're finished executing. Thanks to github:madbomb122
 ::                      * Use %REG% instead of relative calls
+::                      ! Fix path comparison bug in OneDrive removal
 ::                1.4.0 ! Fix bug in OneDrive folder in use detection due to windows silently ignoring commands. Thanks to github:rasa
 ::                1.3.9 * Expand de-bloat phase 4 to include HP Games
 ::                1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
@@ -341,18 +342,20 @@ call functions\log_with_date.bat "   Checking if OneDrive is in use, please wait
 ::    First, delete desktop.ini so it doesn't incorrectly trip the 'onedrive is in use' check
 if exist "%USERPROFILE%\OneDrive\desktop.ini" %SystemRoot%\System32\attrib.exe -s -h "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
 if exist "%USERPROFILE%\OneDrive\desktop.ini" del /f /q "%USERPROFILE%\OneDrive\desktop.ini" >nul 2>&1
-stage_2_de-bloat\onedrive_removal\diruse.exe /q:1.2 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
+stage_2_de-bloat\onedrive_removal\diruse.exe /q:0.5 "%USERPROFILE%\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 if /i not %ERRORLEVEL%==0 (
 	call functions\log_with_date.bat "!  OneDrive appears to be in use (files exist in the OneDrive folder). Skipping removal."
 	goto :skip_onedrive_removal
 )
 
 :: 5. Does the registry indicate the OneDrive folder has been moved? If so, skip removal
-set OneDrivePath=%USERPROFILE%\OneDrive
+set ONEDRIVE_PATH=%USERPROFILE%\OneDrive
 for /f "usebackq tokens=3*" %%a IN (`%REG% QUERY "HKCU\Environment" /v OneDrive 2^>nul`) DO (
-    set OneDrivePath=%%a %%b
+    set ONEDRIVE_PATH=%%a %%b
 )
-if /i not "%OneDrivePath%"=="%USERPROFILE%\OneDrive" (
+
+:: the space after OneDrive is required because the %ONEDRIVE_PATH% gets built with a trailing space
+if /i not "%ONEDRIVE_PATH%"=="%USERPROFILE%\OneDrive " (
 	call functions\log_with_date.bat "!  Custom OneDrive folder location detected. Skipping removal."
 	goto :skip_onedrive_removal
 )
