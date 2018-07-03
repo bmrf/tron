@@ -20,7 +20,7 @@ Version legend:
 #########################
  * tron.bat                        v1.1.3
     ! Fix for case where -dev switch wouldn't work as intended. Thanks to github:justinhachemeister
-	* Replace calls to reg.exe with hardcoded calls to %REG%; should help on systems with broken system PATH
+    * Replace calls to reg.exe with hardcoded calls to %REG%; should help on systems with broken system PATH
 
 functions
  . initialize_environment.bat      v10.5.2
@@ -54,7 +54,7 @@ Stage 1: Tempclean
 Stage 2: De-bloat
  * stage_2_de-bloat.bat            v1.4.1
     ! Fix path comparison bug in OneDrive checks. Thanks to u/mikargibbros and u/rorywilliamstwin
-
+	* Prefix calls to powershell with start /wait to prevent continuing the script before they're finished executing. Thanks to github:madbomb122
 
  * programs_to_target_by_GUID.txt
  . toolbars_BHOs_to_target_by_GUID.txt
