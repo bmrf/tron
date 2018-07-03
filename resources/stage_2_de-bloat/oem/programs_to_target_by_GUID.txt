@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.8 + Add additional user-submitted entries
+:: Version:       1.4.9 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.4.8
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-06-19
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.4.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-07-03
 
 
 
@@ -141,6 +141,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-06-19
 {0D2DBE8A-43D0-7830-7AE7-CA6C99A832E7}
 
 :: Adobe Download Assistant
+{E68EADA6-63A4-F6D3-FE12-968B879F7AD6}
 {969E11AA-8F3A-F162-1A5A-0965E216B6CE}
 {5C804EBB-475F-4555-A225-1D6573F158BD}
 {DE3A9DC5-9A5D-6485-9662-347162C7E4CA}
@@ -210,6 +211,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-06-19
 {B6DCCCD3-520D-4485-B642-FCC136CE12C3}
 
 :: Amazon Assistant
+{42FA793A-4E94-4FA3-A638-9B4B6B1D6A25}
 {0538B1C2-85C1-4ECC-BA77-61F537D81092}
 
 :: AMD Accelerated Video Transcoding, Drag-and-Drop Transcoding
@@ -632,6 +634,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-06-19
 {C89A97B6-F991-EBB5-77B7-927BCF420EBE}
 
 :: AMD Problem Report Wizard , ATI Problem Report Wizard
+{8D33EA8B-8AB5-F5D7-6A72-D0A57600E3B0}
 {A97D6752-EC02-4974-2B72-4AFBFBF90B0E}
 {F9603C87-6C1B-11CD-ED46-EC2999FD130E}
 {5030F834-9234-B6FA-917C-771CFFBDC373}
@@ -699,6 +702,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2018-06-19
 {4F524A2D-5350-4500-76A7-A758B70C2201}
 {4F524A2D-5350-4500-76A7-A758B70C2700}
 {4F524A2D-5350-4500-76A7-A758B70C2802}
+
+:: Ask Shopping App by Ask
+{4F524A2D-5354-2D53-5045-A758B70C2D01}
 
 :: ASPCA and CWA Reminder misc programs (we-care.com Macy's nagware)
 {26B4D0E1-6F6D-48DF-8719-80276A259F7E}
@@ -3652,6 +3658,7 @@ for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( 
 {EEB1E6AD-5E5E-46C0-B60C-BF208CE755A3}
 
 :: Dell SupportAssistAgent
+{33E712C1-2183-421C-9BC8-C902DB9C596C}
 {122666A9-2995-4E47-A75E-6423A827B7AF}
 {B16CC15E-08D8-4FA8-AE36-4DC5C197ED92}
 {AB1A407B-E492-4DA1-B024-F96606D1B0B7}
@@ -3846,6 +3853,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {8A6F0F58-AE48-4F4C-A06F-C391AB17069C}
 
 :: DriverUpdate
+{966FC58B-95DC-4451-9C3A-7249F180CCBB}
 {75881A1F-A02E-4D88-BCFA-34D86752A0C3}
 {6F2444E5-C2DB-43BB-A402-316C86F37167}
 
@@ -3995,6 +4003,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: Fujitsu System Extension Utility 2.1.1.0
 {DED08875-D1AE-4E66-BE84-BB746019B9F9}
+
+:: Game Boost
+{644B5310-D2AA-42A8-9F3B-7B92C856C8D7}
 
 :: Garmin Elevated Installer; known to cause popups and crash frequently
 {D4D065E1-3ABF-41D0-B385-FC6F027F4D00}
@@ -4297,6 +4308,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {EF9E56EE-0243-4BAD-88F4-5E7508AA7D96}
 
 :: HP Device Access Manager
+{7AF31361-3607-4AEB-A445-D02EAE2D9C94}
 {1FA19EFA-BF02-49B7-9413-760884EF7642}
 {77ACDCD1-A6A9-49A2-9F73-76AAF425EA5C}
 {122104A2-D83A-47CC-A25D-DD1EC1AD2741}
@@ -4519,6 +4531,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {DB3147AB-4024-4773-8EC0-A1FE5B44933D}
 
 :: HP Help, HP eDocs and User Guide GUIDs (most of these should be caught in the wildcard scan)
+{F17D53C7-DCE8-469C-9690-CF8F5903519C}
+{5C3E37A9-B7A7-4CDD-8A87-EB6701AFD571}
+{1AE3E621-E0C0-4aa1-B10B-B3E353A8D110}
 {201E58BD-2A1D-4C4D-BD6F-ADA7669FE3AE}
 {20CA428A-0827-4441-BC64-5C577EA970AD}
 {D3293275-1002-41F5-BC37-099B4251FF5B}
@@ -4580,6 +4595,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {08295D09-E002-48F8-905D-34E4B08509BA}
 
 :: HP JumpStart Bridge
+{D95E43DC-3E04-4AF0-853E-46D832A473FE}
 {3FC961DB-BD36-4D8D-B276-0C456A2BB638}
 {EB0912FF-C311-4E0F-A6B1-420FDD3C295E}
 {7DE7767C-E470-4113-8AE7-B8DB1D5F2ECD}
@@ -4663,6 +4679,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies
+{308C7555-5D43-4D9A-BDC0-14B2948EF438}
 {F1E13468-92EB-4AB7-8F1C-CC09A286C9B9}
 {235FC8A2-FFDF-4F74-A829-BA20EC015EC7}
 {DF711F5A-C9E4-4241-9A83-58532C99DB28}
@@ -4772,6 +4789,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {B5BEF5F8-BD76-4174-A47D-05A06EA62615}
 
 :: HP System Event Utility
+{ABE95EB9-5EA1-42A3-8009-BA7602127ED6}
 {E20B0C89-ACCF-4EBB-909D-2E5BD4A9C024}
 
 :: HP Tone Control
@@ -5220,7 +5238,8 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {14CF9AF8-10A6-4FA7-9E57-D22DBD644C77}
 {FBBF532A-47AC-457d-AC06-0D3163D8911E}
 
-:: HP Wireless Assistant, Wireless Button Driver, Wireless Hotspot
+:: HP Wireless Assistant, Wireless Hotspot
+{54CC7901-804D-4155-B353-21F0CC9112AB}
 {B5FC1E1B-E70D-45F1-8E40-A3C30698B323}
 {13DCC2C7-454D-42F0-A892-E0E9A5DE4E67}
 {9AB1B6EC-AEA4-4D78-ADDB-0291BF7230F4}
@@ -5262,6 +5281,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{A0EBC31A-8EA9-4D24-89A8-2C12A0B8B0C9}
 {83185E03-FA82-424C-A306-ED0864AD753B}
 {7E6EE0AD-6600-4C83-8C3E-4B8974E41E06}
 {4034E489-D0E9-41C4-A0DA-865D3881FE3F}
@@ -6191,6 +6211,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 :: PCKeeper
 {8BD51157-BF89-4770-AA1A-94DFD5F05D15}
 
+:: PC Privacy Shield 2018
+{7B9B8FF2-1A1F-4CDD-9A3B-CE0D18A4A424}
+
 :: Perion Networks Photo Notifier and Animation Creator
 {722CD95C-98C7-4E73-925A-68D2D4F651A6}
 
@@ -6858,6 +6881,8 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {82BF2C5E-79A7-4A13-B508-D5E64A5B141E}
 
 :: UpdateAssistant
+{B0D957AA-9ADA-4396-9757-B7EF0FCA648C}
+{567756E0-361F-4E88-AF74-8B0E4628E5BC}
 {57D07AAD-97E2-4E16-89C4-1A3C51BC9C98}
 {F3874F6F-EA00-487D-BEAD-5FAA010E78F2}
 {B8B01E04-5393-4902-98E6-0E2787F03C80}
