@@ -1,15 +1,14 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 6: Optimize stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 * Improve SMART detection routing to also flag problem codes and set the appropriate variables
-::                1.0.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.0.6 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
-::                        Relevant pull: https://github.com/bmrf/tron/pull/108
-::                1.0.5 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.0.4 * script: Update script to support standalone execution
-::                1.0.3 * Clarify log messages if we're skipping defrag because of an error
-::                1.0.2 + Add support for multiple SKIP_DEFRAG variable values
-::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.0.8 * smart:       Improve SMART detection routine to also flag problem codes and set the appropriate variables
+::                1.0.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.0.6 * bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
+::                1.0.5 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.0.4 * script:      Update script to support standalone execution
+::                1.0.3 * logging:     Clarify log messages if we're skipping defrag because of an error
+::                1.0.2 + improvement: Add support for multiple SKIP_DEFRAG variable values
+::                1.0.1 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
