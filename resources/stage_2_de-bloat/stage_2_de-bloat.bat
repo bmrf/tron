@@ -2,54 +2,57 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.1 * Prefix calls to powershell with start /wait to prevent continuing the script before they're finished executing. Thanks to github:madbomb122
-::                      * Use %REG% instead of relative calls
-::                      ! Fix path comparison bug in OneDrive removal
-::                1.4.0 ! Fix bug in OneDrive folder in use detection due to windows silently ignoring commands. Thanks to github:rasa
-::                1.3.9 * Expand de-bloat phase 4 to include HP Games
-::                1.3.8 - Disable stamping of stage 2 progress to its own log file, since we have the handy title bar ticker now
-::                1.3.7 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                      ! Fix 3rd phase bloatware removal (by name) to account for spaces in program names. Thanks to github:YodaDaCoda
-::                      ! Fix faulty detection of OneDrive being "in use" due to existence of desktop.ini in the default folder. Thanks to github:YodaDaCoda
-::                1.3.6 + Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
-::                1.3.5 ! Fix error where "Disable 'howto' tips" would incorrectly execute in dry run mode
-::                1.3.4 + Add reg entry to disable "How-to Tips" appearing on Win8+
-::                1.3.3 * Display current GUID, total # of GUIDs we're searching for, and current line number in the window title during the by_guid search sections. Big thanks to github:madbomb122 for contributing this code
-::                1.3.2 ! Fix time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
-::                1.3.1 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
-::                        Relevant pull: https://github.com/bmrf/tron/pull/108
-::                1.3.0 * Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder.
-::                        This way if the script hangs we can see which entry it hung on. Thanks to /u/madbomb122
-::                      - Comment out the lines sent to console that explain where the de-bloat files are located
-::                        Just cluttered up the screen and people who really want to customize Tron will be reading the readme/instructions anyway
-::                1.2.9 - Remove OneDrive sync disabling fix; no longer necessary due to finding the solution related to O&OShutUp10's changes made in Stage 4. Thanks to /u/Gyllius
-::                1.2.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.2.7 * script: Update script to support standalone execution
-::                1.2.6 ! Fix for previous fix (shakes head at self), was accidentally disabling OneDrive sync instead of ENABLING. Thanks to /u/Gyllius
-::                1.2.5 ! Fix for accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to /u/Gyllius
-::                1.2.4 ! Fix for incorrect removal of OneDrive even when script was told not to. Was due to mistaken use of USERPROFILES variable instead of USERPROFILE, which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
-::                      + Add additional OneDrive in-use check. Now detect if a custom folder has been set; if so, we automatically skip removal
-::                1.2.3 ! Fix stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to /u/IAintShootinMister and /u/ SlimBackwater for reporting
-::                1.2.2 + Add resetting of UpdateExeVolatile during by_guid debloat, another measure to help prevent blocked uninstallations due to pending reboot
-::                1.2.1 / Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
-::                1.2.0 + Add checks for existence of PendingFileRenameOperations registry entries. Entries here are responsible for the errors about not being able to remove a program due to needing a reboot.
-::                        If we detect entries in this key, we export them to RAW_LOGS and then delete them before continuing on. This should allow Tron to continue removing programs without waiting for a reboot
-::                1.1.7 * Significantly improve robustness of OneDrive checks. OneDrive now only removed if system is Win10, folder exists in default location, and is empty. Thanks to /u/ranger_dood
-::                1.1.6 * Suppress output of by_name debloat by default, and add support for VERBOSE switch to affect this step and display output to the console instead of log file
-::                1.1.5 / Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
-::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
-::                1.1.4 ! OneDrive: Minor logging fix, suppress an irrelevant error message
-::                1.1.3 ! Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to https://github.com/Verteiron
-::                1.1.2 * Metro: Add missing log message about use of -m switch
-::                      ! OneDrive: Add missing check to skip actions if DRY_RUN (-d) switch is used
-::                1.1.1 / OneDrive: Move code out of Metro debloat section into its own job
-::                      * OneDrive: Don't remove OneDrive if any files are present in the default OneDrive folder
-::                      * OneDrive: Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
-::                      * Metro: Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
-::                      - Metro: Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
-::                      ! Metro: Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
-::                1.1.0 * Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
-::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.4.1 * improvement: Prefix Powershell calls with start /wait to prevent continuing script before they're finished executing. Thanks to github:madbomb122
+::                      * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+::                      ! bugfix:      Path comparison bug in OneDrive removal
+::                1.4.0 ! bugfix:      OneDrive folder-in-use detection due to Windows silently ignoring commands. Thanks to github:rasa
+::                1.3.9 * improvement: Expand de-bloat phase 4 to include HP Games
+::                1.3.8 - logging:     Disable stamping of stage 2 progress to its own log file, since we have the title bar ticker now
+::                1.3.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                      ! bugfix:      Bloatware removal phase 3 (by name), account for spaces in program names. Thanks to github:YodaDaCoda
+::                      ! bugfix:      Faulty OneDrive "in use" detection due to existence of desktop.ini in the default folder. Thanks to github:YodaDaCoda
+::                1.3.6 + feature:     Add 4th stage to bloat scan, "Auxiliary WildTangent scan" to catch WildTangent games
+::                1.3.5 ! bugfix:      Error where "Disable 'howto' tips" would incorrectly execute in dry run mode
+::                1.3.4 + feature:     Add reg entry to disable "How-to Tips" appearing on Win8+
+::                1.3.3 * improvement: Display current GUID, total # of GUIDs in search, and current line number in the window title during the by_guid search
+::                                     sections. Big thanks to github:madbomb122 for contributing this code
+::                1.3.2 ! bugfix:      Time logging on de-bloat (use !time! instead of %time%). Thanks to github: refnil
+::                1.3.1 ! bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
+::                1.3.0 * improvement: Add new tick counter during GUID debloat that dumps progress to a log in the RAW_LOGS folder.
+::                                     This way if the script hangs we can see which entry it hung on. Thanks to u/madbomb122
+::                      - logging:     Comment out the lines sent to console that explain where the de-bloat files are located
+::                                     Just cluttered up the screen and people who really want to customize Tron will be reading the instructions anyway
+::                1.2.9 - onedrive:    Remove sync disabling fix; no longer necessary due to solution related to O&OShutUp10 in Stage 4. Thanks to u/Gyllius
+::                1.2.8 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to u/DudeManFoo
+::                1.2.7 * improvement: Update script to support standalone execution
+::                1.2.6 ! bugfix:      Fix previous erroneous fix, was accidentally disabling OneDrive sync instead of ENABLING. Thanks to u/Gyllius
+::                1.2.5 ! bugfix:      Accidental disabling of OneDrive file sync in cases where OneDrive isn't removed. Thanks to u/Gyllius
+::                1.2.4 ! bugfix:      Incorrect removal of OneDrive even when script was told not to, due to mistaken use of USERPROFILES instead of USERPROFILE,
+::                                     which threw off the in-use detection. Thanks to everyone who reported and helped troubleshoot this
+::                      + improvement: Add additional OneDrive in-use check: skip removal if custom folder location has been set
+::                1.2.3 ! bugfix:      Stall bug in by_guid loops due to missing /f switch on reg add statement. Thanks to u/IAintShootinMister and u/ SlimBackwater
+::                1.2.2 + improvement: Reset UpdateExeVolatile during by_guid debloat, another measure to help prevent blocked uninstallations due to pending reboot
+::                1.2.1 / misc:        Change PendingFileRenameOperations_%COMPUTERNAME%_export.txt to PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt
+::                1.2.0 + improvement: Check for existence of PendingFileRenameOperations registry entries. Entries here are responsible for errors about not being
+::                                     able to remove a program due to needing a reboot. If we detect entries in this key, export to RAW_LOGS and then delete them
+::                                     before continuing on. This should allow Tron to continue removing programs without waiting for a reboot
+::                1.1.7 * onedrive:    Significantly improve robustness of OneDrive checks. OneDrive now only removed if system is Win10, folder exists in default
+::                                     location, and is empty. Thanks to u/ranger_dood
+::                1.1.6 * logging:     Suppress output of by_name debloat by default, and add support for VERBOSE switch to this step
+::                1.1.5 / improvement: Swap order of Toolbar/BHO removal and by_name removal. Performing uninstalls by_name often forces a reboot so we do it last
+::                      ! bugfix:      Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
+::                1.1.4 ! logging:     Minor logging fix, suppress an irrelevant error message from OneDrive
+::                1.1.3 ! bugfix:      Safe Mode: Fix MSIServer service not starting in Safe Mode, which prevented removal of most "classic" programs. Thanks to github:Verteiron
+::                1.1.2 * metro:       Add missing log message about use of -m switch
+::                      ! onedrive:    Add missing check to skip actions if DRY_RUN (-d) switch is used
+::                1.1.1 / onedrive:    Move code out of Metro debloat section into its own job
+::                      * onedrive:    Don't remove OneDrive if any files are present in the default OneDrive folder
+::                      * onedrive:    Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
+::                      * metro:       Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
+::                      - metro:       Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
+::                      ! bugfix:      Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
+::                1.1.0 * improvement: Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
+::                1.0.1 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
