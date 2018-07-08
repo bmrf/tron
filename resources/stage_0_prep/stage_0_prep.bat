@@ -9,9 +9,8 @@
 ::                1.2.0 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.9 + improvement:  Add killing of HelpPane.exe if it exists
 ::                1.1.8 ! bugfix:       Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
-::                                      Relevant pull: https://github.com/bmrf/tron/pull/108
 ::                1.1.7 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.1.6 * script:       Update script to support standalone execution
+::                1.1.6 * improvement:  Update script to support standalone execution
 ::                      ! bugfix:erunt: Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
 ::                1.1.5 * ntp:          Append ,0x8 to NTP server commands to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
 ::                1.1.4 ! bugfix:       Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode because Win10 blocks system restore point creation in Safe Mode
@@ -30,7 +29,7 @@
 ::                1.0.4 ! bugfix:       Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
 ::                1.0.3 / misc:         Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
 ::                1.0.2 ! logging:      Fix typo in log message
-::                1.0.1 - logging:      Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
+::                1.0.1 * logging:      Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
