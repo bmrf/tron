@@ -2,30 +2,31 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.6 * Use %REG% instead of relative calls
-::                1.2.5 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.2.4 ! Fix bug where DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
-::                1.2.3 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.2.2 * script: Update script to support standalone execution
-::                1.2.1 + Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
-::                1.2.0 - Remove job "Reset Filesystem permissions" and associated files
-::                      - Remove job "Reset Registry permissions" and associated files
-::                1.1.1 + Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
-::                1.1.0 * Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
-::                1.0.9 / Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
-::                      / Update log messages to reflect the now-suppressed subinacl output (remove mention of ignoring errors)
-::                1.0.8 - Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this was incorrectly suppressing all output
-::                1.0.7 + Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable the Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
-::                      / Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
-::                1.0.6 ! Fix numerous bugs with DISM check and repair. Due to bad ERRORLEVEL checking it would fail to trigger repairs when they were required
-::                1.0.5 - Remove redundant Dism image store cleanup (move to Stage 5)
-::                1.0.4 - Move Windows 7/8/8.1 telemetry removal code into separate sub-script (similar to Win10)
-::                1.0.3 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
-::                      ! Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
-::                1.0.2 ! Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
-::                1.0.1 + Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
-::                      + Enable telemetry removal on Server 2012 platforms
-::                      ! Remove redundant DRY_RUN check in call to Win10 telemetry removal script
+:: Version:       1.2.6 * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+::                1.2.5 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.2.4 ! bugfix:      DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
+::                1.2.3 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.2.2 * improvement: Update script to support standalone execution
+::                1.2.1 + feature:     Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
+::                1.2.0 - feature:     Remove job "Reset Filesystem permissions" and associated files
+::                      - feature:     Remove job "Reset Registry permissions" and associated files
+::                1.1.1 + feature:     Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
+::                1.1.0 * improvement: Embed contents of 'disable_windows_10_upgrade_registry_entries.reg' directly into script. Removes dependence on an external .reg file
+::                1.0.9 / misc:        Rename call to 'reset_file_permissions.bat' to 'reset_filesystem_permissions.bat' to reflect new file name
+::                      / logging:     Remove mention about ignoring errors due to now-suppressed subinacl output
+::                1.0.8 ! bugfix:      Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this
+::                                     was incorrectly suppressing all output
+::                1.0.7 + feature:     Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
+::                      / misc:        Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
+::                1.0.6 ! bugfix:dism: Numerous bugs with DISM check and repair, due to bad ERRORLEVEL check it would fail to trigger repairs when they were required
+::                1.0.5 - cleanup:     Remove redundant DISM image store cleanup (move to Stage 5)
+::                1.0.4 - cleanup:     Move Windows 7/8/8.1 telemetry removal code into separate sub-script
+::                1.0.3 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
+::                      ! bugfix:      Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
+::                1.0.2 ! improvement: Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
+::                1.0.1 + improvement: Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+::                      + feature:     Enable telemetry removal on Server 2012 platforms
+::                      ! bugfix:      Remove redundant DRY_RUN check in call to Win10 telemetry removal script
 ::                1.0.0 + Initial write
 @echo off
 
