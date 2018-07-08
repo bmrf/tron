@@ -3,6 +3,7 @@
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
+::                      - script:      Remove deprecated Junkware Removal Tool code
 ::                1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
 ::                1.1.9 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to u/DudeManFoo
@@ -46,15 +47,6 @@ if /i "%LOGFILE%"=="" (
 :: STAGE 3: Disinfect :: // Begin jobs
 ::::::::::::::::::::::::
 call functions\log_with_date.bat "  stage_3_disinfect begin..."
-
-
-REM :: JOB: JRT (Malwarebytes Junkware Removal Tool)
-REM title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes JRT]
-REM call functions\log_with_date.bat "   Launch job 'Malwarebytes Junkware Removal Tool'..."
-REM if /i %DRY_RUN%==no (
-	REM call stage_3_disinfect\jrt\get.bat
-REM )
-REM call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Clear CryptNet SSL certificate cache (Vista and up)
