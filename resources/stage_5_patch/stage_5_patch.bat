@@ -2,28 +2,27 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 * Use %REG% instead of relative calls
-::                1.2.3 ! Remove dead code that was incorrectly still attempting to install Acrobat Reader DC updates
-::                1.2.2 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.2.1 * Update Windows Defender prior to Windows update. Helps fix bug where sometimes Windows Update won't work until Defender update runs. Thanks to /u/bubonis
-::                1.2.0 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
-::                        Relevant pull: https://github.com/bmrf/tron/pull/108
-::                1.1.9 / Change wuauserv command in Windows Update section to set the service to AUTO instead of DEMAND. Thanks to /u/Star_9
-::                1.1.8 ! Fix bug in WSUS Offline update code due to unused variable. Thanks to /u/gayuha
-::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.1.6 * Update script to support standalone execution
-::                      + Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
-::                      / change :skip_updates and associated GOTO statements to :skip_application_updates
-::                      / change various text and strings referring to SKIP_UPDATES to SKIP_APP_UPDATES
-::                1.1.5 * Update verbage on installation of Adobe Reader to reflect new Reader DC installation
-::                      ! Minor bug fix; don't display "done" message if no Java installation was detected or updated
-::                1.1.4 * Improve Windows Update section; force start Windows Update service in case it's not running, prior to running the wuaserv command
-::                1.1.3 ! Fix bug where 7ZIP_DETECTED variable would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
-::                      / Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
-::                1.1.2 + Import Windows Vista/2008 Dism component cleanup from Stage 4
-::                      + Implement support for -sdc switch (SKIP_DISM_CLEANUP)
-::                1.1.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
-::                1.1.0 * Only patch each program if it already exists on the system. Thanks to /u/Tech604
+:: Version:       1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+::                1.2.3 ! bugfix:       Remove dead code that was incorrectly attempting to install Acrobat Reader DC updates
+::                1.2.2 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.2.1 ! bugfix:       Update Windows Defender prior to Windows update. Fixes bug where sometimes Windows Update won't work until Defender update runs. Thanks to /u/bubonis
+::                1.2.0 ! bugfix:       Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
+::                1.1.9 / wsus:         Change wuauserv command to set the service to AUTO instead of DEMAND. Thanks to /u/Star_9
+::                1.1.8 ! bugfix:       Fix in WSUS Offline update code due to an unused variable. Thanks to /u/gayuha
+::                1.1.7 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.1.6 * improvement:  Update script to support standalone execution
+::                      + feature:      Add support for bundled WSUS Offline updates. Thanks to /u/TootZoot for initial template code
+::                      / misc:         change :skip_updates and associated GOTO statements to :skip_application_updates
+::                      / misc:         change various text strings referring to SKIP_UPDATES to SKIP_APP_UPDATES
+::                1.1.5 * adobe:        Update verbage on installation of Adobe Reader to reflect new Reader DC installation
+::                      ! bugfix:       Don't display "done" message if no Java installation was detected or updated
+::                1.1.4 * improvement:  Windows Update; force start Windows Update service in case it's not running, prior to running the wuaserv command
+::                1.1.3 ! bugfix:       7ZIP_DETECTED would never get set because it started with a number. Rename to SEVENZIP_DETECTED. Thanks to /u/toomasmolder
+::                      / misc:         Change some comments inside parentheses to use REM instead of ::. Thanks to /u/toomasmolder
+::                1.1.2 + feature:      Import Windows Vista/2008 Dism component cleanup from Stage 4
+::                      + feature:      Implement support for -sdc switch (SKIP_DISM_CLEANUP)
+::                1.1.1 * logging:      Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
+::                1.1.0 * improvement:  Only patch each program if it already exists on the system. Thanks to /u/Tech604
 ::                1.0.0 + Initial write
 @echo off
 
