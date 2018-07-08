@@ -2,35 +2,35 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 * Use %REG% instead of relative calls
-::                1.2.3 / Reduce output from Metro App dump since we don't care about the fully-qualified App name
-::                1.2.2 + Add job to dump Metro apps on Windows 8+ and up. This is so they can be sent via -udl switch if used
-::                1.2.1 + Add job to (temporarily) stop the Themes service
-::                1.2.0 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.1.9 + Add killing of HelpPane.exe if it exists
-::                1.1.8 * Preface WMIC calls with null input to ensure the pipe is closed, fixes issue with WMI hanging on WinXP machines. Thanks to github:salsifis
-::                        Relevant pull: https://github.com/bmrf/tron/pull/108
-::                1.1.7 * Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.1.6 * script: Update script to support standalone execution
-::                      ! erunt:  Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
-::                1.1.5 * Update NTP server commands with ,0x8 suffix to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
-::                1.1.4 ! Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode. Why? Because Win10 blocks system restore point creation in Safe Mode. Why? Because Microsoft
-::                      * Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary one
-::                1.1.3 + Add job to capture desktop screenshot to the RAW_LOGS folder. Sometimes but a visual of the system is helpful so we capture one just in case some icons change
-::                1.1.2 ! Prefix siv32x and siv64x commands with "start" instead of calling directly. Should prevent entire script stalling if SIV hangs. Thanks to /u/gameoftome
-::                1.1.1 * Enable executing siv64x.exe instead of siv32x.exe on 64-bit systems. Thanks to /u/gameoftomes
-::                1.1.0 ! Fix bug in GUID dump. Was trying to include the current time in the file name instead of the date
-::                      ! Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems where the username contains special characters (e.g. "&")
-::                1.0.9 / Minor log message change
-::                1.0.8 + Add task to perform a GUID dump prior to running. This way users will always have the GUID's of the system as they existed before Tron ran. Should make it easier to submit the lists for review
-::                1.0.7 * Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
-::                1.0.6 * Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
-::                1.0.5 + Disable 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
-::                      ! Win8 and up: Enable System Restore prior to attempting to create restore point, since it's disabled-by-default (wtf??)
-::                1.0.4 ! Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
-::                1.0.3 / Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
-::                1.0.2 ! Fix typo in log message
-::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+:: Version:       1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+::                1.2.3 / metro:        Reduce output from Metro App dump since we don't care about the fully-qualified App name
+::                1.2.2 + improvement:  Add job to dump Metro apps on Windows 8+. This is so they can be sent via -udl switch if used
+::                1.2.1 + improvement:  Add job to (temporarily) stop the Themes service during execution
+::                1.2.0 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.1.9 + improvement:  Add killing of HelpPane.exe if it exists
+::                1.1.8 ! bugfix:       Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
+::                                      Relevant pull: https://github.com/bmrf/tron/pull/108
+::                1.1.7 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.1.6 * script:       Update script to support standalone execution
+::                      ! bugfix:erunt: Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
+::                1.1.5 * ntp:          Append ,0x8 to NTP server commands to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
+::                1.1.4 ! bugfix:       Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode because Win10 blocks system restore point creation in Safe Mode
+::                      * improvement:  Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary
+::                1.1.3 + feature:      Add job to capture desktop screenshot to the RAW_LOGS folder
+::                1.1.2 ! bugfix:siv:   Prefix siv32x and siv64x commands with "start" instead of calling directly to prevent script stalling if SIV hangs. Thanks to /u/gameoftome
+::                1.1.1 * siv:          Execute siv64x.exe instead of siv32x.exe on 64-bit systems. Thanks to /u/gameoftomes
+::                1.1.0 ! bugfix:       Fix bug in GUID dump, include current date instead of time in the file name
+::                      ! bugfix:       Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems with special characters in the username
+::                1.0.9 / logging:      Minor log message change/improvement
+::                1.0.8 + improvement:  Add task to do GUID dump prior to running, to preserve GUID's on the system as they existed before Tron ran
+::                1.0.7 ! stinger:      Add check for .NET 3.5 installation before attempting to run McAfee Stinger, since it relies on it
+::                1.0.6 * sysrestore:   Expand 24 hour cooldown timer removal on system restore snapshots to include Windows 7/Server 2008 R2
+::                1.0.5 + sysrestore:   Disable 24 hour cooldown timer on System Restore point creation (added by Microsoft in Windows 8 and up)
+::                      ! sysrestore:   Win8+: Enable System Restore prior to attempting to create restore point, since it's disabled by default (wtf??)
+::                1.0.4 ! bugfix:       Wrap references to WIN_VER in quotes to prevent crashing on Home OS's
+::                1.0.3 / misc:         Rename folder created during registry backup from "tron_registry_backup" to "registry_backup"
+::                1.0.2 ! logging:      Fix typo in log message
+::                1.0.1 - logging:      Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
