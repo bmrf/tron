@@ -5,20 +5,20 @@
 :: Version:       1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
 ::                      - script:      Remove deprecated Junkware Removal Tool code
 ::                1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
-::                1.1.9 * Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.1.8 * Update date/time logging functions to use new log_with_date.bat. Thanks to u/DudeManFoo
+::                1.1.9 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.1.8 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to u/DudeManFoo
 ::                1.1.7 * mbam:        Improve pre-existing installation detection. Thanks to github:RedBaron2
-::                1.1.6 * script:      Update script to support standalone execution
+::                1.1.6 * improvement: Update script to support standalone execution
 ::                1.1.5 ! mbam:        Fix MBAM not launching or installing bug
 ::                1.1.4 * mbam:        Update MBAM detection to include new v3.x series. Thanks to u/Phantop
 ::                1.1.3 + certcache:   Add job to clear the CryptNet SSL certificate cache (Vista and up). Thanks to github:Itsnothectic and github:alazare619
 ::                1.1.2 + jrt:         Add job "JRT" (Junkware Removal Tool by Malwarebytes). Currently disabled (pending troubleshooting)
 ::                      - roguekiller: Remove obsolete code for RogueKiller
 ::                1.1.1 ! mbam:        Clean up mbam launching routine. Should eliminate erroneous message about mbam.exe not being found
-::                      ! Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
-::                1.1.0 + mbam: Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to u/sofakingdead
-::                1.0.2 * mbam: Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to u/staticextasy
-::                1.0.1 - Remove internal log function and switch to Tron's external logging function. Thanks to github:nemchik
+::                      ! bugfix:      Correct a reference to USERPROFILE that should've used Tron's USERPROFILES instead
+::                1.1.0 + mbam:        Add installation of mbam2-rules.exe (offline definition file) to MBAM installation routine. Thanks to u/sofakingdead
+::                1.0.2 * mbam:        Import pre-configured settings.conf that ticks the "scan for rootkits" option when installing MBAM. Thanks to u/staticextasy
+::                1.0.1 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
 @echo off
 
