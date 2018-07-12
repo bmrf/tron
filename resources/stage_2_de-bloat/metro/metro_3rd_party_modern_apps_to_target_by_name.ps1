@@ -24,7 +24,7 @@ $Script:AppxCount3rd = 0
 
 # App Removal function
 Function Remove-App([String]$AppName){
-	If($AppxPackages.DisplayName -match $AppName -or $ProPackage.Name -match $AppName ) {
+	If($AppxPackages.DisplayName -match $AppName -or $ProPackageList.Name -match $AppName ) {
 		$PackageFullName = ($ProPackageList | where {$_.Name -like $AppName}).PackageFullName
 		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
 	
