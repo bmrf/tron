@@ -51,7 +51,7 @@ SETLOCAL
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=1.1.3
-set SCRIPT_DATE=2018-07-03
+set SCRIPT_DATE=2018-07-12
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -191,6 +191,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    FREE_SPACE_SAVED:       %FREE_SPACE_SAVED%
 	echo    HELP:                   %HELP%
 	echo    NETWORK_AVAILABLE:      %NETWORK_AVAILABLE%
+	echo    REG:                    %REG%
 	echo    SAFE_MODE:              %SAFE_MODE%
 	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
     echo    SMART_PROBLEM_CODE:     %SMART_PROBLEM_CODE%
