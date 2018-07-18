@@ -72,7 +72,6 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "Microsoft.3DBuilder"
 Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
