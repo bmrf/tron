@@ -4,7 +4,8 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.1 * Fixed variable re-use, thanks to github:madbomb22
+Version:       1.2.2 + Add additional user-submitted entries
+               1.2.1 * Fixed variable re-use, thanks to github:madbomb22
                1.2.0 * Implement removal process improvements, thanks to github:madbomb22
                1.1.8 + Add additional user-submitted entries
                1.1.7 + Add Microsoft.GetHelp
@@ -29,8 +30,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.1"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-04"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.2"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-18"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -104,6 +105,8 @@ Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_d
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList*"
 Remove-App "Microsoft.Zune*"                           # Zune collection of apps
+Remove-App "Windows.CBSPreview"
+Remove-App "Windows.ContactSupport"
 
 
 # Inactive identifers
