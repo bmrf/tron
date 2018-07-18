@@ -4877,6 +4877,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {3677D4D8-E5E0-49FC-B86E-06541CF00BBE}
 
 :: HP Orbit
+{1A083C69-5382-4CF9-8074-80EC050D9FC8}
 {00F16076-5298-46D4-8AF4-8314889730CB}
 
 :: HP Orbit Service
