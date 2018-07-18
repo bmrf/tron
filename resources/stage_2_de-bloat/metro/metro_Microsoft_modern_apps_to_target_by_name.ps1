@@ -1,4 +1,4 @@
-<#
+s<#
 Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
                Add any AppX uninstall commands to this list to target them for removal
 Requirements:  1. Administrator access
@@ -73,7 +73,7 @@ Function Remove-App([String]$AppName){
 ###########
 # Active identifiers
 Remove-App "Microsoft.3DBuilder"                       # 3DBuilder app
-Remove-App "Microsoft.Advertising*"                    # Advertising framework
+Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
 Remove-App "Microsoft.BingHealthAndFitness"            # Health and Fitness app
@@ -92,9 +92,9 @@ Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
 Remove-App "Microsoft.MicrosoftOfficeHub"
 Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # Power BI app - Business analytics
 Remove-App "Microsoft.MicrosoftSudoku"
-Remove-App "Microsoft.MinecraftUWP*"
+Remove-App "Microsoft.MinecraftUWP"
 Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.NetworkSpeedTest*"
+Remove-App "Microsoft.NetworkSpeedTest"
 Remove-App "Microsoft.Office.OneNote"                  # Onenote app
 Remove-App "Microsoft.Office.Sway"                     # Sway app
 Remove-App "Microsoft.OneConnect"                      # OneConnect app
@@ -103,8 +103,8 @@ Remove-App "Microsoft.SkypeApp"                        # Get Skype link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
-Remove-App "Microsoft.WindowsReadingList*"
-Remove-App "Microsoft.Zune*"                           # Zune collection of apps
+Remove-App "Microsoft.WindowsReadingList"
+Remove-App "Microsoft.Zune"                           # Zune collection of apps
 Remove-App "Windows.CBSPreview"
 Remove-App "Windows.ContactSupport"
 
