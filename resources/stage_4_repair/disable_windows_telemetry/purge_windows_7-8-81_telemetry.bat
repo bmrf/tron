@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3-TRON * Use %REG% instead of relative calls
+:: Version:       1.1.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
+::                1.1.3-TRON * Use %REG% instead of relative calls
 ::                1.1.2-TRON + Add additional scheduled tasks to remove. Thanks to /u/MirageESO
 ::                1.1.1-TRON * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 ::                1.1.0-TRON + Add updates 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 from http://www.overclock.net/t/1587577/windows-7-updates-list-descriptions-windows-10-preparation-telemetry
@@ -36,10 +37,11 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.3-TRON
-set SCRIPT_UPDATED=2018-07-03
+set SCRIPT_VERSION=1.1.4-TRON
+set SCRIPT_UPDATED=2018-07-18
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
+if /i "%LOGPATH%"=="" (set REG=%SystemRoot%\System32\reg.exe)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_7-8-81_telemetry_removal.log

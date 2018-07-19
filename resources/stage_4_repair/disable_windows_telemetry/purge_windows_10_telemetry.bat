@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.2.3-TRON * Use %REG% instead of relative calls
+:: Version:       1.2.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
+::                1.2.3-TRON * Use %REG% instead of relative calls
 ::                1.2.2-TRON + Add additional XBox Live services to disable list
 ::                1.2.1-TRON + Add disabling of "show fun tips, tricks and hints" on the lock screen. Thanks to u/mikargibbros
 ::                1.2.0-TRON + Add disabling of registry keys AllowCortanaAboveLock and AllowSearchToUseLocation. Thanks to u/tylerwatt12
@@ -39,10 +40,11 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.3-TRON
-set SCRIPT_UPDATED=2018-07-03
+set SCRIPT_VERSION=1.2.4-TRON
+set SCRIPT_UPDATED=2018-07-18
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
+if /i "%LOGPATH%"=="" (set REG=%SystemRoot%\System32\reg.exe)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
