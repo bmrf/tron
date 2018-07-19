@@ -1,4 +1,4 @@
-s<#
+<#
 Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern app" bloatware. Called by Tron in Stage 2: De-bloat
                Add any AppX uninstall commands to this list to target them for removal
 Requirements:  1. Administrator access
