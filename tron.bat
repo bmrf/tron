@@ -193,7 +193,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    NETWORK_AVAILABLE:      %NETWORK_AVAILABLE%
 	echo    REG:                    %REG%
 	echo    SAFE_MODE:              %SAFE_MODE%
-	echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
+    echo    SAFEBOOT_OPTION:        %SAFEBOOT_OPTION%
     echo    SMART_PROBLEM_CODE:     %SMART_PROBLEM_CODE%
 	echo    SYSTEM_LANGUAGE:        %SYSTEM_LANGUAGE%
 	echo    TEMP:                   !TEMP!
