@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.5 + Add additional user-submitted entries
+Version:       1.2.6 + Add additional user-submitted entries
                1.2.4 * Fixed variable re-use, thanks to github:madbomb22
                1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.5"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-18"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.6"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-25"
 
 
 # Needed for Removal
@@ -108,6 +108,9 @@ Remove-App "BD9B8345.VAIOMessageCenter*"
 Remove-App "C27EB4BA.DropboxOEM"
 Remove-App "ChaChaSearch.ChaChaPushNotification*"
 Remove-App "ClearChannelRadioDigital.iHeartRadio*"
+Remove-App "COMPALELECTRONICSINC.Alienwaredockingaccessory"
+Remove-App "COMPALELECTRONICSINC.AlienwareOSDKits"
+Remove-App "COMPALELECTRONICSINC.AlienwareTypeCaccessory"
 Remove-App "CrackleInc.Crackle*"
 Remove-App "CyberLinkCorp.ac.AcerCrystalEye*"
 Remove-App "CyberLinkCorp.ac.SocialJogger*"
@@ -117,6 +120,9 @@ Remove-App "D52A8D61.FarmVille2CountryEscape*"
 Remove-App "D5EA27B7.Duolingo-LearnLanguagesforFree*"
 Remove-App "DB6EA5DB.CyberLinkMediaSuiteEssentials*"
 Remove-App "DailymotionSA.Dailymotion*"
+Remove-App "DellInc.AlienwareCommandCenter"
+Remove-App "DellInc.AlienwareCustomerConnect"
+Remove-App "DellInc.AlienwareProductRegistration"
 Remove-App "DellInc.DellCustomerConnect"
 Remove-App "DellInc.DellHelpSupport"
 Remove-App "DellInc.DellPowerManager"
@@ -166,8 +172,8 @@ Remove-App "KindleforWindows8*"
 Remove-App "LenovoCorporation.LenovoID*"
 Remove-App "LenovoCorporation.LenovoSettings*"
 Remove-App "MAGIX.MusicMakerJam*"
-Remove-App "McAfee*"
-Remove-App "McAfeeInc.05.McAfeeSecurityAdvisorforASUS*"
+Remove-App "McAfeeInc.05.McAfeeSecurityAdvisorforASUS"
+Remove-App "McAfeeInc.01.McAfeeSecurityAdvisorforDell"
 Remove-App "MobileFileExplorer*"
 Remove-App "MusicMakerJam*"
 Remove-App "NAMCOBANDAIGamesInc.PAC-MANChampionshipEditionDXfo*"
