@@ -2,25 +2,26 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.1 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
-::                1.2.0 ! bugfix:       Temporarily disable CCleaner until Piriform gets their mess figured out
-::                1.1.9 ! bugfix:       Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
-::                1.1.8 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
-::                1.1.7 * improvement:  Update script to support standalone execution
-::                1.1.6 ! duplicates:   Fix broken duplicate file cleanup of Downloads folder due to accidentally putting quote markes around the path to the profile list text file
-::                1.1.5 ! ccleaner:     Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin
-::                1.1.4 ! ccleaner:     Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay
-::                                      after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the
-::                                      script won't stop if CCleaner stalls. Thanks to multiple users for reporting
-::                1.1.3 ! bugfix:       Fix bug with CCleaner where "start /wait" wasn't properly waiting. Ccleaner silently launches ccleaner64.exe on 64-bit
-::                                      systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script
-::                1.1.2 ! bugfix:       Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems with special characters in the username
-::                1.1.1 / ccleaner:     Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
-::                1.1.0 + improvement:  Add job to delete duplicate files found in the "Downloads" folder of each user
-::                1.0.2 * logging:      Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
-::                1.0.1 * ccleaner:     Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
-::                      * bleachbit:    Improve Bleachbit support for VERBOSE (-v) flag, now displays all Bleachbit output to console and log file. Thanks to /u/Forcen
-::                      - misc:         Remove unecessary window title reset after Tempfilecleanup
+:: Version:       1.2.2 / ccleaner:    Re-enable CCleaner
+::                1.2.1 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
+::                1.2.0 ! bugfix:      Temporarily disable CCleaner until Piriform gets their mess figured out
+::                1.1.9 ! bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
+::                1.1.8 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.1.7 * improvement: Update script to support standalone execution
+::                1.1.6 ! duplicates:  Fix broken duplicate file cleanup of Downloads folder due to accidentally putting quote markes around the path to the profile list text file
+::                1.1.5 ! ccleaner:    Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin
+::                1.1.4 ! ccleaner:    Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay
+::                                     after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the
+::                                     script won't stop if CCleaner stalls. Thanks to multiple users for reporting
+::                1.1.3 ! bugfix:      Fix bug with CCleaner where "start /wait" wasn't properly waiting. Ccleaner silently launches ccleaner64.exe on 64-bit
+::                                     systems, which closes the first file handle, which made "start /wait" think it exited and thus continues the script
+::                1.1.2 ! bugfix:      Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems with special characters in the username
+::                1.1.1 / ccleaner:    Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
+::                1.1.0 + improvement: Add job to delete duplicate files found in the "Downloads" folder of each user
+::                1.0.2 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
+::                1.0.1 * ccleaner:    Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
+::                      * bleachbit:   Improve Bleachbit support for VERBOSE (-v) flag, now displays all Bleachbit output to console and log file. Thanks to /u/Forcen
+::                      - misc:        Remove unecessary window title reset after Tempfilecleanup
 ::                1.0.0 + Initial write
 @echo off
 
@@ -29,8 +30,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.1
-set STAGE_1_SCRIPT_DATE=2018-01-25
+set STAGE_1_SCRIPT_VERSION=1.2.2
+set STAGE_1_SCRIPT_DATE=2018-08-01
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -72,17 +73,18 @@ call functions\log_with_date.bat "   Done."
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
 :: Temporarily commented out 2017-09-26 due to Piriform hack. Will re-enable in a couple versions
-REM call functions\log_with_date.bat "   Launch job 'CCleaner'..."
-REM if /i %DRY_RUN%==no (
-	REM if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
-	REM if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	REM if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	REM :: Hardcoded delay to let CCleaner finish
-	REM ping 127.0.0.1 -n 180 > nul 2>&1
-	REM :: Now we kill it in case it's hung
-	REM if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
-	REM if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
-REM )
+:: Re-enabled 2018-08-01
+call functions\log_with_date.bat "   Launch job 'CCleaner'..."
+if /i %DRY_RUN%==no (
+	if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
+	if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	:: Hardcoded delay to let CCleaner finish
+	ping 127.0.0.1 -n 180 > nul 2>&1
+	:: Now we kill it in case it's hung
+	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
+	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
+)
 call functions\log_with_date.bat "   Done."
 
 
