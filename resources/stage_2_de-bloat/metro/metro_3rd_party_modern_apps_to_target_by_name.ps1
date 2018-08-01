@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.6 + Add additional user-submitted entries
+Version:       1.2.7 + Add additional user-submitted entries
                1.2.4 * Fixed variable re-use, thanks to github:madbomb22
                1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.6"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-07-25"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.7"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-01"
 
 
 # Needed for Removal
@@ -66,10 +66,12 @@ Remove-App "26720RandomSaladGamesLLC.HeartsDeluxe*"
 Remove-App "26720RandomSaladGamesLLC.SimpleSolitaire*"
 Remove-App "29982CsabaHarmath.UnCompress*"
 Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
+Remove-App "32988BernardoZamora.SolitaireHD"
 Remove-App "37442SublimeCo.AlarmClockForYou"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
+Remove-App "5A894077.McAfeeSecurity"
 Remove-App "64885BlueEdge.OneCalendar*"
 Remove-App "6Wunderkinder.Wunderlist"
 Remove-App "7906AAC0.TOSHIBACanadaPartners*"
@@ -100,17 +102,20 @@ Remove-App "AdobeSystemsIncorporated.AdobeRevel*"
 Remove-App "Amazon.com.Amazon*"
 Remove-App "AppUp.IntelAppUpCatalogueAppWorldwideEdition*"
 Remove-App "B9ECED6F.ASUSGIFTBOX*"
+Remove-App "B9ECED6F.ASUSProductRegistrationProgram"
+Remove-App "B9ECED6F.MyASUS"
+Remove-App "B9ECED6F.eManual"
 Remove-App "BD9B8345.AlbumbySony*"
 Remove-App "BD9B8345.MusicbySony*"
 Remove-App "BD9B8345.Socialife*"
 Remove-App "BD9B8345.VAIOCare*"
 Remove-App "BD9B8345.VAIOMessageCenter*"
 Remove-App "C27EB4BA.DropboxOEM"
-Remove-App "ChaChaSearch.ChaChaPushNotification*"
-Remove-App "ClearChannelRadioDigital.iHeartRadio*"
-Remove-App "COMPALELECTRONICSINC.Alienwaredockingaccessory"
 Remove-App "COMPALELECTRONICSINC.AlienwareOSDKits"
 Remove-App "COMPALELECTRONICSINC.AlienwareTypeCaccessory"
+Remove-App "COMPALELECTRONICSINC.Alienwaredockingaccessory"
+Remove-App "ChaChaSearch.ChaChaPushNotification*"
+Remove-App "ClearChannelRadioDigital.iHeartRadio*"
 Remove-App "CrackleInc.Crackle*"
 Remove-App "CyberLinkCorp.ac.AcerCrystalEye*"
 Remove-App "CyberLinkCorp.ac.SocialJogger*"
@@ -172,8 +177,8 @@ Remove-App "KindleforWindows8*"
 Remove-App "LenovoCorporation.LenovoID*"
 Remove-App "LenovoCorporation.LenovoSettings*"
 Remove-App "MAGIX.MusicMakerJam*"
-Remove-App "McAfeeInc.05.McAfeeSecurityAdvisorforASUS"
 Remove-App "McAfeeInc.01.McAfeeSecurityAdvisorforDell"
+Remove-App "McAfeeInc.05.McAfeeSecurityAdvisorforASUS"
 Remove-App "MobileFileExplorer*"
 Remove-App "MusicMakerJam*"
 Remove-App "NAMCOBANDAIGamesInc.PAC-MANChampionshipEditionDXfo*"
