@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+:: Version:       1.2.5 * improvement:  Clean up GUID dump file (convert from UCS2 to UTF-8) so for loops can correctly read it for improved Stage 2: debloat scans
+::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.3 / metro:        Reduce output from Metro App dump since we don't care about the fully-qualified App name
 ::                1.2.2 + improvement:  Add job to dump Metro apps on Windows 8+. This is so they can be sent via -udl switch if used
 ::                1.2.1 + improvement:  Add job to (temporarily) stop the Themes service during execution
@@ -37,8 +38,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.4
-set STAGE_0_SCRIPT_DATE=2018-07-03
+set STAGE_0_SCRIPT_VERSION=1.2.5
+set STAGE_0_SCRIPT_DATE=2018-08-01
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -145,7 +146,11 @@ call functions\log_with_date.bat "   Done."
 :: JOB: Do a GUID dump before kicking everything off
 title Tron v%TRON_VERSION% [stage_0_prep] [GUID dump]
 call functions\log_with_date.bat "   Dumping GUID list to "%RAW_LOGS%"..."
-if /i %DRY_RUN%==no <NUL %WMIC% product get identifyingnumber,name,version /all > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+if /i %DRY_RUN%==no (
+	<NUL %WMIC% product get identifyingnumber,name,version /all > "%TEMP%\wmic_dump_temp.txt" 2>NUL
+	type "%TEMP%\wmic_dump_temp.txt" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+	del /f /q "%TEMP%\wmic_dump_temp.txt" 2>nul
+)
 call functions\log_with_date.bat "   Done."
 
 
