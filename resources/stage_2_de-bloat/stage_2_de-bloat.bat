@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.1 * improvement: Prefix Powershell calls with start /wait to prevent continuing script before they're finished executing. Thanks to github:madbomb122
+:: Version:       1.4.2 * improvement: Vastly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
+::                      + feature:     Add disabling of "Occasionally show suggestions in Start" from purge_windows_10_telemetry.bat script
+::                1.4.1 * improvement: Prefix Powershell calls with start /wait to prevent continuing script before they're finished executing. Thanks to github:madbomb122
 ::                      * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                      ! bugfix:      Path comparison bug in OneDrive removal
 ::                1.4.0 ! bugfix:      OneDrive folder-in-use detection due to Windows silently ignoring commands. Thanks to github:rasa
@@ -57,13 +59,14 @@
 @echo off
 
 
+
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.1
-set STAGE_2_SCRIPT_DATE=2018-07-03
-
+set STAGE_2_SCRIPT_VERSION=1.4.2
+set STAGE_2_SCRIPT_DATE=2018-08-01
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
+set STANDALONE=no
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
@@ -73,6 +76,14 @@ if /i "%LOGFILE%"=="" (
 
 	:: Initialize the runtime environment
 	call functions\initialize_environment.bat
+
+	set STANDALONE=yes
+)
+:: Do the GUID dump that some portions below rely on. We have to run the file through the 'type' command to convert the output from UCS-2 Little Endian to UTF-8/ANSI so the for loops below can read it
+if %STANDALONE%==yes (
+	<NUL %WMIC% product get identifyingnumber,name,version /all > "%TEMP%\wmic_dump_temp.txt" 2>NUL
+	type "%TEMP%\wmic_dump_temp.txt" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+	del /f /q "%TEMP%\wmic_dump_temp.txt" 2>nul
 )
 
 
@@ -94,116 +105,90 @@ if /i %SAFE_MODE%==yes (
 )
 
 
-:: JOB: Remove crapware programs, phase 1: by specific GUID
+
+
+:: JOB: Remove bloat, phase 1: by specific GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by GUID]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 1 (by specific GUID)..."
-	:: Calculate how many GUIDs we're searching for
-	set GUID_TOTAL=0
-	set TICKER=1
-	for /f %%i in ('%FINDSTR% /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| %FIND% /C ":"') do set GUID_TOTAL=%%i
+:: Calculate how many GUIDs we're searching for
+set GUID_TOTAL=0
+for /f %%i in ('%FINDSTR% /R /N "^{" stage_2_de-bloat\oem\programs_to_target_by_GUID.txt ^| %FIND% /C ":"') do set GUID_TOTAL=%%i
 call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
-if /i %DRY_RUN%==no (
 
-	REM Stamp the raw log file that we use to track progress through the list
-	REM DISABLED since we have the handy title bar ticker now
-	REM echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 1 ^(by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
+if /i %DRY_RUN%==no (
 
 	REM This is required so we can check the errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
-	REM Verbose output check
-	if /i %VERBOSE%==yes echo Looking for:
+	REM Loop through the local GUID dump and see if any GUIDs match from the target list
+	for /f "tokens=1" %%a in (%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt) do (
+		for /f "tokens=1" %%j in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
+			if /i %%j==%%a (
 
-	REM Loop through the file...
-	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
-		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
-		if not %%i==:: (
-		if not %%i==set (
-			if /i %VERBOSE%==yes echo    !TICKER!/%GUID_TOTAL% %%i
-			if /i %VERBOSE%==no title Tron v%TRON_VERSION% [GUID: %%i -- !TICKER!/%GUID_TOTAL%]
+				REM Log finding and perform the removal
+				if /i %VERBOSE%==yes ( call functions\log.bat "%%a MATCH from target list, uninstalling..." ) else ( echo %%a MATCH from target list, uninstalling...>> "%LOGPATH%\%LOGFILE%")
+				start /wait msiexec /qn /norestart /x %%a>> "%LOGPATH%\%LOGFILE%" 2>nul
 
-			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
+				REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but no point really since we're just going to reset it anyway
+				%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
 
-			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
-			%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
+				REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
+				if !errorlevel!==0 (
+					echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 
-			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
-			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
-			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
-				echo %CUR_DATE% !TIME! ^^!  Filenames in PendingFileRenameOperations exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+					echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
+					echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
-
-			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
-			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
-
-			REM Iterate our tick counter
-			set /a TICKER=!TICKER! + 1
-
 			)
 		)
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
+
 call functions\log_with_date.bat "   Done."
+
 
 
 :: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
-	:: Calculate how many GUIDs we're searching for
+:: Calculate how many GUIDs we're searching for
 	set GUID_TOTAL=0
-	set TICKER=1
 	for /f %%i in ('%FINDSTR% /R /N "^{" stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt ^| FIND /C ":"') do set GUID_TOTAL=%%i
-call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
+	call functions\log_with_date.bat "   Searching for %GUID_TOTAL% GUIDs, please wait..."
+
 if /i %DRY_RUN%==no (
 
-	REM Stamp the raw log file that we use to track progress through the list
-	REM DISABLED since we have the handy title bar ticker
-	REM echo %CUR_DATE% %TIME%   Attempt junkware removal: Phase 2 ^(toolbars by specific GUID^)...>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
-
-	REM This is required so we can check errorlevel inside the FOR loop
+	REM This is required so we can check the errorlevel inside the FOR loop
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
-	REM Verbose output check
-	if /i %VERBOSE%==yes echo Looking for:
+	REM Loop through the local GUID dump and see if any GUIDs match from the target list
+	for /f "tokens=1" %%a in (%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt) do (
+		for /f "tokens=1" %%j in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
+			if /i %%j==%%a (
 
-	REM Loop through the file...
-	for /f %%i in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
-		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
-		if not %%i==:: (
-		if not %%i==set (
-			if /i %VERBOSE%==yes echo    %%i
-			if /i %VERBOSE%==no title Tron v%TRON_VERSION% [GUID: %%i -- !TICKER!/%GUID_TOTAL%]
+				REM Log finding and perform the removal
+				if /i %VERBOSE%==yes ( call functions\log.bat "%%a MATCH from target list, uninstalling..." ) else ( echo %%a MATCH from target list, uninstalling...>> "%LOGPATH%\%LOGFILE%")
+				start /wait msiexec /qn /norestart /x %%a>> "%LOGPATH%\%LOGFILE%" 2>nul
 
-			start /wait msiexec /qn /norestart /x %%i >> "%LOGPATH%\%LOGFILE%" 2>nul
+				REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but no point really since we're just going to reset it anyway
+				%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
 
-			REM Reset UpdateExeVolatile. I guess we could check to see if it's flipped, but eh, not really any point since we're just going to reset it anyway
-			%REG% add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Updates" /v UpdateExeVolatile /d 0 /f >nul 2>&1
+				REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
+				if !errorlevel!==0 (
+					echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 
-			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
-			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
-			if !errorlevel!==0 (
-				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+					echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.>> "%LOGPATH%\%LOGFILE%"
+					echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				)
-
-			REM Running tick counter to a separate raw log file so we can see if the script stalls on a particular GUID.
-			REM Not displayed to console or dumped to main log to avoid cluttering them up
-			REM echo %CUR_DATE% !TIME!    !TICKER!/%GUID_TOTAL%  %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
-
-			REM Iterate our counter
-			set /a TICKER=!TICKER! + 1
-
 			)
 		)
 	)
@@ -232,23 +217,27 @@ if /i %DRY_RUN%==no (
 
 	REM Loop through the file...
 	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
-		REM  ...and for each line: a. check if it is a comment or SET command and b. perform the removal if not
+		REM  ...and for each line check if it is a comment or SET command and perform the removal if not
 		if not %%i==:: (
 		if not %%i==set (
+
+			REM Do the removal
 			if /i %VERBOSE%==yes echo    %%i
 			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
-			REM Check if the uninstaller added entries to PendingFileRenameOperations if it did, export the contents, nuke the key value, then continue on
+
+			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 			if !errorlevel!==0 (
-				echo Offending entry: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 				%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
-				if /i %VERBOSE%==yes echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
-				echo  ^^! Detected filenames in PendingFileRenameOperations. Entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted. >> "%LOGPATH%\%LOGFILE%"
-				echo ------------------------------------------------------------------- >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
-				)
 
-			REM Running tracker a separate raw log file so we can see if the script stalls on a particular entry
+			if /i %VERBOSE%==yes echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.
+				echo %CUR_DATE% !TIME! ^^!  PendingFileRenameOperations entries exported to "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt" and deleted.>> "%LOGPATH%\%LOGFILE%"
+				echo ------------------------------------------------------------------->> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+			)
+
+			REM Dump to separate raw log so we can see if the script stalls on a particular entry
 			REM Not displayed to console or dumped to main log to avoid cluttering them up
 			echo %CUR_DATE% !TIME!    %%i>> "%RAW_LOGS%\stage_2_de-bloat_progress_%COMPUTERNAME%_%CUR_DATE%.log" 2>&1
 
@@ -257,7 +246,7 @@ if /i %DRY_RUN%==no (
 	)
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 )
-endlocal DisableExtensions DisableDelayedExpansion
+endlocal DisableDelayedExpansion
 call functions\log_with_date.bat "   Done."
 
 
@@ -319,9 +308,9 @@ if /i %TARGET_METRO%==yes (
 
 
 :: JOB: Remove forced OneDrive integration
-:: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired and lazy so ¯\_(ツ)_/¯
+:: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired so ¯\_(ツ)_/¯
 
-:: This variable is just to detect if we removed OneDrive or not. If we DIDN'T then we use it to make sure file sync isn't disabled
+:: This variable is used later to make sure we don't disable file sync if OneDrive wasn't removed
 set ONEDRIVE_REMOVED=no
 
 :: 1. Are we on Windows 10? If not, skip removal
@@ -332,7 +321,6 @@ if /i %PRESERVE_METRO_APPS%==yes (
 	call functions\log_with_date.bat "!  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
 	goto :skip_onedrive_removal
 )
-
 
 :: 3. Does the folder exist in the default location? If not, skip removal
 if not exist "%USERPROFILE%\OneDrive" (
@@ -357,7 +345,7 @@ for /f "usebackq tokens=3*" %%a IN (`%REG% QUERY "HKCU\Environment" /v OneDrive 
     set ONEDRIVE_PATH=%%a %%b
 )
 
-:: the space after OneDrive is required because the %ONEDRIVE_PATH% gets built with a trailing space
+:: the space after OneDrive is required because the %ONEDRIVE_PATH% gets built with a trailing space for some reason
 if /i not "%ONEDRIVE_PATH%"=="%USERPROFILE%\OneDrive " (
 	call functions\log_with_date.bat "!  Custom OneDrive folder location detected. Skipping removal."
 	goto :skip_onedrive_removal
@@ -394,7 +382,7 @@ call functions\log_with_date.bat "   Done."
 :skip_onedrive_removal
 
 
-:: JOB: Disable "how-to" tips appearing in Win8+
+:: JOB: Disable "how-to" tips and appearing in Win8+
 if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
@@ -403,6 +391,15 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	)
 	call functions\log_with_date.bat "   Done."
 )
+
+:: JOB: Disable "Occasionally show suggestions in Start"...sigh
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable suggestions]
+call functions\log_with_date.bat "   Disabling 'Occasionally show suggestions in Start'..."
+if /i %DRY_RUN%==no (
+	%REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
+)
+call functions\log_with_date.bat "   Done."
+
 
 
 :: Stage complete
