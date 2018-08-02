@@ -2,7 +2,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.2 * improvement: Vastly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
+:: Version:       1.4.2 * improvement: Significantly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
 ::                      + feature:     Add disabling of "Occasionally show suggestions in Start" from purge_windows_10_telemetry.bat script
 ::                1.4.1 * improvement: Prefix Powershell calls with start /wait to prevent continuing script before they're finished executing. Thanks to github:madbomb122
 ::                      * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
@@ -387,7 +387,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable how-to tips]
 	call functions\log_with_date.bat "   Disabling 'howto' tips appearing..."
 	if /i %DRY_RUN%==no (
-		%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+		%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t reg_dword /d 1 /f>> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
 )
@@ -396,7 +396,7 @@ if /i "%WIN_VER:~0,9%"=="Windows 1" (
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Disable suggestions]
 call functions\log_with_date.bat "   Disabling 'Occasionally show suggestions in Start'..."
 if /i %DRY_RUN%==no (
-	%REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
+	%REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f>> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 call functions\log_with_date.bat "   Done."
 
