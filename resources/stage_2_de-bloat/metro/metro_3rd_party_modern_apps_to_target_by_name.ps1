@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.7 + Add additional user-submitted entries
+Version:       1.2.8 + Add additional user-submitted entries
                1.2.4 * Fixed variable re-use, thanks to github:madbomb22
                1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.7"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-01"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.8"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-07"
 
 
 # Needed for Removal
@@ -58,6 +58,9 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
+Remove-App "*DragonManiaLegends"
+Remove-App "*HiddenCityMysteryofShadows"
+Remove-App "*MarchofEmpires"
 Remove-App "06DAC6F6.StumbleUpon"
 Remove-App "09B6C2D8.TheTreasuresofMontezuma3"
 Remove-App "134D4F5B.Box*"
@@ -184,6 +187,7 @@ Remove-App "MusicMakerJam*"
 Remove-App "NAMCOBANDAIGamesInc.PAC-MANChampionshipEditionDXfo*"
 Remove-App "NAVER.LINEwin8*"
 Remove-App "NBCUniversalMediaLLC.NBCSportsLiveExtra*"
+Remove-App "Nordcurrent.CookingFever"
 Remove-App "PandoraMediaInc.29680B314EFC2"
 Remove-App "PinballFx2*"
 Remove-App "Playtika.CaesarsSlotsFreeCasino*"
@@ -219,6 +223,7 @@ Remove-App "fingertappsASUS.FingertappsInstrumentsrecommendedb*"
 Remove-App "fingertappsASUS.JigsWarrecommendedbyASUS*"
 Remove-App "fingertappsasus.FingertappsOrganizerrecommendedbyA*"
 Remove-App "flaregamesGmbH.RoyalRevolt2*"
+Remove-App "king.com*"
 Remove-App "king.com.BubbleWitch3Saga"
 Remove-App "king.com.CandyCrushSaga"
 Remove-App "king.com.CandyCrushSodaSaga"
