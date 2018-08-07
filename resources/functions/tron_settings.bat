@@ -22,7 +22,7 @@ set TRON_SETTINGS_SCRIPT_DATE=2017-12-06
 :: LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
 :: If you want a separate directory generated per Tron run (for example if doing multiple runs for testing), use something like this:
 ::   set LOGPATH=%SystemDrive%\Logs\tron\%COMPUTERNAME%_%DTS%
-set LOGPATH=%SystemDrive%\Logs\tron
+set LOGPATH=%SystemDrive%\logs\tron
 
 :: Master log file. To differentiate logfiles if you're doing multiple runs, you can do something like:
 ::  set LOGFILE=tron_%COMPUTERNAME%_%DTS%.log
