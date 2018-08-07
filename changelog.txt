@@ -14,6 +14,103 @@ Version legend:
 
 
 
+#########################
+# v10.5.3 // 2018-08-07 #
+#########################
+ . tron.bat                        v1.1.3
+
+functions
+ . initialize_environment.bat      v10.5.3
+ . prerun_checks_and_tasks.bat     v1.0.6
+ . tron_settings.bat               v1.0.1
+
+
+Stage 0: Prep
+ * stage_0_prep.bat                v1.2.5
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.2849
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.1
+ . nircmdc                         v2.81
+
+Stage 1: Tempclean
+ * stage_1_tempclean.bat           v1.2.2
+     / Re-enable CCleaner job
+
+ * CCleaner                        v5.45.6611
+ . BleachBit                       v2.0.0
+ * finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.4-TRON
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.2
+    * Significantly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
+
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ * stage_3_disinfect.bat           v1.2.1
+     ! mbam: Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
+
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v2.2.1.1043
+ * Malwarebytes included defs:     2018-08-02
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.5
+ * purge_windows_7-8-81_telemetry.bat
+ * purge_windows_10_telemetry.bat
+    + Add disabling of "Occasionally show suggestions in Start"
+
+ . Spybot Anti-Beacon              v1.5.0.35
+ * O&O ShutUp10                    v1.6.1398
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.3
+ . 7-Zip                           v18.05        (multi-language)
+ * Adobe Flash Player              v30.0.0.134   (language ignored)
+ * Java Runtime Environment        8u181         (language ignored)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.8
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ * drivedb.h                       2018-08-01
+ * Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.0
+ . SwithMail.exe                   v2.1.8.0
+
+Stage 8: Custom Scripts
+ . Tron will auto-execute any .bat file placed in this directory, prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v7.2.2.0
+ . Autoruns                        v13.90
+ . BlueScreenView                  v1.55
+ . ComboFix                        v18.6.17.1
+ . Junkware Removal Tool           v8.1.4.0
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.51 x64
+ . PC Hunter                       v1.51 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
 
 #########################
 # v10.5.2 // 2018-07-04 #
@@ -82,7 +179,7 @@ Stage 5: Patch
  . 7-Zip                           v18.05        (multi-language)
  . Adobe Flash Player              v29.0.0.171   (language ignored)
  . Java Runtime Environment        8u172         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.8
@@ -174,7 +271,7 @@ Stage 5: Patch
  * 7-Zip                           v18.05        (multi-language)
  * Adobe Flash Player              v29.0.0.171   (language ignored)
  * Java Runtime Environment        8u172         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.8
@@ -271,7 +368,7 @@ Stage 5: Patch
  . 7-Zip                           v18.01        (multi-language)
  * Adobe Flash Player              v29.0.0.113   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.8
@@ -368,7 +465,7 @@ Stage 5: Patch
  . 7-Zip                           v18.01        (multi-language)
  . Adobe Flash Player              v28.0.0.161   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.7
@@ -463,7 +560,7 @@ Stage 5: Patch
  . 7-Zip                           v18.01        (multi-language)
  * Adobe Flash Player              v28.0.0.161   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.7
@@ -563,7 +660,7 @@ Stage 5: Patch
  . 7-Zip                           v18.01        (multi-language)
  . Adobe Flash Player              v28.0.0.137   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.7
@@ -656,7 +753,7 @@ Stage 5: Patch
  * 7-Zip                           v18.01        (multi-language)
  . Adobe Flash Player              v28.0.0.137   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.7
@@ -748,7 +845,7 @@ Stage 5: Patch
  . 7-Zip                           v16.04        (multi-language)
  . Adobe Flash Player              v28.0.0.137   (language ignored)
  . Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.7
@@ -841,7 +938,7 @@ Stage 5: Patch
  . 7-Zip                           v16.04        (multi-language)
  * Adobe Flash Player              v28.0.0.137   (language ignored)
  * Java Runtime Environment        8u162         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -936,7 +1033,7 @@ Stage 5: Patch
  . Adobe Flash Player              v27.0.0.187   (language ignored)
  - Adobe Acrobat Reader DC         REMOVED from Tron
  . Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1034,7 +1131,7 @@ Stage 5: Patch
  . Adobe Flash Player              v27.0.0.187   (language ignored)
  - Adobe Acrobat Reader DC         REMOVED from Tron
  . Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1134,7 +1231,7 @@ Stage 5: Patch
  . Adobe Flash Player              v27.0.0.187   (language ignored)
  - Adobe Acrobat Reader DC         REMOVED from Tron
  . Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1225,7 +1322,7 @@ Stage 5: Patch
  * Adobe Flash Player              v27.0.0.187   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1322,7 +1419,7 @@ Stage 5: Patch
  * Adobe Flash Player              v27.0.0.183   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1413,7 +1510,7 @@ Stage 5: Patch
  * Adobe Flash Player              v27.0.0.170   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u152         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1503,7 +1600,7 @@ Stage 5: Patch
  . Adobe Flash Player              v27.0.0.130   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u144         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1593,7 +1690,7 @@ Stage 5: Patch
  * Adobe Flash Player              v27.0.0.130   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u144         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1684,7 +1781,7 @@ Stage 5: Patch
  * Adobe Flash Player              v26.0.0.151   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u144         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1775,7 +1872,7 @@ Stage 5: Patch
  * Adobe Flash Player              v26.0.0.137   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u141         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1875,7 +1972,7 @@ Stage 5: Patch
  * Adobe Flash Player              v26.0.0.131   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u131         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.6
@@ -1970,7 +2067,7 @@ Stage 5: Patch
  . Adobe Flash Player              v25.0.0.171   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u131         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.6
@@ -2061,7 +2158,7 @@ Stage 5: Patch
  * Adobe Flash Player              v25.0.0.171   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u131         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.5
@@ -2157,7 +2254,7 @@ Stage 5: Patch
  . Adobe Flash Player              v25.0.0.148   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u131         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.5
@@ -2248,7 +2345,7 @@ Stage 5: Patch
  * Adobe Flash Player              v25.0.0.148   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u131         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.5
@@ -2339,7 +2436,7 @@ Stage 5: Patch
  . Adobe Flash Player              v25.0.0.127   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u121         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.5
@@ -2430,7 +2527,7 @@ Stage 5: Patch
  * Adobe Flash Player              v25.0.0.127   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u121         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.5
@@ -2524,7 +2621,7 @@ Stage 5: Patch
  * Adobe Flash Player              v24.0.0.221   (language ignored)
  . Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u121         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.5
@@ -2674,7 +2771,7 @@ Stage 5: Patch
     * Update installation script to block the stupid plugin Adobe loads into Chrome without permission
 
  . Java Runtime Environment        8u121         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.4
@@ -2774,7 +2871,7 @@ Stage 5: Patch
  + Adobe Acrobat Reader DC         v15.023.20053 (English-only; replace with your language version if necessary)
  - Adobe Reader                    v11.0.19  // REMOVED due to upgrade to Acrobat Reader DC
  * Java Runtime Environment        8u121         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -2863,7 +2960,7 @@ Stage 5: Patch
  . Adobe Flash Player              v24.0.0.186   (language ignored)
  . Adobe Reader                    v11.0.19      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -2952,7 +3049,7 @@ Stage 5: Patch
  . Adobe Flash Player              v24.0.0.186   (language ignored)
  * Adobe Reader                    v11.0.19      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3050,7 +3147,7 @@ Stage 5: Patch
  * Adobe Flash Player              v24.0.0.186   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3141,7 +3238,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.207   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3234,7 +3331,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.207   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3328,7 +3425,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.207   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3419,7 +3516,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.207   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3516,7 +3613,7 @@ Stage 5: Patch
  * Adobe Flash Player              v23.0.0.207   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3612,7 +3709,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.205   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3715,7 +3812,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.205   (language ignored)
  . Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3816,7 +3913,7 @@ Stage 5: Patch
  * Adobe Flash Player              v23.0.0.205   (language ignored)
  * Adobe Reader                    v11.0.18      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u112         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -3920,7 +4017,7 @@ Stage 5: Patch
  . Adobe Flash Player              v23.0.0.162   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4021,7 +4118,7 @@ Stage 5: Patch
  * Adobe Flash Player              v23.0.0.162   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4119,7 +4216,7 @@ Stage 5: Patch
  . Adobe Flash Player              v22.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4209,7 +4306,7 @@ Stage 5: Patch
  . Adobe Flash Player              v22.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4313,7 +4410,7 @@ Stage 5: Patch
  . Adobe Flash Player              v22.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4410,7 +4507,7 @@ Stage 5: Patch
  . Adobe Flash Player              v22.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4497,7 +4594,7 @@ Stage 5: Patch
  . Adobe Flash Player              v22.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4584,7 +4681,7 @@ Stage 5: Patch
  * Adobe Flash Player              v22.0.0.209   (language ignored)
  * Adobe Reader                    v11.0.17      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u102         (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4664,7 +4761,7 @@ Stage 5: Patch
 
  . Adobe Reader                    v11.0.16      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u92          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4743,7 +4840,7 @@ Stage 5: Patch
  . Adobe Flash Player              v21.0.0.242   (language ignored)
  . Adobe Reader                    v11.0.16      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u92          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.3
@@ -4831,7 +4928,7 @@ Stage 5: Patch
  * Adobe Flash Player              v21.0.0.242   (language ignored)
  * Adobe Reader                    v11.0.16      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u92          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.3
@@ -4914,7 +5011,7 @@ Stage 5: Patch
  ! Adobe Reader                    v11.0.15      (English-only; replace with your language version if necessary)
 	! Fix bug where Reader wasn't correctly updating to v11.0.15
  * Java Runtime Environment        8u77          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5000,7 +5097,7 @@ Stage 5: Patch
  * Adobe Flash Player              v21.0.0.197   (language ignored)
  . Adobe Reader                    v11.0.15      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5087,7 +5184,7 @@ Stage 5: Patch
  . Adobe Flash Player              v21.0.0.182   (language ignored)
  . Adobe Reader                    v11.0.15      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5174,7 +5271,7 @@ Stage 5: Patch
  * Adobe Reader                    v11.0.15      (English-only; replace with your language version if necessary)
     + Add code to delete Start Menu link and another auto-run entry. Thanks u/sofakingdead
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5257,7 +5354,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.306   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5342,7 +5439,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.306   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5430,7 +5527,7 @@ Stage 5: Patch
  * Adobe Flash Player              v20.0.0.306   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5515,7 +5612,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.286   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u74          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5601,7 +5698,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.286   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u72          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5687,7 +5784,7 @@ Stage 5: Patch
  * Adobe Flash Player              v20.0.0.286   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u72          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5771,7 +5868,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.267   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5850,7 +5947,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.267   (language ignored)
  . Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -5930,7 +6027,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.267   (language ignored)
  * Adobe Reader                    v11.0.14      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.2
@@ -6015,7 +6112,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.267   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.2
@@ -6100,7 +6197,7 @@ Stage 5: Patch
  . Adobe Flash Player              v20.0.0.267   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.2
@@ -6192,7 +6289,7 @@ Stage 5: Patch
  * Adobe Flash Player              v20.0.0.267   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  * stage_6_optimize.bat            v1.0.1
@@ -6283,7 +6380,7 @@ Stage 5: Patch
  * Adobe Flash Player              v20.0.0.228   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.0
@@ -6374,7 +6471,7 @@ Stage 5: Patch
  * Java Runtime Environment        8u66          (language ignored)
     * Replace LOGPATH variable with inherited RAW_LOGS variable from Tron
 
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.0
@@ -6467,7 +6564,7 @@ Stage 5: Patch
  . Adobe Flash Player              v19.0.0.245   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  + stage_6_optimize.bat            v1.0.0
@@ -6549,7 +6646,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v19.0.0.245   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6616,7 +6713,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v19.0.0.245   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6686,7 +6783,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v19.0.0.226   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6753,7 +6850,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v19.0.0.226   (language ignored)
  . Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u66          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6824,7 +6921,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v19.0.0.185   (language ignored)
  * Adobe Reader                    v11.0.13      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6903,7 +7000,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v19.0.0.185   (language ignored)
  . Adobe Reader                    v11.0.12      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -6974,7 +7071,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v19.0.0.185   (language ignored)
  . Adobe Reader                    v11.0.12      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -7057,7 +7154,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v19.0.0.185   (language ignored)
  * Adobe Reader                    v11.0.12      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -7128,7 +7225,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -7195,7 +7292,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.4.0 2015-06-04 r4109
@@ -7269,7 +7366,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  * smartctl                        v6.4.0 2015-06-04 r4109
@@ -7336,7 +7433,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  * smartctl                        v6.4.0.4109 2015-06-04 r4109
@@ -7403,7 +7500,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u60          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7475,7 +7572,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v18.0.0.232   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u51          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7542,7 +7639,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u51          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7609,7 +7706,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u51          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7679,7 +7776,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v18.0.0.209   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7743,7 +7840,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v18.0.0.203   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7810,7 +7907,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v18.0.0.194   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7877,7 +7974,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v18.0.0.194   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -7939,7 +8036,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v18.0.0.160   (language ignored)
  . Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8006,7 +8103,7 @@ STAGE 5: Patch
  * Adobe Flash Player              v17.0.0.188   (language ignored)
  * Adobe Reader                    v11.0.11      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8066,7 +8163,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v17.0.0.169   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8148,7 +8245,7 @@ STAGE 5: Patch
  . Adobe Flash Player              v17.0.0.169   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 6: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8209,7 +8306,7 @@ STAGE 4: Patch
  * Adobe Flash Player              v17.0.0.169   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u45          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8269,7 +8366,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8331,7 +8428,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8393,7 +8490,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8470,7 +8567,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8553,7 +8650,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8610,7 +8707,7 @@ STAGE 4: Patch
  * Adobe Flash Player              v17.0.0.134   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  * smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8681,7 +8778,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v16.0.0.305   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u40          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  * smartctl                        v6.3.0.3976 2014-07-26 r3976
@@ -8748,7 +8845,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v16.0.0.305   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u31          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.2 2013-07-26 r3841
@@ -8810,7 +8907,7 @@ STAGE 4: Patch
  . Adobe Flash Player              v16.0.0.305   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u31          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.2 2013-07-26 r3841
@@ -8882,7 +8979,7 @@ STAGE 4: Patch
  * Adobe Flash Player              v16.0.0.305   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u31          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.2 2013-07-26 r3841
@@ -8958,7 +9055,7 @@ STAGE 4: Patch
  * Adobe Flash Player              v16.0.0.296   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  . Java Runtime Environment        8u31          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.2 2013-07-26 r3841
@@ -9017,7 +9114,7 @@ STAGE 4: Patch
  * Adobe Flash Player              v16.0.0.287   (language ignored)
  . Adobe Reader                    v11.0.10      (English-only; replace with your language version if necessary)
  * Java Runtime Environment        8u31          (language ignored)
- . Windows updates                 Pulled down live with this command: 'wuauclt /detectnow /updatenow'
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 STAGE 5: Optimize
  . smartctl                        v6.2 2013-07-26 r3841
