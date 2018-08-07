@@ -34,25 +34,27 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. This isn't *required* but is strongly recommended.
+0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. Not *required* but is strongly recommended.
 
 1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
-2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended for a first go around.
+2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended unless the system is severly infected.
 
-3. Right-click on `tron.bat` and select "**Run as Administrator**"
+3. Right-click `tron.bat` and select "**Run as Administrator**"
 
-4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of it running)
+4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of running)
 
       *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
 5. **Reboot!** Reboot the system before doing *anything else*.
 
-By default the master log file is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
+By default the master log is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
 If you run with the `-udl` switch, it will automatically email me the run logs at the end of the script. Not required but greatly appreciated if you can.
+
+NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individually apart from Tron. Just remember to run them as Administrator if you go this route.
 
 # COMMAND-LINE USE
 
