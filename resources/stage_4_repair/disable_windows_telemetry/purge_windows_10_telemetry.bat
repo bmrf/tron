@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.2.5-TRON + Add disabling of "Occasionally show suggestions in Start"
+:: Version:       1.2.6-TRON ! Fix standalone execution not working in some sections due to relative paths being different. Thanks to u/AncientAv
+::                1.2.5-TRON + Add disabling of "Occasionally show suggestions in Start"
 ::                1.2.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
 ::                1.2.3-TRON * Use %REG% instead of relative calls
 ::                1.2.2-TRON + Add additional XBox Live services to disable list
@@ -41,17 +42,19 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.5-TRON
-set SCRIPT_UPDATED=2018-07-25
+set SCRIPT_VERSION=1.2.6-TRON
+set SCRIPT_UPDATED=2018-08-12
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
+set STANDALONE=no
 if /i "%LOGPATH%"=="" (set REG=%SystemRoot%\System32\reg.exe)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
 	set VERBOSE=no
-	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| find "ProductName"') DO set WIN_VER=%%i %%j
-	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| find "CurrentVersion"') DO set WIN_VER_NUM=%%i
+	set STANDALONE=yes
+	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
+	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
 
 :: Make sure we're on Win10
@@ -82,7 +85,11 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-call functions\log.bat "     Uninstalling bad updates, please wait..."
+if STANDALONE=no (
+	call functions\log.bat "     Uninstalling bad updates, please wait..."
+) else (
+	echo "Uninstalling bad updates, please wait..."
+)
 
 if "%VERBOSE%"=="yes" (
 	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
@@ -178,17 +185,25 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-call functions\log.bat "     Blocking bad updates, please wait..."
+if STANDALONE=no (
+	call functions\log.bat "     Blocking bad updates, please wait..."
+) else (
+	echo "Blocking bad updates, please wait..."
+)
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\disable_windows_telemetry >nul
+if STANDALONE=no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
 
 :: Batch 1
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 
@@ -196,15 +211,25 @@ start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075
 :: Batch 2
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 
-popd
+if STANDALONE=no popd
 
-call functions\log.bat "     Done."
+
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-call functions\log.bat "     Removing telemetry-related scheduled tasks..."
+if STANDALONE=no (
+	call functions\log.bat "     Removing telemetry-related scheduled tasks..."
+) else (
+	echo "Done."
+)
+	
 
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
@@ -286,13 +311,21 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-call functions\log.bat "     Removing bad services, please wait..."
+if STANDALONE=no (
+	call functions\log.bat "     Removing bad services, please wait..."
+) else (
+	echo "Removing bad services, please wait..."
+)
 
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking; changed delete to disable on 2017-08-28 per https://www.reddit.com/r/TronScript/comments/6vjeap/connected_user_experience_and_telemetry_service/dm2dv3d/?context=3
@@ -360,13 +393,21 @@ if "%VERBOSE%"=="yes" (
 	sc config xbgm start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "     Toggling official MS telemetry registry entries..."
+if STANDALONE=no (
+	call functions\log.bat "     Toggling official MS telemetry registry entries..."
+) else (
+	echo "Toggling official MS telemetry registry entries..."
+)
 
 if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
@@ -445,14 +486,22 @@ if "%VERBOSE%"=="yes" (
 	
 )
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
 call functions\log.bat "     Applying Spybot Anti-Beacon protections, please wait..."
+if STANDALONE=no (
 	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+) else (
+	"Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+)	
 call functions\log.bat "     Done."
 
 
@@ -460,14 +509,22 @@ call functions\log.bat "     Done."
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: OandOShutUp10 IMMUNIZATIONS
 call functions\log.bat "     Applying OandOShutUp10 protections, please wait..."
+if STANDALONE=no (
 	stage_4_repair\disable_windows_telemetry\OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
+) else (
+	OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
 call functions\log.bat "     Done."
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS
-call functions\log.bat "     Null-routing bad hosts, please wait..."
+if STANDALONE=no (
+	call functions\log.bat "     Null-routing bad hosts, please wait..."
+) else (
+	echo "Null-routing bad hosts, please wait..."
+)
 
 :: Run this command to flush ALL routes IMMEDIATELY. It will delete your default route so you'll need to reboot or do an ipconfig /release & ipconfig /renew to get back online
 ::route -f
@@ -688,43 +745,81 @@ if "%VERBOSE%"=="yes" (
 	route -p add 65.52.100.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done.
+)
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
-call functions\log.bat "     Miscellaneous cleanup, please wait..."
+if STANDALONE= (
+	call functions\log.bat "     Miscellaneous cleanup, please wait..."
+) else (
+	echo "Miscellaneous cleanup, please wait..."
+)
 
 :: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
 if "%VERBOSE%"=="yes" (
 	taskkill /f /im gwx.exe /t
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full"
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full"
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full"
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"
+	if STANDALONE=no (
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full"
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full"
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full"
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"
+	) else (
+		setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full"
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full"
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full"
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"	
+	)
 ) else (
 	taskkill /f /im gwx.exe /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
-	stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if STANDALONE= (
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	) else (
+		setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\microsoft\windows defender\spynet" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\datacollection" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
 )
 
 :: Kill pending tracking reports
@@ -742,4 +837,8 @@ echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogge
 %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
 
 
-call functions\log.bat "     Done."
+if STANDALONE=no (
+	call functions\log.bat "     Done."
+) else (
+	echo "Done."
+)
