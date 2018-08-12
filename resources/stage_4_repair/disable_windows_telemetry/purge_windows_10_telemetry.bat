@@ -461,7 +461,7 @@ call functions\log.bat "     Done."
 :: OandOShutUp10 IMMUNIZATIONS
 call functions\log.bat "     Applying OandOShutUp10 protections, please wait..."
 	stage_4_repair\disable_windows_telemetry\OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-call functions\log.bat "     Done
+call functions\log.bat "     Done."
 
 
 
