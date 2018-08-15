@@ -43,11 +43,16 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 set SCRIPT_VERSION=1.2.6-TRON
-set SCRIPT_UPDATED=2018-08-12
+set SCRIPT_UPDATED=2018-08-15
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
-set STANDALONE=no
-if /i "%LOGPATH%"=="" (set REG=%SystemRoot%\System32\reg.exe)
+set STANDALONE==no
+if /i "%LOGPATH%"=="" (
+	set WMIC=%SystemRoot%\System32\wbem\wmic.exe
+	set FIND=%SystemRoot%\System32\find.exe
+	set FINDSTR=%SystemRoot%\System32\findstr.exe
+	set REG=%SystemRoot%\System32\reg.exe
+)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_10_telemetry_removal.log
@@ -69,9 +74,9 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 	echo.
 	echo   Detected version is %WIN_VER% ^(%WIN_VER_NUM%^).
 	echo.
-	echo   Quitting in 60 seconds...
+	echo   Quitting in 30 seconds...
 	echo.
-	ping 127.0.0.1 -n 60 >NUL
+	ping 127.0.0.1 -n 30 >NUL
 	color
 	exit /b 1
 )
@@ -85,7 +90,7 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Uninstalling bad updates, please wait..."
 ) else (
 	echo "Uninstalling bad updates, please wait..."
@@ -185,17 +190,12 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
-
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Blocking bad updates, please wait..."
 ) else (
 	echo "Blocking bad updates, please wait..."
@@ -203,7 +203,7 @@ if STANDALONE=no (
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-if STANDALONE=no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
+if STANDALONE==no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
 
 :: Batch 1
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 
@@ -211,23 +211,19 @@ start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075
 :: Batch 2
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
 
-if STANDALONE=no popd
+if STANDALONE==no popd
 
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Removing telemetry-related scheduled tasks..."
 ) else (
-	echo "Done."
+	echo "Removing telemetry-related scheduled tasks...."
 )
 	
 
@@ -311,17 +307,13 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Removing bad services, please wait..."
 ) else (
 	echo "Removing bad services, please wait..."
@@ -393,17 +385,12 @@ if "%VERBOSE%"=="yes" (
 	sc config xbgm start= disabled>> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
-
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Toggling official MS telemetry registry entries..."
 ) else (
 	echo "Toggling official MS telemetry registry entries..."
@@ -486,41 +473,39 @@ if "%VERBOSE%"=="yes" (
 	
 )
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
-call functions\log.bat "     Applying Spybot Anti-Beacon protections, please wait..."
-if STANDALONE=no (
+if STANDALONE==no (
+	call functions\log.bat "     Applying Spybot Anti-Beacon protections, please wait..."
 	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 ) else (
+	echo "Applying Spybot Anti-Beacon protections, please wait..."
 	"Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 )	
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: OandOShutUp10 IMMUNIZATIONS
-call functions\log.bat "     Applying OandOShutUp10 protections, please wait..."
-if STANDALONE=no (
+if STANDALONE==no (
+	call functions\log.bat "     Applying OandOShutUp10 protections, please wait..."
 	stage_4_repair\disable_windows_telemetry\OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 ) else (
-	OOShutUp10.exe stage_4_repair\disable_windows_telemetry\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
+	echo "Applying OandOShutUp10 protections, please wait..."
+	OOShutUp10.exe .\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: NULL ROUTE BAD HOSTS
-if STANDALONE=no (
+if STANDALONE==no (
 	call functions\log.bat "     Null-routing bad hosts, please wait..."
 ) else (
 	echo "Null-routing bad hosts, please wait..."
@@ -745,17 +730,13 @@ if "%VERBOSE%"=="yes" (
 	route -p add 65.52.100.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done.
-)
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISCELLANEOUS
-if STANDALONE= (
+if STANDALONE==no (
 	call functions\log.bat "     Miscellaneous cleanup, please wait..."
 ) else (
 	echo "Miscellaneous cleanup, please wait..."
@@ -764,7 +745,7 @@ if STANDALONE= (
 :: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
 if "%VERBOSE%"=="yes" (
 	taskkill /f /im gwx.exe /t
-	if STANDALONE=no (
+	if STANDALONE==no (
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full"
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators
@@ -837,8 +818,4 @@ echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogge
 %REG% ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
 
 
-if STANDALONE=no (
-	call functions\log.bat "     Done."
-) else (
-	echo "Done."
-)
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
