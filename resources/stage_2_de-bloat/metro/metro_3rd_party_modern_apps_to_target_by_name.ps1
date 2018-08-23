@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.8 + Add additional user-submitted entries
+Version:       1.2.9 + Add additional user-submitted entries
                1.2.4 * Fixed variable re-use, thanks to github:madbomb22
                1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.8"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-07"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.9"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-23"
 
 
 # Needed for Removal
@@ -67,10 +67,13 @@ Remove-App "134D4F5B.Box*"
 Remove-App "1430GreenfieldTechnologie.PuzzleTouch*"
 Remove-App "26720RandomSaladGamesLLC.HeartsDeluxe*"
 Remove-App "26720RandomSaladGamesLLC.SimpleSolitaire*"
+Remove-App "26720RandomSaladGamesLLC.Spades"
 Remove-App "29982CsabaHarmath.UnCompress*"
 Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
 Remove-App "32988BernardoZamora.SolitaireHD"
 Remove-App "37442SublimeCo.AlarmClockForYou"
+Remove-App "39806kalinnikol.FreeCellSolitaireHD"
+Remove-App "39806kalinnikol.FreeHeartsHD"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
@@ -106,6 +109,7 @@ Remove-App "Amazon.com.Amazon*"
 Remove-App "AppUp.IntelAppUpCatalogueAppWorldwideEdition*"
 Remove-App "B9ECED6F.ASUSGIFTBOX*"
 Remove-App "B9ECED6F.ASUSProductRegistrationProgram"
+Remove-App "B9ECED6F.ASUSWelcome"
 Remove-App "B9ECED6F.MyASUS"
 Remove-App "B9ECED6F.eManual"
 Remove-App "BD9B8345.AlbumbySony*"
@@ -195,6 +199,7 @@ Remove-App "Priceline"
 Remove-App "PricelinePartnerNetwork.Priceline.comTheBestDealso"
 Remove-App "PublicationsInternational.iCookbookSE*"
 Remove-App "RandomSaladGamesLLC.GinRummyProforHP*"
+Remove-App "RealtekSemiconductorCorp.RealtekAudioControl"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.SamsungPrinterExperience"
 Remove-App "ShazamEntertainmentLtd.Shazam*"
 Remove-App "SonicWALL.MobileConnect"
@@ -211,6 +216,7 @@ Remove-App "Vimeo.Vimeo*"
 Remove-App "Weather.TheWeatherChannelforHP*"
 Remove-App "Weather.TheWeatherChannelforLenovo*"
 Remove-App "WildTangentGames*"
+Remove-App "WildTangentGames.-GamesApp-"
 Remove-App "WildTangentGames.63435CFB65F55"
 Remove-App "WinZipComputing.WinZipUniversal*"
 Remove-App "XINGAG.XING"
