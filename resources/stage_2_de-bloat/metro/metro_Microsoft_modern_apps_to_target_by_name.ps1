@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.4 + Add additional user-submitted entries
+Version:       1.2.5 + Add additional user-submitted entries
                <-- oudated comments removed -->
                1.0.1 + Add script version and date variables to support automatic updates at Tron runtime
 #>
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.4"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-07"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.5"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-23"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -56,6 +56,7 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
+Remove-App "Microsoft.Advertising.JavaScript"          # Advertising framework
 Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
@@ -71,6 +72,7 @@ Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
 Remove-App "Microsoft.GetHelp"                         # Get Help link
 Remove-App "Microsoft.Getstarted"                      # Get Started link
+Remove-App "Microsoft.HelpAndTips"
 Remove-App "Microsoft.Messaging"                       # Messaging app
 Remove-App "Microsoft.MicrosoftJackpot"                # Jackpot app
 Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
@@ -87,9 +89,10 @@ Remove-App "Microsoft.People"                          # People app
 Remove-App "Microsoft.SkypeApp"                        # Get Skype link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
+Remove-App "Microsoft.Windows.FeatureOnDemand.InsiderHub"
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList"
-Remove-App "Microsoft.Zune"                           # Zune collection of apps
+Remove-App "Microsoft.Zune"                            # Zune collection of apps
 Remove-App "Windows.CBSPreview"
 Remove-App "Windows.ContactSupport"
 
@@ -101,7 +104,7 @@ Remove-App "Windows.ContactSupport"
 #Remove-App "Microsoft.Microsoft3DViewer"              # 3D model viewer
 #Remove-App "Microsoft.MicrosoftSolitaireCollection"   # Solitaire collection
 #Remove-App "Microsoft.MicrosoftStickyNotes"           # Pulled from active list due to user requests
-#Remove-App "Microsoft.Office.OneNote"                  # Onenote app
+#Remove-App "Microsoft.Office.OneNote"                 # Onenote app
 #Remove-App "Microsoft.Windows.Photos"                 # Photos app
 #Remove-App "Microsoft.WindowsAlarms"                  # Alarms and Clock app
 #Remove-App "Microsoft.WindowsCalculator"              # Calculator app
