@@ -7317,9 +7317,6 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {3B4E636E-9D65-4D67-BA61-189800823F52}
 {DCE8CD14-FBF5-4464-B9A4-E18E473546C7}
 
-:: Windows Live Family Safety, Disabled by Vocatus for Tron (some family systems may be using this)
-:: {5F611ADA-B98C-4DBB-ADDE-414F08457ECF}
-
 :: Windows Live Language Selector
 {180C8888-50F1-426B-A9DC-AB83A1989C65}
 {D07A61E5-A59C-433C-BCBD-22025FA2287B}
@@ -7382,15 +7379,6 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 
 :: Windows Media Player Firefox Plugin
 {69FDFBB6-351D-4B8C-89D8-867DC9D0A2A4}
-
-:: WinZip (various versions), WinZip Courier, Disabled by Vocatus for Tron
-:: {CD95F661-A5C4-44F5-A6AA-ECDD91C240ED}
-:: {CD95F661-A5C4-44F5-A6AA-ECDD91C240CD}
-:: {CD95F661-A5C4-11AF-B2CC-ABCD21A325B8}
-:: {CD95F661-A5C4-44F5-A6AA-ECDD91C240C3}
-:: {CD95F661-A5C4-44F5-A6AA-ECDD91C240CF}
-:: {CD95F661-A5C4-44F5-A6AA-ECDD91C240E3}
-:: {8A6EAACB-E2D6-D6BF-0338-F4AC9641B423}
 
 :: Windows Store Gift Card Promo
 {FF74AA30-FF56-4197-8B64-5D63F367BC02}
