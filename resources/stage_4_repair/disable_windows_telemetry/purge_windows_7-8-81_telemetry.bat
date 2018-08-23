@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
+:: Version:       1.1.5-TRON ! Fix standalone execution not working in some sections due to relative paths being different. Thanks to u/AncientAv
+::                1.1.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
 ::                1.1.3-TRON * Use %REG% instead of relative calls
 ::                1.1.2-TRON + Add additional scheduled tasks to remove. Thanks to /u/MirageESO
 ::                1.1.1-TRON * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
@@ -21,7 +22,7 @@
 ::                1.0.2-TRON + Add WIN_VER to list of variables to populate if running in standalone mode
 ::                1.0.1-TRON ! Fix crash error due to log file name containing "::" characters from a sloppy find/replace
 ::                1.0.0-TRON + Initial write
-@SETLOCAL
+SETLOCAL
 
 
 :::::::::::::::
@@ -37,22 +38,29 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.4-TRON
-set SCRIPT_UPDATED=2018-07-18
+set SCRIPT_VERSION=1.1.5-TRON
+set SCRIPT_UPDATED=2018-08-23
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
-if /i "%LOGPATH%"=="" (set REG=%SystemRoot%\System32\reg.exe)
+set STANDALONE==no
+if /i "%LOGPATH%"=="" (
+	set WMIC=%SystemRoot%\System32\wbem\wmic.exe
+	set FIND=%SystemRoot%\System32\find.exe
+	set FINDSTR=%SystemRoot%\System32\findstr.exe
+	set REG=%SystemRoot%\System32\reg.exe
+)
 if /i "%LOGPATH%"=="" (
 	set LOGPATH=%SystemDrive%\Logs
 	set LOGFILE=windows_7-8-81_telemetry_removal.log
 	set VERBOSE=yes
-	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| Find "ProductName"') DO set WIN_VER=%%i %%j
-	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| Find "CurrentVersion"') DO set WIN_VER_NUM=%%i
+	set STANDALONE=yes
+	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName ^| %FIND% "ProductName"') DO set WIN_VER=%%i %%j
+	for /f "tokens=3*" %%i IN ('%REG% query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion ^| %FIND% "CurrentVersion"') DO set WIN_VER_NUM=%%i
 )
 
 :: Make sure we're on Win7, 8 or 8.1 series
 :: On Windows 10 the console stupidly reports that the internal version number is 6.3, same
-:: as Win7-81, so we have to add an additional literal string check to catch it. Sigh.
+:: as Win7-8.1, so we have to add an additional literal string check to catch it. Sigh.
 set ABORT=no
 if %WIN_VER_NUM% gtr 6.3 set ABORT=yes
 if %WIN_VER_NUM% leq 6.0 set ABORT=yes
@@ -84,7 +92,11 @@ if %ABORT%==yes (
 
 :::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-call functions\log.bat "     Uninstalling bad updates, please wait..."
+if STANDALONE==no (
+	call functions\log.bat "     Uninstalling bad updates, please wait..."
+) else (
+	echo "Uninstalling bad updates, please wait..."
+)
 
 if "%VERBOSE%"=="yes" (
 	REM Update adds ITraceRelogger interface support
@@ -266,17 +278,21 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-call functions\log.bat "     Blocking bad updates, please wait..."
+if STANDALONE==no (
+	call functions\log.bat "     Blocking bad updates, please wait..."
+) else (
+	echo "Blocking bad updates, please wait..."
+)
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-pushd stage_4_repair\disable_windows_telemetry >NUL
+if STANDALONE==no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
 
 :: Batch 1
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 971033 3123862 3112336 3090045 3083711 3083710  
@@ -285,15 +301,19 @@ start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3081954 3081454 3081
 :: Batch 3
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
 
-popd
+if STANDALONE==no popd
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-call functions\log.bat "     Removing telemetry-related scheduled tasks..."
+if STANDALONE==no (
+	call functions\log.bat "     Removing telemetry-related scheduled tasks..."
+) else (
+	echo "Removing telemetry-related scheduled tasks...."
+)
 
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\AitAgent"
@@ -323,13 +343,17 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-call functions\log.bat "     Removing bad services, please wait..."
+if STANDALONE==no (
+	call functions\log.bat "     Removing bad services, please wait..."
+) else (
+	echo "Removing bad services, please wait..."
+)
 
 if "%VERBOSE%"=="yes" (
 	:: Diagnostic Tracking
@@ -349,13 +373,18 @@ if "%VERBOSE%"=="yes" (
 	sc stop RemoteRegistry >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-call functions\log.bat "     Toggling official MS telemetry registry entries..."
+if STANDALONE==no (
+	call functions\log.bat "     Toggling official MS telemetry registry entries..."
+) else (
+	echo "Toggling official MS telemetry registry entries..."
+)
+
 
 if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
@@ -415,17 +444,21 @@ if "%VERBOSE%"=="yes" (
 	%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISC
-call functions\log.bat "     Miscellaneous cleanup, please wait..."
+if STANDALONE==no (
+	call functions\log.bat "     Miscellaneous cleanup, please wait..."
+) else (
+	echo "Miscellaneous cleanup, please wait..."
+)
 
 :: Kill pending tracking reports
 if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
-call functions\log.bat "     Done."
+if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
