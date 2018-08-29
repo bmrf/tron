@@ -3,7 +3,7 @@
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
-::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether it exists on the system
+::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether v2 exists on the system
 ::                1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
 ::                      - script:      Remove deprecated Junkware Removal Tool code
 ::                1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
@@ -79,8 +79,8 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		"stage_3_disinfect\mbam\mb3-setup-consumer-3.5.1.2522-1.0.421-1.0.6521.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 		
 		:: Nuke MBAM which arrogantly auto-starts even though we didn't request it
-		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		
 		:: Nuke the desktop shortcut
 		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
