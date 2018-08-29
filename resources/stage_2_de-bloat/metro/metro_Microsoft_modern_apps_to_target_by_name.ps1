@@ -4,9 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.5 + Add additional user-submitted entries
-               <-- oudated comments removed -->
-               1.0.1 + Add script version and date variables to support automatic updates at Tron runtime
+Version:       1.2.6 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -14,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.5"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-23"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.6"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-29"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -56,6 +54,7 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
+Remove-App "BrowserChoice"                             # "Browser Choice" screen required by the EU antitrust regulation
 Remove-App "Microsoft.Advertising.JavaScript"          # Advertising framework
 Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
@@ -92,7 +91,6 @@ Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_d
 Remove-App "Microsoft.Windows.FeatureOnDemand.InsiderHub"
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList"
-Remove-App "Microsoft.Zune"                            # Zune collection of apps
 Remove-App "Windows.CBSPreview"
 Remove-App "Windows.ContactSupport"
 
@@ -120,6 +118,7 @@ Remove-App "Windows.ContactSupport"
 #Remove-App "Microsoft.XboxGamingOverlay"
 #Remove-App "Microsoft.XboxIdentityProvider"
 #Remove-App "Microsoft.XboxSpeechToTextOverlay"
+#Remove-App "Microsoft.Zune"                           # Zune collection of apps
 #Remove-App "Microsoft.ZuneMusic"
 #Remove-App "Microsoft.ZuneVideo"
 #Remove-App "Microsoft.windowscommunicationsapps"      # Calendar and Mail app
