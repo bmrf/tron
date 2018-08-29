@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
+:: Version:       1.2.2 * mbam:        Update to v3.xx and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
+::                1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
 ::                      - script:      Remove deprecated Junkware Removal Tool code
 ::                1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
 ::                1.1.9 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -26,8 +27,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.1
-set STAGE_3_SCRIPT_DATE=2018-07-08
+set STAGE_3_SCRIPT_VERSION=1.2.2
+set STAGE_3_SCRIPT_DATE=2018-08-29
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -74,12 +75,20 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "   Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM and remove desktop icon
 	if /i %DRY_RUN%==no (
-		REM "stage_3_disinfect\mbam\Malwarebytes Anti-Malware v3.0.4.1269.exe" /verysilent
-		"stage_3_disinfect\mbam\Malwarebytes Anti-Malware v2.2.1.1043.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
-		if exist "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk" del "%PUBLIC%\Desktop\Malwarebytes Anti-Malware.lnk"
-		if exist "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk" del "%USERPROFILES%\Desktop\Malwarebytes Anti-Malware.lnk"
-		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk" del "%ALLUSERSPROFILE%\Desktop\Malwarebytes Anti-Malware.lnk"
-		copy /y stage_3_disinfect\mbam\settings.conf "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Configuration\settings.conf" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		"stage_3_disinfect\mbam\mb3-setup-consumer-3.5.1.2522-1.0.421-1.0.6521.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+		
+		:: Nuke MBAM which arrogantly auto-starts even though we didn't request it
+		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		
+		:: Nuke the desktop shortcut
+		if exist "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk"
+		if exist "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk"
+		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
+		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
+		
+		:: Install our config
+		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 		:: Install the bundled definitions file and integrate the log into Tron's log
 		call functions\log_with_date.bat "   Loading bundled definitions package..."
@@ -89,8 +98,8 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	)
 
 	:: Scan for and launch appropriate architecture version
-	if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe"
-	if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" start "" "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe"
+	if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" start "" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
+	if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" start "" "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
 
 	call functions\log_with_date.bat "   Done."
 	call functions\log_with_date.bat "!  NOTE: You must manually click SCAN in the MBAM window!"
