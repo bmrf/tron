@@ -82,9 +82,9 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		
 		:: Nuke the desktop shortcut
+		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
 		if exist "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk"
 		if exist "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk"
-		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
 		
 		:: Install our config
