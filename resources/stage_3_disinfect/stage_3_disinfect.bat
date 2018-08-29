@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 * mbam:        Update to v3.xx and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
+:: Version:       1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
+::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether it exists on the system
 ::                1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
 ::                      - script:      Remove deprecated Junkware Removal Tool code
 ::                1.2.0 * sophos:      Prevent Sophos from trying to update if a network connection isn't detected
@@ -61,9 +62,9 @@ if %WIN_VER_NUM% geq 6.0 (
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
-if exist "%ProgramFiles%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we 
+:: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
 if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
-if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if /i %EXISTING_MBAM%==yes (
 	call functions\log_with_date.bat "   Existing MBAM installation detected. Skipping installation."
