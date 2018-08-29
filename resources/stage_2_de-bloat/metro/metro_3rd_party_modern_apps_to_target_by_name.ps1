@@ -4,8 +4,8 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.9 + Add additional user-submitted entries
-               1.2.4 * Fixed variable re-use, thanks to github:madbomb22
+Version:       1.3.0 + Add additional user-submitted entries
+               <-- outdated changelog comments removed -->
                1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
 #>
 $ErrorActionPreference = "SilentlyContinue"
@@ -14,8 +14,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.9"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-23"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.0"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-29"
 
 
 # Needed for Removal
@@ -233,6 +233,7 @@ Remove-App "king.com*"
 Remove-App "king.com.BubbleWitch3Saga"
 Remove-App "king.com.CandyCrushSaga"
 Remove-App "king.com.CandyCrushSodaSaga"
+Remove-App "king.com.ParadiseBay"
 Remove-App "sMedioforHP.sMedio360*"
 Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "toolbar*"
