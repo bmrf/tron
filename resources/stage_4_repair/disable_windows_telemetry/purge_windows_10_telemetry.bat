@@ -774,7 +774,7 @@ if "%VERBOSE%"=="yes" (
 	)
 ) else (
 	taskkill /f /im gwx.exe /t >> "%LOGPATH%\%LOGFILE%" 2>&1
-	if STANDALONE= (
+	if STANDALONE==no (
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\wcmsvc\wifinetworkmanager" -ot reg -actn ace -ace "n:administrators;p:full" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		stage_4_repair\disable_windows_telemetry\setacl.exe -on "hkey_local_machine\software\microsoft\windows\currentversion\windowsupdate\auto update" -ot reg -actn setowner -ownr n:administrators >> "%LOGPATH%\%LOGFILE%" 2>&1
