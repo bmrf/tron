@@ -46,7 +46,7 @@ set SCRIPT_VERSION=1.2.6-TRON
 set SCRIPT_UPDATED=2018-08-15
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
-set STANDALONE==no
+set STANDALONE=no
 if /i "%LOGPATH%"=="" (
 	set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 	set FIND=%SystemRoot%\System32\find.exe
