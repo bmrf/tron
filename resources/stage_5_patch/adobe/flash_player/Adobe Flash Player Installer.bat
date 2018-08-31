@@ -98,11 +98,14 @@ net stop AdobeFlashPlayerUpdateSvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
 sc delete AdobeFlashPlayerUpdateSvc >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 :: Delete scheduled tasks Adobe installs against our wishes
-del /F /Q "%SystemDrive%\Windows\tasks\Adobe Acrobat Update Task*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del /F /Q "%SystemDrive%\Windows\tasks\Adobe Acrobat Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Acrobat Update Task*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Acrobat Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player PPAPI Notifier*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player * Notifier" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+schtasks.exe /tn "Adobe Flash Player Updater" /delete /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+schtasks.exe /tn "Adobe Flash Player NPAPI Notifier" /delete /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+
 
 :: Delete the annoying Acrobat tray icon
 if exist "%ProgramFiles(x86)%\Adobe\Acrobat 7.0\Distillr\acrotray.exe" (
