@@ -4,9 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.0 + Add additional user-submitted entries
-               <-- outdated changelog comments removed -->
-               1.2.3 * Implement removal process improvements, thanks to github:madbomb22			   
+Version:       1.3.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -14,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.0"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-08-29"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.1"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-09-14"
 
 
 # Needed for Removal
@@ -28,7 +26,7 @@ Function Remove-App([String]$AppName){
 	If($AppxPackages.DisplayName -match $AppName -or $ProPackageList.Name -match $AppName ) {
 		$PackageFullName = ($ProPackageList | where {$_.Name -like $AppName}).PackageFullName
 		$ProPackageFullName = ($AppxPackages | where {$_.Displayname -like $AppName}).PackageName
-	
+
 		If($PackageFullName -is [array]){
 			For($i=0 ;$i -lt $PackageFullName.Length ;$i++) {
 				$Script:AppxCount3rd++
@@ -36,7 +34,7 @@ Function Remove-App([String]$AppName){
 				$PackageF = $PackageFullName[$i]
 				$ProPackage = $ProPackageFullName[$i]
 				write-output "$AppxCount3rd - $PackageF"
-				Start-Job -Name $Job -ScriptBlock { 
+				Start-Job -Name $Job -ScriptBlock {
 					Remove-AppxPackage -Package $using:PackageF | Out-null
 					Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackage | Out-null
 				} | Out-null
@@ -45,7 +43,7 @@ Function Remove-App([String]$AppName){
 			$Script:AppxCount3rd++
 			$Job = "TronScript3rd$AppxCount3rd"
 			write-output "$AppxCount3rd - $PackageFullName"
-			Start-Job -Name $Job -ScriptBlock { 
+			Start-Job -Name $Job -ScriptBlock {
 				Remove-AppxPackage -Package $using:PackageFullName | Out-null
 				Remove-AppxProvisionedPackage -Online -PackageName $using:ProPackageFullName | Out-null
 			} | Out-null
@@ -93,7 +91,10 @@ Remove-App "A278AB0D.DragonManiaLegends*"
 Remove-App "A278AB0D.MarchofEmpires"
 Remove-App "A34E4AAB.YogaChef*"
 Remove-App "AD2F1837.DiscoverHPTouchpointManager"
+Remove-App "AD2F1837.HPBusinessSlimKeyboard"
+Remove-App "AD2F1837.HPConnectedPhotopoweredbySnapfish"
 Remove-App "AD2F1837.HPJumpStart"
+Remove-App "AD2F1837.HPPCHardwareDiagnosticsWindows"
 Remove-App "AD2F1837.HPPowerManager"
 Remove-App "AD2F1837.HPWelcome"
 Remove-App "AD2F1837.SmartfriendbyHPCare"
@@ -211,6 +212,7 @@ Remove-App "ThumbmunkeysLtd.PhototasticCollage*"
 Remove-App "ToshibaAmericaInformation.ToshibaCentral*"
 Remove-App "TripAdvisorLLC.TripAdvisorHotelsFlightsRestaurants*"
 Remove-App "TuneIn.TuneInRadio*"
+Remove-App "UniversalMusicMobile.HPLOUNGE"
 Remove-App "UptoElevenDigitalSolution.mysms-Textanywhere*"
 Remove-App "Vimeo.Vimeo*"
 Remove-App "Weather.TheWeatherChannelforHP*"
