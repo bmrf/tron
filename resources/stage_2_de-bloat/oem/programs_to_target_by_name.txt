@@ -113,6 +113,7 @@ Intel%%ME%%UninstallLegacy
 Intel%%Management Engine%%
 Intel%%Smart%%
 Launch Manager%%
+LenovoServiceBridge
 Lenovo Service Bridge
 Lenovo%%
 LinkSwift%%
