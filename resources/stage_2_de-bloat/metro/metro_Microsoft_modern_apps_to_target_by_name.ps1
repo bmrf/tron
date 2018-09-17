@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.7 + Add additional user-submitted entries
+Version:       1.2.8 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.7"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-09-14"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.8"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-09-17"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -68,6 +68,7 @@ Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
 Remove-App "Microsoft.CommsPhone"                      # Phone app
 Remove-App "Microsoft.ConnectivityStore"
+Remove-App "Microsoft.DiagnosticDataViewer"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
 Remove-App "Microsoft.GetHelp"                         # Get Help link
 Remove-App "Microsoft.Getstarted"                      # Get Started link
