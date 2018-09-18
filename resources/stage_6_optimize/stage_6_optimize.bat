@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 6: Optimize stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 * smart:       Improve SMART detection routine to also flag problem codes and set the appropriate variables
+:: Version:       1.0.9 + feature:     Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
+::                1.0.8 * smart:       Improve SMART detection routine to also flag problem codes and set the appropriate variables
 ::                1.0.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.0.6 * bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                1.0.5 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
@@ -16,14 +17,14 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_6_SCRIPT_VERSION=1.0.8
-set STAGE_6_SCRIPT_DATE=2018-03-15
+set STAGE_6_SCRIPT_VERSION=1.0.9
+set STAGE_6_SCRIPT_DATE=2018-09-18
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
-	
+
 	:: Load the settings file
 	call functions\tron_settings.bat
 
@@ -48,6 +49,23 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 	if /i %DRY_RUN%==no <NUL %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
 	call functions\log_with_date.bat "   Done."
 )
+
+
+:: JOB: Reset the system page file settings
+title Tron v%TRON_VERSION% [stage_6_optimize] [ngen .NET compilation]
+call functions\log_with_date.bat "   Launch job 'ngen .NET compilation'..."
+if /i %DRY_RUN%==no (
+	if %PROCESSOR_ARCHITECTURE%==x86 (
+		pushd %WINDIR%\Microsoft.NET\Framework\v4*
+		if %VERBOSE%==yes (ngen executeQueuedItems) else (ngen executeQueuedItems >> "%LOGPATH%\%LOGFILE%" 2>&1)
+		popd
+	) else (
+		pushd %WINDIR%\Microsoft.NET\Framework64\v4*
+		if %VERBOSE%==yes (ngen executeQueuedItems) else (ngen executeQueuedItems >> "%LOGPATH%\%LOGFILE%" 2>&1)
+		popd
+	)
+)
+call functions\log_with_date.bat "   Done."
 
 
 :: JOB: Check status of SKIP_DEFRAG and run defrag if no issues
