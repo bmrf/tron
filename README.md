@@ -30,7 +30,10 @@ I got tired of running these utilities manually and decided to just script every
 
 11. [Contact Info](#other)
 
-12. [Full description of ALL actions](#full-tron-description)
+12. Script exit codes(#script-exit-codes)
+
+13. [Full description of ALL actions](#full-tron-description)
+
 
 # USE
 
@@ -401,6 +404,17 @@ Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
 
 Monero: `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
 
+# SCRIPT EXIT CODES
+When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc). Note that these codes are not fully implemented yet, e.g. some may not trigger. But I'm adding support as I find time for it so expect this disclaimer to disappear in a bit once it's all finished.
+
+CODE		MEANING
+0		Success
+1		Error (usually fatal)
+2		Warning (non-fatal)
+3		Unsupported OS (run with -dev to override)
+4		Exit pending reboot
+5		User is an idiot (aka you tried running from the temp directory in spite of the instructions clearly saying not to)
+
 
 # FULL TRON DESCRIPTION
 The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific subscripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that, here's a general description of every action Tron performs.
@@ -520,6 +534,8 @@ Master script that launches everything else. It performs many actions on its own
     ```
     rmdir /s /q %windir%\softwaredistribution\download
     ```
+
+9. **Flush BranchCache cache**: Tron executes the command `netsh branchcache flush` to flush any cached data in the BranchCache (win7 and up only)
 
 
 ## STAGE 2: De-bloat
