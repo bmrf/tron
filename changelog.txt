@@ -26,7 +26,6 @@ functions
  . prerun_checks_and_tasks.bat     v1.0.6
  . tron_settings.bat               v1.0.1
 
-
 Stage 0: Prep
  . stage_0_prep.bat                v1.2.5
  . rkill                           v2.9.1.0
@@ -40,7 +39,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  * stage_1_tempclean.bat           v1.2.3
-    + feature: Add job 'netsh branchcache reset'
+    + feature: Add job 'netsh branchcache flush'
 
  * CCleaner                        v5.46.6652
  . BleachBit                       v2.0.0
@@ -79,7 +78,9 @@ Stage 5: Patch
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
- . stage_6_optimize.bat            v1.0.9
+ * stage_6_optimize.bat            v1.0.9
+    + Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
+
  . smartctl                        v6.6.0.4594 2017-11-05 r4594
  . drivedb.h                       2018-08-01
  . Defraggler                      v2.22.995
