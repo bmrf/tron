@@ -39,7 +39,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  * stage_1_tempclean.bat           v1.2.3
-    + feature: Add job 'netsh branchcache flush'
+    + Add job 'netsh branchcache flush'
 
  * CCleaner                        v5.46.6652
  . BleachBit                       v2.0.0
