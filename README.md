@@ -1,9 +1,9 @@
 | NAME       | Tron, an automated PC cleanup script                                                        |
 | :--------- | :------------------------------------------------------------------------------------------ |
-| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://reddit.com/r/tronscript) (`vocatus.gate@gmail`) // PGP ID: [0x07d1490f82a211a2](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) |
+| AUTHOR     | vocatus on [reddit.com/r/TronScript](https://old.reddit.com/r/tronscript) (`vocatus.gate@gmail`) // PGP ID: [0x07d1490f82a211a2](http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x07D1490F82A211A2) |
 | BACKGROUND | Why the name? Tron "Fights for the User"                                               |
 
-# DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [r/TronScript](https://www.reddit.com/r/TronScript)
+# DO NOT DOWNLOAD TRON FROM GITHUB, IT WILL NOT WORK!! YOU NEED THE ENTIRE PACKAGE FROM [r/TronScript](https://old.reddit.com/r/TronScript)
 
 I got tired of running these utilities manually and decided to just script everything. Tron is basically a glorified collection of batch files that automate the process of cleaning up and disinfecting Windows machines.
 
@@ -39,7 +39,7 @@ I got tired of running these utilities manually and decided to just script every
 
 0. FIRST THINGS FIRST: If there are pending Windows updates, reboot the machine and allow them to install. Not *required* but is strongly recommended.
 
-1. [Download Tron](https://www.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://www.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
+1. [Download Tron](https://old.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://old.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
 2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended unless the system is severly infected.
 
