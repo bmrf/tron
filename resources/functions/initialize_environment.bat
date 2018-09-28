@@ -98,6 +98,9 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: French
 if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: Spanish
+if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "Máscara de subred" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
