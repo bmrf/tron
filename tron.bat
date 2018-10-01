@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
+:: Version:       1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
+::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
 ::                      * Replace all relative references to reg.exe with hard-coded %REG% (set in initialize_environment.bat). Thanks to u/SkyPork for reporting
 ::                1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
 ::                1.1.1 + Add upload of Metro app list dump if -udl switch is used
@@ -50,8 +51,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.3
-set SCRIPT_DATE=2018-07-12
+set SCRIPT_VERSION=1.1.4
+set SCRIPT_DATE=2018-09-30
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -82,19 +83,13 @@ if /i %AUTORUN_IN_SAFE_MODE%==yes ( cls && echo. && echo ERROR: You cannot use -
 :: INTERNAL PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
 :: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
-if /i %RESUME_DETECTED%==yes (
-	REM Quick check for a faulty resume detection
-	if not exist tron_stage.txt (
-		%REG% delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
-		goto autorun_check
-	)
-
+if exist tron_stage.txt (
 	REM Read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
-	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL
+	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL		
 )
-if /i %RESUME_DETECTED%==yes call :parse_cmdline_args %RESUME_FLAGS%
-if /i %RESUME_DETECTED%==yes (
+if exist tron_stage.txt call :parse_cmdline_args %RESUME_FLAGS%
+if exist tron_stage.txt (
 	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
 	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
@@ -370,10 +365,6 @@ echo execute_jobs>tron_stage.txt
 if /i not "%*"=="" echo %*> tron_flags.txt
 
 
-:: Add a RunOnce entry to relaunch Tron if it gets interrupted by a reboot. This is deleted at the end of the script if nothing went wrong
-if /i %DRY_RUN%==no %REG% add "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume" >nul 2>&1
-
-
 :: Make sure we're actually in Safe Mode if AUTORUN_IN_SAFE_MODE was requested
 if /i %AUTORUN_IN_SAFE_MODE%==yes (
 	if /i not "%SAFE_MODE%"=="yes" (
@@ -581,7 +572,6 @@ if /i %SKIP_CUSTOM_SCRIPTS%==yes (
 ::::::::::::::::::::::
 :: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
 call functions\log_with_date.bat "   Doing miscellaneous clean up..."
-	%REG% delete "HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce" /f /v "*tron_resume" >nul 2>&1
 	del /f /q tron_flags.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	:: Skip these during a dry run because they toss errors. Not actually a problem, just an annoyance
