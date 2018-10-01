@@ -6,8 +6,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.5.2
-set TRON_DATE=2018-07-04
+set TRON_VERSION=10.7.0
+set TRON_DATE=2018-10-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -52,10 +52,6 @@ for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName
 :: Resume-related stuff (resuming from an interrupted run)
 set RESUME_STAGE=0
 set RESUME_FLAGS=0
-set RESUME_DETECTED=no
-reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\ /v "*tron_resume" >nul 2>&1
-if %ERRORLEVEL%==0 set RESUME_DETECTED=yes
-if /i "%1"=="-resume" set RESUME_DETECTED=yes
 
 
 :: Detect the version of Windows we're on. This determines a few things later on
@@ -99,7 +95,7 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
-if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "Máscara de subred" >NUL 2>&1
+if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "Máscara de subred" >NUL 2>&
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
