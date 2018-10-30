@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
+:: Version:       1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
+::                1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
 ::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether v2 exists on the system
 ::                1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
 ::                      - script:      Remove deprecated Junkware Removal Tool code
@@ -28,8 +29,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.2
-set STAGE_3_SCRIPT_DATE=2018-08-29
+set STAGE_3_SCRIPT_VERSION=1.2.3
+set STAGE_3_SCRIPT_DATE=2018-10-30
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -62,7 +63,7 @@ if %WIN_VER_NUM% geq 6.0 (
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
-:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we 
+:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
 if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
 if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
@@ -77,17 +78,17 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	:: Install MBAM and remove desktop icon
 	if /i %DRY_RUN%==no (
 		"stage_3_disinfect\mbam\mb3-setup-consumer-3.5.1.2522-1.0.421-1.0.6521.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
-		
+
 		:: Nuke MBAM which arrogantly auto-starts even though we didn't request it
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		
+
 		:: Nuke the desktop shortcut
 		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
 		if exist "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk"
 		if exist "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
-		
+
 		:: Install our config
 		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
@@ -138,14 +139,18 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 		if /i %NETWORK_AVAILABLE%==no (
 			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_no.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
 		) else (
-			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_no.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
+			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_yes.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
-		if /i %VERBOSE%==no	stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
-		if /i %VERBOSE%==yes stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
+		if /i %VERBOSE%==no	(
+			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
+		) else (
+			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
+		)
 		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
+		del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
 )
