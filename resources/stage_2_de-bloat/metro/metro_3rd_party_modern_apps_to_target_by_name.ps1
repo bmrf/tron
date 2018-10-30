@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.2 + Add additional user-submitted entries
+Version:       1.3.3 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.2"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-10-11"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-10-30"
 
 
 # Needed for Removal
@@ -65,6 +65,8 @@ Remove-App "10084FinerCode.ChessTactics"
 Remove-App "134D4F5B.Box*"
 Remove-App "1430GreenfieldTechnologie.PuzzleTouch*"
 Remove-App "1867LennardSprong.PortablePuzzleCollection"
+Remove-App "22450.BestVideoConverter"
+Remove-App "25920Bala04.Mideo-VideoPlayer"
 Remove-App "26720RandomSaladGamesLLC.HeartsDeluxe*"
 Remove-App "26720RandomSaladGamesLLC.Hexter"
 Remove-App "26720RandomSaladGamesLLC.SimpleMahjong"
@@ -78,16 +80,20 @@ Remove-App "29534ukaszKurant.Logicos2"
 Remove-App "29982CsabaHarmath.UnCompress*"
 Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
 Remove-App "32988BernardoZamora.SolitaireHD"
+Remove-App "34697joal.EasyMovieMaker"
 Remove-App "35229MihaiM.QuizforGeeks"
+Remove-App "35300Kubajzl.MCGuide"
 Remove-App "37442SublimeCo.AlarmClockForYou"
 Remove-App "37457BenoitRenaud.HexWar"
 Remove-App "39674HytoGame.TexasHoldemOnline"
 Remove-App "39806kalinnikol.FreeCellSolitaireHD"
 Remove-App "39806kalinnikol.FreeHeartsHD"
+Remove-App "41879VbfnetApps.FileDownloader"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "47404LurkingDarknessOfRoy.SimpleStrategyRTS"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
+Remove-App "56081SweetGamesBox.SlitherSnake.io"
 Remove-App "56491SimulationFarmGames.100BallsOriginal"
 Remove-App "57591LegendsSonicSagaGame.Twenty48Solitaire"
 Remove-App "5A894077.McAfeeSecurity"
@@ -156,7 +162,9 @@ Remove-App "DailymotionSA.Dailymotion*"
 Remove-App "DellInc.AlienwareCommandCenter"
 Remove-App "DellInc.AlienwareCustomerConnect"
 Remove-App "DellInc.AlienwareProductRegistration"
+Remove-App "DellInc.DellCommandUpdate"
 Remove-App "DellInc.DellCustomerConnect"
+Remove-App "DellInc.DellDigitalDelivery"
 Remove-App "DellInc.DellHelpSupport"
 Remove-App "DellInc.DellPowerManager"
 Remove-App "DellInc.DellProductRegistration"
