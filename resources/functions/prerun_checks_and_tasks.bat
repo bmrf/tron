@@ -1,7 +1,7 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 + Add some display messages explainining what we're doing (detecting disks, updating drivedb, etc)
+:: Version:       1.0.8 + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
 ::                      - Suppress "The operation completed successfully" message on bcdedit command
 ::                1.0.7 * Improve disk free space detection to work on non-English installations. Thanks to r/TchangLaTempete
 ::                1.0.6 / Import SMART problem code checks from tron.bat
