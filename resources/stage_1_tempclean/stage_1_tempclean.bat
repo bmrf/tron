@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 + feature:     Add job 'netsh branchcache flush'
+:: Version:       1.2.4 ! bugfix:      Fix syntax error in if statement in job 'netsh branchcache flush'
+::                1.2.3 + feature:     Add job 'netsh branchcache flush'
 ::                1.2.2 / ccleaner:    Re-enable CCleaner
 ::                1.2.1 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.0 ! bugfix:      Temporarily disable CCleaner until Piriform gets their mess figured out
@@ -31,8 +32,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.3
-set STAGE_1_SCRIPT_DATE=2018-09-17
+set STAGE_1_SCRIPT_VERSION=1.2.4
+set STAGE_1_SCRIPT_DATE=2018-10-31
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -203,7 +204,7 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_1_tempclean] [Reset BranchCache]
 call functions\log_with_date.bat "   Launch job 'Reset BranchCache'..."
 if /i %DRY_RUN%==no (
-	if not /i "%WIN_VER%"=="Windows XP" (
+	if /i not "%WIN_VER%"=="Windows XP" (
 		if %VERBOSE%==yes (
 			netsh branchcache show status all
 			netsh branchcache flush
