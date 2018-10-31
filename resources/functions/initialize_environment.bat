@@ -6,8 +6,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.7.0
-set TRON_DATE=2018-10-30
+set TRON_VERSION=10.7.1
+set TRON_DATE=2018-11-31
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -52,6 +52,7 @@ for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName
 :: Resume-related stuff (resuming from an interrupted run)
 set RESUME_STAGE=0
 set RESUME_FLAGS=0
+set RESUME_DETECTED=no
 
 
 :: Detect the version of Windows we're on. This determines a few things later on
