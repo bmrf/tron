@@ -7,7 +7,7 @@
 
 :: Tron Project version and date. These two variables determine the overall project version and date
 set TRON_VERSION=10.7.0
-set TRON_DATE=2018-10-xx
+set TRON_DATE=2018-10-30
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -61,22 +61,22 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
 :: English
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0409" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0409" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
 :: English UK
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0809" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0809" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=gb
 :: German
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0407" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0407" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=de
 :: French
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "040C" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "040C" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=fr
 :: Spanish
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "0C0A" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0C0A" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=es
 :: Turkish
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | find /i "041F" >nul 2>&1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "041F" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
 
 
@@ -95,7 +95,7 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
-if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "Máscara de subred" >NUL 2>&
+if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "Máscara de subred" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
