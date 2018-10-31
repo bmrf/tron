@@ -1,7 +1,9 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 * Improve disk free space detection to work on non-English OS's. Thanks to r/TchangLaTempete
+:: Version:       1.0.8 + Add some display messages explainining what we're doing (detecting disks, updating drivedb, etc)
+::                      - Suppress "The operation completed successfully" message on bcdedit command
+::                1.0.7 * Improve disk free space detection to work on non-English installations. Thanks to r/TchangLaTempete
 ::                1.0.6 / Import SMART problem code checks from tron.bat
 ::                1.0.5 * Don't check for drivedb.h updates if NETWORK_AVAILABLE is set to no
 ::                1.0.4 ! Fix syntax error in IF statement: Wrap paths in quotes to handle special characters and spaces
@@ -13,8 +15,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.7
-set PRERUN_CHECKS_SCRIPT_DATE=2018-10-30
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.8
+set PRERUN_CHECKS_SCRIPT_DATE=2018-10-31
 
 
 
@@ -117,9 +119,18 @@ pushd stage_6_optimize\defrag\
 	:: b. not in autorun
 	:: c. not in autorun (safe mode)
 	:: d. network IS available
-	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( if /i %NETWORK_AVAILABLE%==yes ( update-smart-drivedb.exe /S ) ) ) )
+	if /i %DRY_RUN%==no ( if /i %AUTORUN%==no ( if /i %AUTORUN_IN_SAFE_MODE%==no ( if /i %NETWORK_AVAILABLE%==yes ( 
+		echo.
+		echo    Updating SMART drive database, please wait...
+		echo.
+		update-smart-drivedb.exe /S >nul
+		echo    Done.
+	) ) ) )
 
 	:: Do the scan
+	echo.
+	echo    Detecting disks...
+	echo.
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_disk_smart_read_error&&set WARNINGS_DETECTED=yes_disk_smart_read_error
@@ -132,12 +143,14 @@ pushd stage_6_optimize\defrag\
 		set WARNINGS_DETECTED=yes_disk_smart_problem_code
 	)
 
+	echo    Done.
+	
 popd
 
 
 :: TASK: Get free space on the system drive and stash it for comparison later
 :: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
-for /f "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ') do set bytes=%%a
+for /f "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
 :: MB version
@@ -145,4 +158,4 @@ set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
 
 :: TASK: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
-if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy
+if %WIN_VER_NUM% geq 6.3 bcdedit /set {default} bootmenupolicy legacy >NUL
