@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.8 + Add additional user-submitted entries
+Version:       1.2.9 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.8"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-09-17"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.9"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-11-12"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -66,7 +66,6 @@ Remove-App "Microsoft.BingSports"                      # Sports app - Sports new
 Remove-App "Microsoft.BingTranslator"                  # Translator app - Bing Translate
 Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
-Remove-App "Microsoft.CommsPhone"                      # Phone app
 Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.DiagnosticDataViewer"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
@@ -100,6 +99,7 @@ Remove-App "Windows.ContactSupport"
 # Inactive identifers
 #Remove-App "Microsoft.Appconnector"                   # Not sure about this one
 #Remove-App "Microsoft.BingWeather"                    # Weather app
+#Remove-App "Microsoft.CommsPhone"                     # Phone app
 #Remove-App "Microsoft.MSPaint"                        # MS Paint (Paint 3D)
 #Remove-App "Microsoft.Microsoft3DViewer"              # 3D model viewer
 #Remove-App "Microsoft.MicrosoftSolitaireCollection"   # Solitaire collection
