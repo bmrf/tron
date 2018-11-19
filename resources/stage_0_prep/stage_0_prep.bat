@@ -11,15 +11,15 @@
 ::                1.2.0 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.1.9 + improvement:  Add killing of HelpPane.exe if it exists
 ::                1.1.8 ! bugfix:       Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
-::                1.1.7 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
+::                1.1.7 * logging:      Update date/time logging functions to use new log_with_date.bat. Thanks to u/DudeManFoo
 ::                1.1.6 * improvement:  Update script to support standalone execution
 ::                      ! bugfix:erunt: Don't wait for ERUNT to finish; launch it, wait 15 seconds, then continue. This is to prevent getting stalled on a rare error which causes a popup msg on Win10
-::                1.1.5 * ntp:          Append ,0x8 to NTP server commands to send standard client requests vs. symmetric active requests. Thanks to /u/webtroter
+::                1.1.5 * ntp:          Append ,0x8 to NTP server commands to send standard client requests vs. symmetric active requests. Thanks to u/webtroter
 ::                1.1.4 ! bugfix:       Don't attempt to create System Restore point on Windows 10 systems if in Safe Mode because Win10 blocks system restore point creation in Safe Mode
 ::                      * improvement:  Add 500ms delay (0.5 seconds) to screenshot capture. Also capture contents of all monitors now vs. only the primary
 ::                1.1.3 + feature:      Add job to capture desktop screenshot to the RAW_LOGS folder
-::                1.1.2 ! bugfix:siv:   Prefix siv32x and siv64x commands with "start" instead of calling directly to prevent script stalling if SIV hangs. Thanks to /u/gameoftome
-::                1.1.1 * siv:          Execute siv64x.exe instead of siv32x.exe on 64-bit systems. Thanks to /u/gameoftomes
+::                1.1.2 ! bugfix:siv:   Prefix siv32x and siv64x commands with "start" instead of calling directly to prevent script stalling if SIV hangs. Thanks to u/gameoftome
+::                1.1.1 * siv:          Execute siv64x.exe instead of siv32x.exe on 64-bit systems. Thanks to u/gameoftomes
 ::                1.1.0 ! bugfix:       Fix bug in GUID dump, include current date instead of time in the file name
 ::                      ! bugfix:       Wrap all references to %TEMP% in quotes. Should help prevent crashing on systems with special characters in the username
 ::                1.0.9 / logging:      Minor log message change/improvement
