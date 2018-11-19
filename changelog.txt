@@ -25,13 +25,14 @@ functions
  . initialize_environment.bat      v10.7.2
  * prerun_checks_and_tasks.bat     v1.0.8
     + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
-    - Suppress "The operation completed successfully" message on bcdedit command
+    - Suppress "The operation completed successfully" output from on bcdedit command
 
  . tron_settings.bat               v1.0.1
 
 Stage 0: Prep
  * stage_0_prep.bat                v1.2.6
     * Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
+
  . rkill                           v2.9.1.0
  . ProcessKiller                   v2.0.0-TRON
  . TDSS Killer                     v3.1.0.12
