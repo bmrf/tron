@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 * improvement:  Clean up GUID dump file (convert from UCS2 to UTF-8) so for loops can correctly read it for improved Stage 2: debloat scans
+:: Version:       1.2.6 * improvement:  Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
+::                1.2.5 * improvement:  Clean up GUID dump file (convert from UCS2 to UTF-8) so for loops can correctly read it for improved Stage 2: debloat scans
 ::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.3 / metro:        Reduce output from Metro App dump since we don't care about the fully-qualified App name
 ::                1.2.2 + improvement:  Add job to dump Metro apps on Windows 8+. This is so they can be sent via -udl switch if used
@@ -38,14 +39,14 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.5
-set STAGE_0_SCRIPT_DATE=2018-08-01
+set STAGE_0_SCRIPT_VERSION=1.2.6
+set STAGE_0_SCRIPT_DATE=2018-11-19
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
-	
+
 	:: Load the settings file
 	call functions\tron_settings.bat
 
@@ -95,7 +96,7 @@ if %WIN_VER_NUM% geq 6.0 (
 			powershell "Enable-ComputerRestore -Drive "%SystemDrive%" | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 	)
-  
+
 	REM Create the restore point
 	echo "%WIN_VER%" | findstr /i /c:"server" >NUL || (
 		call functions\log_with_date.bat "   Creating pre-run Restore Point..."
@@ -154,12 +155,16 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
-:: JOB: Do a Metro app dump before kicking everything off (Win8+ only)
+:: JOB: Do a Metro app dump before kicking everything off (Win8+ only; non-Safe Mode only [doesn't work in Safe Mode])
 title Tron v%TRON_VERSION% [stage_0_prep] [Metro app dump]
 if /i %WIN_VER_NUM% geq 6.2 (
-	call functions\log_with_date.bat "   Dumping Metro app list to "%RAW_LOGS%"..."
-	if /i %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Select Name" > "%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
-	call functions\log_with_date.bat "   Done."
+	if  %SAFE_MODE%==no (
+		call functions\log_with_date.bat "   Dumping Metro app list to "%RAW_LOGS%"..."
+		if /i %DRY_RUN%==no powershell "Get-AppxPackage -AllUsers | Select Name" > "%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
+		call functions\log_with_date.bat "   Done."
+	) else (
+		call functions\log_with_date.bat " ! Skipping Metro app list dump as it doesn't work in Safe Mode."
+	)
 )
 
 
