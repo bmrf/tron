@@ -17,25 +17,25 @@ Version legend:
 
 
 #########################
-# v10.7.2 // 2018-11-xx #
+# v10.7.2 // 2018-11-19 #
 #########################
- * tron.bat                        v1.1.4
-    - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
+ . tron.bat                        v1.1.4
 
 functions
  . initialize_environment.bat      v10.7.2
  * prerun_checks_and_tasks.bat     v1.0.8
-    + Add some display messages explainining what we're doing (detecting disks, updating drivedb, etc)
+    + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
     - Suppress "The operation completed successfully" message on bcdedit command
 
  . tron_settings.bat               v1.0.1
 
 Stage 0: Prep
- . stage_0_prep.bat                v1.2.5
+ * stage_0_prep.bat                v1.2.6
+    * Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
  . rkill                           v2.9.1.0
  . ProcessKiller                   v2.0.0-TRON
  . TDSS Killer                     v3.1.0.12
- . McAfee Stinger                  v12.1.0.2940
+ * McAfee Stinger                  v12.1.0.2957
  . erunt                           v1.1j
  . caffeine                        v1.6.2.0
  . wget                            v1.19.4 x86
@@ -43,7 +43,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat           v1.2.3
- . CCleaner                        v5.48.6834
+ * CCleaner                        v5.49.6856
  . BleachBit                       v2.0.0
  . finddupe.exe                    v1.25
  . TempFileCleanup                 v1.1.4-TRON
@@ -51,10 +51,10 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.4.3
- . programs_to_target_by_GUID.txt
+ * programs_to_target_by_GUID.txt
  . toolbars_BHOs_to_target_by_GUID.txt
  . programs_to_target_by_name.txt
- . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
@@ -62,12 +62,16 @@ Stage 3: Disinfect
  . Sophos Virus Removal Tool       v2.6.1
  . Kaspersky Virus Removal Tool    v15.0.22.0
  . Malwarebytes Anti-Malware       v3.5.1.2522-1.0.421-1.0.6521
- . Malwarebytes included defs:     2018-10-25
+ * Malwarebytes included defs:     2018-11-08
 
 Stage 4: Repair
  . stage_4_repair.bat              v1.2.6
- . purge_windows_7-8-81_telemetry.bat
- . purge_windows_10_telemetry.bat
+ * purge_windows_7-8-81_telemetry.bat
+    ! Fix standalone and Tron-called execution due to typo in STANDALONE variable comparison command. Thanks to u/bubonis
+
+ * purge_windows_10_telemetry.bat
+    ! Fix standalone and Tron-called execution due to typo in STANDALONE variable comparison command. Thanks to u/bubonis
+
  . Spybot Anti-Beacon              v1.5.0.35
  . O&O ShutUp10                    v1.6.1399
  . Repair file extensions          v1.0.0
@@ -75,7 +79,7 @@ Stage 4: Repair
 Stage 5: Patch
  . stage_5_patch.bat               v1.2.3
  . 7-Zip                           v18.05        (multi-language)
- . Adobe Flash Player              v31.0.0.122   (language ignored)
+ * Adobe Flash Player              v31.0.0.148   (language ignored)
  . Java Runtime Environment        8u192         (language ignored)
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
@@ -98,7 +102,6 @@ Stage 9: Manual tools
  . Autoruns                        v13.91
  . BlueScreenView                  v1.55
  . ComboFix                        v18.8.8.1
- . Junkware Removal Tool           v8.1.4.0
  . Net Adapter Repair              v1.2
  . PC Hunter                       v1.51 x64
  . PC Hunter                       v1.51 x86
