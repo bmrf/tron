@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.3 + Add additional user-submitted entries
+Version:       1.3.4 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.3"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-10-30"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.4"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-11-19"
 
 
 # Needed for Removal
@@ -59,6 +59,7 @@ Function Remove-App([String]$AppName){
 Remove-App "*DragonManiaLegends"
 Remove-App "*HiddenCityMysteryofShadows"
 Remove-App "*MarchofEmpires"
+Remove-App "*toolbar*"
 Remove-App "06DAC6F6.StumbleUpon"
 Remove-App "09B6C2D8.TheTreasuresofMontezuma3"
 Remove-App "10084FinerCode.ChessTactics"
@@ -91,11 +92,13 @@ Remove-App "39806kalinnikol.FreeHeartsHD"
 Remove-App "41879VbfnetApps.FileDownloader"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "47404LurkingDarknessOfRoy.SimpleStrategyRTS"
+Remove-App "48682KiddoTest.Frameworkuapbase"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
 Remove-App "56081SweetGamesBox.SlitherSnake.io"
 Remove-App "56491SimulationFarmGames.100BallsOriginal"
 Remove-App "57591LegendsSonicSagaGame.Twenty48Solitaire"
+Remove-App "59091GameDesignStudio.MahjongDe*"
 Remove-App "5A894077.McAfeeSecurity"
 Remove-App "64885BlueEdge.OneCalendar*"
 Remove-App "6Wunderkinder.Wunderlist"
@@ -112,22 +115,25 @@ Remove-App "A278AB0D.DisneyMagicKingdoms"
 Remove-App "A278AB0D.DragonManiaLegends*"
 Remove-App "A278AB0D.MarchofEmpires"
 Remove-App "A34E4AAB.YogaChef*"
+Remove-App "A8C75DD4.Therefore"
 Remove-App "AD2F1837.DiscoverHPTouchpointManager"
 Remove-App "AD2F1837.GettingStartedwithWindows8"
 Remove-App "AD2F1837.HPBusinessSlimKeyboard"
 Remove-App "AD2F1837.HPConnectedMusic"
 Remove-App "AD2F1837.HPConnectedPhotopoweredbySnapfish"
 Remove-App "AD2F1837.HPFileViewer"
+Remove-App "AD2F1837.HPGames"
 Remove-App "AD2F1837.HPJumpStart"
 Remove-App "AD2F1837.HPPCHardwareDiagnosticsWindows"
 Remove-App "AD2F1837.HPPowerManager"
 Remove-App "AD2F1837.HPRegistration"
 Remove-App "AD2F1837.HPWelcome"
 Remove-App "AD2F1837.SmartfriendbyHPCare"
-Remove-App "ASUSCloudCorporation.MobileFileExplorer*"
+Remove-App "ASUSCloudCorporation.MobileFileExplorer"
 Remove-App "AccuWeather.AccuWeatherforWindows8*"
 Remove-App "AcerIncorporated*"
 Remove-App "AcerIncorporated.AcerExplorer"
+Remove-App "AcrobatNotificationClient"
 Remove-App "ActiproSoftwareLLC*"
 Remove-App "ActiproSoftwareLLC.562882FEEB491"
 Remove-App "AdobeSystemsIncorporated.AdobePhotoshopExpress*"
@@ -251,6 +257,7 @@ Remove-App "UptoElevenDigitalSolution.mysms-Textanywhere*"
 Remove-App "Vimeo.Vimeo*"
 Remove-App "Weather.TheWeatherChannelforHP*"
 Remove-App "Weather.TheWeatherChannelforLenovo*"
+Remove-App "WeatherBug.a.WeatherBug"
 Remove-App "WildTangentGames*"
 Remove-App "WildTangentGames.-GamesApp-"
 Remove-App "WildTangentGames.63435CFB65F55"
@@ -272,7 +279,6 @@ Remove-App "king.com.CandyCrushSodaSaga"
 Remove-App "king.com.ParadiseBay"
 Remove-App "sMedioforHP.sMedio360*"
 Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
-Remove-App "toolbar*"
 Remove-App "zuukaInc.iStoryTimeLibrary*"
 
 
