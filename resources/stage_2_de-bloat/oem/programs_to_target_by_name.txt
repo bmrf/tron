@@ -1,6 +1,7 @@
 :: Purpose:       List of specific programs to target by name and wildcard. Called by Tron in Stage 2: De-bloat
-::                Add any GUID uninstall commands to this list to target them for removal
+::                Add any program names to this list to target them for removal
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
+::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
