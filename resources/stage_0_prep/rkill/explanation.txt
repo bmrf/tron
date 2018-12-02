@@ -1,0 +1,1 @@
+Renamed rkill.exe to solitaire.exe to avoid malware blocking. Binary is identical regardless of name.
