@@ -18,3 +18,6 @@
 caffeine
 sihost
 SearchUI
+; screen reader (requested by u/maj01)
+nvdahelperremoteloader
+nvda
