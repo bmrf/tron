@@ -1,0 +1,49 @@
+%ProgramFiles(x86)%\NVDA\lib64\2018.3.2\nvdaHelperRemoteLoader.exe
+%ProgramFiles(x86)%\NVDA\nvda.exe
+%ProgramFiles(x86)%\TeamViewer\TeamViewer.exe
+%ProgramFiles(x86)%\TeamViewer\TeamViewer_Desktop.exe
+%ProgramFiles(x86)%\TeamViewer\TeamViewer_Service.exe
+%ProgramFiles(x86)%\TeamViewer\tv_w32.exe
+%ProgramFiles(x86)%\TeamViewer\tv_x64.exe
+%ProgramFiles(x86)%\LogMeIn\x64\LogMeIn.exe
+%ProgramFiles(x86)%\LogMeIn\x64\LogMeInSystray.exe
+%ProgramFiles(x86)%\LogMeIn\x64\LogMeInToolkit.exe
+%ProgramFiles(x86)%\LogMeIn\Ignition\LMIIgnition.exe
+%ProgramFiles(x86)%\LogMeIn\x86\LogMeIn.exe
+%ProgramFiles(x86)%\LogMeIn\x86\LogMeInSystray.exe
+%ProgramFiles(x86)%\LogMeIn\x86\LogMeInToolkit.exe
+%ProgramFiles%\LogMeIn\x64\LogMeIn.exe
+%ProgramFiles%\LogMeIn\x64\LogMeInSystray.exe
+%ProgramFiles%\LogMeIn\x64\LogMeInToolkit.exe
+%ProgramFiles%\LogMeIn\x86\LogMeIn.exe
+%ProgramFiles%\LogMeIn\x86\LogMeInSystray.exe
+%ProgramFiles%\LogMeIn\x86\LogMeInToolkit.exe
+%ProgramFiles%\LogMeIn\Ignition\LMIIgnition.exe
+%ProgramFiles%\TigerVNC\winvnc4.exe
+%Temp%\TeamViewer\TeamViewer.exe
+%Temp%\TeamViewer\TeamViewer_Desktop.exe
+%Temp%\TeamViewer\TeamViewer_Service.exe
+%Temp%\TeamViewer\tv_w32.exe
+%Temp%\TeamViewer\tv_x64.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWAppsSharedConfig\SimpleService.exe
+%systemdrive%\Windows\Temp\ShAeroDisabler.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\java.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\javaw.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\JWrapper.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Manage Remote Access Service.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\pack200.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote Access Session.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote Access.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote AccessECompatibility.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote AccessLauncher.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote Support.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote SupportECompatibility.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Remote SupportLauncher.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\ssvagent.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\Stop Remote Access Service.exe
+%systemdrive%\ProgramData\JWrapper-Remote Access\JWrapper-Windows64JRE-00000000000-complete\bin\unpack200.exe
+%systemdrive%\Documents and Settings\Administrator\Application Data\JWrapper-Remote Support\JWrapper-Windows32JRE-00028603591-complete\bin\Remote Support.exe
+%systemdrive%\Documents and Settings\Administrator\Application Data\JWrapper-Remote Support\JWrapperTemp-1428395262-0-app\bin\javaw.exe
+%systemdrive%\Documents and Settings\All Users\Application Data\JWrapper-Remote Access\JWAppsSharedConfig\SimpleService.exe
+%systemdrive%\Documents and Settings\All Users\Application Data\JWrapper-Remote Access\JWrapper-Windows32JRE-00000000000-complete\bin\Remote Access.exe
+%systemdrive%\Documents and Settings\Administrator\Application Data\JWrapper-Remote Support\JWrapper-Windows32JRE-00028603591-complete\bin\javaw.exe
