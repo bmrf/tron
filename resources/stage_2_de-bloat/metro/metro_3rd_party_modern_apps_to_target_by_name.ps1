@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.4 + Add additional user-submitted entries
+Version:       1.3.5 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.4"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-11-19"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.5"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-12-07"
 
 
 # Needed for Removal
@@ -159,6 +159,7 @@ Remove-App "ClearChannelRadioDigital.iHeartRadio*"
 Remove-App "CrackleInc.Crackle*"
 Remove-App "CyberLinkCorp.ac.AcerCrystalEye*"
 Remove-App "CyberLinkCorp.ac.SocialJogger*"
+Remove-App "CyberLinkCorp.hs.PowerMediaPlayer14forHPConsumerPC"
 Remove-App "CyberLinkCorp.hs.YouCamforHP*"
 Remove-App "CyberLinkCorp.id.PowerDVDforLenovoIdea*"
 Remove-App "D52A8D61.FarmVille2CountryEscape*"
