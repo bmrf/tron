@@ -30,7 +30,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_3_SCRIPT_VERSION=1.2.3
-set STAGE_3_SCRIPT_DATE=2018-10-30
+set STAGE_3_SCRIPT_DATE=2018-12-07
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -77,7 +77,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "   Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM and remove desktop icon
 	if /i %DRY_RUN%==no (
-		"stage_3_disinfect\mbam\mb3-setup-consumer-3.5.1.2522-1.0.421-1.0.6521.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+		"stage_3_disinfect\mbam\mb3-setup-54035.54035-3.6.1.2711-1.0.482-1.0.7469.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
 
 		:: Nuke MBAM which arrogantly auto-starts even though we didn't request it
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -142,14 +142,14 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_yes.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
 		)
 
-		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
+		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
 		if /i %VERBOSE%==no	(
 			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
 		) else (
 			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
 		)
-		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\SophosVirusRemovalTool.log" >nul 2>&1
+		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
 		del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
