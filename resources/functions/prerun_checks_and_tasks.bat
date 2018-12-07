@@ -1,8 +1,9 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
-::                      - Suppress "The operation completed successfully" message on bcdedit command
+:: Version:       1.0.9 ! Fix disk space calculation on Win10 build 17763 (1809) and up due to fsutil output changing. Thanks to u/Paul_NZ
+::                1.0.8 + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
+::                      - Suppress "The operation completed successfully" output from bcdedit command
 ::                1.0.7 * Improve disk free space detection to work on non-English installations. Thanks to r/TchangLaTempete
 ::                1.0.6 / Import SMART problem code checks from tron.bat
 ::                1.0.5 * Don't check for drivedb.h updates if NETWORK_AVAILABLE is set to no
@@ -15,8 +16,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.0.8
-set PRERUN_CHECKS_SCRIPT_DATE=2018-10-31
+set PRERUN_CHECKS_SCRIPT_VERSION=1.0.9
+set PRERUN_CHECKS_SCRIPT_DATE=2018-12-07
 
 
 
@@ -149,12 +150,22 @@ popd
 
 
 :: TASK: Get free space on the system drive and stash it for comparison later
-:: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
-for /f "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-:: GB version
-::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
+set bytes=%bytes: =%
 :: MB version
-set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
+set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+
+:: These two lines were the old code for checking disk space. fsutil output changed in Win10 build 17763 (1809) which broke these two methods.
+:: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
+:: for /f "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
+
+:: GB version (old method; broken in Win10 build 17763)
+::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
+:: MB version (old method; broken in Win10 build 17763)
+:: set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
+
+
+
 
 
 :: TASK: Re-enable the standard "F8" key functionality for choosing bootup options (Microsoft started disabling it by default in Windows 8 and up)
