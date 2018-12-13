@@ -1,15 +1,16 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.0 + Initial break-out of code from tron.bat into discrete subscript
+:: Version:       1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
+::                1.0.0 + Initial break-out of code from tron.bat into discrete subscript
 @echo off
 
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.0
-set STAGE_7_SCRIPT_DATE=2018-02-16
+set STAGE_7_SCRIPT_VERSION=1.0.1
+set STAGE_7_SCRIPT_DATE=2018-012-13
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -96,8 +97,8 @@ call functions\log_with_date.bat "   Done. Summary logs are at "%SUMMARY_LOGS%\"
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Collect logs]
 call functions\log_with_date.bat "   Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\Logs\*.l*" "%RAW_LOGS%" >NUL
-	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\Logs\*.xml" "%RAW_LOGS%" >NUL
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\*.l*" "%RAW_LOGS%" >NUL
+	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs\*.xml" "%RAW_LOGS%" >NUL
 	if exist "%LOGPATH%\mbam-log*" move /y "%LOGPATH%\mbam-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\Sophos*" move /y "%LOGPATH%\Sophos*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
@@ -122,7 +123,12 @@ call functions\log_with_date.bat "   OK."
 
 :: JOB: Calculate saved disk space
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
-for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
+for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
+set bytes=%bytes: =%
+
+:: Old method (broken in Win10 build 17763 (1809) and up)
+:: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
+
 :: GB version
 ::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
 :: MB version
