@@ -4,7 +4,8 @@
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
+:: Version:       1.0.7 - Remove "Comodo%%" wildcard since it was removing security software. Thanks to u/11rednazo
+::                1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
 ::                1.0.5 + Add "Lenovo Service Bridge"
 ::                      - Remove some redundant "search" entries
 ::                1.0.4 - Remove more specific "toolbar" entries
@@ -15,8 +16,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.6
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2018-11-29
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.7
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-01-08
 
 
 
@@ -79,7 +80,6 @@ Buzzdock%%
 CWA Reminder by We-Care.com%%
 ClickForSale
 CloudScout%%
-Comodo%%
 DealPly%%
 DealScout for Internet Explorer
 Dell%%
