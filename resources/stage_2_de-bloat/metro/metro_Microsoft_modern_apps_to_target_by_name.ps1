@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.2.9 + Add additional user-submitted entries
+Version:       1.3.0 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.2.9"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2018-11-12"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.0"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-01-28"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -54,9 +54,10 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "BrowserChoice"                             # "Browser Choice" screen required by the EU antitrust regulation
+Remove-App "BrowserChoice"                             # "Browser Choice" screen required by EU antitrust regulation
 Remove-App "Microsoft.Advertising.JavaScript"          # Advertising framework
 Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
+Remove-App "Microsoft.ApolloBaseGame.5591ae5f25"
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
 Remove-App "Microsoft.BingHealthAndFitness"            # Health and Fitness app
@@ -88,6 +89,7 @@ Remove-App "Microsoft.People"                          # People app
 Remove-App "Microsoft.SkypeApp"                        # Get Skype link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
+Remove-App "Microsoft.SunriseBaseGame"
 Remove-App "Microsoft.Windows.FeatureOnDemand.InsiderHub"
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList"
