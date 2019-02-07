@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
+:: Version:       1.2.5 - feature:      Remove entire Java Runtime patching section
+::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.3 ! bugfix:       Remove dead code that was incorrectly attempting to install Acrobat Reader DC updates
 ::                1.2.2 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.1 ! bugfix:       Update Windows Defender prior to Windows update. Fixes bug where sometimes Windows Update won't work until Defender update runs. Thanks to /u/bubonis
@@ -30,8 +31,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.2.4
-set STAGE_5_SCRIPT_DATE=2018-07-03
+set STAGE_5_SCRIPT_VERSION=1.2.5
+set STAGE_5_SCRIPT_DATE=2019-02-07
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -99,57 +100,6 @@ if %FLASH_DETECTED%==yes (
 	call functions\log_with_date.bat "   Done."
 )
 
-
-:: JOB: Java Runtime update
-:: spawn JAVA_DETECTED variable, flip it if an existing JRE installation is detected
-:: We don't need to worry about architecture because the JRE installer script handles that
-set JAVA_DETECTED=no
-if exist "%ProgramFiles(x86)%\Java\jre*" set JAVA_DETECTED=yes
-if exist "%ProgramFiles%\Java\jre*" set JAVA_DETECTED=yes
-if %JAVA_DETECTED%==yes (
-	title Tron v%TRON_VERSION% [stage_5_patch] [Update Java Runtime Environment]
-	call functions\log_with_date.bat "   Java Runtime detected, updating..."
-	call functions\log_with_date.bat "   Launch job 'Update Java Runtime Environment'..."
-	call functions\log_with_date.bat "   Checking for and removing outdated installations first..."
-	if /i "%DRY_RUN%"=="no" (
-		REM EXPOSITION DUMP: OK, so all JRE runtimes (series 4-8) use certain GUIDs that increment with each new update (e.g. Update 66)
-		REM This makes it easy to catch ALL of them through liberal use of WMI wildcards ("_" is single character, "%" is any number of characters)
-		REM Additionally, JRE 6 introduced 64-bit runtimes, so in addition to the two-digit Update XX revision number, we also check for the architecture
-		REM type, which always equals '32' or '64'. The first wildcard is the architecture, the second is the revision/update number.
-
-		REM JRE 8
-		REM Skip JRE 8 because the JRE 8 update script automatically removes older versions of 8, no need to do it twice
-
-		REM JRE 7
-		call functions\log_with_date.bat "   JRE 7..."
-		<NUL %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F___170__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-		REM JRE 6
-		call functions\log_with_date.bat "   JRE 6..."
-		REM 1st line is for updates 23-xx, after Oracle introduced 64-bit runtimes
-		REM 2nd line is for updates 1-22, before 64-bit JRE 6 runtimes existed
-		<NUL %WMIC% product where "IdentifyingNumber like '{26A24AE4-039D-4CA4-87B4-2F8__160__FF}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		<NUL %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0160__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-		REM JRE 5
-		call functions\log_with_date.bat "   JRE 5..."
-		<NUL %WMIC% product where "IdentifyingNumber like '{3248F0A8-6813-11D6-A77B-00B0D0150__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-		REM JRE 4
-		call functions\log_with_date.bat "   JRE 4..."
-		<NUL %WMIC% product where "IdentifyingNumber like '{7148F0A8-6813-11D6-A77B-00B0D0142__0}'" call uninstall /nointeractive >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-		call functions\log_with_date.bat "   Done."
-
-
-		REM Install the latest version
-		call functions\log_with_date.bat "   Installing latest JRE..."
-		setlocal
-		call "stage_5_patch\java\jre\jre-8-installer.bat"
-		endlocal
-	)
-call functions\log_with_date.bat "   Done."
-)
 
 
 :: JOB: Skip point for if -sap (skip application patches) flag was used
