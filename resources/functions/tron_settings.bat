@@ -2,12 +2,13 @@
 ::                Sub-stage scripts also call this file if they're launched directly.
 :: Requirements:  n/a
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
+:: Version:       1.0.2 - Remove references to Java
+::                1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
 ::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
 
 :: Script version
-set TRON_SETTINGS_SCRIPT_VERSION=1.0.1
-set TRON_SETTINGS_SCRIPT_DATE=2017-12-06
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.2
+set TRON_SETTINGS_SCRIPT_DATE=2019-02-07
 
 
 :::::::::::::::
@@ -21,7 +22,7 @@ set TRON_SETTINGS_SCRIPT_DATE=2017-12-06
 
 :: LOGPATH is the parent directory for all of Tron's output (logs, backups, etc). Tweak the paths below to your liking if you want to change it
 :: If you want a separate directory generated per Tron run (for example if doing multiple runs for testing), use something like this:
-::   set LOGPATH=%SystemDrive%\Logs\tron\%COMPUTERNAME%_%DTS%
+::   set LOGPATH=%SystemDrive%\logs\tron\%COMPUTERNAME%_%DTS%
 set LOGPATH=%SystemDrive%\logs\tron
 
 :: Master log file. To differentiate logfiles if you're doing multiple runs, you can do something like:
@@ -58,7 +59,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
-:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip, Java Runtime, or Adobe Flash Player)
+:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip or Adobe Flash Player)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
 :: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
