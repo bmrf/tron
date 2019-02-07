@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
+:: Version:       1.1.5 - Remove references to patching Java due to removal of that functionality
+::                1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
 ::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
 ::                      * Replace all relative references to reg.exe with hard-coded %REG% (set in initialize_environment.bat). Thanks to u/SkyPork for reporting
 ::                1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
@@ -51,8 +52,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.4
-set SCRIPT_DATE=2018-09-30
+set SCRIPT_VERSION=1.1.5
+set SCRIPT_DATE=2019-02-07
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -110,7 +111,6 @@ if /i %DRY_RUN%==yes set SKIP_CHECK_UPDATE=yes
 if /i %AUTORUN%==yes set SKIP_CHECK_UPDATE=yes
 if /i %AUTORUN_IN_SAFE_MODE%==yes set SKIP_CHECK_UPDATE=yes
 if /i %SKIP_CHECK_UPDATE%==no (
-	cls
 	echo.
 	call functions\log.bat "   Checking repo for updated Tron version..."
 	echo.
@@ -289,7 +289,7 @@ echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
-echo  *  5 Patch:     Update 7-Zip/Java/Flash/Windows, DISM base cleanup    *
+echo  *  5 Patch:     Update 7-Zip/Flash/Windows, DISM base cleanup         *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
 echo  *  8 Custom:    If present, execute user-provided custom scripts      *
@@ -382,10 +382,8 @@ if /i %AUTORUN_IN_SAFE_MODE%==yes (
 )
 
 
-
 :: UPM detection circuit #2
 if /i %UNICORN_POWER_MODE%==on (color DF) else (color 0f)
-
 
 :: Expand the scrollback buffer if VERBOSE (-v) was used. This way we don't lose any output on the screen
 :: We'll also display a message below, since using the MODE command flushes the scrollback and we don't want to lose the header
@@ -427,6 +425,7 @@ if /i not %SMART_PROBLEM_CODE%==undetected (
 	call functions\log.bat "                                  Defrag will be skipped as a precaution"
 	color 0e
 )
+
 
 :: INTERNAL PREP: If we're in Safe Mode, set the system to permanently boot into Safe Mode in case we get interrupted by a reboot
 :: We undo this at the end of the script. Only works on Vista and up
@@ -808,7 +807,7 @@ goto :eof
 	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -sap Skip application patches ^(don't patch 7-Zip, Java Runtime, or Adobe Flash^)
+	echo    -sap Skip application patches ^(don't patch 7-Zip or Adobe Flash^)
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
