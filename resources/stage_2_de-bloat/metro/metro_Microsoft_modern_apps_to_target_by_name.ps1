@@ -13,7 +13,7 @@ $ErrorActionPreference = "SilentlyContinue"
 # PREP #
 ########
 $METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.0"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-01-28"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-02-15"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -54,10 +54,9 @@ Function Remove-App([String]$AppName){
 # EXECUTE #
 ###########
 # Active identifiers
-Remove-App "BrowserChoice"                             # "Browser Choice" screen required by EU antitrust regulation
+Remove-App "BrowserChoice"                             # "Browser Choice" screen required by the EU antitrust regulation
 Remove-App "Microsoft.Advertising.JavaScript"          # Advertising framework
 Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
-Remove-App "Microsoft.ApolloBaseGame.5591ae5f25"
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
 Remove-App "Microsoft.BingHealthAndFitness"            # Health and Fitness app
@@ -86,10 +85,10 @@ Remove-App "Microsoft.NetworkSpeedTest"
 Remove-App "Microsoft.Office.Sway"                     # Sway app
 Remove-App "Microsoft.OneConnect"                      # OneConnect app
 Remove-App "Microsoft.People"                          # People app
+Remove-App "Microsoft.SeaofThieves"
 Remove-App "Microsoft.SkypeApp"                        # Get Skype link
 Remove-App "Microsoft.SkypeWiFi"
 Remove-App "Microsoft.Studios.Wordament"               # imported from stage_2_de-bloat.bat
-Remove-App "Microsoft.SunriseBaseGame"
 Remove-App "Microsoft.Windows.FeatureOnDemand.InsiderHub"
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList"
