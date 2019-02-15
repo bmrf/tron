@@ -402,7 +402,7 @@ Bitcoin: `1Biw8gx2kD7mZf66ZdNgB9tG1pE9YA3kEd`
 
 Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
 
-Monero: `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
+Monero (preferred): `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
 
 # SCRIPT EXIT CODES
 When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc). Note that these codes are not fully implemented yet, e.g. some may not trigger. But I'm adding support as I find time for it so expect this disclaimer to disappear in a bit once it's all finished.
