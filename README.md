@@ -30,7 +30,7 @@ I got tired of running these utilities manually and decided to just script every
 
 11. [Contact Info](#other)
 
-12. Script exit codes(#script-exit-codes)
+12. [Script exit codes](#script-exit-codes)
 
 13. [Full description of ALL actions](#full-tron-description)
 
@@ -408,11 +408,17 @@ Monero: `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99M
 When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc). Note that these codes are not fully implemented yet, e.g. some may not trigger. But I'm adding support as I find time for it so expect this disclaimer to disappear in a bit once it's all finished.
 
 CODE		MEANING
+
 0		Success
+
 1		Error (usually fatal)
+
 2		Warning (non-fatal)
+
 3		Unsupported OS (run with -dev to override)
+
 4		Exit pending reboot
+
 5		User is an idiot (aka you tried running from the temp directory in spite of the instructions clearly saying not to)
 
 
