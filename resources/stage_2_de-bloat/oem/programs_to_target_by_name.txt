@@ -4,7 +4,8 @@
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.7 - Remove "Comodo%%" wildcard since it was removing security software. Thanks to u/11rednazo
+:: Version:       1.0.8 / Trim some spaces in some entries
+::                1.0.7 - Remove "Comodo%%" wildcard since it was removing security software. Thanks to u/11rednazo
 ::                1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
 ::                1.0.5 + Add "Lenovo Service Bridge"
 ::                      - Remove some redundant "search" entries
@@ -16,8 +17,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.7
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-01-08
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.8
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-02-15
 
 
 
@@ -25,7 +26,7 @@ set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-01-08
 %%555%%
 %%AdBlocknWatch%%
 %%AppToU%%
-%%CCC Help%%
+%%CCC%%Help%%
 %%ClipGenie%%
 %%CoolWWW%%
 %%Coupon%%
@@ -53,12 +54,12 @@ set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-01-08
 %%Zango%%
 %%iBryte%%
 %%iStart123%%
-180 Solution%%
-24x7 Help
+180%%Solution%%
+24x7%%Help
 3vix%%
 AVG%%TuneUp%%
 Acer%%
-Adobe Shockwave%%
+Adobe%%Shockwave%%
 Advanced Registry%%
 Advanced%%FX Engine
 Akamai%%
@@ -104,14 +105,14 @@ HP%%Registration%%
 HP%%Study%%
 HP%%Support%%
 HP%%Update%%
-IB Updater%%
+IB%%Updater%%
 IObit%%
 IWon%%
 Iminent
 InfoAtoms
 InstaCodecs
 Intel%%ME%%UninstallLegacy
-Intel%%Management Engine%%
+Intel%%Management%%
 Intel%%Smart%%
 Launch Manager%%
 LenovoServiceBridge
@@ -138,7 +139,7 @@ Nero%%
 Norton Internet%%
 OMG Music Plus%%
 OOBE%%
-Optimizer Pro%%
+Optimizer%%
 Orbit Downloader
 PMB%%
 Pdf995%%
