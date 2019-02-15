@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.3 + feature:     Add removal of Dell-branded WildTangent games
+:: Version:       1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
+::                1.4.3 + feature:     Add removal of Dell-branded WildTangent games
 ::                1.4.2 * improvement: Significantly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
 ::                      + feature:     Add disabling of "Occasionally show suggestions in Start" from purge_windows_10_telemetry.bat script
 ::                1.4.1 * improvement: Prefix Powershell calls with start /wait to prevent continuing script before they're finished executing. Thanks to github:madbomb122
@@ -64,8 +65,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.3
-set STAGE_2_SCRIPT_DATE=2018-08-29
+set STAGE_2_SCRIPT_VERSION=1.4.4
+set STAGE_2_SCRIPT_DATE=2019-02-15
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -217,14 +218,14 @@ if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes echo Looking for:
 
 	REM Loop through the file...
-	for /f %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
+	for /f "delims=" %%i in (stage_2_de-bloat\oem\programs_to_target_by_name.txt) do (
 		REM  ...and for each line check if it is a comment or SET command and perform the removal if not
 		if not %%i==:: (
 		if not %%i==set (
 
 			REM Do the removal
 			if /i %VERBOSE%==yes echo    %%i
-			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%"
+			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>&1
 
 			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
