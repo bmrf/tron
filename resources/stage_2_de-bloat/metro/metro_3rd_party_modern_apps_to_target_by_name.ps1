@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.6 + Add additional user-submitted entries
+Version:       1.3.7 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.6"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-02-15"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.7"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-02-21"
 
 
 # Needed for Removal
@@ -285,6 +285,7 @@ Remove-App "SymantecCorporation.NortonStudio*"
 Remove-App "TOSHIBATEC.ToshibaPrintExperience"
 Remove-App "TelegraphMediaGroupLtd.TheTelegraphforLenovo*"
 Remove-App "TheNewYorkTimes.NYTCrossword*"
+Remove-App "ThumbmunkeysLtd.PhototasticCollage"
 Remove-App "ThumbmunkeysLtd.PhototasticCollage*"
 Remove-App "ToshibaAmericaInformation.ToshibaCentral*"
 Remove-App "TripAdvisorLLC.TripAdvisorHotelsFlightsRestaurants*"
@@ -314,6 +315,7 @@ Remove-App "fingertappsasus.FingertappsOrganizerrecommendedbyA*"
 Remove-App "flaregamesGmbH.RoyalRevolt2*"
 Remove-App "king.com*"
 Remove-App "king.com.BubbleWitch3Saga"
+Remove-App "king.com.CandyCrushFriends"
 Remove-App "king.com.CandyCrushSaga"
 Remove-App "king.com.CandyCrushSodaSaga"
 Remove-App "king.com.ParadiseBay"
