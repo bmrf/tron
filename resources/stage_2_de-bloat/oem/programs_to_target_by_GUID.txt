@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.6.2 + Add additional user-submitted entries
+:: Version:       1.6.3 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.2
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-02-15
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.3
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-02-21
 
 
 :: GUID LIST
@@ -4670,6 +4670,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {17004FB0-9CFD-43DC-BB2D-E2BA612D98D0}
 
 :: Google Update Helper
+{60EC980A-BDA2-4CB6-A427-B07A5498B4CA}
 {8E62C276-2238-4D64-A560-61C3116E0EB7}
 {A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}
 {A4DE5CD7-96D6-3979-8C39-E864396AFFC0}
