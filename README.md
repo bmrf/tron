@@ -526,7 +526,7 @@ Master script that launches everything else. It performs many actions on its own
 
 5. **[USB Device Cleanup](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Uninstalls unused or not present USB devices from the system (non-existent thumb drives, etc etc). Uses `drivecleanup.exe` from [Uwe Sieber](http://www.uwe-sieber.de/)
 
-6. **Cleanup duplicate downloads**: Searches for and delete duplicate files found in the Downloads folders of each user profile (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe`, etc). Does not touch any other folders. Uses Sentex's [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) utility
+6. **[Cleanup duplicate downloads](https://github.com/jeremitu/finddupe)**: Searches for and delete duplicate files found in the Downloads folders of each user profile (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe`, etc). Does not touch any other folders. Uses a UTF-8-friendly port Sentex's original [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) utility
 
 7. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
 
