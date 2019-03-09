@@ -64,7 +64,7 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 Command-line use is fully supported. All flags are optional and can be used simultaneously. *
 
     tron.bat [-a -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
-              -sdu -se -sk -sm -spr -ss -str -swo -swu -udl -v -x] | [-h]
+              -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional flags (can be combined):
 
@@ -111,6 +111,8 @@ Command-line use is fully supported. All flags are optional and can be used simu
      -sk  Skip Kaspersky Virus Rescue Tool (KVRT) scan
 
      -sm  Skip Malwarebytes Anti-Malware (MBAM) installation
+
+     -sor Skip OneDrive removal regardless whether it's in use or not
 
      -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
@@ -296,6 +298,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_MBAM_INSTALL=no
   ```
 
+- To skip removal of OneDrive regardless whether it's in use or not, change this to `yes`:
+  ```
+  set SKIP_ONEDRIVE_REMOVAL=no
+  ```
+
 - To prevent Tron from resetting the page file to Windows defaults, change this to `yes`:
   ```
   set SKIP_PAGEFILE_RESET=no
@@ -405,7 +412,7 @@ Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
 Monero (preferred): `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
 
 # SCRIPT EXIT CODES
-When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc). Note that these codes are not fully implemented yet, e.g. some may not trigger. But I'm adding support as I find time for it so expect this disclaimer to disappear in a bit once it's all finished.
+When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc).
 
 | CODE       | MEANING |
 | :--------- | :------ |
@@ -418,7 +425,7 @@ When Tron exits, it will pass an exit code indicating the final status (success/
 
 
 # FULL TRON DESCRIPTION
-The best way to see what Tron does is simply crack open `Tron.bat` or one of the stage-specific subscripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that, here's a general description of every action Tron performs.
+The best way to see what Tron does is simply crack open [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat) or one of the stage-specific subscripts with a text editor (preferably one with syntax highlighting) or [on GitHub](https://github.com/bmrf/tron/blob/master/tron.bat) and just read the code. Every section has comments explaining exactly what it does, and you don't need to be able to read code to understand it. Barring that, here's a general description of every action Tron performs.
 
 ## tron.bat
 
