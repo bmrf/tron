@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
+:: Version:       1.4.5 + feature:     Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+::                1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
 ::                1.4.3 + feature:     Add removal of Dell-branded WildTangent games
 ::                1.4.2 * improvement: Significantly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
 ::                      + feature:     Add disabling of "Occasionally show suggestions in Start" from purge_windows_10_telemetry.bat script
@@ -54,7 +55,7 @@
 ::                      * onedrive:    Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
 ::                      * metro:       Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
 ::                      - metro:       Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
-::                      ! bugfix:      Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
+::                      ! bugfix:      Only set registry switch to allow starting AppX service in Safe Mode if the system is already in Safe Mode
 ::                1.1.0 * improvement: Move embedded Win10 metro de-bloat code to PowerShell sub-scripts
 ::                1.0.1 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                1.0.0 + Initial write
@@ -65,8 +66,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.4
-set STAGE_2_SCRIPT_DATE=2019-02-15
+set STAGE_2_SCRIPT_VERSION=1.4.5
+set STAGE_2_SCRIPT_DATE=2019-03-09
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -259,19 +260,19 @@ call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (auxiliar
 if /i %DRY_RUN%==no (
 	REM Gateway Games (Gateway-branded WildTangent games)
 	REM These two FOR loops should catch ALL Gateway games, in theory at least
-	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent switch
 	if exist "%ProgramFiles%\Gateway Games" ( for /r "%ProgramFiles%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 	if exist "%ProgramFiles(x86)%\Gateway Games" ( for /r "%ProgramFiles(x86)%\Gateway Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 
 	REM HP Games
 	REM These two FOR loops should catch ALL HP games, in theory at least
-	REM Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+	REM Basically, loop through the HP Games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent switch
 	if exist "%ProgramFiles%\HP Games" ( for /r "%ProgramFiles%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 	if exist "%ProgramFiles(x86)%\HP Games" ( for /r "%ProgramFiles(x86)%\HP Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent ) )
 	
 	REM Dell Games (Dell-branded WildTangent games)
 	REM These two loops should catch all Dell games, in theory at least
-	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent flag
+	REM Basically, loop through the games subdirectory, and if an "Uninstall.exe" exists ANYWHERE, run it with the /silent switch
 	for /r "%ProgramFiles%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
 	for /r "%ProgramFiles(x86)%\WildTangent\Dell Games" %%i in (Uninstall.exe) do ( if exist "%%i" "%%i" /silent )
 )
@@ -318,15 +319,16 @@ if /i %TARGET_METRO%==yes (
 :: JOB: Remove forced OneDrive integration
 :: This is the lazy way to do it but ....I just got back from Antarctica and am feeling tired so ¯\_(ツ)_/¯
 
+
 :: This variable is used later to make sure we don't disable file sync if OneDrive wasn't removed
 set ONEDRIVE_REMOVED=no
 
 :: 1. Are we on Windows 10? If not, skip removal
 if /i not "%WIN_VER:~0,9%"=="Windows 1" goto :skip_onedrive_removal
 
-:: 2. Was the PRESERVE_METRO_APPS (-m) switch used? If so, skip removal
-if /i %PRESERVE_METRO_APPS%==yes (
-	call functions\log_with_date.bat "!  PRESERVE_METRO_APPS (-m) set. Skipping OneDrive removal."
+:: 2. Was the SKIP_ONEDRIVE_REMOVAL (-sor) switch used? If so, skip removal
+if /i %SKIP_ONEDRIVE_REMOVAL%==yes (
+	call functions\log_with_date.bat "!  SKIP_ONEDRIVE_REMOVAL (-sor) set. Skipping OneDrive removal."
 	goto :skip_onedrive_removal
 )
 
