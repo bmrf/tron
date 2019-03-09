@@ -61,7 +61,7 @@ if /i %DRY_RUN%==no (
 	net start msiserver >nul 2>&1
 )
 
-:: Prep task: check for skip application patches (-sap) flag or variable and skip if used
+:: Prep task: check for skip application patches (-sap) switch or variable and skip if used
 if /i %SKIP_APP_PATCHES%==yes (
 	call functions\log_with_date.bat "!  SKIP_APP_PATCHES (-sap) set. Skipping all application patches."
 	goto skip_application_patches
@@ -102,7 +102,7 @@ if %FLASH_DETECTED%==yes (
 
 
 
-:: JOB: Skip point for if -sap (skip application patches) flag was used
+:: JOB: Skip point for if -sap (skip application patches) switch was used
 :skip_application_patches
 
 
