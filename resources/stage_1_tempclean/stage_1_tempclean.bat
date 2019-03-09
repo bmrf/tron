@@ -12,7 +12,7 @@
 ::                1.1.7 * improvement: Update script to support standalone execution
 ::                1.1.6 ! duplicates:  Fix broken duplicate file cleanup of Downloads folder due to accidentally putting quote markes around the path to the profile list text file
 ::                1.1.5 ! ccleaner:    Add /f (force) switch to ccleaner task kill command. Thanks to /u/iseijin
-::                1.1.4 ! ccleaner:    Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay
+::                1.1.4 ! ccleaner:    Remove /wait switch from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay
 ::                                     after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the
 ::                                     script won't stop if CCleaner stalls. Thanks to multiple users for reporting
 ::                1.1.3 ! bugfix:      Fix bug with CCleaner where "start /wait" wasn't properly waiting. Ccleaner silently launches ccleaner64.exe on 64-bit
@@ -21,8 +21,8 @@
 ::                1.1.1 / ccleaner:    Increase cooldown from 15 to 60 seconds to ensure it has time to finish before BleachBit launches
 ::                1.1.0 + improvement: Add job to delete duplicate files found in the "Downloads" folder of each user
 ::                1.0.2 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
-::                1.0.1 * ccleaner:    Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks to /u/Forcen
-::                      * bleachbit:   Improve Bleachbit support for VERBOSE (-v) flag, now displays all Bleachbit output to console and log file. Thanks to /u/Forcen
+::                1.0.1 * ccleaner:    Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) switch is used. Thanks to /u/Forcen
+::                      * bleachbit:   Improve Bleachbit support for VERBOSE (-v) switch, now displays all Bleachbit output to console and log file. Thanks to /u/Forcen
 ::                      - misc:        Remove unecessary window title reset after Tempfilecleanup
 ::                1.0.0 + Initial write
 @echo off
@@ -74,8 +74,6 @@ call functions\log_with_date.bat "   Done."
 :: JOB: CCleaner
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
-:: Temporarily commented out 2017-09-26 due to Piriform hack. Will re-enable in a couple versions
-:: Re-enabled 2018-08-01
 call functions\log_with_date.bat "   Launch job 'CCleaner'..."
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
@@ -97,7 +95,7 @@ if /i %DRY_RUN%==no (
 
 	if %VERBOSE%==yes (
 		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
-		:: Thanks Windows Batch for not having a TEE or equivalent
+		:: Thanks Windows Batch for not having a TEE equivalent
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
