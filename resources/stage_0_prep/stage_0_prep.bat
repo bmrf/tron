@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 ! bugfix:       Fix incorrect path in rkill whitelist call. Thanks to github:KingZee
+:: Version:       1.2.8 * improvement:  Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
+::                1.2.7 ! bugfix:       Fix incorrect path in rkill whitelist call. Thanks to github:KingZee
 ::                1.2.6 * improvement:  Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
 ::                1.2.5 * improvement:  Clean up GUID dump file (convert from UCS2 to UTF-8) so for loops can correctly read it for improved Stage 2: debloat scans
 ::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
@@ -40,8 +41,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.7
-set STAGE_0_SCRIPT_DATE=2018-12-07
+set STAGE_0_SCRIPT_VERSION=1.2.8
+set STAGE_0_SCRIPT_DATE=2019-03-09
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -122,7 +123,7 @@ call functions\log_with_date.bat "   Done."
 :: JOB: rkill
 title Tron v%TRON_VERSION% [stage_0_prep] [rkill]
 call functions\log_with_date.bat "   Launch job 'rkill'..."
-call functions\log_with_date.bat "   If script stalls 20 min or more, kill solitaire64.exe and solitaire.exe with Task Manager"
+call functions\log_with_date.bat "   If this job takes more than 20 minutes, kill solitaire.exe with Task Manager"
 if /i %DRY_RUN%==no (
 	stage_0_prep\rkill\solitaire.exe -s -l "%TEMP%\tron_rkill.log" -w "%~dp0\rkill\rkill_process_whitelist.txt"
 	type "%TEMP%\tron_rkill.log" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -174,7 +175,7 @@ if /i %DRY_RUN%==no (
 	call functions\log_with_date.bat "   Launch job 'Temporarily disable system sleep and screensaver'..."
 	title Tron v%TRON_VERSION% [stage_0_prep] [DisableSleepandScreensaver]
 	:: Kill off any running Caffeine instances first (can happen if resuming from an interrupted run)
-	taskkill /im "caffeine.exe" >nul 2>&1
+	taskkill /f /im "caffeine.exe" >nul 2>&1
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	call functions\log_with_date.bat "   Done."
 )
@@ -197,7 +198,7 @@ if /i %DRY_RUN%==no (
 	if %SAFE_MODE%==yes %REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /config /syncfromflags:manual /manualpeerlist:"2.pool.ntp.org,0x8 time.windows.com,0x8 time.nist.gov,0x8" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /config /syncfromflags:manual /manualpeerlist:"1.pool.ntp.org,0x8 time.windows.com,0x8 time.nist.gov,0x8" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
@@ -238,6 +239,41 @@ if %ERRORLEVEL%==0 (
 	call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
 	call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 	if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	
+	:: Clean up RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
+	
+	:: SiteAdvisor x86
+	if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
+		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+		taskkill /f /im "saUpd.exe" /t >nul 2>&1
+		"%ProgramFiles(x86)%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
+	)
+	
+	:: SiteAdvisor x64
+	if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
+		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+		taskkill /f /im "saUpd.exe" /t >nul 2>&1
+		"%ProgramFiles%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+		rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
+	)
+	
+	:: RealProtect x86
+	if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
+		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+	)
+	
+	:: RealProtect x64
+	if exist "%ProgramFiles%\McAfee\Real Protect\" (
+		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+		rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+	)
+	
 	call functions\log_with_date.bat "   Done."
 ) else (
 	call functions\log_with_date.bat "   System is missing .NET 3.5, skipping McAfee Stinger scan."
