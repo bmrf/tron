@@ -46,8 +46,8 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :::::::::::::::::::::
 :: SCRIPT DEFAULTS ::
 :::::::::::::::::::::
-:: ! These are Tron's defaults. All settings here are overridden if their respective command-line flag is used
-::   If you use a CLI flag and Tron encounters a reboot, the CLI flag will be honored when the script resumes
+:: ! These are Tron's defaults. All settings here are overridden if their respective command-line switch is used
+::   If you use a CLI switch and Tron encounters a reboot, the CLI switch will be honored when the script resumes
 :: AUTORUN                (-a)   = Automatic execution (no welcome screen or prompts), implies -e
 :: AUTORUN_IN_SAFE_MODE   (-asm) = Automatic execution (no welcome screen or prompts), implies -e, autoboots to Safe Mode
 :: DRY_RUN                (-d)   = Run through script but skip all actual actions (test mode)
@@ -59,7 +59,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: AUTO_SHUTDOWN          (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner flags to individually toggle usage
+:: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner switches to individually toggle usage
 :: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip or Adobe Flash Player)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
 :: SKIP_DEBLOAT           (-sdb) = Set to yes to skip de-bloat section (OEM bloat removal). Implies -m
