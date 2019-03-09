@@ -198,7 +198,7 @@ if /i %DRY_RUN%==no (
 	if %SAFE_MODE%==yes %REG% add "HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\%SAFEBOOT_OPTION%\w32time" /ve /t reg_sz /d Service /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc config w32time start= auto >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net stop w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
-	w32tm /config /syncfromflags:manual /manualpeerlist:"1.pool.ntp.org,0x8 time.windows.com,0x8 time.nist.gov,0x8" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	w32tm /config /syncfromswitches:manual /manualpeerlist:"1.pool.ntp.org,0x8 time.windows.com,0x8 time.nist.gov,0x8" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	net start w32time >> "%LOGPATH%\%LOGFILE%" 2>&1
 	w32tm /resync /nowait >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
