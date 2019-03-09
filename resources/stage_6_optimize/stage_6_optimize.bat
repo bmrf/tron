@@ -2,7 +2,7 @@
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.9 + feature:     Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
-::                1.0.8 * smart:       Improve SMART detection routine to also flag problem codes and set the appropriate variables
+::                1.0.8 * smart:       Improve SMART detection routine to also switch problem codes and set the appropriate variables
 ::                1.0.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.0.6 * bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
 ::                1.0.5 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
