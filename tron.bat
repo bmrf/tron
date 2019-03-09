@@ -147,12 +147,12 @@ if /i %CONFIG_DUMP%==yes (
 	echo    AUTO_REBOOT_DELAY:      %AUTO_REBOOT_DELAY%
 	echo    AUTO_SHUTDOWN:          %AUTO_SHUTDOWN%
 	echo    CONFIG_DUMP:            %CONFIG_DUMP%
-	echo    DRY_RUN:                %DRY_RUN%
 	echo    DEV_MODE:               %DEV_MODE%
+	echo    DRY_RUN:                %DRY_RUN%
 	echo    EMAIL_REPORT:           %EMAIL_REPORT%
 	echo    EULA_ACCEPTED:          %EULA_ACCEPTED%
-	echo    LOGPATH:                %LOGPATH%
 	echo    LOGFILE:                %LOGFILE%
+	echo    LOGPATH:                %LOGPATH%
 	echo    NO_PAUSE:               %NO_PAUSE%
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
@@ -162,18 +162,20 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_APP_PATCHES:       %SKIP_APP_PATCHES%
 	echo    SKIP_CUSTOM_SCRIPTS:    %SKIP_CUSTOM_SCRIPTS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
+	echo    SKIP_DEBLOAT_UPDATE:    %SKIP_DEBLOAT_UPDATE%
 	echo    SKIP_DEFRAG:            %SKIP_DEFRAG%
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
-	echo    SKIP_DEBLOAT_UPDATE:    %SKIP_DEBLOAT_UPDATE%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
+	echo    SKIP_ONEDRIVE_REMOVAL:  %SKIP_ONEDRIVE_REMOVAL%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
-	echo    UPLOAD_DEBUG_LOGS:      %UPLOAD_DEBUG_LOGS%
+	echo    SKIP_WSUS_OFFLINE:      %SKIP_WSUS_OFFLINE%
 	echo    UNICORN_POWER_MODE:     %UNICORN_POWER_MODE%
+	echo    UPLOAD_DEBUG_LOGS:      %UPLOAD_DEBUG_LOGS%
 	echo    VERBOSE:                %VERBOSE%
 	echo.
 	echo  Script-internal variables:
@@ -202,7 +204,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    REPO_TRON_DATE:         %REPO_TRON_DATE%
 	echo    REPO_TRON_VERSION:      %REPO_TRON_VERSION%
 	echo    RESUME_DETECTED:        %RESUME_DETECTED%
-	echo    RESUME_SWITCHES:           %RESUME_SWITCHES%
+	echo    RESUME_SWITCHES:        %RESUME_SWITCHES%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
