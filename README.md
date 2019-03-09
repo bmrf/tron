@@ -61,20 +61,20 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 # COMMAND-LINE USE
 
-Command-line use is fully supported. All flags are optional and can be used simultaneously. *
+Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
     tron.bat [-a -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
               -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
-    Optional flags (can be combined):
+    Optional switches (can be combined):
 
      -a   Automatic mode (no welcome screen or prompts; implies -e)
      
      -asm Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
      
      -c   Config dump (display current config. Can be used with other
-          flags to see what WOULD happen, but script will never execute
-          if this flag is used)
+          switches to see what WOULD happen, but script will never execute
+          if this switch is used)
 
      -d   Dry run (run through script without executing any jobs)
     
@@ -130,7 +130,7 @@ Command-line use is fully supported. All flags are optional and can be used simu
 
      -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 
-    Misc flags (must be used alone):
+    Misc switches (must be used alone):
 
      -h   Display help text
 
@@ -157,14 +157,14 @@ To have Tron send an email report at completion, edit this file:
 
     \tron\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml
 
-Specify your SMTP server, username, and password. After specifying your settings you can use the `-er` flag to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
+Specify your SMTP server, username, and password. After specifying your settings you can use the `-er` switch to have Tron send the email report. The summary logs (`tron_removed_files.txt` and `tron_removed_programs.txt`) will be attached as well.
 
 Keep in mind the username and password for the email account will be stored in PLAIN TEXT so don't leave it lying around on a system you don't trust.
 
 
 # CHANGE DEFAULTS (advanced)
 
-If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line flags will always override their respective default option when used.
+If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line switches will always override their respective default option when used.
 
 **Edit this file**: `\tron\resources\functions\tron_settings.bat`
 
@@ -343,7 +343,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SELF_DESTRUCT=no
   ```
 
-* There is no `-UPM` flag
+* There is probably no `-UPM` switch
 
 
 # EXECUTING 3RD-PARTY CUSTOM SCRIPTS:
@@ -364,7 +364,7 @@ Custom scripts work like so:
  
  - It is your responsibility what your scripts do. I provide no support for custom scripts other than having Tron attempt to run them
  
- - Use the `-scs` flag or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
+ - Use the `-scs` switch or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
 # EXECUTING BUNDLED WSUS OFFLINE UPDATES
 
@@ -443,7 +443,7 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` flag to override this behavior and allow running on unsupported Windows versions
+2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` switch to override this behavior and allow running on unsupported Windows versions
 
 3. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
 
@@ -463,7 +463,7 @@ Master script that launches everything else. It performs many actions on its own
 
 9. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
 
-   Note: `-resume` is an internal flag not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
+   Note: `-resume` is an internal switch not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
 10. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
@@ -511,7 +511,7 @@ Master script that launches everything else. It performs many actions on its own
 
 14. **Reduce system restore space**: Restrict System Restore to only use 7% of available hard drive space
 
-15. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` flag prevents resetting power settings to Windows default.
+15. **Disable sleep mode**: Tron uses `caffeine.exe` to disable sleep mode when the script starts. At the end of the script it resets power settings to Windows defaults. Use the `-p` switch to prevent resetting power settings to Windows default.
 
 
 ## STAGE 1: Tempclean
@@ -570,7 +570,7 @@ Master script that launches everything else. It performs many actions on its own
 
 4. **Metro de-bloat**: Remove many built-in Metro apps that aren't commonly used (does NOT remove things like Calculator, Paint, etc) then purges them from the cache (can always fetch later from Windows Update). On Windows 8/8.1, removes all stock "Modern" apps. On Windows 10 and up, only removes a certain specific Modern apps. You can see the full list of Metro apps removed [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) and [here](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Use the `-sdb` switch (skip *all* de-bloat) or `-m` switch (skip only Metro de-bloat) to skip this action. Like the GUID lists above, you can also customize these files to add or remove apps from the target list. Note that the Metro de-bloat PowerShell scripts also support standalone execution, if for example you JUST want to remove Metro bloat from a machine.
 
-5. **Remove OneDrive integration**: Remove forced OneDrive integration (Windows 10 only). Tron first checks if any files exist in the default OneDrive folder (`%USERPROFILE%\OneDrive\`) and skips removal if any are found. As a additional safety precaution, Tron leaves the OneDrive folder intact regardless whether OneDrive is removed or not.
+5. **Remove OneDrive integration**: Remove forced OneDrive integration (Windows 10 only). Tron first checks if any files exist in the default OneDrive folder (`%USERPROFILE%\OneDrive\`) and skips removal if any are found. As a additional safety precaution, Tron leaves the OneDrive folder intact regardless whether OneDrive is removed or not. Use the `-sor` switch to skip OneDrive removal entirely.
 
 ## STAGE 3: Disinfect
 
@@ -578,11 +578,11 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **[Clear CryptNet SSL cache](https://github.com/bmrf/tron/issues/86)**: Wipe the Windows CryptNet SSL certificate cache by executing this command:  `certutil -URLcache * delete`
 
-2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` flags skip this component
+2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` switches to skip this component
 
-3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` flags skip this component
+3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
 
-4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` flag gives more verbose output. Use the `-sa` or `-ss` flags skip this component
+4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` switch to get more verbose output. Use the `-sa` or `-ss` switches to skip this component
 
 
 ## STAGE 4: Repair
@@ -629,16 +629,16 @@ Tron updates these programs if they exist on the system. If a program does not a
 
     `%WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True`
 
-    Use the `-spr` flag to skip this action
+    Use the `-spr` switch to skip this action
 
-2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD, or if any SMART errors are detected. Use the `-sd` flag forces Tron to ALWAYS skip defrag
+2. **[Defraggler](https://www.piriform.com/defraggler)**: Command-line defrag tool from Piriform that's a little faster than the built-in Windows defragmenter. Defrag is automatically skipped if the system drive is an SSD, or if any SMART errors are detected. Use the `-sd` switch to force Tron to ALWAYS skip defrag
 
 
 ## STAGE 7: Wrap-up
 
 *stage-specific code is in [tron.bat](https://github.com/bmrf/tron/blob/master/tron.bat)*
 
-1. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `<LOGPATH>\tron_summary_logs`. Additionally, if `-er` flag was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
+1. **generate summary logs**: Generate before and after logs detailing which files were deleted and which programs were removed. These are placed in `<LOGPATH>\tron_summary_logs`. Additionally, if `-er` switch was used or `EMAIL_REPORT` variable was set, these logs will be attached to the email that is sent out
 
 2. **Create restore point**: Create a post-run system restore point to mirror the one we created in Stage 0: Prep. Vista and up only, client OS's only, on Windows 10 does not work if the system is in any form of Safe Mode. See notes on System Restore in Stage 0 documentation for more information
 
