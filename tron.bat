@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5 - Remove references to patching Java due to removal of that functionality
+:: Version:       1.1.6 + Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+::                1.1.5 - Remove references to patching Java due to removal of that functionality
 ::                1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
 ::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
 ::                      * Replace all relative references to reg.exe with hard-coded %REG% (set in initialize_environment.bat). Thanks to u/SkyPork for reporting
@@ -52,8 +53,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.5
-set SCRIPT_DATE=2019-02-07
+set SCRIPT_VERSION=1.1.6
+set SCRIPT_DATE=2019-03-09
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -753,6 +754,7 @@ for %%i in (%*) do (
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-sap set SKIP_APP_PATCHES=yes
 	if /i %%i==-scs set SKIP_CUSTOM_SCRIPTS=yes
 	if /i %%i==-sdb set SKIP_DEBLOAT=yes
 	if /i %%i==-sd set SKIP_DEFRAG=yes
@@ -761,7 +763,7 @@ for %%i in (%*) do (
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
-	if /i %%i==-sap set SKIP_APP_PATCHES=yes
+	if /i %%i==-sor set SKIP_ONEDRIVE_REMOVAL=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
 	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
@@ -781,8 +783,8 @@ goto :eof
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
 	echo  Author: vocatus on reddit.com/r/TronScript
 	echo.
-	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -sa -scs -sd -sdb -sdc
-	echo                    -sdu -se -sk -sm -sap -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
+	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -sa -sap -scs -sd -sdb -sdc
+	echo                    -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional flags ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -799,6 +801,7 @@ goto :eof
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically 15 seconds after script completion
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
+	echo    -sap Skip application patches ^(don't patch 7-Zip or Adobe Flash^)
 	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
@@ -807,7 +810,7 @@ goto :eof
 	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -sap Skip application patches ^(don't patch 7-Zip or Adobe Flash^)
+	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
