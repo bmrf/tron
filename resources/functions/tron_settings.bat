@@ -2,13 +2,14 @@
 ::                Sub-stage scripts also call this file if they're launched directly.
 :: Requirements:  n/a
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 - Remove references to Java
+:: Version:       1.0.3 + Add new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+::                1.0.2 - Remove references to Java
 ::                1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
 ::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
 
 :: Script version
-set TRON_SETTINGS_SCRIPT_VERSION=1.0.2
-set TRON_SETTINGS_SCRIPT_DATE=2019-02-07
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.3
+set TRON_SETTINGS_SCRIPT_DATE=2019-03-09
 
 
 :::::::::::::::
@@ -68,6 +69,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: SKIP_EVENT_LOG_CLEAR   (-se)  = Set to yes to skip Event Log clear (don't backup and clear Windows Event Logs)
 :: SKIP_KASKPERSKY_SCAN   (-sk)  = Set to yes to skip Kaspersky Virus Rescue Tool scan
 :: SKIP_MBAM_INSTALL      (-sm)  = Set to yes to skip Malwarebytes Anti-Malware installation
+:: SKIP_ONEDRIVE_REMOVAL  (-sor) = Set to yes to skip OneDrive removal regardless whether it's in use or not
 :: SKIP_PAGEFILE_RESET    (-spr) = Skip page file settings reset (don't set to "Let Windows manage the page file")
 :: SKIP_SOPHOS_SCAN       (-ss)  = Set to yes to skip Sophos Anti-Virus scan
 :: SKIP_TELEMETRY_REMOVAL (-str) = Set to yes to skip Telemetry Removal (just turn telemetry off instead of removing it)
@@ -97,6 +99,7 @@ set SKIP_DEBLOAT_UPDATE=no
 set SKIP_EVENT_LOG_CLEAR=no
 set SKIP_KASPERSKY_SCAN=no
 set SKIP_MBAM_INSTALL=no
+set SKIP_ONEDRIVE_REMOVAL=no
 set SKIP_PAGEFILE_RESET=no
 set SKIP_SOPHOS_SCAN=no
 set SKIP_TELEMETRY_REMOVAL=no
