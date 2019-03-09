@@ -89,7 +89,7 @@ if not %ERRORLEVEL%==0 (
 	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Repair]
 	if %WIN_VER_NUM% geq 6.2 (
 		call functions\log_with_date.bat "!  DISM: Image corruption detected. Attempting repair..."
-		:: Add /LimitAccess flag to this command to prevent connecting to Windows Update for replacement files
+		:: Add /LimitAccess switch to this command to prevent connecting to Windows Update for replacement files
 		dism /Online /NoRestart /Cleanup-Image /RestoreHealth /Logpath:"%RAW_LOGS%\dism_repair.log"
 	)
 ) else (
@@ -114,7 +114,7 @@ if /i %DRY_RUN%==no (
 	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
 	if %WIN_VER_NUM% geq 6.0 (
 		%SystemRoot%\System32\sfc.exe /scannow
-		%SystemRoot%\System32\findstr.exe /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
+		%FINDSTR% /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 )
 call functions\log_with_date.bat "   Done."
