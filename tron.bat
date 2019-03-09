@@ -88,11 +88,11 @@ if /i %AUTORUN_IN_SAFE_MODE%==yes ( cls && echo. && echo ERROR: You cannot use -
 if exist tron_stage.txt (
 	REM Read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
-	set /p RESUME_switches=<tron_switches.txt 2>NUL		
+	set /p RESUME_SWITCHES=<tron_switches.txt 2>NUL		
 )
-if exist tron_stage.txt call :parse_cmdline_args %RESUME_switches%
+if exist tron_stage.txt call :parse_cmdline_args %RESUME_SWITCHES%
 if exist tron_stage.txt (
-	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using switches %RESUME_switches%..."
+	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using switches %RESUME_SWITCHES%..."
 	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
@@ -202,7 +202,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    REPO_TRON_DATE:         %REPO_TRON_DATE%
 	echo    REPO_TRON_VERSION:      %REPO_TRON_VERSION%
 	echo    RESUME_DETECTED:        %RESUME_DETECTED%
-	echo    RESUME_switches:           %RESUME_switches%
+	echo    RESUME_SWITCHES:           %RESUME_SWITCHES%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
