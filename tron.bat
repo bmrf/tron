@@ -16,8 +16,8 @@
 ::                1.0.9 + Add support for detection of Internet connection on French language systems. Thanks to u/mr_marmotte
 ::                1.0.8 * Improve network detection routine to address possibility of multiple languages in ipconfig output
 ::                1.0.7 * Improve network detection routine to work on German-language systems. Thanks to u/smokie12
-::                1.0.6 ! Bugfixes for -a and -asm flags. Thanks to u/agent-squirrel
-::                1.0.5 * Update code to support new -asm flag and alter original -a flag behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
+::                1.0.6 ! Bugfixes for -a and -asm switches. Thanks to u/agent-squirrel
+::                1.0.5 * Update code to support new -asm switch and alter original -a switch behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
 ::                      - Remove "System is not in Safe Mode" warning. Tron is shifting emphasis away from running in Safe Mode since it's not technically required
 ::                      * Move help output (-h) to it's own function at the bottom of the script instead of cluttering up the pre-run section
 ::                1.0.4 ! Fix bug in debug log upload code
@@ -66,7 +66,7 @@ pushd resources
 call functions\tron_settings.bat
 
 :: Initialize the runtime environment
-:: We need to pass all CLI flags (%*) so that if we're resuming and -resume is used, initialize_environment.bat has access to it to detect a resume state
+:: We need to pass all CLI switches (%*) so that if we're resuming and -resume is used, initialize_environment.bat has access to it to detect a resume state
 call functions\initialize_environment.bat %*
 
 :: Show help if requested
@@ -83,16 +83,16 @@ if /i %AUTORUN%==yes (
 if /i %AUTORUN_IN_SAFE_MODE%==yes ( cls && echo. && echo ERROR: You cannot use -a and -asm together. Pick one or the other. && exit /b 1 ) )
 
 :: INTERNAL PREP: Check if we're resuming from a failed or incomplete previous run (often caused by forced reboots in stage_2_de-bloat)
-:: Populate what stage we were on as well as what CLI flags were used. This could probably be a single IF block but I got lazy
+:: Populate what stage we were on as well as what CLI switches were used. This could probably be a single IF block but I got lazy
 :: trying to figure out all the annoying variable expansion parsing stuff. Oh well
 if exist tron_stage.txt (
 	REM Read in the values from the previous run
 	set /p RESUME_STAGE=<tron_stage.txt 2>NUL
-	set /p RESUME_FLAGS=<tron_flags.txt 2>NUL		
+	set /p RESUME_switches=<tron_switches.txt 2>NUL		
 )
-if exist tron_stage.txt call :parse_cmdline_args %RESUME_FLAGS%
+if exist tron_stage.txt call :parse_cmdline_args %RESUME_switches%
 if exist tron_stage.txt (
-	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using flags %RESUME_FLAGS%..."
+	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using switches %RESUME_switches%..."
 	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
@@ -202,7 +202,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    REPO_TRON_DATE:         %REPO_TRON_DATE%
 	echo    REPO_TRON_VERSION:      %REPO_TRON_VERSION%
 	echo    RESUME_DETECTED:        %RESUME_DETECTED%
-	echo    RESUME_FLAGS:           %RESUME_FLAGS%
+	echo    RESUME_switches:           %RESUME_switches%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WMIC:                   %WMIC%
@@ -212,7 +212,7 @@ if /i %CONFIG_DUMP%==yes (
 
 
 :: INTERNAL PREP: Autorun check. Skip EULA, Safe Mode but no Network, Welcome Screen and Email Report checks.
-::                I assume if you use either of the auto flags (-a, -asm) you know what you're doing
+::                I assume if you use either of the auto switches (-a, -asm) you know what you're doing
 :autorun_check
 if /i %AUTORUN%==yes goto execute_jobs
 if /i %AUTORUN_IN_SAFE_MODE%==yes goto execute_jobs
@@ -329,7 +329,7 @@ cls
 
 
 :: INTERNAL PREP: Email report check
-:: If -er flag was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
+:: If -er switch was used or EMAIL_REPORT was set to yes, check for a correctly configured SwithMailSettings.xml
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	%FINDSTR% /i "YOUR-EMAIL-ADDRESS" stage_7_wrap-up\email_report\SwithMailSettings.xml >NUL
@@ -339,7 +339,7 @@ if /i %EMAIL_REPORT%==yes (
 		echo.
 		echo  ERROR
 		echo.
-		echo  You requested an email report ^(used the -er flag or set
+		echo  You requested an email report ^(used the -er switch or set
 		echo  the EMAIL_REPORT variable to "yes"^) but didn't configure
 		echo  the settings file with your information. Update the following
 		echo  file with your SMTP username, password, etc:
@@ -362,8 +362,8 @@ ENDLOCAL DISABLEDELAYEDEXPANSION
 ::::::::::::::::::
 :execute_jobs
 echo execute_jobs>tron_stage.txt
-:: Stamp CLI flags so we can resume if we get interrupted by a reboot
-if /i not "%*"=="" echo %*> tron_flags.txt
+:: Stamp CLI switches so we can resume if we get interrupted by a reboot
+if /i not "%*"=="" echo %*> tron_switches.txt
 
 
 :: Make sure we're actually in Safe Mode if AUTORUN_IN_SAFE_MODE was requested
@@ -570,9 +570,9 @@ if /i %SKIP_CUSTOM_SCRIPTS%==yes (
 ::::::::::::::::::::::
 :: Post-run Cleanup ::
 ::::::::::::::::::::::
-:: JOB: Remove resume-related files, registry entry, boot flag, and other misc files
+:: JOB: Remove resume-related files, registry entry, boot switch, and other misc files
 call functions\log_with_date.bat "   Doing miscellaneous clean up..."
-	del /f /q tron_flags.txt >nul 2>&1
+	del /f /q tron_switches.txt >nul 2>&1
 	del /f /q tron_stage.txt >nul 2>&1
 	:: Skip these during a dry run because they toss errors. Not actually a problem, just an annoyance
 	if %DRY_RUN%==no (
@@ -786,11 +786,11 @@ goto :eof
 	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -sa -sap -scs -sd -sdb -sdc
 	echo                    -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
-	echo   Optional flags ^(can be combined^):
+	echo   Optional switches ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
 	echo    -asm Automatic mode ^(no welcome screen or prompts; implies -e; reboots to Safe Mode first^)
-	echo    -c   Config dump ^(display config. Can be used with other flags to see what
-	echo         WOULD happen, but script will never execute if this flag is used^)
+	echo    -c   Config dump ^(display config. Can be used with other switches to see what
+	echo         WOULD happen, but script will never execute if this switch is used^)
 	echo    -d   Dry run ^(run through script but don't execute any jobs^)
 	echo    -dev Override OS detection ^(allow running on unsupported Windows versions^)
 	echo    -e   Accept EULA ^(suppress disclaimer warning screen^)
@@ -820,7 +820,7 @@ goto :eof
 	echo    -v   Verbose. Show as much output as possible. NOTE: Significantly slower!
 	echo    -x   Self-destruct. Tron deletes itself after running and leaves logs intact
 	echo.
-	echo   Misc flags ^(must be used alone^)
+	echo   Misc switches ^(must be used alone^)
 	echo    -h   Display this help text
 	echo.
 	goto :eof
