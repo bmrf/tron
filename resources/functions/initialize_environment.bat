@@ -51,7 +51,7 @@ for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName
 
 :: Resume-related stuff (resuming from an interrupted run)
 set RESUME_STAGE=0
-set RESUME_FLAGS=0
+set RESUME_SWITCHES=0
 set RESUME_DETECTED=no
 
 
