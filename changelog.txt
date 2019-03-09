@@ -15,23 +15,26 @@ Version legend:
 
 
 
-
 #########################
-# v10.8.0 // 2019-02-xx #
+# v10.8.0 // 2019-03-09 #
 #########################
  . tron.bat                        v1.1.4
+    + Add new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 
 functions
- . initialize_environment.bat      v10.7.4
+ . initialize_environment.bat      v10.8.0
  . prerun_checks_and_tasks.bat     v1.1.0
- . tron_settings.bat               v1.0.1
+ * tron_settings.bat               v1.0.3
+    + Add new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 
 Stage 0: Prep
- . stage_0_prep.bat                v1.2.7
+ * stage_0_prep.bat                v1.2.8
+    * Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
+
  . rkill                           v2.9.1.0
  . ProcessKiller                   v2.0.0-TRON
  . TDSS Killer                     v3.1.0.12
- * McAfee Stinger                  v12.1.0.3022
+ * McAfee Stinger                  v12.1.0.3059
  . erunt                           v1.1j
  . caffeine                        v1.6.2.0
  . wget                            v1.19.4 x86
@@ -39,7 +42,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat           v1.2.3
- . CCleaner                        v5.52.6967
+ * CCleaner                        v5.54.7088
  . BleachBit                       v2.0.0
  . finddupe.exe                    v1.25
  . TempFileCleanup                 v1.1.4-TRON
@@ -47,10 +50,10 @@ Stage 1: Tempclean
 
 Stage 2: De-bloat
  . stage_2_de-bloat.bat            v1.4.3
- . programs_to_target_by_GUID.txt
+ * programs_to_target_by_GUID.txt
  . toolbars_BHOs_to_target_by_GUID.txt
  . programs_to_target_by_name.txt
- . metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
@@ -58,21 +61,20 @@ Stage 3: Disinfect
  . Sophos Virus Removal Tool       v2.6.1
  . Kaspersky Virus Removal Tool    v15.0.22.0
  . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
- . Malwarebytes included defs:     2019-01-24
+ * Malwarebytes included defs:     2019-02-28
 
 Stage 4: Repair
  . stage_4_repair.bat              v1.2.6
  . purge_windows_7-8-81_telemetry.bat
  . purge_windows_10_telemetry.bat
  . Spybot Anti-Beacon              v1.5.0.35
- . O&O ShutUp10                    v1.6.1400
+ * O&O ShutUp10                    v1.6.1401
  . Repair file extensions          v1.0.0
 
 Stage 5: Patch
  . stage_5_patch.bat               v1.2.3
- . 7-Zip                           v18.06        (multi-language)
- . Adobe Flash Player              v32.0.0.114   (language ignored
- - Java Runtime Environment        REMOVED
+ * 7-Zip                           v19.00        (multi-language)
+ * Adobe Flash Player              v32.0.0.142   (language ignored)
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
@@ -90,7 +92,7 @@ Stage 8: Custom Scripts
 
 Stage 9: Manual tools
  . ADSSpy                          v1.11.0.0
- . AdwCleaner                      v7.2.6.0
+ * AdwCleaner                      v7.2.7.0
  . Autoruns                        v13.93
  . BlueScreenView                  v1.55
  . ComboFix                        v18.8.8.1
@@ -101,6 +103,13 @@ Stage 9: Manual tools
  . Safe Mode Boot Selector.bat     v1.0.0
  . ServicesRepair                  v1.0.0.3
  . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
+# v10.7.6 // 2019-02-20 #
+#########################
+ ! Maintenance update to fix issue with debloat lists. No other changes
 
 
 
@@ -168,7 +177,7 @@ Stage 5: Patch
  . stage_5_patch.bat               v1.2.3
  * 7-Zip                           v18.06        (multi-language)
  * Adobe Flash Player              v32.0.0.114   (language ignored)
- * Java Runtime Environment        8u202         (language ignored)
+ - Java Runtime Environment        REMOVED
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
@@ -187,7 +196,7 @@ Stage 8: Custom Scripts
 Stage 9: Manual tools
  . ADSSpy                          v1.11.0.0
  * AdwCleaner                      v7.2.6.0
- * Autoruns                        v13.93
+ * Autoruns                        v13.94
  . BlueScreenView                  v1.55
  . ComboFix                        v18.8.8.1
  . Net Adapter Repair              v1.2
@@ -1842,7 +1851,7 @@ Stage 9: Manual tools
 # v10.4.0 // 2017-12-06 #
 #########################
  * tron.bat                        v1.0.5
-    * Update code to support new -asm flag and alter original -a flag behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
+    * Update code to support new -asm switch and alter original -a switch behavior (no longer auto-reboot into safe mode, unless -asm is used along with -a)
     - Remove "System is not in Safe Mode" warning. Tron is shifting emphasis away from running in Safe Mode since it's not technically required
     * Move help output (-h) to it's own function at the bottom of the script instead of cluttering up the pre-run section
 
@@ -4249,7 +4258,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  * stage_1_tempclean.bat           v1.1.4
-    ! ccleaner: Remove /wait flag from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
+    ! ccleaner: Remove /wait switch from start command so script continues immediately. Script now has hard-coded 180 second (3 minute) delay after which it will forcibly kill CCleaner. When running normally this should be plenty of time to complete, and this way the script won't stop if CCleaner stalls. Thanks to multiple users for reporting
 
  * CCleaner                        v5.23.5808
  . BleachBit                       v1.12
@@ -4726,7 +4735,7 @@ Stage 8: Manual tools
 ########################
 Internal
  * tron.bat                        v9.5.1
-    / cleanup: Change output of bcedit boot flag clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
+    / cleanup: Change output of bcedit boot switch clearing commands to pipe directly to NUL, since we aren't interested in the output and it just throws a meaningless error message to the log file
     - cleanup: Remove unused :self_destruct label
 
  . check_update.bat                v1.0.4
@@ -4773,13 +4782,13 @@ Stage 4: Repair
 
  * reset_filesystem_permissions.bat v1.0.3
     * Add proper version-specific commands to secedit database repair. Was incorrectly attempting to run Windows XP command on Windows 7 and up
-    + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
+    + Add /nostatistic switch to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
     + Add standalone execution support
     - Remove unnecessary SETLOCAL command
     - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
 
  * reset_registry_permissions.bat  v1.0.4
-    + Add /nostatistic flag to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
+    + Add /nostatistic switch to subinacl calls. This should suppress the red banner that appears and always made people think something was wrong
     + Add standalone execution support
     - Remove unnecessary SETLOCAL command
     - Remove logging of registry permissions reset since it only produces a bunch of "access denied" log entries on protected hives that we don't care about. Should decrease runtime as well
@@ -4932,7 +4941,7 @@ Internal
 
  * check_update_debloat_lists.bat  v1.0.2
      - Remove '--no-check-certificate' statement from wget commands, due to upgrade of Tron's internal wget.exe to v1.18. This enables proper SSL encryption when checking Github for new S2 debloat lists
-     ! Remove erroneous debugging statement that was mistakenly left in. It flagged the local 3rd party Metro list as being out of date regardless of version
+     ! Remove erroneous debugging statement that was mistakenly left in. It switchged the local 3rd party Metro list as being out of date regardless of version
      + Add preloading of variables so the script doesn't crash if it can't detect a version number correctly. Thanks u/Karmaisthedevil
 
 Stage 0: Prep
@@ -5016,7 +5025,7 @@ Stage 8: Manual tools
 Internal
  * tron.bat                           v9.4.0
     + tron_update:   Add automatic checking for updated debloat lists (stage 2). If found Tron will update the local lists prior to execution
-    + tron_cli_flag: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
+    + tron_cli_switch: Add -sdu switch and associated SKIP_DEBLOAT_UPDATE variable. Use this to prevent Tron from automatically updating the debloat lists prior to execution
     + tron_update:   Add SKIP_DEBLOAT_UPDATE output to config dump screen (-c)
     / tron_update:   Rename all instances of UPDATE_CHECK and update_check to CHECK_UPDATE and check_update to make names consistent
     - tron_update:   Remove all references to substage update. The idea behind this functionality was ported over to updating the debloat lists instead
@@ -6518,7 +6527,7 @@ Stage 2: De-bloat
     * OneDrive: Disable links in Explorer side pane via registry keys instead of deleting the keys entirely
     * Metro: Fine-tune version checking to ensure we only run on Windows 8/8.1 and Windows 10
     - Metro: Remove redundant "net start AppXSVC" line prior to Metro de-bloat code
-    ! Metro: Only set registry flag to allow starting AppX service in Safe Mode if the system is already in Safe Mode
+    ! Metro: Only set registry switch to allow starting AppX service in Safe Mode if the system is already in Safe Mode
 
  . programs_to_target_by_name.txt
  . programs_to_target_by_GUID.bat
@@ -7089,7 +7098,7 @@ Stage 8: Manual tools
 # v8.1.0 // 2015-12-04 #
 ########################
 tron.bat                           v8.1.0
- * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) flag is used. This way we don't lose any output
+ * tron.bat:prep:verbose: Automatically expand the scrollback buffer to 9000 if VERBOSE (-v) switch is used. This way we don't lose any output
 
 Stage 0: Prep
  . stage_0_prep.bat                v1.0.0
@@ -7102,8 +7111,8 @@ Stage 0: Prep
 
 Stage 1: Tempclean
 stage_1_tempclean.bat              v1.0.1
-    * CCleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) flag is used. Thanks u/Forcen
-    * bleachbit: Improve Bleachbit support for VERBOSE (-v) flag, now display ALL Bleachbit output to console and log if -v is used. Thanks u/forcen
+    * CCleaner:  Add note explaining that CCleaner doesn't support verbose output if VERBOSE (-v) switch is used. Thanks u/Forcen
+    * bleachbit: Improve Bleachbit support for VERBOSE (-v) switch, now display ALL Bleachbit output to console and log if -v is used. Thanks u/forcen
     - misc:      Remove unnecessary window title reset after Tempfilecleanup
 
  * CCleaner                        v5.12.5431
@@ -7276,13 +7285,13 @@ tron.bat                           v7.2.0
  + tron.bat:prep:             Add ERRORS_DETECTED variable. If tripped by an operation, Tron end screen will be red instead of green
  + tron.bat:prep:             Add WARNINGS_DETECTED variable. If tripped by an operation, Tron end screen will be yellow instead of green
  ! tron.bat:runlocation:      Fix detection of running from TEMP folder
- * tron.bat:autorun:          If autorun flag (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks u/staticxtasy, u/Chimaera12 and u/ComputersByte
+ * tron.bat:autorun:          If autorun switch (-a) is used and we're NOT in Safe Mode, automatically reboot into Safe Mode after 10 seconds. Thanks u/staticxtasy, u/Chimaera12 and u/ComputersByte
  * stage_1_prep:SMART:        Turn screen yellow if SMART errors are detected. This is just to alert the user something is amiss
  + stage_2_de-bloat:metro:    Add "OEM_modern_apps_to_target_by_name.ps1," called during Windows 10 Metro de-bloat. Targets OEM-loaded Modern Apps. Thanks u/danodemano
  - stage_2_de-bloat:metro:    Remove line that deletes users OneDrive folder. We still remove OneDrive, but at least now we're not nuking user files. This is a half-fix until I figure out how to check if OneDrive is actually in use or not.
  ! stage_4_telemetry:bugfix:  Fix incorrect ASCII hyphens on Modern App removal commands due to HTML copy-paste. Thanks u/cuddlychops06, u/staticextasy, and u/Chimaera12
  * stage_4_telemetry:updates: Add blocking ("hiding") of bad Windows Updates to prevent automatic re-installation. Thanks u/sofakingdead for suggestion
- + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) flag
+ + stage_4_telemetry:logging: Add missing logging support to Windows 10 telemetry cleanup, with support for -v (VERBOSE) switch
 
 STAGE 0: Prep
  . rkill                           v2.8.2.0
@@ -7423,7 +7432,7 @@ STAGE 8: Manual tools
 tron.bat                           v7.1.0
  + stage_2_de-bloat:toolbars: Add 'toolbars_BHOs_to_target_by_GUID.bat' with 978 entries. Major Thanks u/Chimaera12 for his work on this
  / stage_2_de-bloat:oem:      Move all stage 2: de-bloat files out of \oem\ subdirectory directly into \stage_2_de-bloat\. Much of the work of this section isn't OEM-specific
- / stage_4_repair:telemetry:  Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m flag) since it makes more sense there. Thanks u/jwhispersc
+ / stage_4_repair:telemetry:  Move "Remove forced OneDrive integration" out of Telemetry removal and over to Metro de-bloat (skipped with -m switch) since it makes more sense there. Thanks u/jwhispersc
 
 STAGE 0: Prep
  . rkill                           v2.8.2.0
@@ -7558,7 +7567,7 @@ STAGE 8: Manual tools
 # v7.0.0 // 2015-10-14 #
 ########################
 tron.bat                           v7.0.0
- / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev flag is no longer required)
+ / tron.bat:prep:os_detection:     Windows 10 now officially supported, so remove Windows 10 from list of unsupported OS's (-dev switch is no longer required)
  + stage_4_repair:file_extensions: Add new job to repair broken file extensions. Thanks u/cuddlychops06
  / stage_5_patch:                  Simplify file paths to make updates easier. Thanks u/spexdi
  * stage_5_patch:                  Make app patch installers architecture independent; move system architecture detection out of `Tron.bat` and into app-specific patch installer file. Makes maintenance and portability easier. Thanks u/spexdi
@@ -7630,8 +7639,8 @@ STAGE 8: Manual tools
 ########################
 tron.bat                           v6.9.0
  + tron.bat:prep:os_detection:  Add unsupported OS detection. Tron will bail out if it's running on an unsupported OS (currently only Windows 10).
-                                Also throws a message telling you to use the -dev flag to override the check. Thanks u/spexdi
- + tron.bat:prep:dev_mode:      Add -dev flag and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running
+                                Also throws a message telling you to use the -dev switch to override the check. Thanks u/spexdi
+ + tron.bat:prep:dev_mode:      Add -dev switch and associated DEV_MODE variable. Use this to override newly-added OS detection (allow running
                                 Tron on unsupported Windows versions). Thanks u/spexdi
  * tron.bat:log:header_trailer: Add detected OS version to log header and trailer (why did it take this long to think of this??)
  ! tron.bat:prep:update:        Fix "download latest version?" prompt to be case insensitive (was accepting only lowercase y). Thanks u/ericrobert
@@ -7707,7 +7716,7 @@ STAGE 8: Manual tools
 # v6.8.0 // 2015-09-28 #
 ########################
 tron.bat                           v6.8.0
- ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_flags.txt if no CLI flags were used. This should fix a crash error on German localisations. Thanks u/Modeopfa
+ ! tron.bat:prep:resume:       Add check to prevent echoing anything to tron_switches.txt if no CLI switches were used. This should fix a crash error on German localisations. Thanks u/Modeopfa
  + tron.bat:prep:              Check to see if Tron is running from Windows TEMP, alert the user if so, then exit. Thanks u/ALittleFunInTheSun
  + stage_1_tempclean:CCleaner: Add winapp2.ini by the CCEnhancer project. Will clean significantly more areas of the system. See singularlabs.com for more info. Thanks u/expert02
  + stage_4_repair:network:     Add a minor network repair section. Will probably expand this in the future. Thanks u/chinpopocortez
@@ -7931,9 +7940,9 @@ STAGE 8: Manual tools
 # v6.6.0 // 2015-09-07 #
 ########################
 tron.bat                           v6.6.0
- + stage_3_disinfect:wusa: Add removal of bad Windows Updates that backport "telemetry" (user tracking) from Windows 10 to Windows 7 and 8. Use -str flag or associated SKIP_TELEMETRY_REMOVAL variable to skip this. See the entry for this action on the list of full Tron actions in the Instructions file for more information
+ + stage_3_disinfect:wusa: Add removal of bad Windows Updates that backport "telemetry" (user tracking) from Windows 10 to Windows 7 and 8. Use -str switch or associated SKIP_TELEMETRY_REMOVAL variable to skip this. See the entry for this action on the list of full Tron actions in the Instructions file for more information
  + tron.bat:prep:          Add prompt to automatically reboot to Safe Mode w/ Networking if we detect we're not in Safe Mode. Thanks u/patx35
- - stage_8_wrap-up:gsl:    Remove -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Summary logs are now generated by default
+ - stage_8_wrap-up:gsl:    Remove -gsl switch and associated GENERATE_SUMMARY_LOGS variable. Summary logs are now generated by default
  ! stage_7_wrap-up:resume: Fix resume-related cleanup; was incorrectly executing in Dry Run mode
 
 STAGE 0: Prep
@@ -8212,7 +8221,7 @@ tron.bat                           v6.5.0
  ! stage_0_prep:rkill:            Fix missing quotes to escape directory path in rkill whitelist argument. Thanks u/Rumble_Humble
  ! stage_3_disinfect:roguekiller: Minor fix for RogueKiller, removed unecessary trailing "remove" word on the command. Thanks u/khaosnmt
  * stage_0_prep:caffeine:         Replace "keep system awake" code with caffeine.exe. Cuts out quite a few lines of code. Thanks u/rodgersayshi
- + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl flag or associated SKIP_LOKI_SCAN variable to skip this tool
+ + stage_7_wrap-up:loki:          Add LOKI post-run scanner. Does not disinfect, but gives indication of how clean the system is. Use -sl switch or associated SKIP_LOKI_SCAN variable to skip this tool
  - stage_7_wrap-up:screensaver:   Remove job "Re-enable screensaver" since this is replaced by Caffeine
 
 STAGE 0: Prep
@@ -8413,9 +8422,9 @@ STAGE 8: Manual tools
 # v6.4.0 // 2015-07-14 #
 ########################
 tron.bat                           v6.4.0
- + tron.bat:cliflags:      Add -sk flag and associated SKIP_KASPERSKY_SCAN variable
- + tron.bat:cliflags:      Add -sm flag and associated SKIP_MBAM_INSTALL variable
- + tron.bat:cliflags:      Add -ss flag and associated SKIP_SOPHOS_SCAN variable
+ + tron.bat:cliswitches:      Add -sk switch and associated SKIP_KASPERSKY_SCAN variable
+ + tron.bat:cliswitches:      Add -sm switch and associated SKIP_MBAM_INSTALL variable
+ + tron.bat:cliswitches:      Add -ss switch and associated SKIP_SOPHOS_SCAN variable
  + stage_0_prep:smart:     Add a quick SMART check and notification if errors are found on a drive
  * stage_3_disinfect:mbam: MBAM now checks for prior installations and skips installation if found
  ! stage_3_disinfect:      Fix minor display error which showed Kaspersky as belonging to Stage 0 instead of Stage 3
@@ -8885,8 +8894,8 @@ tron.bat                           v6.3.1
 tron.bat                           v6.3.0
  * tron.bat:datetime:       Functionalize CUR_DATE calculation so we can call it multiple times. 35% solution to the CUR_DATE issue
  + stage_4_repair:add:      Create new Stage 4: Repair and right-shift all subsequent stages
- + stage_4_repair:regperm:  Add registry permissions reset and associated -srr flag and SKIP_REGPERMS_RESET variable
- + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr flag and SKIP_FILEPERMS_RESET variable
+ + stage_4_repair:regperm:  Add registry permissions reset and associated -srr switch and SKIP_REGPERMS_RESET variable
+ + stage_4_repair:fileperm: Add file permissions reset (%WinDir% only) and associated -sfr switch and SKIP_FILEPERMS_RESET variable
  / stage_3_disinfect:sfc:   Move SFC to Stage 4: Repair
  / stage_5_optimize:chkdsk: Move chkdsk Stage 4: Repair
 
@@ -8950,7 +8959,7 @@ STAGE 8: Manual tools
 tron.bat                           v6.2.0
  + stage_0_prep:safemode:     Automatically set system to boot into Safe Mode w/ Networking if a reboot occurs, then revert back to Normal boot at script end. This should help prevent reboots into normal mode and not having an elevated command prompt. Thanks u/Aarinfel
  + stage_0_prep:time:         Set system time via NTP against time.nist.gov, 3.pool.ntp.org and time.windows.com. Thanks u/radialmonster
- + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file." Use associated -spr flag or SKIP_PAGEFILE_RESET variable to prevent this behavior
+ + stage_5_optimize:pagefile: Add reset of system page file settings to "let Windows manage the page file." Use associated -spr switch or SKIP_PAGEFILE_RESET variable to prevent this behavior
  / stage_4_patch:flash-ie:    Rename Flash for Internet Explorer subdirectory from "internet explorer" to "ie"
 
 STAGE 0: Prep
@@ -9131,7 +9140,7 @@ STAGE 7: Manual tools
 # v6.1.2 // 2015-04-03 #
 ########################
 tron.bat                           v6.1.2
- + tron.bat:flags:          Add -np flag and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks u/geeklogan
+ + tron.bat:switches:          Add -np switch and associated NO_PAUSE variable. Use this to skip the "pause" statement at the end of Tron. Thanks u/geeklogan
  / stage_2_de-bloat:names:  Rename "programs_to_target.txt" to "programs_to_target_by_name.txt"
 
 STAGE 0: Prep
@@ -9287,7 +9296,7 @@ tron.bat                           v6.0.0
  / stage_0_prep:checks:  Move Administrator rights check before main menu and EULA screen
  / stage_0_prep:checks:  Move Safe Mode checks before main menu
  ! stage_0_prep:power:   Fix minor errors in power scheme export (Vista and up)
- * stage_1_tempclean:bb: Add support for -v flag to BleachBit; BleachBit now dumps list of actions if -v flag is used
+ * stage_1_tempclean:bb: Add support for -v switch to BleachBit; BleachBit now dumps list of actions if -v switch is used
  - stage_1_tempclean:ie: Remove redundant IE cleanup in TempFileCleanup.bat, since Tron runs this natively
  ! tron.bat:update:      Fix error with update checker. Was failing cert check over HTTPS. Thanks u/upsurper
  * tron.bat:logging:     Major upgrade. Now use logging functions instead of two lines per event (one to console, one to logfile). This slows down the script slightly but lets us remove over 100 lines of code, as well as simplifies troubleshooting and maintenance. Major Thanks u/douglas_swehla
@@ -9488,8 +9497,8 @@ tron.bat                           v4.9.1
 # v4.9.0 // 2015-02-25 #
 ########################
 tron.bat                           v4.9.0
- + FEATURE:                Add -se flag and associated SKIP_EVENT_LOG_CLEAR variable. Use these to prevent Tron from backing up and clearing the Windows Event Logs. Thanks u/auldnic
- ! stage_0_prep:power:     Fix crash condition on Vista Home Premium if the -p (preserve power settings) flag was used. Thanks u/XtraSharp for being brave enough to touch Vista Home Premium and finding this obscure crash condition
+ + FEATURE:                Add -se switch and associated SKIP_EVENT_LOG_CLEAR variable. Use these to prevent Tron from backing up and clearing the Windows Event Logs. Thanks u/auldnic
+ ! stage_0_prep:power:     Fix crash condition on Vista Home Premium if the -p (preserve power settings) switch was used. Thanks u/XtraSharp for being brave enough to touch Vista Home Premium and finding this obscure crash condition
  * stage_0_prep:update:    Change update checker to use HTTPS URL. Thanks u/SGC-Hosting for providing an SSL certificate!
  ! stage_3_disinfect:dism: Fix bug where Tron would get out of step with directory structure due to extra popd statement
  / stage_4_patch:dism:     Remove tron_dism_base_reset.log and tron_dism.log instead of leaving them around after adding to the main log file
@@ -9548,7 +9557,7 @@ STAGE 7: Manual tools
 # v4.8.0 // 2015-02-18 #
 ########################
 tron.bat                           v4.8.0
- + wrap-up:feature:   Add -gsl flag and associated GENERATE_SUMMARY_LOGS variable. Use this to generate separate summary logs in the LOGPATH directory (can help create an invoice).
+ + wrap-up:feature:   Add -gsl switch and associated GENERATE_SUMMARY_LOGS variable. Use this to generate separate summary logs in the LOGPATH directory (can help create an invoice).
                       If EMAIL_REPORT (-er) was used, the summary logs will be attached to the email report. We'll try to enhance this in the next release to also show # of infected items if possible. Thanks u/Reverent and u/upsurper
  ! stage_3_disinfect: Critical bug fix; script was failing after MBAM due to getting out of step with directory structure from a missing popd statement. Thanks u/oromeo
  ! stage_6_wrap-up:   Fix bug where email report was sent even if DRY_RUN was set
@@ -10005,7 +10014,7 @@ tron.bat                           v4.3.2
 # v4.3.1 // 2014-12-18 #
 ########################
 tron.bat                           v4.3.1
- ! bugfix: Fix missing escape characters in echo statement near check for -sb flag. Thanks u/scan2006, u/SubtleContradiction and u/ChristopherSitten
+ ! bugfix: Fix missing escape characters in echo statement near check for -sb switch. Thanks u/scan2006, u/SubtleContradiction and u/ChristopherSitten
  ! bugfix: Skip update check if running automatically. Thanks u/dangolo
 
 
@@ -10013,7 +10022,7 @@ tron.bat                           v4.3.1
 # v4.3.0 // 2014-12-17 #
 ########################
 tron.bat                           v4.3.0
- + feature: Add skip debloat flag (-sb) and associated SKIP_DEBLOAT variable. Set to yes to skip de-bloat section
+ + feature: Add skip debloat switch (-sb) and associated SKIP_DEBLOAT variable. Set to yes to skip de-bloat section
  ! bugfix:  Fix small bug with EULA screen (was requiring typing "I AGREE" twice)
  * update:  Update all binary references to new versions
 
@@ -10076,7 +10085,7 @@ tron.bat                           v4.2.1
 # v4.2.0 // 2014-11-26 #
 ########################
 tron.bat                           v4.2.0
- + feature: Add -er flag (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks u/bodkov
+ + feature: Add -er switch (Email Report) and associated EMAIL_REPORT variable to automatically send an email report when Tron is finished. Requires you to input your SMTP information in \resources\stage_6_wrap-up\email_report\SwithMailSettings.xml. Thanks u/bodkov
  + stages:  Add stage_6_wrap-up to support new email report functionality
  / stages:  Rename stage_6_manual_tools to stage_7_manual_tools
 
@@ -10143,10 +10152,10 @@ STAGE 1: Tempclean
 # v4.1.0 // 2014-11-18 #
 ########################
 tron.bat                           v4.1.0
- + feature: Add -sa flag and associated SKIP_ANTIVIRUS_SCANS variable. Use this to skip Sophos, Vipre and MBAM scans
- + feature: Add -sp flag and associated SKIP_PATCHES variable. Use this to skip patching 7-Zip, Java, and Adobe Flash and Reader
- / feature: Change -s flag (skip defrag) to -sd to fit convention with other skip flags. Undocumented support for -s flag remains for one more version and then will be removed
- - feature: Remove -q flag and associated SHUT_UP variable, due to lack of audio support in Safe Mode
+ + feature: Add -sa switch and associated SKIP_ANTIVIRUS_SCANS variable. Use this to skip Sophos, Vipre and MBAM scans
+ + feature: Add -sp switch and associated SKIP_PATCHES variable. Use this to skip patching 7-Zip, Java, and Adobe Flash and Reader
+ / feature: Change -s switch (skip defrag) to -sd to fit convention with other skip switches. Undocumented support for -s switch remains for one more version and then will be removed
+ - feature: Remove -q switch and associated SHUT_UP variable, due to lack of audio support in Safe Mode
 
 STAGE 0: Prep
  . Rkill                           v2.6.8.0
@@ -10259,9 +10268,9 @@ tron.bat                           v4.0.1
 # v4.0.0 // 2014-11-06 #
 ########################
 tron.bat                           v4.0.0
- + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e flag, or change associated EULA_ACCEPTED variable to yes to permanently accept
+ + tron.bat:annoyance:       Add disclaimer warning screen (sorry :-/). Accept with -e switch, or change associated EULA_ACCEPTED variable to yes to permanently accept
  + stage_0_prep:feature:     Add ProcessKiller utility. Nukes various userspace processes before starting. Thanks u/cuddlychops06
- + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q flag
+ + stage_0_prep:feature:     Add speak ability. Tron now audibly announces when it starts and finishes. Mute with the -q switch
                              or the SHUT_UP variable. Depending on interest, may add ability to announce each stage as it begins and completes
  + stage_0_prep:utility:     Add nircmd.exe to support speak ability, among other things
  ! stage_0_prep:bugfix:      Fix VSS cleanup that incorrectly executed on Vista (Vista vssadmin.exe does not support VSS cleanup). VSS cleanup now skipped if OS is Vista
@@ -10331,7 +10340,7 @@ STAGE 6: Manual tools
 tron.bat                           v3.9.0
  ! tron.bat:bugfix:  Fix calculation of free space before and after. Was missing code block for post-run space calculation. Thanks u/swtester
  ! tron.bat:bugfix:  Fix a registry modification that mistakenly executed even if the script was in dry run mode (-d)
- + tron.bat:feature: Add -m flag and associated PRESERVE_METRO_APPS variable to Preserve OEM Metro apps (don't remove them). Thanks u/swtester
+ + tron.bat:feature: Add -m switch and associated PRESERVE_METRO_APPS variable to Preserve OEM Metro apps (don't remove them). Thanks u/swtester
  / tron.bat:misc:    Rename all instances of DO_SHUTDOWN to AUTO_SHUTDOWN
 
  STAGE 0: Prep
@@ -10387,9 +10396,9 @@ STAGE 6: Manual tools
 
 tron.bat                           v3.8.0
  / tron:META:            Change Tron static packs from .7z archives to self-extracting .exe archives. Thanks u/cmorche
- + tron.bat:feature:     Add self-destruct flag (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks u/bodkov
+ + tron.bat:feature:     Add self-destruct switch (-x). If selected Tron will derez itself after running while leaving logs intact. Thanks u/bodkov
  * tron.bat:logging:     Add display of disk free space before and after to log header and trailer, and associated variables. Thanks u/cuddlychops06
- * tron.bat:logging:     Minor logging tweak. Stamp any command-line flags that were used to header and trailer when running
+ * tron.bat:logging:     Minor logging tweak. Stamp any command-line switches that were used to header and trailer when running
  * tron.bat:improvement: Make all IF comparisons case-insensitive. Thanks u/Astrimedes
  - tron.bat:diskcheck:   Remove SMART disk health check and associated variables. Too many incorrect detections causing more of a hassle than it's worth.
  ! stage_1_tempclean:    Fix Windows Update cache cleanup; Windows Update service wouldn't start in Safe Mode, now force it to start. Thanks u/GrizzlyWinter
@@ -10460,11 +10469,11 @@ tron.bat                           v3.7.0
  ! tron.bat:date and time:        Reset CUR_DATE after finishing virus scans, since they take so long and we sometimes cross into a new day (therefor leaving CUR_DATE incorrect). Thanks u/ScubaSteve
  * tron.bat:prep:                 Minor update to log header and trailer: Stamp what mode we're in (safe, safe with network, etc) and the location of the log file
  + tron.bat:prep:                 Enable "legacy" boot menu on Windows 8 and up (re-enable F8 functionality)
- + tron.bat:Feature:              Add shutdown flag (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks u/Stealth5325 and u/Fogest
- + tron.bat:Feature:              Add verbose flag (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
+ + tron.bat:Feature:              Add shutdown switch (-o) and corresponding DO_SHUTDOWN variable to poweroff system when Tron finishes. Overrides auto-reboot (-r) if set. Thanks u/Stealth5325 and u/Fogest
+ + tron.bat:Feature:              Add verbose switch (-v) and corresponding VERBOSE variable. Displays, when possible, verbose/debug output from each program Tron calls (Sophos, Vipre, etc). NOTE: Tron will take much longer with this option enabled
  + stage_2_disinfect:roguekiller: Add RogueKiller (CMD version). Thanks u/bodkov
  * stage_2_disinfect:mbam:        Update MBAM link to reflect new installer
- / stage_2_disinfect:DISM:        Add /NoRestart flag to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas
+ / stage_2_disinfect:DISM:        Add /NoRestart switch to dism scan. It wasn't forcing a reboot, but added just in case it got any funny ideas
  * stage_4_patch:jre:             Update JRE links to reflect new installers
  * stage_4_patch:jre:             Update Adobe links to reflect new installers
 
@@ -10521,7 +10530,7 @@ tron.bat                           v3.6.0
  + stage_0_prep:vss_clean:  Add cleanup of oldest Shadow Copy set. May convert this to full Shadow Copy set removal in the future. Thanks u/cuddlychops06
  / stage_1_tempclean:       Add 10-second delay after CCleaner and Bleachbit to give them time to finish before moving to next task.
  ! stage_3_de-bloat:Metro:  Fix Metro bloat removal; was failing due to service not starting in Safe Mode. Now force service to start regardless of Safe Mode.
- ! stage_3_de-bloat:Metro:  Fix Metro targeting; was incorrectly flagging Server 2008 as a Metro-enabled OS
+ ! stage_3_de-bloat:Metro:  Fix Metro targeting; was incorrectly switchging Server 2008 as a Metro-enabled OS
  * stage_3_de-bloat:Metro:  Improve Metro bloat removal; use DISM image cleanup to remove now-unused Metro app packages from the Image Store. Thanks u/nomaddave
  + stage_4_patch:DISMreset: Add re-compilation of Windows binary store via Dism with /ResetBase after running Windows Update. Can significantly reduce size of SxS store. Thanks u/nomaddave
 
@@ -10786,7 +10795,7 @@ tron.bat                           v3.3.0
  + stage_1_tempclean:         Add job TempFileCleanup. Runs external TempFileCleanup script
  ! stage_0_prep:check_update: Remove trailing "/" character on Repo URL so we don't fetch <url>//md5sums.txt
  * stage_2_disinfect:         Add deletion of Malwarebytes desktop shortcut on Windows XP/Server 2003
- / stage_2_disinfect:         Enable -debug flag on Sophos Virus Removal Tool for more verbose output
+ / stage_2_disinfect:         Enable -debug switch on Sophos Virus Removal Tool for more verbose output
  * stage_4_patch:             Update links to reflect new Adobe Flash installers
 
 STAGE 0: Prep
@@ -11113,7 +11122,7 @@ STAGE 6: Manual tools
 tron.bat                           v2.0.0
  * prep and checks:  Rename VERSION and UPDATED to SCRIPT_VERSION and SCRIPT_UPDATED
  ! prep and checks:  Fix missing 'set WMIC=<path>' command (was causing all JRE removal commands to fail)
- * stage_0_prep:     Add flag (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks u/GetOnMyAmazingHorse
+ * stage_0_prep:     Add switch (-p) to preserve the current Power Scheme (default is to reset power scheme to Windows default). Thanks u/GetOnMyAmazingHorse
  ! stage_4_patch:    Fix bugs with Java and Flash installers where we'd subsequently fail to get in the correct directory after calling the first script
  + stage_5_optimize: Add job to scan system drive for errors and schedule a chkdsk at next reboot if any are found. Thanks u/mikeyuf
 
@@ -11162,14 +11171,14 @@ STAGE 6: Manual tools
 # v1.9.0 // 2014-08-04 #
 ########################
 tron.bat                           v1.9.0
- + tron.bat: Add support for the following optional command-line flags (can be combined):
+ + tron.bat: Add support for the following optional command-line switches (can be combined):
     -c  Config dump (display current variables)
     -d  Dry run. Run through Tron without executing any jobs (mostly for my testing)
     -s  Skip defrag. Force Tron to skip defrag regardless whether an SSD is detected
     -h  Spit out help on using Tron via command-line
     -r  Reboot (auto-reboot 30 seconds after completion)
- * tron.bat: Improved logic block handling command-line flags; we can now parse flags in any order. Thanks u/Undeadlord for suggestion
- - tron.bat: Removed support for --auto flag (use -a instead)
+ * tron.bat: Improved logic block handling command-line switches; we can now parse switches in any order. Thanks u/Undeadlord for suggestion
+ - tron.bat: Removed support for --auto switch (use -a instead)
  ! prep and checks: Fix Admin rights check for Windows 8/8.1 (again); Revert to hard-exit if non-Admin detected
 
 STAGE 0: Prep
@@ -11217,9 +11226,9 @@ STAGE 6: Manual tools
 # v1.8.2 // 2014-07-31 #
 ########################
 tron.bat                           v1.8.2
- * prep and checks:   Move Log File Handling section before --auto check (was incorrectly being skipped if --auto flag was used)
+ * prep and checks:   Move Log File Handling section before --auto check (was incorrectly being skipped if --auto switch was used)
  + stage_0_prep:      Add code to reduce space allowed for System Restore checkpoints to 5%
- + stage_2_disinfect: Add /pup flag to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; Thanks u/3xist
+ + stage_2_disinfect: Add /pup switch to Emsisoft command-line scanner (a2cmd) to catch "potentially unwanted programs"; Thanks u/3xist
  ! stage_2_disinfect: Fix failure on 32-bit systems where Tron would fail to get in correct MBAM Program Files directory
 
 STAGE 0: Prep
@@ -11380,7 +11389,7 @@ tron.bat                           v1.7.3
 # v1.7.2 // 2014-07-22 #
 ########################
 tron.bat                           v1.7.2
- * tron.bat:        Add "--auto" and "-a" flags for automatic unattended execution
+ * tron.bat:        Add "--auto" and "-a" switches for automatic unattended execution
  / tron.bat:        Move all but most recent changelog entries to the changelog file, to avoid cluttering up script header
  + prep and checks: Re-add check for Administrator rights using a 100% reliable method for Windows 2000 through Windows 8. Thanks to stackoverflow.com/users/3198799/and31415 for fix
  * prep and checks: Revert SSD check to something more reliable
@@ -11400,7 +11409,7 @@ tron.bat                           v1.7.1
 ########################
 tron.bat                           v1.7
  + prep and checks:   Add check for Administrator rights. Thanks u/apcomputerworks
- + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete flag)
+ + stage_2_disinfect: Add Emsisoft Commandline Scanner. "smart" scan + NTFS alternate data streams scan. Uses Direct Disk Access mode. Deletes detected malware immediately (/delete switch)
  / tron.bat:          Move user-configurable variables to the top of the script, above Check and Preps section
 
 STAGE 0: Prep
@@ -11560,7 +11569,7 @@ STAGE 6: Manual tools
 # v1.5 // 2014-07-15 #
 ######################
 tron.bat                           v1.5
- + tron.bat:      Add "-auto" flag to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
+ + tron.bat:      Add "-auto" switch to support silent/scripted execution. Run the script and pass "-auto" as the first argument and Tron will run silently while still using all settings configured in the VARIABLES section
  * tron.bat:      Set power mode to "Always On/High Performance" at start of script, then reset power settings to Windows defaults when finished
  * tron.bat:      General cleanup of many conditional tests; should slightly speed script up
  * stage_4_patch: Remove all existing JRE versions prior to installing latest JRE
@@ -11797,7 +11806,7 @@ tron.bat                           v1.2
  / tron.bat:          Disable post-run auto-reboot by default. Change "REBOOT_DELAY" variable if you wish to auto-reboot
  - tron.bat:          Remove section asking user if we want to do a post-run defrag (replaced by auto-detect)
  - stage_1_tempclean: Remove TempFileCleanup job (CCleaner and BleachBit cover this requirement)
- - stage_4_patch:     Remove /r flag on wuauclt command
+ - stage_4_patch:     Remove /r switch on wuauclt command
 
 STAGE 0: Prep
  . Rkill                           v2.6.7
