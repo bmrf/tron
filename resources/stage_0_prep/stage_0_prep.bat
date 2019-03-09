@@ -238,42 +238,44 @@ if %ERRORLEVEL%==0 (
 	title Tron v%TRON_VERSION% [stage_0_prep] [McAfee Stinger]
 	call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
 	call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
-	if /i %DRY_RUN%==no start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	if /i %DRY_RUN%==no (
 	
-	:: Clean up RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
-	
-	:: SiteAdvisor x86
-	if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
-		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
-		taskkill /f /im "saUpd.exe" /t >nul 2>&1
-		"%ProgramFiles(x86)%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
-		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
+		:: Run the scan
+		start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+		
+		:: Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
+		:: SiteAdvisor x86
+		if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
+			taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+			taskkill /f /im "saUpd.exe" /t >nul 2>&1
+			"%ProgramFiles(x86)%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+			rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
+		)
+		
+		:: SiteAdvisor x64
+		if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
+			taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+			taskkill /f /im "saUpd.exe" /t >nul 2>&1
+			"%ProgramFiles%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+			rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
+		)
+		
+		:: RealProtect x86
+		if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
+			taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+			rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
+			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+		)
+		
+		:: RealProtect x64
+		if exist "%ProgramFiles%\McAfee\Real Protect\" (
+			taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+			rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
+			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+		)
 	)
-	
-	:: SiteAdvisor x64
-	if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
-		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
-		taskkill /f /im "saUpd.exe" /t >nul 2>&1
-		"%ProgramFiles%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
-		rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
-	)
-	
-	:: RealProtect x86
-	if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
-		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
-		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
-		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
-		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
-	)
-	
-	:: RealProtect x64
-	if exist "%ProgramFiles%\McAfee\Real Protect\" (
-		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
-		rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
-		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
-		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
-	)
-	
 	call functions\log_with_date.bat "   Done."
 ) else (
 	call functions\log_with_date.bat "   System is missing .NET 3.5, skipping McAfee Stinger scan."
