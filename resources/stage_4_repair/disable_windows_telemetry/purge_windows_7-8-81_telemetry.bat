@@ -1,7 +1,8 @@
 :: Purpose:       Purges Windows 7/8/8.1 telemetry
 :: Requirements:  Called from Tron script ( reddit.com/r/TronScript ) in Stage 4: Repair. Can also be run directly
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.5-TRON ! Fix standalone execution not working in some sections due to relative paths being different. Thanks to u/AncientAv
+:: Version:       1.1.6-TRON ! Fix standalone and Tron-called execution due to typo in STANDALONE variable comparison command. Thanks to u/bubonis
+::                1.1.5-TRON ! Fix standalone execution not working in some sections due to relative paths being different. Thanks to u/AncientAv
 ::                1.1.4-TRON ! Fix standalone execution broken due to use of uninitialized %REG% variable
 ::                1.1.3-TRON * Use %REG% instead of relative calls
 ::                1.1.2-TRON + Add additional scheduled tasks to remove. Thanks to /u/MirageESO
@@ -38,8 +39,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.1.5-TRON
-set SCRIPT_UPDATED=2018-08-23
+set SCRIPT_VERSION=1.1.6-TRON
+set SCRIPT_UPDATED=2018-11-19
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 set STANDALONE=no
@@ -50,7 +51,7 @@ if /i "%LOGPATH%"=="" (
 	set REG=%SystemRoot%\System32\reg.exe
 )
 if /i "%LOGPATH%"=="" (
-	set LOGPATH=%SystemDrive%\Logs
+	set LOGPATH=%SystemDrive%\logs
 	set LOGFILE=windows_7-8-81_telemetry_removal.log
 	set VERBOSE=yes
 	set STANDALONE=yes
@@ -92,7 +93,7 @@ if %ABORT%==yes (
 
 :::::::::::::::::::::::::::::::::::::::::::::::
 :: REMOVE BAD UPDATES
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Uninstalling bad updates, please wait..."
 ) else (
 	echo "Uninstalling bad updates, please wait..."
@@ -278,13 +279,13 @@ if "%VERBOSE%"=="yes" (
 	start /wait "" wusa /uninstall /kb:3112343 /quiet /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: BLOCK BAD UPDATES
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Blocking bad updates, please wait..."
 ) else (
 	echo "Blocking bad updates, please wait..."
@@ -292,7 +293,7 @@ if STANDALONE==no (
 echo.
 
 :: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-if STANDALONE==no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
+if %STANDALONE%==no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
 
 :: Batch 1
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 2882822 3050265 3065987 3075851 3102810 3118401 3135445 3138612 3173040 971033 3123862 3112336 3090045 3083711 3083710  
@@ -301,15 +302,15 @@ start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3081954 3081454 3081
 :: Batch 3
 start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3022345 3021917 3015249 3014460 3012973 2990214 3139929 2977759 2976987 2976978 2952664 2922324 2902907 3112343 3083324 3083325
 
-if STANDALONE==no popd
+if %STANDALONE%==no popd
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Removing telemetry-related scheduled tasks..."
 ) else (
 	echo "Removing telemetry-related scheduled tasks...."
@@ -343,13 +344,13 @@ if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting" >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: SERVICES
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Removing bad services, please wait..."
 ) else (
 	echo "Removing bad services, please wait..."
@@ -373,13 +374,13 @@ if "%VERBOSE%"=="yes" (
 	sc stop RemoteRegistry >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: REGISTRY ENTRIES
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Toggling official MS telemetry registry entries..."
 ) else (
 	echo "Toggling official MS telemetry registry entries..."
@@ -444,13 +445,13 @@ if "%VERBOSE%"=="yes" (
 	%windir%\system32\reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 :: MISC
-if STANDALONE==no (
+if %STANDALONE%==no (
 	call functions\log.bat "     Miscellaneous cleanup, please wait..."
 ) else (
 	echo "Miscellaneous cleanup, please wait..."
@@ -461,4 +462,4 @@ if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %Progra
 echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
 echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
 
-if STANDALONE==no (call functions\log.bat "     Done.") else (echo "Done.")
+if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
