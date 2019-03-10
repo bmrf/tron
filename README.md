@@ -135,7 +135,7 @@ Command-line use is fully supported. All switches are optional and can be used s
      -h   Display help text
 
 
-\* There is probably no -upm switch
+\* There is probably no `-upm` switch
 
 
 # SCRIPT INTERRUPTION
