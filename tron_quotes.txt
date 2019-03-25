@@ -1,0 +1,85 @@
+Some of my favorite quotes about Tron or resulting from its use.
+
+
+# Positive
+
+I use it as part of my field kit for the MSP I work for. Works each and every time over 200 uses
+https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eizo8d9/
+
+It has for me. I had a recent hiccup with it, but it was the first in the few dozen or so times I have had to call upon it (not counting the time it completely obliterated a friend's laptop, but it was practically ruined anyway with one foot in the garbage, so I don't count hers). I will always rely upon TronScript as that "scorched earth" type of solution where I am trying to recover a severely gone system or setting up a new one that I have just freshly purchased. The next time I get a new computer and run it or need to build a system back from the ground up, I will post my utter satisfaction with this amazing utility.
+https://www.reddit.com/r/TronScript/comments/b3q2ex/tronscript_worked_great_for_me/ej3ai9x/
+
+This sub is basically for troubleshooting, problem reporting etc, so that's why you only see posts about something not working. Like bad reviews on a restaurant, people who have an issue are the loudest. Tron works great in ~90% of situations in my experience.
+Cheers!
+https://www.reddit.com/r/TronScript/comments/b3q2ex/tronscript_worked_great_for_me/ejag7wk/
+
+
+Thanks for the reply! It worked great in the end and I have noticed an improvement in my computers boot-up time and performance overall. Thanks so much for putting the work into creating the script for all of us. -- u/Hoarl
+https://www.reddit.com/r/TronScript/comments/8ridph/how_long_should_creating_restore_point_take/e0xxh3c/
+
+
+hi u/vocatus thanks too for TRON. My girlfriends laptop was unusable and now it's been given a new lease of life. She is over the moon. Thanks for all your hard work -- u/bazpaul
+https://www.reddit.com/r/TronScript/comments/88r0po/thanks_easy_install_amazing_results/dwuhegj/?context=3
+
+
+Tron is easy to install, instructions easy to follow and my laptop start time to my desktop is done in seconds. Thanks for the help! -- u/Jmcalla
+https://www.reddit.com/r/TronScript/comments/88r0po/thanks_easy_install_amazing_results/
+
+Creator, contributors, community members. Thanks a ton. Tron rocks. Running verbose with unicorn magic xD.
+This project is an inspiration. Great work from the script to the documentation to the engagement. All around 10 out of 10. -- u/Letstalkaboudit
+https://www.reddit.com/r/TronScript/comments/88ojd8/just_another_thankful_user/
+
+Just wanted to thank you - everything finished running and my computer is so much faster than before now! Thanks! -- u/Mathematicalsguy
+https://www.reddit.com/r/TronScript/comments/7yf1v0/possible_issue_running_tron/duino3e/
+
+My computer used to take a solid 10 mins to load after bootup, ran Tron for the first time and down to about 2-4 now. -- u/Mbusc1
+https://www.reddit.com/r/TronScript/comments/7sbkmd/my_computer_used_to_take_a_solid_10_mins_to_load/
+
+As a user of Tronscript i'm damn happy with it. -- u/FuckingHateMath
+
+Holy living sh** I did not realize this was the Tron Script guy. You are a professional above all other professionals. Thank you for your work. -- u/fetchingTurtle
+
+Oh my god this program has changed my life, my computer is finally bloat free and quick as a missile. -- u/Eledyssil
+
+Vocatus, I just need to say that I've been using Tron since the beginning and I appreciate you keeping this up to date and not letting the project die out. It's saved me so much time. Being able to set and forget this to run overnight and come back to a functioning PC magically in the morning is the best feeling ever. I'm not into Bitcoin but if you have a PayPal account, you should post it. I'd definitely buy you a few beers. -- u/rm_11
+
+I was so close to reinstalling my operating system but I was lucky enough to come across a post that mentioned Tron and that it doesn't get enough love. I hadn't heard about Tron and at this point after trying in my mind EVERYTHING possible to rid my computer of whatever it was that was slowing it down, I figured nothing to lose.
+
+I wasn't sure at any point when running Tron that it was working or doing what it's supposed to do, but nonetheless it did work. I'm extremely grateful to those that have put time and effort into this program, it is phenomenal. Cheers to you. -- u/DocDraper
+https://www.reddit.com/r/TronScript/comments/45b4zs/tron_is_the_real_deal_thank_you/
+
+This was my first time using the script and was amazed by all the functions it processes. Best part was my wifes comment, "Are you making her computer worse?! Whats all that random text!" -- u/xr1chardx
+https://www.reddit.com/r/TronScript/comments/453a3o/thank_you_for_your_hard_work/czuztrr
+
+I use Tron pretty frequently. I'm very grateful for all the effort you and everyone else have put into it. -- u/Ischemia24
+https://www.reddit.com/r/TronScript/comments/453a3o/thank_you_for_your_hard_work/czvxm13
+
+My elderly friend got hit by scammers and ended up installing a Trojan and over 300 other viruses. She was devastated and was considering buying a new Computer. I asked if I could keep the computer overnight to see if I could do anything and sure enough TronScript caught everything and then some. She is very pleased with her computer and couldn't be happier.  -- u/xr1chardx
+https://www.reddit.com/r/TronScript/comments/453a3o/thank_you_for_your_hard_work/
+
+No point in sugar coating it. I work at a tech department for a University. Last night, I just wasn't feeling it. I ran the Tron script on a computer, but wrote all the technician notes as if I had manually done each step. Completely fixed the computer's problems and gave me time to work on other projects. I won't do it for every machine, but I cannot thank the developers enough for putting this together. -- u/RoboTicks
+https://www.reddit.com/r/TronScript/comments/453a3o/thank_you_for_your_hard_work/czvauwn
+
+If I sucked dicks, you would be first in line. -- u/markevens
+
+I'm a sysadmin at a school and often get infected/broken computers in for rep. I tried this tool on a computer that didn't want to boot and it worked flawlessly! -- u/Freezingcow
+
+[The system] runs better after running Tron (back to booting in ~7 seconds like when originally built, compared to almost 20 sec it had slowed down to). Thanks again for everything! -- u/BroPaterno
+
+
+
+
+# Negative
+
+I have not seen a single post in the sub that says anything close to “Tron is working out as expected… “
+https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eiz9kxh/
+
+Recently i could not resist and downloaded few things which seems affected my PC those were 1) Yourporn.com videos 2) few PDf adult comics. I don’t exactly know how my PC got infected. -- u/xxxfoodpunk
+
+The personal files were my 'Funtime' files if you catch my drift. I had created a folder maze in the random empty Intel folder in C:. -- u/Spiraticus
+
+This script is cargo cult bulls***. -- u/meandertothehorizon
+
+Tron is dangerous and I won't be silenced by the downvotes. -- u/meandertothehorizon
+
+Hahahahahaha -- u/meandertothehorizon
