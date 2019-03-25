@@ -3,6 +3,9 @@ Some of my favorite quotes about Tron or resulting from its use.
 
 # Positive
 
+Tron has worked for us. I've run it 4 or 5 times over the past 18 months or so across three different computers, no issues whatsoever.
+https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/ej0ewck/
+
 I use it as part of my field kit for the MSP I work for. Works each and every time over 200 uses
 https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eizo8d9/
 
@@ -13,14 +16,11 @@ This sub is basically for troubleshooting, problem reporting etc, so that's why 
 Cheers!
 https://www.reddit.com/r/TronScript/comments/b3q2ex/tronscript_worked_great_for_me/ejag7wk/
 
-
 Thanks for the reply! It worked great in the end and I have noticed an improvement in my computers boot-up time and performance overall. Thanks so much for putting the work into creating the script for all of us. -- u/Hoarl
 https://www.reddit.com/r/TronScript/comments/8ridph/how_long_should_creating_restore_point_take/e0xxh3c/
 
-
 hi u/vocatus thanks too for TRON. My girlfriends laptop was unusable and now it's been given a new lease of life. She is over the moon. Thanks for all your hard work -- u/bazpaul
 https://www.reddit.com/r/TronScript/comments/88r0po/thanks_easy_install_amazing_results/dwuhegj/?context=3
-
 
 Tron is easy to install, instructions easy to follow and my laptop start time to my desktop is done in seconds. Thanks for the help! -- u/Jmcalla
 https://www.reddit.com/r/TronScript/comments/88r0po/thanks_easy_install_amazing_results/
@@ -65,8 +65,6 @@ If I sucked dicks, you would be first in line. -- u/markevens
 I'm a sysadmin at a school and often get infected/broken computers in for rep. I tried this tool on a computer that didn't want to boot and it worked flawlessly! -- u/Freezingcow
 
 [The system] runs better after running Tron (back to booting in ~7 seconds like when originally built, compared to almost 20 sec it had slowed down to). Thanks again for everything! -- u/BroPaterno
-
-
 
 
 # Negative
