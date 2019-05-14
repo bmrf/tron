@@ -63,14 +63,14 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [-a -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
+    tron.bat [-a | -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
               -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional switches (can be combined):
 
      -a   Automatic mode (no welcome screen or prompts; implies -e)
      
-     -asm Automatically reboot to Safe Mode (must be used with -a, otherwise ignored)
+     -asm Automatic mode (no prompts; implies -e; reboots to Safe Mode first)
      
      -c   Config dump (display current config. Can be used with other
           switches to see what WOULD happen, but script will never execute
