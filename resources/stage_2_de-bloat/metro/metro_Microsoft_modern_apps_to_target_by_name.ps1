@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.0 + Add additional user-submitted entries
+Version:       1.3.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.0"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-02-15"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.1"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-05-16"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -72,6 +72,12 @@ Remove-App "Microsoft.FreshPaint"                      # Canvas app
 Remove-App "Microsoft.GetHelp"                         # Get Help link
 Remove-App "Microsoft.Getstarted"                      # Get Started link
 Remove-App "Microsoft.HelpAndTips"
+Remove-App "Microsoft.LanguageExperiencePacken-GB"
+Remove-App "Microsoft.LanguageExperiencePackes-es"
+Remove-App "Microsoft.LanguageExperiencePackes-mx"
+Remove-App "Microsoft.LanguageExperiencePacklt-lt"
+Remove-App "Microsoft.LanguageExperiencePacknl-nl"
+Remove-App "Microsoft.LanguageExperiencePackpt-BR"
 Remove-App "Microsoft.Messaging"                       # Messaging app
 Remove-App "Microsoft.MicrosoftJackpot"                # Jackpot app
 Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
