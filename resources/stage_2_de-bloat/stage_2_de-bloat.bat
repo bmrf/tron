@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.5 + feature:     Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+:: Version:       1.4.6 ! bugfix:      Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from Stage 4 telemetry disable script into appropriate location in this script. Thanks to u/Tenelia
+::                1.4.5 + feature:     Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
 ::                1.4.3 + feature:     Add removal of Dell-branded WildTangent games
 ::                1.4.2 * improvement: Significantly improve debloat by GUID phases. Now only attempt to remove GUIDs that exist on the system, vs brute-forcing the entire list
@@ -66,8 +67,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.5
-set STAGE_2_SCRIPT_DATE=2019-03-09
+set STAGE_2_SCRIPT_VERSION=1.4.6
+set STAGE_2_SCRIPT_DATE=2019-06-05
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -374,6 +375,14 @@ if %DRY_RUN%==no (
 	rmdir /s /q "%LocalAppData%\Microsoft\OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	rmdir /s /q "%ProgramData%\Microsoft OneDrive" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	rmdir /s /q "%SystemDrive%\OneDriveTemp" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	
+	REM SkyDrive (former OneDrive name)
+	%REG% add "HKLM\software\policies\microsoft\windows\skydrive" /v "disablefilesync" /t REG_DWORD /d "1" /f
+	
+	REM Kill OneDrive from hooking into Explorer even when disabled
+	%REG% add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f
+	%REG% add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d "0" /f
+	
 	:: Use Microsoft/Sysinternals movefile if access was denied in the previous 3 commands
 	if /i not %ERRORLEVEL%==0 (
 		stage_2_de-bloat\movefile\movefile.exe "%LocalAppData%\Microsoft\OneDrive" "" /accepteula >> "%LOGPATH%\%LOGFILE%" 2>&1
