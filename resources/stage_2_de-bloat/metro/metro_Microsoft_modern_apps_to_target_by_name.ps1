@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.1 + Add additional user-submitted entries
+Version:       1.3.2 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.1"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-05-16"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.2"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-05-19"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -84,6 +84,7 @@ Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
 Remove-App "Microsoft.MicrosoftMahjong"                # Advertising framework
 Remove-App "Microsoft.MicrosoftOfficeHub"
 Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # Power BI app - Business analytics
+Remove-App "Microsoft.MicrosoftRewards"
 Remove-App "Microsoft.MicrosoftSudoku"
 Remove-App "Microsoft.MinecraftUWP"
 Remove-App "Microsoft.MovieMoments"                    # imported from stage_2_de-bloat.bat
