@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.0 + Add additional user-submitted entries
+Version:       1.4.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.0"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-06-19"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.1"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-06-22"
 
 
 # Needed for Removal
@@ -217,6 +217,8 @@ Remove-App "CyberLinkCorp.id.PowerDVDforLenovoIdea*"
 Remove-App "CyberLinkCorp.ss.SCamera"
 Remove-App "CyberLinkCorp.ss.SGallery"
 Remove-App "CyberLinkCorp.ss.SPlayer"
+Remove-App "CyberLinkCorp.th.Power2GoforLenovo"
+Remove-App "CyberLinkCorp.th.PowerDVDforLenovo"
 Remove-App "D52A8D61.FarmVille2CountryEscape*"
 Remove-App "D5EA27B7.Duolingo-LearnLanguagesforFree*"
 Remove-App "DB6EA5DB.CyberLinkMediaSuiteEssentials*"
