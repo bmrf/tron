@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.6.7 + Add additional user-submitted entries
+:: Version:       1.6.8 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.7
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-06-22
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.8
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-07-03
 
 
 :: GUID LIST
@@ -6125,6 +6125,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {76272057-98E0-4DC4-AAC3-10C546C47195}
 
 :: HP Support Solutions Framework
+{8EF98706-3C4B-4C5B-B035-01187E17D0E6}
 {C43602FE-988C-47BA-9F9F-B95FDDAFB624}
 {3D16A9C5-8107-4EBB-B988-08CD363A9D0F}
 {20907839-6188-46EF-8AE7-141C86EDE13F}
@@ -6340,6 +6341,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {3EE9923D-3045-46AB-9CAA-E375993AEB4A}
 
 :: Intel Driver && Support Assistant
+{0C478EAE-B49D-46A9-8B7F-9634A74602ED}
 {A302CBA5-8856-4DC7-B1F6-4F96BCDF8180}
 
 :: Intel Dynamic Platform and Thermal Framework
