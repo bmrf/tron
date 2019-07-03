@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.1 + Add additional user-submitted entries
+Version:       1.4.2 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.1"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-06-22"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.2"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-07-03"
 
 
 # Needed for Removal
@@ -310,9 +310,12 @@ Remove-App "PandoraMediaInc.29680B314EFC2"
 Remove-App "PinballFx2*"
 Remove-App "Playtika.CaesarsSlotsFreeCasino*"
 Remove-App "Priceline"
+Remove-App "PricelinePartnerNetwork.Booking.comEMEABigsavingso"
+Remove-App "PricelinePartnerNetwork.Booking.comUSABigsavingson"
 Remove-App "PricelinePartnerNetwork.Priceline.comTheBestDealso"
 Remove-App "PublicationsInternational.iCookbookSE*"
 Remove-App "RandomSaladGamesLLC.GinRummyProforHP*"
+Remove-App "RealtekSemiconductorCorp.HPAudioControl"
 Remove-App "RealtekSemiconductorCorp.RealtekAudioControl"
 Remove-App "Relay.com.KiosqueRelay"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.OnlineSupportSService"
