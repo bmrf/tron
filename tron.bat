@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6 + Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+:: Version:       1.1.7 + Add value of WIN_VER_NUM to -c output
+::                1.1.6 + Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.1.5 - Remove references to patching Java due to removal of that functionality
 ::                1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
 ::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
@@ -53,8 +54,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.6
-set SCRIPT_DATE=2019-03-09
+set SCRIPT_VERSION=1.1.7
+set SCRIPT_DATE=2019-07-13
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -207,6 +208,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_SWITCHES:        %RESUME_SWITCHES%
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
+	echo    WIN_VER_NUM:            %WIN_VER_NUM%
 	echo    WMIC:                   %WMIC%
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
