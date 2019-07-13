@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.2.2-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
+:: History:       1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Older versions are now removed prior to installation. Thanks to u/strifethe9tailedfox
+::                1.2.2-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
 ::                           * Replace all hard-coded system file paths with relevant variable for better portability
 ::                1.2.1-TRON - Remove logging of ftype and assoc output since it's not of any consequence
 ::                1.2.0-TRON - Remove logging functions since Tron handles logging
@@ -21,7 +22,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=16.04
+set BINARY_VERSION=19.00
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
@@ -29,8 +30,8 @@ set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set VERSION=1.2.2-TRON
-set UPDATED=2015-10-14
+set VERSION=1.2.3-TRON
+set UPDATED=2019-07-13
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
@@ -42,6 +43,12 @@ pushd "%~dp0"
 ::::::::::::::::::
 :: INSTALLATION ::
 ::::::::::::::::::
+:: Uninstall other versions of 7-zip
+IF EXIST "%ProgramFiles%\7-Zip\Uninstall.exe" "%ProgramFiles%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
+IF EXIST "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
+wmic product where "name like '7-Zip%%'" uninstall /nointeractive
+
+
 :: Detect system architecture and install appropriate version
 if /i '%PROCESSOR_ARCHITECTURE%'=='x86' (
 	"7-Zip v%BINARY_VERSION% x86.msi" %FLAGS%
