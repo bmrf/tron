@@ -1,7 +1,7 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Older versions are now removed prior to installation. Thanks to u/strifethe9tailedfox
+:: History:       1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Old versions now removed prior to installation. Thanks to u/strifethe9tailedfox
 ::                1.2.2-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
 ::                           * Replace all hard-coded system file paths with relevant variable for better portability
 ::                1.2.1-TRON - Remove logging of ftype and assoc output since it's not of any consequence
