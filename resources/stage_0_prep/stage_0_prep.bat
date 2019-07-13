@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.8 * improvement:  Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
+:: Version:       1.2.9 * improvement:  Attempt to install .NET 3.5 (win10 systems only) if it's missing, to enable Stinger scan. Thanks to u/bubonis
+::                1.2.8 * improvement:  Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
 ::                1.2.7 ! bugfix:       Fix incorrect path in rkill whitelist call. Thanks to github:KingZee
 ::                1.2.6 * improvement:  Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
 ::                1.2.5 * improvement:  Clean up GUID dump file (convert from UCS2 to UTF-8) so for loops can correctly read it for improved Stage 2: debloat scans
@@ -41,8 +42,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.8
-set STAGE_0_SCRIPT_DATE=2019-03-09
+set STAGE_0_SCRIPT_VERSION=1.2.9
+set STAGE_0_SCRIPT_DATE=2019-07-13
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -55,7 +56,6 @@ if /i "%LOGFILE%"=="" (
 	:: Initialize the runtime environment
 	call functions\initialize_environment.bat
 )
-
 
 
 :::::::::::::::::::
@@ -232,54 +232,82 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: McAfee Stinger
-:: First check if .NET 3.5 is installed, since Stinger relies on it
+SETLOCAL ENABLEDELAYEDEXPANSION
+:: Check if .NET 3.5 is installed, since Stinger relies on it
 %REG% query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
-if %ERRORLEVEL%==0 (
-	title Tron v%TRON_VERSION% [stage_0_prep] [McAfee Stinger]
-	call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
-	call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
-	if /i %DRY_RUN%==no (
-	
-		:: Run the scan
-		start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
-		
-		:: Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
-		:: SiteAdvisor x86
-		if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
-			taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
-			taskkill /f /im "saUpd.exe" /t >nul 2>&1
-			"%ProgramFiles(x86)%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
-			rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
+
+:: If .NET 3.5 is missing, try to install it (win10 only), otherwise skip Stinger entirely
+if not %ERRORLEVEL%==0 (
+
+	REM If on Win10 try installation
+	if /i "%WIN_VER:~0,10%"=="Windows 10" (
+		call functions\log_with_date.bat "   System is missing .NET 3.5, attempting installation, please wait..."
+		if %DRY_RUN%==no dism.exe /online /enable-feature /featurename:NetFX3 /source:C:sourcessxs /LimitAccess >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if not !ERRORLEVEL!==0  (
+			REM Installation failed, skip Stinger
+			call functions\log_with_date.bat " ! .NET installation failed, skipping McAfee Stinger scan."
+			goto :skip_stinger
+		) else (
+			REM Installation succeeded, run Stinger
+			goto :start_stinger_scan
 		)
-		
-		:: SiteAdvisor x64
-		if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
-			taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
-			taskkill /f /im "saUpd.exe" /t >nul 2>&1
-			"%ProgramFiles%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
-			rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
-		)
-		
-		:: RealProtect x86
-		if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
-			taskkill /f /im "RealProtect.exe" /t >nul 2>&1
-			rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
-			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
-			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
-		)
-		
-		:: RealProtect x64
-		if exist "%ProgramFiles%\McAfee\Real Protect\" (
-			taskkill /f /im "RealProtect.exe" /t >nul 2>&1
-			rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
-			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
-			%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
-		)
+	) else (
+		REM We're on any Windows version that ISN'T 10, so just skip it entirely
+		call functions\log_with_date.bat "   System is missing .NET 3.5, skipping McAfee Stinger scan."
+		goto :skip_stinger
+
 	)
-	call functions\log_with_date.bat "   Done."
-) else (
-	call functions\log_with_date.bat "   System is missing .NET 3.5, skipping McAfee Stinger scan."
 )
+SETLOCAL DISABLEDELAYEDEXPANSION
+
+:start_stinger_scan
+title Tron v%TRON_VERSION% [stage_0_prep] [McAfee Stinger]
+call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
+call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
+if /i %DRY_RUN%==no (
+
+	:: Run the scan
+	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+
+	:: Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
+	:: SiteAdvisor x86
+	if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
+		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+		taskkill /f /im "saUpd.exe" /t >nul 2>&1
+		"%ProgramFiles(x86)%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
+	)
+
+	:: SiteAdvisor x64
+	if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
+		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
+		taskkill /f /im "saUpd.exe" /t >nul 2>&1
+		"%ProgramFiles%\McAfee\SiteAdvisor\uninstall.exe" >nul 2>&1
+		rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
+	)
+
+	:: RealProtect x86
+	if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
+		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+	)
+
+	:: RealProtect x64
+	if exist "%ProgramFiles%\McAfee\Real Protect\" (
+		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
+		rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+	)
+
+	call functions\log_with_date.bat "   Done."
+)
+
+
+:skip_stinger
+SETLOCAL DISABLEDELAYEDEXPANSION
 
 
 :: JOB: TDSS Killer
