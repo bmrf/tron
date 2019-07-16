@@ -164,7 +164,7 @@ Keep in mind the username and password for the email account will be stored in P
 
 # CHANGE DEFAULTS (advanced)
 
-If you don't want to use the command-line and don't like Tron's defaults, you can change the following default variables. Keep in mind command-line switches will always override their respective default option when used.
+If you don't want to use the command-line and don't like Tron's defaults, you can change the following default settings. Keep in mind command-line switches will always override their respective default option when used.
 
 **Edit this file**: `\tron\resources\functions\tron_settings.bat`
 
@@ -203,7 +203,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTORUN=no
   ```
   
-  - To always reboot to Safe Mode for autorun (requires that AUTORUN also be set to yes), change this to `yes`:
+- To always reboot to Safe Mode for autorun (requires that AUTORUN also be set to yes), change this to `yes`:
   ```
   set AUTORUN_IN_SAFE_MODE=no
   ```
