@@ -3,11 +3,12 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.7 + Add value of WIN_VER_NUM to -c output
+:: Version:       1.1.8 / Rename all instances of "argument(s)" to "switch(es)" to maintain project consistency
+::                1.1.7 + Add value of WIN_VER_NUM to -c output
 ::                1.1.6 + Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.1.5 - Remove references to patching Java due to removal of that functionality
 ::                1.1.4 - Remove auto-relaunch on reboot if the script was interrupted. Just couldn't get it working reliably with UAC. Thanks to u/bubonis
-::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_arguments, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
+::                1.1.3 ! Move prerun checks and tasks to after parse_commandline_switches, to allow -dev switch to function correctly. Thanks to github:justinhachemeister
 ::                      * Replace all relative references to reg.exe with hard-coded %REG% (set in initialize_environment.bat). Thanks to u/SkyPork for reporting
 ::                1.1.2 / Move SMART error detection code to prerun_checks_and_tasks.bat
 ::                1.1.1 + Add upload of Metro app list dump if -udl switch is used
@@ -54,8 +55,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.7
-set SCRIPT_DATE=2019-07-13
+set SCRIPT_VERSION=1.1.8
+set SCRIPT_DATE=2019-07-15
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -73,7 +74,7 @@ call functions\initialize_environment.bat %*
 :: Show help if requested
 for %%i in (%*) do ( if /i %%i==-h ( call :display_help && exit /b 0) )
 
-:: Parse command-line arguments. If used these will override related settings specified in tron_settings.bat.
+:: Parse command-line switches. If used these will override related settings specified in tron_settings.bat.
 call :parse_cmdline_args %*
 
 :: Do the pre-run checks and tasks (Admin rights check, temp directory check, SSD check etc)
@@ -139,7 +140,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo.
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^) config dump
 	echo.
-	echo  Command-line arguments:
+	echo  Command-line switches:
 	echo   %*
 	echo.
 	echo  User-set variables:
@@ -667,7 +668,7 @@ call functions\log.bat "--------------------------------------------------------
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %EMAIL_REPORT%==yes (
 	if /i %DRY_RUN%==no (
-		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+		stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\SwithMailSettings.xml" /l "%RAW_LOGS%\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%SUMMARY_LOGS%\tron_removed_files.txt|%SUMMARY_LOGS%\tron_removed_programs.txt" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_switches%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log_with_date.bat "  Done."
@@ -684,8 +685,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %UPLOAD_DEBUG_LOGS%==yes (
 	if /i %DRY_RUN%==no (
 
-		if /i %WIN_VER_NUM% GEQ 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
-		if /i %WIN_VER_NUM% LSS 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_ARGUMENTS%"
+		if /i %WIN_VER_NUM% GEQ 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\Metro_app_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_switches%"
+		if /i %WIN_VER_NUM% LSS 6.2 stage_7_wrap-up\email_report\SwithMail.exe /s /x "stage_7_wrap-up\email_report\debug_log_upload_settings.xml" /l "%USERPROFILE%\desktop\swithmail.log" /a "%LOGPATH%\%LOGFILE%|%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt|%RAW_LOGS%\tron_%COMPUTERNAME%_pre-run_screenshot*.png" /p1 "Tron v%TRON_VERSION% (%TRON_DATE%) executed as %USERDOMAIN%\%USERNAME%" /p2 "%LOGPATH%\%LOGFILE%" /p3 "%SAFE_MODE% %SAFEBOOT_OPTION%" /p4 "%FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%" /p5 "%CLI_switches%"
 
 		if !ERRORLEVEL!==0 (
 			call functions\log_with_date.bat "  Done."
@@ -738,11 +739,11 @@ for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
-:: Parse CLI arguments and flip the appropriate variables
+:: Parse CLI switches and flip the appropriate variables
 :parse_cmdline_args
-:: This line required for Swithmail. We use CLI_ARGUMENTS instead of %* because Swithmail chokes if %* is empty.
-:: CLI_ARGUMENTS is used in three places: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI arguments to the log file at the beginning
-if /i not "%*"=="" (set CLI_ARGUMENTS=%*) else (set CLI_ARGUMENTS=No CLI switches used)
+:: This line required for Swithmail. We use CLI_switches instead of %* because Swithmail chokes if %* is empty.
+:: CLI_switches is used in three places: The two Swithmail jobs (upload debug logs and email report) and to dump the list of CLI switches to the log file at the beginning
+if /i not "%*"=="" (set CLI_switches=%*) else (set CLI_switches=No CLI switches used)
 for %%i in (%*) do (
 	if /i %%i==-a set AUTORUN=yes
 	if /i %%i==-asm set AUTORUN_IN_SAFE_MODE=yes
