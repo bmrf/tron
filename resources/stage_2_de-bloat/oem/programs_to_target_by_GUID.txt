@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.6.8 + Add additional user-submitted entries
+:: Version:       1.6.9 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.8
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-07-03
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.6.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2019-07-15
 
 
 :: GUID LIST
@@ -5151,6 +5151,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {F243A34B-AB7F-4065-B770-B85B767C247C}
 
 :: HP Connection Manager
+{3CF33F11-04E3-4151-9695-355B06C82F39}
 {EA756962-001F-418E-9DF7-E3E9AD8068DB}
 {04C23662-CE15-48BE-AF77-7BD9028934E7}
 {7940DAB9-AC72-4422-8908-DCF58C2C1D21}
@@ -5284,6 +5285,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {D9D8900B-CFEB-44C6-B417-D6308B5B145D}
 
 :: HP Documentation
+{FC34BD4D-4FD6-4E43-9879-EB6CC2002A59}
 {082B1425-0F24-43FA-9B64-E8F617B0AD3B}
 {86525062-DEE0-448B-9AB8-0BCD0FE69E0B}
 {0C107330-16DF-4D39-AA74-0E5448AED9E8}
@@ -5382,6 +5384,10 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {CF5BB2C7-4597-44E7-9774-57AD4355031D}
 
 :: HP ePrint SW
+{FC292FE3-B7B0-492C-BC2E-C0DFCA30FC92}
+{C5AD7A64-6DDF-482A-8E7D-FA1DED0A201A}
+{B0D5BCD0-8DFB-48A3-9BDF-4E183159E420}
+{872897C1-CDCD-4466-82AA-5483BCCF09C7}
 {A12996E4-B1A8-49A9-A7E3-488C21268ED7}
 {A2707859-3D7E-460E-A19F-84128CA1B4B9}
 {90F34553-7DC3-46D9-BE03-848E1FEBA0FE}
@@ -5590,6 +5596,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {B90CB0DE-2E60-41C4-9857-466EB98192BF}
 
 :: HP PC Hardware Diagnostics UEFI
+{7FF9E31F-FAC5-4C7B-970B-FE464B8C6A62}
 {DF16F6E3-6550-468A-9C0C-306B4F60D501}
 {924D3ABC-FC75-4042-9DDB-FB846A45848D}
 {DD43EA67-DAF3-4879-BFF7-E534675BDEA5}
@@ -5767,6 +5774,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {531000B3-DBEE-4115-BBF3-DA48B67C053F}
 
 :: HP SoftPaq Download Manager
+{7e7fe67e-3319-4754-9835-0cb624e101ee}
 {BB51845C-10A6-457F-A215-9B2D3E130889}
 {54967df4-732f-4681-a1f0-d587abff2635}
 {223AE3E8-4445-410F-8EDA-13EC137E3BDB}
@@ -5795,6 +5803,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {3CF78481-FB7B-4B51-99A2-D5E0CD0B3AAF}
 
 :: HP System Default Settings
+{FF94262A-A307-4D6A-AD8A-9D814A93E344}
 {5F7AAD31-A357-4EC6-B636-41335FE501A0}
 {69D0865F-A606-4B0F-9270-FBD3130666BA}
 {9FA4819F-C0D6-4184-950A-5F3859EB1168}
@@ -6792,6 +6801,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {91CC5BAE-A098-40D3-A43B-C0DC7CE263FE}
 
 :: Lenovo Patch Utility
+{053ACA98-6B07-4DD0-9DB3-F51E3EB1780C}
 {49A09C2C-FFF4-478E-B397-5E0979F67F5D}
 {0369F866-2CE0-4EB9-B426-88FA122C6E82}
 {A7BB9BBD-DFE4-4276-820A-7CD141FC09E6}
@@ -7086,6 +7096,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {90150000-008C-0409-0000-0000000FF1CE}
 
 :: Microsoft Office 16 Click-to-Run
+{90160000-008C-0C0A-1000-0000000FF1CE}
 {90160000-008C-0413-1000-0000000FF1CE}
 {90160000-007E-0000-0000-0000000FF1CE}
 {90160000-008C-041F-0000-0000000FF1CE}
@@ -8066,7 +8077,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {6F0FA48E-DAEE-4CCE-BA6A-68C25E27BC85}
 {9C618A4D-5428-41B7-8A25-36B311FF8C77}
 
-:: WD Quick View, SmartWare
+:: WD Quick View, WD SmartWare, WD Security
+{2B58AB2C-D980-47FD-8633-E360314BA662}
+{232EB8E6-9B8C-4785-A994-B1E5E2376CDC}
 {F4F2EF32-EAFE-4F87-B7DC-E19C9F8E76FC}
 {515B34CA-1229-4EDA-AE7C-53CBA68B8A7A}
 {507B1304-194A-4204-A9D9-9BAAF51EF760}
