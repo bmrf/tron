@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.2 + Add additional user-submitted entries
+Version:       1.4.3 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.2"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-07-03"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-08-20"
 
 
 # Needed for Removal
@@ -249,6 +249,8 @@ Remove-App "E046963F.LenovoSupport*"
 Remove-App "E0469640.CameraMan*"
 Remove-App "E0469640.DeviceCollaboration*"
 Remove-App "E0469640.LenovoRecommends*"
+Remove-App "E0469640.LenovoUtility"
+Remove-App "E0469640.NerveCenter"
 Remove-App "E0469640.YogaCameraMan*"
 Remove-App "E0469640.YogaPhoneCompanion*"
 Remove-App "E0469640.YogaPicks*"
@@ -315,9 +317,11 @@ Remove-App "PricelinePartnerNetwork.Booking.comUSABigsavingson"
 Remove-App "PricelinePartnerNetwork.Priceline.comTheBestDealso"
 Remove-App "PublicationsInternational.iCookbookSE*"
 Remove-App "RandomSaladGamesLLC.GinRummyProforHP*"
+Remove-App "ReaderNotificationClient"
 Remove-App "RealtekSemiconductorCorp.HPAudioControl"
 Remove-App "RealtekSemiconductorCorp.RealtekAudioControl"
 Remove-App "Relay.com.KiosqueRelay"
+Remove-App "RivetNetworks.SmartByte"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.OnlineSupportSService"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.PCGallery"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.PCMessage"
