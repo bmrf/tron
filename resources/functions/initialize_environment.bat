@@ -6,8 +6,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.8.1
-set TRON_DATE=2019-05-16
+set TRON_VERSION=10.8.4
+set TRON_DATE=2019-08-20
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
