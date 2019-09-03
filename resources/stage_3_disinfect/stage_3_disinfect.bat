@@ -60,17 +60,26 @@ if %WIN_VER_NUM% geq 6.0 (
 	call functions\log_with_date.bat "   Done."
 )
 
+
 :: JOB: MBAM (Malwarebytes Anti-Malware)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
 :: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
-if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
-if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" set EXISTING_MBAM=yes
+if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" (
+	set "MBAM=%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
+	set EXISTING_MBAM=yes
+) 
+if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" (
+	set "MBAM=%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
+	set EXISTING_MBAM=yes
+)
+
 if /i %EXISTING_MBAM%==yes (
 	call functions\log_with_date.bat "   Existing MBAM installation detected. Skipping installation."
-	goto skip_mbam
+	goto mbam_run
 )
+
 if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
 ) else (
@@ -83,12 +92,14 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-		:: Nuke the desktop shortcut
-		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
-		if exist "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Public\Desktop\Malwarebytes.lnk"
-		if exist "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILES%\Default\Desktop\Malwarebytes.lnk"
-		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
-
+	:: Nuke the desktop shortcut
+	if /i %DELETE_MBAM_ICON%==yes (
+	if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
+	if exist "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk"
+	if exist "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk"
+	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
+	)
+		
 		:: Install our config
 		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
@@ -97,15 +108,17 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log_with_date.bat "    Done."
-	)
+	) )
 
+:mbam_run
+	call functions\log_with_date.bat "   Starting MBAM -%MBAM%- to run scan. "
 	:: Scan for and launch appropriate architecture version
-	if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" start "" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
-	if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" start "" "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
+	start "" "%MBAM%"
 
 	call functions\log_with_date.bat "   Done."
 	call functions\log_with_date.bat "!  NOTE: You must manually click SCAN in the MBAM window!"
-)
+
+
 :skip_mbam
 
 
