@@ -817,7 +817,7 @@ goto :eof
 	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -dmi Skip Malwarebytes Anti-Malware ^(MBAM^) Desktop icon
+	echo    -dmi Skip Deletion of Malwarebytes Anti-Malware ^(MBAM^) Desktop icon
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
