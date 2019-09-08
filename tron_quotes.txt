@@ -5,7 +5,6 @@ Some of my favorite quotes about Tron or resulting from its use. Positive first,
 
 I don't know where else to post this but I just want to thank everyone that is involved in helping around here. I just used tron script for the first time yesterday after I discovered a bunch of viruses on my computer. It saved all my family pictures, tons of work related stuff and not to mention hours and hours of work it would take to set everything back up if the only solution was to completely wipe out everything and start over. Lesson learned, I'm keeping everything backed up from now on. So... thank you guys! -- u/l0renerd
 
-
 Tron has worked for us. I've run it 4 or 5 times over the past 18 months or so across three different computers, no issues whatsoever.
 https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/ej0ewck/
 
@@ -74,7 +73,10 @@ I'm a sysadmin at a school and often get infected/broken computers in for rep. I
 
 # Negative
 
-I have not seen a single post in the sub that says anything close to “Tron is working out as expected… “
+
+Guys, this script is trash. -- /u/smileymalaise
+
+I have not seen a single post in the sub that says anything close to "Tron is working out as expected… "
 https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eiz9kxh/
 
 Recently i could not resist and downloaded few things which seems affected my PC those were 1) Yourporn.com videos 2) few PDf adult comics. I don’t exactly know how my PC got infected. -- u/xxxfoodpunk
