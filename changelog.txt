@@ -63,7 +63,9 @@ Stage 3: Disinfect
 Stage 4: Repair
  . stage_4_repair.bat              v1.2.6
  . purge_windows_7-8-81_telemetry.bat
- . purge_windows_10_telemetry.bat
+ * purge_windows_10_telemetry.bat
+    ! Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
+
  . Spybot Anti-Beacon              v1.5.0.35
  . O&O ShutUp10                    v1.6.1402
  . Repair file extensions          v1.0.0
