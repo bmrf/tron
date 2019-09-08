@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
+:: Version:       1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
+::                1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
 ::                1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
 ::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether v2 exists on the system
 ::                1.2.1 ! mbam:        Fix for MBAM not launching if it was already installed. Thanks to u/b_sen
@@ -29,8 +30,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.3
-set STAGE_3_SCRIPT_DATE=2018-12-07
+set STAGE_3_SCRIPT_VERSION=1.2.4
+set STAGE_3_SCRIPT_DATE=2019-09-08
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -151,6 +152,12 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
 		del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		REM Rarely happens, but occasionally Sophos will terminate and fail to delete the service it loads. Run a delete op against it just in case it didn't get removed. 
+		sc delete SophosVirusRemovalTool >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		%REG% delete HKLM\SYSTEM\CurrentControlSet\Services\SophosVirusRemovalTool /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		
+		
 	)
 	call functions\log_with_date.bat "   Done."
 )
