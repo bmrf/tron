@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.3 + Add additional user-submitted entries
+Version:       1.4.4 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.3"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-08-20"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.4"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-09-08"
 
 
 # Needed for Removal
@@ -72,6 +72,7 @@ Remove-App "21090PaddyXu.QuickLook"
 Remove-App "2164RexileStudios.FastYoutubeDownloader"
 Remove-App "22062EdgeWaySoftware.TheLogosQuiz"
 Remove-App "22094SynapticsIncorporate.AudioControls"
+Remove-App "22094SynapticsIncorporate.SmartAudio3"
 Remove-App "22450.BestVideoConverter"
 Remove-App "24712m1dfmmengesha.TestFrameworkBP052015"
 Remove-App "24712m1dfmmengesha.TestFrameworkBackpublish050515"
@@ -140,6 +141,7 @@ Remove-App "8tracksradio.8tracksradio"
 Remove-App "95FE1D22.VUDUMoviesandTV"
 Remove-App "9E2F88E3.Twitter"
 Remove-App "9FD20106.MediaPlayerQueen"
+Remove-App "A-Volute.Nahimic"
 Remove-App "A278AB0D.DisneyMagicKingdoms"
 Remove-App "A278AB0D.DragonManiaLegends*"
 Remove-App "A278AB0D.GameloftGames"
@@ -181,6 +183,7 @@ Remove-App "AcrobatNotificationClient"
 Remove-App "ActiproSoftwareLLC*"
 Remove-App "ActiproSoftwareLLC.562882FEEB491"
 Remove-App "Adictiz.SpaceDogRun"
+Remove-App "AdobeNotificationClient"
 Remove-App "AdobeSystemsIncorporated.AdobePhotoshopExpress*"
 Remove-App "AdobeSystemsIncorporated.AdobeRevel*"
 Remove-App "Amazon.com.Amazon*"
@@ -207,6 +210,7 @@ Remove-App "COMPALELECTRONICSINC.Alienwaredockingaccessory"
 Remove-App "ChaChaSearch.ChaChaPushNotification*"
 Remove-App "ClearChannelRadioDigital.iHeartRadio*"
 Remove-App "CrackleInc.Crackle*"
+Remove-App "CyberLink.PowerDirectorforMSI"
 Remove-App "CyberLinkCorp.ac.AcerCrystalEye*"
 Remove-App "CyberLinkCorp.ac.PhotoDirectorforacerDesktop"
 Remove-App "CyberLinkCorp.ac.PowerDirectorforacerDesktop"
@@ -242,6 +246,7 @@ Remove-App "DeviceDoctor.RAROpener"
 Remove-App "DolbyLaboratories.DolbyAccess*"
 Remove-App "DolbyLaboratories.DolbyAtmosSoundSystem"
 Remove-App "DolbyLaboratories.DolbyAtmosforGaming"
+Remove-App "DolbyLaboratories.DolbyAudioPremium"
 Remove-App "Drawboard.DrawboardPDF*"
 Remove-App "DriverToaster*"
 Remove-App "E046963F.LenovoCompanion*"
