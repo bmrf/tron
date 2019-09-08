@@ -1,0 +1,3 @@
+Tron will execute ANY .bat file placed in this folder, and ignore everything else. If you want to use supporting batch files for your script, use .cmd extension instead of .bat. 
+
+Use the -scs switch (SKIP_CUSTOM_SCRIPTS) to force Tron to skip custom scripts regardless whether or not they're present.
