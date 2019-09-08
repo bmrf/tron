@@ -52,7 +52,9 @@ Stage 2: De-bloat
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
- . stage_3_disinfect.bat           v1.2.3
+ * stage_3_disinfect.bat           v1.2.4
+    ! Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
+
  . Sophos Virus Removal Tool       v2.6.1
  . Kaspersky Virus Removal Tool    v15.0.22.0
  . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
