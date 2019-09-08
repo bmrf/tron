@@ -36,7 +36,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_4_SCRIPT_VERSION=1.2.7
-set STAGE_4_SCRIPT_DATE=2018-10-02
+set STAGE_4_SCRIPT_DATE=2019-09-08
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -139,7 +139,9 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_4_repair] [disable MS telemetry]
 if /i %SKIP_TELEMETRY_REMOVAL%==yes (
 	call functions\log_with_date.bat "!  SKIP_TELEMETRY_REMOVAL (-str) set. Disabling instead of removing."
+	
 	REM Only disable telemetry, don't completely purge it
+	REM Windows 7/8/8.1 version (win10 version below)
 	if %VERBOSE%==yes (
 		REM GPO options to disable telemetry
 		%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
