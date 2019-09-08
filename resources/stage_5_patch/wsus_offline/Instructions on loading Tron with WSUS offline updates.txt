@@ -1,4 +1,4 @@
-Tron can execute bundled offline updates created using WSUS Offline instead of using the online update mechanism.
+Tron can execute bundled offline updates created with the WSUS Offline tool, instead of using the online update mechanism.
 
 If Tron detects this specific path during Stage 5:
 
@@ -6,7 +6,7 @@ If Tron detects this specific path during Stage 5:
 	
 it will skip online updates and use the bundled updates instead, unless you use the -swo command-line switch, which will force it to skip WSUS Offline regardless whether it's present or not.
 
-You can get WSUS Offline here:                         http://download.wsusoffline.net/
+You can get WSUS Offline here:     http://download.wsusoffline.net/
 
 
 INSTRUCTIONS:
