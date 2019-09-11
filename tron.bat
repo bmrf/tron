@@ -170,7 +170,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
-	echo    DELETE_MBAM_ICON:       %DELETE_MBAM_ICON%
 	echo    SKIP_ONEDRIVE_REMOVAL:  %SKIP_ONEDRIVE_REMOVAL%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
 	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
@@ -769,7 +768,6 @@ for %%i in (%*) do (
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
-	if /i %%i==-dmi set DELETE_MBAM_ICON=yes
 	if /i %%i==-sor set SKIP_ONEDRIVE_REMOVAL=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
@@ -817,7 +815,6 @@ goto :eof
 	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
-	echo    -dmi Skip Deletion of Malwarebytes Anti-Malware ^(MBAM^) Desktop icon
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
 	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
