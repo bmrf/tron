@@ -93,12 +93,10 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
 	:: Nuke the desktop shortcut
-	if /i %DELETE_MBAM_ICON%==yes (
 	if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
 	if exist "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk"
 	if exist "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk"
 	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
-	)
 		
 		:: Install our config
 		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
