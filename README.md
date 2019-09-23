@@ -591,9 +591,9 @@ Master script that launches everything else. It performs many actions on its own
 
 0. **MSI installer cleanup**: Use the Microsoft `msizap.exe` utility to remove orphaned MSI installer files from the installer cache
 
-1. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
+1. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
 
-2. **[System File Checker](https://support.microsoft.com/en-us/kb/929833)**: Microsoft utility for checking the filesystem for errors and attempting to repair if found. Tron runs this on Windows Vista and up only (XP and below require a reboot)
+2. **DISM image check & repair**: Microsoft utility for checking the Windows Image Store (sort of a more powerful System File Checker). Windows 8 and up only
 
 3. **chkdsk**: Checks disk for errors and schedules a chkdsk with repair at next reboot (marks volume dirty) if errors are found
 
