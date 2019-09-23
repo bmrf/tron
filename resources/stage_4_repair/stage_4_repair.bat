@@ -2,13 +2,14 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
+:: Version:       1.2.8 * improvement: Run SFC /scannow prior to DISM repair, per MS best practices. Thanks to u/b_sen
+::                1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
 ::                1.2.6 * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.5 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.4 ! bugfix:      DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
 ::                1.2.3 * logging:     Update date/time logging functions to use new log_with_date.bat. Thanks to /u/DudeManFoo
 ::                1.2.2 * improvement: Update script to support standalone execution
-::                1.2.1 + feature:     Add job 'Disable NVIDIA telemetry.' Thanks /u/TootZoot
+::                1.2.1 + feature:     Add job 'Disable NVIDIA telemetry.' Thanks u/TootZoot
 ::                1.2.0 - feature:     Remove job "Reset Filesystem permissions" and associated files
 ::                      - feature:     Remove job "Reset Registry permissions" and associated files
 ::                1.1.1 + feature:     Add job "MSI Installer Cleanup." Uses the Microsoft 'msizap' utility to remove orphaned MSI installer files from the cache
@@ -17,7 +18,7 @@
 ::                      / logging:     Remove mention about ignoring errors due to now-suppressed subinacl output
 ::                1.0.8 ! bugfix:      Remove redirection to log file on statements calling telemetry removal scripts. These scripts handle their own logging so this
 ::                                     was incorrectly suppressing all output
-::                1.0.7 + feature:     Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to /u/ichbinsilky
+::                1.0.7 + feature:     Add job "Disable Windows 10 Upgrade" which flips all the registry bits to disable Win10 upgrade nagger stuff on Win7/8/8.1. Thanks to u/ichbinsilky
 ::                      / misc:        Rename "purge_windows_telemetry" folder to "disable_windows_telemetry"
 ::                1.0.6 ! bugfix:dism: Numerous bugs with DISM check and repair, due to bad ERRORLEVEL check it would fail to trigger repairs when they were required
 ::                1.0.5 - cleanup:     Remove redundant DISM image store cleanup (move to Stage 5)
@@ -25,7 +26,7 @@
 ::                1.0.3 * logging:     Switch from internal log function to Tron's external logging function. Thanks to github:nemchik
 ::                      ! bugfix:      Fix incorrect file name in call to "disable_telemetry_registry_entries.reg"
 ::                1.0.2 ! improvement: Add KB3112336 to list of Win7/8/8.1 updates to block (was mistakenly not added)
-::                1.0.1 + improvement: Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to /u/Lolor-arros
+::                1.0.1 + improvement: Add KB3112336 to list of Win7/8/8.1 updates to remove. Thanks to u/Lolor-arros
 ::                      + feature:     Enable telemetry removal on Server 2012 platforms
 ::                      ! bugfix:      Remove redundant DRY_RUN check in call to Win10 telemetry removal script
 ::                1.0.0 + Initial write
@@ -35,8 +36,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.7
-set STAGE_4_SCRIPT_DATE=2019-09-08
+set STAGE_4_SCRIPT_VERSION=1.2.8
+set STAGE_4_SCRIPT_DATE=2019-09-23
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -65,6 +66,19 @@ if /i %VERBOSE%==yes (
 	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G!
 ) else (
 	if /i %DRY_RUN%==no stage_4_repair\msi_cleanup\msizap.exe G! >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
+call functions\log_with_date.bat "   Done."
+
+	
+:: JOB: System File Checker (SFC) scan
+title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
+call functions\log_with_date.bat "   Launch job 'System File Checker'..."
+if /i %DRY_RUN%==no (
+	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
+	if %WIN_VER_NUM% geq 6.0 (
+		%SystemRoot%\System32\sfc.exe /scannow
+		%FINDSTR% /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	)
 )
 call functions\log_with_date.bat "   Done."
 
@@ -104,19 +118,6 @@ if %WIN_VER_NUM% gtr 6.2 (
 )
 
 :skip_dism_cleanup
-call functions\log_with_date.bat "   Done."
-
-
-:: JOB: System File Checker (SFC) scan
-title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
-call functions\log_with_date.bat "   Launch job 'System File Checker'..."
-if /i %DRY_RUN%==no (
-	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
-	if %WIN_VER_NUM% geq 6.0 (
-		%SystemRoot%\System32\sfc.exe /scannow
-		%FINDSTR% /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
-)
 call functions\log_with_date.bat "   Done."
 
 
