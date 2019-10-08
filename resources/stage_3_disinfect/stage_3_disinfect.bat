@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
+:: Version:       1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
+::                1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
 ::                1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
 ::                1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
 ::                                     Consider MBAM v2.x as "no MBAM installed" and run the v3 installer regardless whether v2 exists on the system
@@ -30,8 +31,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.4
-set STAGE_3_SCRIPT_DATE=2019-09-08
+set STAGE_3_SCRIPT_VERSION=1.2.5
+set STAGE_3_SCRIPT_DATE=2019-10-08
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
