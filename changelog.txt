@@ -1,3 +1,4 @@
+
 #############
 # CHANGELOG #
 #############
@@ -15,12 +16,12 @@ Version legend:
 
 
 #########################
-# v10.8.5 // 2019-09-08 #
+# v10.8.6 // 2019-10-09 #
 #########################
  . tron.bat                        v1.1.7
 
 functions
- . initialize_environment.bat      v10.8.5
+ . initialize_environment.bat      v10.8.6
  . prerun_checks_and_tasks.bat     v1.1.0
  . tron_settings.bat               v1.0.3
 
@@ -29,7 +30,7 @@ Stage 0: Prep
  . rkill                           v2.9.1.0
  . ProcessKiller                   v2.0.0-TRON
  . TDSS Killer                     v3.1.0.12
- . McAfee Stinger                  v12.1.0.3274
+ * McAfee Stinger                  v12.1.0.3320
  . erunt                           v1.1j
  . caffeine                        v1.6.2.0
  . wget                            v1.19.4 x86
@@ -37,7 +38,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat           v1.2.3
- . CCleaner                        v5.61.7392
+ * CCleaner                        v5.62.7538
  . BleachBit                       v2.2.0
  . finddupe.exe                    v1.25
  . TempFileCleanup                 v1.1.4-TRON
@@ -52,34 +53,34 @@ Stage 2: De-bloat
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
- * stage_3_disinfect.bat           v1.2.4
-    ! Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
+ * stage_3_disinfect.bat           v1.2.5
+    * mbam: Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
 
  . Sophos Virus Removal Tool       v2.6.1
  . Kaspersky Virus Removal Tool    v15.0.22.0
  . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
- * Malwarebytes included defs:     2019-09-05
+ * Malwarebytes included defs:     2019-09-19
 
 Stage 4: Repair
- . stage_4_repair.bat              v1.2.6
+ * stage_4_repair.bat              v1.2.8
+    * improvement: Run SFC /scannow prior to DISM repair, per MS best practices. Thanks to u/b_sen
+	
  . purge_windows_7-8-81_telemetry.bat
- * purge_windows_10_telemetry.bat
-    ! Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
-
+ . purge_windows_10_telemetry.bat
  . Spybot Anti-Beacon              v1.5.0.35
- . O&O ShutUp10                    v1.6.1402
+ * O&O ShutUp10                    v1.6.1403
  . Repair file extensions          v1.0.0
 
 Stage 5: Patch
  . stage_5_patch.bat               v1.2.5
  . 7-Zip                           v19.00        (multi-language)
- * Adobe Flash Player              v32.0.0.238   (language ignored)
+ * Adobe Flash Player              v32.0.0.255   (language ignored)
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.9
  . smartctl                        v6.6.0.4594 2017-11-05 r4594
- * drivedb.h                       2018-09-08
+ . drivedb.h                       2018-09-08
  . Defraggler                      v2.22.995
 
 Stage 7: Wrap-up
@@ -91,13 +92,13 @@ Stage 8: Custom Scripts
 
 Stage 9: Manual tools
  . ADSSpy                          v1.11.0.0
- * AdwCleaner                      v7.4.1.0
+ . AdwCleaner                      v7.4.1.0
  . Autoruns                        v13.96
  . BlueScreenView                  v1.55
  . ComboFix                        v18.8.8.1
  . Net Adapter Repair              v1.2
- . PC Hunter                       v1.51 x64
- . PC Hunter                       v1.51 x86
+ * PC Hunter                       v1.52 x64
+ * PC Hunter                       v1.52 x86
  . Remote Support Reboot Config    v1.0.0
  . Safe Mode Boot Selector.bat     v1.0.0
  . ServicesRepair                  v1.0.0.3
