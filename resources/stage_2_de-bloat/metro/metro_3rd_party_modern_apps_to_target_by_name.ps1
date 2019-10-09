@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.4 + Add additional user-submitted entries
+Version:       1.4.5 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.4"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-09-08"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.5"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-10-08"
 
 
 # Needed for Removal
@@ -113,6 +113,7 @@ Remove-App "45604EntertainmentandMusi.Open7-Zip"
 Remove-App "46928bounde.EclipseManager*"
 Remove-App "47404LurkingDarknessOfRoy.SimpleStrategyRTS"
 Remove-App "48682KiddoTest.Frameworkuapbase"
+Remove-App "4AE8B7C2.Booking.comPartnerApp"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "50856m1dfLL.TestFrameworkProd06221501"
 Remove-App "51248Raximus.Dobryplan"
@@ -229,6 +230,7 @@ Remove-App "DB6EA5DB.CyberLinkMediaSuiteEssentials*"
 Remove-App "DB6EA5DB.MediaSuiteEssentialsforDell"
 Remove-App "DB6EA5DB.Power2GoforDell"
 Remove-App "DB6EA5DB.PowerDirectorforDell"
+Remove-App "DB6EA5DB.PowerMediaPlayerforDell"
 Remove-App "DailymotionSA.Dailymotion*"
 Remove-App "DellInc.AlienwareCommandCenter"
 Remove-App "DellInc.AlienwareCustomerConnect"
@@ -295,8 +297,10 @@ Remove-App "KindleforWindows8*"
 Remove-App "LenovoCorporation.LenovoID*"
 Remove-App "LenovoCorporation.LenovoSettings*"
 Remove-App "MAGIX.MusicMakerJam*"
+Remove-App "MSWP.DellTypeCStatus"
 Remove-App "McAfeeInc.01.McAfeeSecurityAdvisorforDell"
 Remove-App "McAfeeInc.05.McAfeeSecurityAdvisorforASUS"
+Remove-App "McAfeeInc.06.McAfeeSecurityAdvisorforLenovo"
 Remove-App "Mobigame.ZombieTsunami"
 Remove-App "MobileFileExplorer*"
 Remove-App "MobilesRepublic.NewsRepublic"
@@ -354,6 +358,7 @@ Remove-App "TuneIn.TuneInRadio*"
 Remove-App "UniversalMusicMobile.HPLOUNGE"
 Remove-App "UptoElevenDigitalSolution.mysms-Textanywhere*"
 Remove-App "Vimeo.Vimeo*"
+Remove-App "WavesAudio.WavesMaxxAudioProforDell"
 Remove-App "Weather.TheWeatherChannelforHP*"
 Remove-App "Weather.TheWeatherChannelforLenovo*"
 Remove-App "WeatherBug.a.WeatherBug"
