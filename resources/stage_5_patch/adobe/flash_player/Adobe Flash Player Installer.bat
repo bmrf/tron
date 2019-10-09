@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.6-TRON * Port over task to delete PPAPI Notifier from PDQ Deploy Pack project. Thanks to github:rfg76
+:: Version:       1.0.7-TRON + Add additional commands to remove Adobe scheduled tasks
+::                1.0.6-TRON * Port over task to delete PPAPI Notifier from PDQ Deploy Pack project. Thanks to github:rfg76
 ::                1.0.5-TRON * Script now supports standalone execution (for example if you just want to update all versions of Flash on the machine)
 ::                           * Improve existing Flash installation detection; add granular tests per version. Thanks to /u/nubduck
 ::                           * Catch additional Flash Updater scheduled task that gets installed
@@ -19,8 +20,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.6-TRON
-set SCRIPT_UPDATED=2018-03-30
+set SCRIPT_VERSION=1.0.7-TRON
+set SCRIPT_UPDATED=2019-10-09
 
 :: Get in the Flash directory
 pushd %~dp0
@@ -103,6 +104,7 @@ del /F /Q "%SystemDrive%\Windows\tasks\Adobe Flash Player Update*" >> "%LOGPATH%
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Acrobat Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player Update*" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 del /F /Q "%SystemDrive%\Windows\system32\tasks\Adobe Flash Player * Notifier" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+schtasks.exe /tn "Adobe Flash Player PPAPI Notifier" /delete /f>> "%LOGPATH%\%LOGFILE%" 2>NUL
 schtasks.exe /tn "Adobe Flash Player Updater" /delete /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 schtasks.exe /tn "Adobe Flash Player NPAPI Notifier" /delete /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
