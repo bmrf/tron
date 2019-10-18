@@ -2,8 +2,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.8 * improvement: Run SFC /scannow prior to DISM repair, per MS best practices. Thanks to u/b_sen
-::                1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
+:: Version:       1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
 ::                1.2.6 * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.5 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.4 ! bugfix:      DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
@@ -36,8 +35,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.8
-set STAGE_4_SCRIPT_DATE=2019-09-23
+set STAGE_4_SCRIPT_VERSION=1.2.7
+set STAGE_4_SCRIPT_DATE=2019-10-18
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -70,19 +69,6 @@ if /i %VERBOSE%==yes (
 call functions\log_with_date.bat "   Done."
 
 	
-:: JOB: System File Checker (SFC) scan
-title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
-call functions\log_with_date.bat "   Launch job 'System File Checker'..."
-if /i %DRY_RUN%==no (
-	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
-	if %WIN_VER_NUM% geq 6.0 (
-		%SystemRoot%\System32\sfc.exe /scannow
-		%FINDSTR% /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
-)
-call functions\log_with_date.bat "   Done."
-
-
 :: JOB: Check Windows Image for corruptions (Windows 8 and up)
 if %WIN_VER_NUM% geq 6.2 (
 	title Tron v%TRON_VERSION% [stage_4_repair] [DISM Check]
@@ -118,6 +104,19 @@ if %WIN_VER_NUM% gtr 6.2 (
 )
 
 :skip_dism_cleanup
+call functions\log_with_date.bat "   Done."
+
+
+:: JOB: System File Checker (SFC) scan
+title Tron v%TRON_VERSION% [stage_4_repair] [SFC Scan]
+call functions\log_with_date.bat "   Launch job 'System File Checker'..."
+if /i %DRY_RUN%==no (
+	REM Basically this says "If OS is NOT XP or 2003, go ahead and run system file checker." We skip SFC on XP/2k3 because it forces a reboot
+	if %WIN_VER_NUM% geq 6.0 (
+		%SystemRoot%\System32\sfc.exe /scannow
+		%FINDSTR% /c:"[SR]" %SystemRoot%\logs\cbs\cbs.log>> "%LOGPATH%\%LOGFILE%" 2>NUL
+	)
+)
 call functions\log_with_date.bat "   Done."
 
 
@@ -292,4 +291,4 @@ call functions\log_with_date.bat "   Done."
 
 
 :: Stage complete
-call functions\log_with_date.bat "  stage_4_repair complete."
+call functions\log_with_date.bat "  stage_4_repair complete."	
