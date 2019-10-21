@@ -1,3 +1,4 @@
+C:\Windows\System32\conhost.exe
 %ProgramFiles(x86)%\NVDA\lib64\2018.3.2\nvdaHelperRemoteLoader.exe
 %ProgramFiles(x86)%\NVDA\nvda.exe
 %ProgramFiles(x86)%\TeamViewer\TeamViewer.exe
