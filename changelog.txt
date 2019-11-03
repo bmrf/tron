@@ -16,6 +16,103 @@ Version legend:
 
 
 #########################
+# v10.8.7 // 2019-11-03 #
+#########################
+ . tron.bat                        v1.1.7
+
+functions
+ . initialize_environment.bat      v10.8.7
+ . prerun_checks_and_tasks.bat     v1.1.0
+ . tron_settings.bat               v1.0.3
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.9
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.3346
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.4 x86
+ . nircmdc                         v2.81
+
+Stage 1: Tempclean
+ * stage_1_tempclean.bat           v1.2.5
+    + feature: Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
+    - Skip Bleachbit on Windows XP since as of v3 Bleachbit dropped support for XP
+
+ * CCleaner                        v5.63.7540
+ * BleachBit                       v3.0.0
+ . finddupe.exe                    v1.25
+ * TempFileCleanup                 v1.1.7-TRON
+    + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
+    - Remove deletion of built-in Windows wallpaper images. On modern systems the space use is negligible
+
+ . USB Device Cleanup              v1.2.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.5
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ * Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+ . purge_windows_7-8-81_telemetry.bat
+ * purge_windows_10_telemetry.bat
+    ! bugfix: Switch "manual" to "demand" on service startup changes
+
+ . Spybot Anti-Beacon              v1.5.0.35
+ * O&O ShutUp10                    v1.6.1403
+    - Remove "activate deferring of updates" due to community request
+
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.5
+ . 7-Zip                           v19.00        (multi-language)
+ * Adobe Flash Player              v32.0.0.270   (language ignored)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2019-10-09
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.1
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v7.4.2.0
+ . Autoruns                        v13.96
+ . BlueScreenView                  v1.55
+ * ComboFix                        v19.9.28.1
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.52 x64
+ . PC Hunter                       v1.52 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
 # v10.8.6 // 2019-10-09 #
 #########################
  . tron.bat                        v1.1.7
@@ -63,8 +160,8 @@ Stage 3: Disinfect
 
 Stage 4: Repair
  * stage_4_repair.bat              v1.2.8
-    * improvement: Run SFC /scannow prior to DISM repair, per MS best practices. Thanks to u/b_sen
-	
+    * improvement: Run DISM repair prior to SFC /scannow, per MS best practices. Thanks to u/b_sen
+
  . purge_windows_7-8-81_telemetry.bat
  . purge_windows_10_telemetry.bat
  . Spybot Anti-Beacon              v1.5.0.35
@@ -80,7 +177,7 @@ Stage 5: Patch
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.0.9
  . smartctl                        v6.6.0.4594 2017-11-05 r4594
- . drivedb.h                       2018-09-08
+ * drivedb.h                       2019-10-09
  . Defraggler                      v2.22.995
 
 Stage 7: Wrap-up
