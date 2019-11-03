@@ -1,7 +1,9 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.6-TRON * Use %REG% instead of relative calls
+:: Version:       1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
+::                           - Remove deletion of built-in Windows wallpaper images. On modern systems the space use is negligible
+::                1.1.6-TRON * Use %REG% instead of relative calls
 ::                1.1.5-TRON ! Fix syntax bug that was preventing CBS log cleanup. Thanks to github:jonasjovaisas
 ::                1.1.4-TRON + Add cleanup of Dr. Watson log files. Thanks to github:nemchik
 ::                1.1.3-TRON * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
@@ -39,8 +41,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.6-TRON
-set SCRIPT_UPDATED=2018-07-03
+set SCRIPT_VERSION=1.1.7-TRON
+set SCRIPT_UPDATED=2019-11-03
 
 
 ::::::::::::::::::::::::::
@@ -191,8 +193,16 @@ del /F /Q %WINDIR%\*.log 2>NUL
 del /F /Q %WINDIR%\*.txt 2>NUL
 del /F /Q %WINDIR%\*.bmp 2>NUL
 del /F /Q %WINDIR%\*.tmp 2>NUL
-del /F /Q %WINDIR%\Web\Wallpaper\*.* 2>NUL
 rmdir /S /Q %WINDIR%\Web\Wallpaper\Dell 2>NUL
+
+:: JOB: Clear cached NVIDIA driver updates
+if exist "%ProgramFiles%\NVIDIA Corporation\Installer" rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\Installer" 2>NUL
+if exist "%ProgramFiles%\NVIDIA Corporation\Installer2" rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\Installer2" 2>NUL
+if exist "%ProgramFiles(x86)%\NVIDIA Corporation\Installer" rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\Installer" 2>NUL
+if exist "%ProgramFiles(x86)%\NVIDIA Corporation\Installer2" rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\Installer2" 2>NUL
+if exist "%ProgramData%\NVIDIA Corporation\Downloader" rmdir /s /q "%ProgramData%\NVIDIA Corporation\Downloader" 2>NUL
+if exist "%ProgramData%\NVIDIA\Downloader" rmdir /s /q "%ProgramData%\NVIDIA\Downloader" 2>NUL
+
 
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
@@ -234,7 +244,7 @@ if %ERRORLEVEL%==0 (
 
 :: JOB: Windows CBS logs
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
-echo %WIN_VER% | findstr /v /i /c:"Microsoft" >NUL && del /F /Q %WINDIR%\Logs\CBS\* 2>NUL
+echo %WIN_VER% | findstr /v /i /c:"Microsoft" >NUL && del /F /Q %WINDIR%\logs\CBS\* 2>NUL
 
 :: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
 :: Really we should use a tool that deletes their corresponding registry entries, but oh well.
