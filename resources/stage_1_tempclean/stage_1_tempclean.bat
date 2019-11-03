@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.4 ! bugfix:      Fix syntax error in if statement in job 'netsh branchcache flush'
+:: Version:       1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
+::                1.2.4 ! bugfix:      Fix syntax error in if statement in job 'netsh branchcache flush'
 ::                1.2.3 + feature:     Add job 'netsh branchcache flush'
 ::                1.2.2 / ccleaner:    Re-enable CCleaner
 ::                1.2.1 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -32,8 +33,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.4
-set STAGE_1_SCRIPT_DATE=2018-10-31
+set STAGE_1_SCRIPT_VERSION=1.2.5
+set STAGE_1_SCRIPT_DATE=2019-11-03
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -183,7 +184,6 @@ call functions\log_with_date.bat "   Done."
 :skip_event_log_clear
 
 
-
 :: JOB: Clear Windows Update cache
 title Tron v%TRON_VERSION% [stage_1_tempclean] [Clear Windows Update cache]
 call functions\log_with_date.bat "   Launch job 'Clear Windows Update cache'..."
@@ -195,7 +195,6 @@ if /i %DRY_RUN%==no (
 	net start WUAUSERV >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 call functions\log_with_date.bat "   Done."
-
 
 
 :: JOB: Reset BranchCache
@@ -215,6 +214,37 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
+:: JOB: Run built-in Windows disk cleanup
+title Tron v%TRON_VERSION% [stage_1_tempclean] [Windows Disk Cleanup]
+call functions\log_with_date.bat "   Launch job 'Windows Disk Cleanup'..."
+if /i %DRY_RUN%==no (
+
+	:: Set the flags
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Service Pack Cleanup" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Update Cleanup" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files" /v StateFlags0100 /t REG_DWORD /d 0x2 /f
+
+	:: Run the cleanup
+	start /wait %systemroot%\System32\cleanmgr.exe /sagerun:100
+)
 
 :: Stage complete
 call functions\log_with_date.bat "  stage_1_tempclean complete."
