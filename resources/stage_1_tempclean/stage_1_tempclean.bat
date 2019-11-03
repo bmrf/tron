@@ -3,6 +3,7 @@
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
+::                      / change:      Skip Bleachbit on Windows XP since as of v3 Bleachbit dropped support for XP
 ::                1.2.4 ! bugfix:      Fix syntax error in if statement in job 'netsh branchcache flush'
 ::                1.2.3 + feature:     Add job 'netsh branchcache flush'
 ::                1.2.2 / ccleaner:    Re-enable CCleaner
@@ -90,6 +91,11 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: BleachBit
+if %WIN_VER_NUM% LEQ 5.2 (
+	call functions\log_with_date.bat " ! Bleachbit v3 not supported on Windows XP. Skipping."
+	goto skip_bleachbit
+)
+
 title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
 call functions\log_with_date.bat "   Launch job 'BleachBit'..."
 if /i %DRY_RUN%==no (
@@ -105,6 +111,7 @@ if /i %DRY_RUN%==no (
 	ping 127.0.0.1 -n 12 >NUL
 )
 call functions\log_with_date.bat "   Done."
+:skip_bleachbit
 
 
 :: JOB: Delete duplicate files in the "Downloads" folder of each user profile
