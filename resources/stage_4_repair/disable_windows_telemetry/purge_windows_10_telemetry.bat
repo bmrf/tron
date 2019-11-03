@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.2.9-TRON ! bugfix: Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
+:: Version:       1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
+::                1.2.9-TRON ! bugfix: Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
 ::                1.2.8-TRON ! bugfix: Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from this script into appropriate location in the Stage 2 debloat script. Thanks to u/Tenelia
 ::                1.2.7-TRON ! Fix standalone and Tron-called execution due to typo in STANDALONE variable comparison command. Thanks to u/bubonis
 ::                1.2.6-TRON ! Fix standalone execution not working in some sections due to relative paths being different. Thanks to u/AncientAv
@@ -45,8 +46,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.2.9-TRON
-set SCRIPT_UPDATED=2019-09-08
+set SCRIPT_VERSION=1.3.0-TRON
+set SCRIPT_UPDATED=2019-11-03
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 set STANDALONE=no
@@ -349,11 +350,11 @@ if "%VERBOSE%"=="yes" (
 	sc stop XboxNetApiSvc
 	sc stop XboxGipSvc
 	sc stop xbgm
-	sc config XblAuthManager start= manual
-	sc config XblGameSave start= manual
-	sc config XboxNetApiSvc start= manual
-	sc config XboxGipSvc start= manual
-	sc config xbgm start= manual
+	sc config XblAuthManager start= demand
+	sc config XblGameSave start= demand
+	sc config XboxNetApiSvc start= demand
+	sc config XboxGipSvc start= demand
+	sc config xbgm start= demand
 ) else (
 	:: Diagnostic Tracking
 	sc stop Diagtrack >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -381,11 +382,11 @@ if "%VERBOSE%"=="yes" (
 	sc stop XboxNetApiSvc>> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc stop XboxGipSvc>> "%LOGPATH%\%LOGFILE%" 2>&1
 	sc stop xbgm>> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XblAuthManager start= manual>> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XblGameSave start= manual>> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XboxNetApiSvc start= manual>> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config XboxGipSvc start= manual>> "%LOGPATH%\%LOGFILE%" 2>&1
-	sc config xbgm start= manual>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblAuthManager start= demand>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XblGameSave start= demand>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XboxNetApiSvc start= demand>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config XboxGipSvc start= demand>> "%LOGPATH%\%LOGFILE%" 2>&1
+	sc config xbgm start= demand>> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
