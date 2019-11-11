@@ -100,7 +100,7 @@ Command-line use is fully supported. All switches are optional and can be used s
 
      -sdb Skip de-bloat (OEM bloatware removal; implies -m)
 
-     -sd  Skip defrag (force Tron to ALWAYS skip Stage 5 defrag)
+     -sd  Skip defrag (force Tron to ALWAYS skip Stage 6 defrag)
      
      -sdc Skip DISM component (SxS store) cleanup
      
