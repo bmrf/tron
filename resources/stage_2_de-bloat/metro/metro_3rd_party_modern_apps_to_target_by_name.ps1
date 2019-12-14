@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.6 + Add additional user-submitted entries
+Version:       1.4.7 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.6"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-11-03"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.7"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-12-14"
 
 
 # Needed for Removal
@@ -151,6 +151,7 @@ Remove-App "A278AB0D.PaddingtonRun"
 Remove-App "A34E4AAB.YogaChef*"
 Remove-App "A8C75DD4.Therefore"
 Remove-App "A97ECD55.KYOCERAPrintCenter"
+Remove-App "AD2F1837.BangOlufsenAudioControl"
 Remove-App "AD2F1837.DiscoverHPTouchpointManager"
 Remove-App "AD2F1837.GettingStartedwithWindows8"
 Remove-App "AD2F1837.HPBusinessSlimKeyboard"
@@ -168,6 +169,7 @@ Remove-App "AD2F1837.HPPrimeFree"
 Remove-App "AD2F1837.HPPrivacySettings"
 Remove-App "AD2F1837.HPRegistration"
 Remove-App "AD2F1837.HPSupportAssistant"
+Remove-App "AD2F1837.HPSureShieldAI"
 Remove-App "AD2F1837.HPSystemEventUtility"
 Remove-App "AD2F1837.HPSystemInformation"
 Remove-App "AD2F1837.HPThermalControl"
@@ -194,7 +196,9 @@ Remove-App "AdobeSystemsIncorporated.AdobeRevel*"
 Remove-App "Amazon.com.Amazon*"
 Remove-App "AppUp.IntelAppUpCatalogueAppWorldwideEdition*"
 Remove-App "AppUp.IntelGraphicsExperience"
+Remove-App "AppUp.IntelManagementandSecurityStatus"
 Remove-App "AppUp.IntelOptaneMemoryandStorageManagement"
+Remove-App "AppUp.ThunderboltControlCenter"
 Remove-App "B9ECED6F.ASUSBatteryHealthCharging"
 Remove-App "B9ECED6F.ASUSCalculator"
 Remove-App "B9ECED6F.ASUSFiveinARow"
@@ -340,6 +344,7 @@ Remove-App "ReaderNotificationClient"
 Remove-App "RealtekSemiconductorCorp.HPAudioControl"
 Remove-App "RealtekSemiconductorCorp.RealtekAudioControl"
 Remove-App "Relay.com.KiosqueRelay"
+Remove-App "RivetNetworks.KillerControlCenter"
 Remove-App "RivetNetworks.SmartByte"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.OnlineSupportSService"
 Remove-App "SAMSUNGELECTRONICSCO.LTD.PCGallery"
