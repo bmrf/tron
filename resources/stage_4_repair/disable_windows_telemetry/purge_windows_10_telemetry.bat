@@ -474,7 +474,7 @@ if %STANDALONE%==no (
 	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 ) else (
 	echo "Applying Spybot Anti-Beacon protections, please wait..."
-	"Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+	"Spybot Anti-Beacon v1.7.0.47.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 )	
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
