@@ -1,10 +1,10 @@
 :: Purpose:       List of specific programs to target by name and wildcard. Called by Tron in Stage 2: De-bloat
-::                Add any program names to this list to target them for removal
-::                Any line that starts with "::" or the word "set" will be ignored by Tron
+::                Add program names to this list to target them for removal
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.8 / Trim some spaces in some entries
+:: Version:       1.0.9 - Remove a few redundant entries that are covered by wildcard
+::                1.0.8 / Trim spaces in some entries
 ::                1.0.7 - Remove "Comodo%%" wildcard since it was removing security software. Thanks to u/11rednazo
 ::                1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
 ::                1.0.5 + Add "Lenovo Service Bridge"
@@ -17,8 +17,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.8
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-02-15
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.9
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-12-14
 
 
 
@@ -70,8 +70,7 @@ AppsHat
 ArcadeParlor
 AtuZi
 Baidu PC Faster%%
-Big Fish Games: Game Manager
-Big Fish: Game Manager
+Big Fish%%
 Bing%%
 BlueStack%%
 Bonzi Buddy%%
@@ -115,8 +114,6 @@ Intel%%ME%%UninstallLegacy
 Intel%%Management%%
 Intel%%Smart%%
 Launch Manager%%
-LenovoServiceBridge
-Lenovo Service Bridge
 Lenovo%%
 LinkSwift%%
 Live Updater
@@ -166,7 +163,7 @@ SaveOn%%
 ScorpionSave%%
 SelectionLinks
 Shop To Win
-ShopAtHome.com%%
+ShopAtHome%%
 Shopper%%
 Shopping%%
 SimilarDeals%%
