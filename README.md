@@ -356,7 +356,7 @@ Custom scripts work like so:
 
  - If any `.bat` files exist in `\stage_8_custom_scripts`, Tron will execute each one sequentially by name. When they're finished, Tron will clean up and end the script as normal
 
- - If no `.bat` files exist in `\stage_8_custom_scripts` folder, Stage 8 will be silently skipped
+ - If no `.bat` files exist in `\stage_8_custom_scripts` folder, Stage 8 is silently skipped
  
  - Supporting files may be placed in the folder but Tron itself will ignore anything that isn't a `.bat` file 
  
@@ -364,7 +364,7 @@ Custom scripts work like so:
  
  - It is your responsibility what your scripts do. I provide no support for custom scripts other than having Tron attempt to run them
  
- - Use the `-scs` switch or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to yes to direct Tron to ignore all custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
+ - Use the `-scs` switch or edit the file `\tron\resources\functions\tron_settings.bat` and set `SKIP_CUSTOM_SCRIPTS` to `yes` to direct Tron to ignore custom scripts even if they are present. Can be useful if you have a set of scripts you only want to execute on certain systems and don't want to carry two copies of Tron around
 
 # EXECUTING BUNDLED WSUS OFFLINE UPDATES
 
