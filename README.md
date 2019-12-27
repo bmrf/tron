@@ -443,7 +443,7 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` switch to override this behavior and allow running on unsupported Windows versions
+2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` switch to override this behavior and allow running on unsupported Windows versions. Currently only triggers on Windows Server 2016.
 
 3. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
 
