@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
+:: Version:       1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
+::                1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
 ::                1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
 ::                1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
 ::                1.2.2 * mbam:        Update to v3.x and fix a couple bugs related to shortcut deletion. Thanks to u/CSI-Debug
@@ -31,8 +32,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.5
-set STAGE_3_SCRIPT_DATE=2019-10-08
+set STAGE_3_SCRIPT_VERSION=1.2.6
+set STAGE_3_SCRIPT_DATE=2020-01-11
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -69,11 +70,11 @@ set EXISTING_MBAM=no
 :: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
 if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" (
-	set "MBAM=%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
+	set MBAM=%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe
 	set EXISTING_MBAM=yes
 ) 
 if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" (
-	set "MBAM=%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
+	set MBAM=%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe
 	set EXISTING_MBAM=yes
 )
 
@@ -94,11 +95,11 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		taskkill /f /im mbamtray.exe >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
-	:: Nuke the desktop shortcut
-	if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
-	if exist "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk"
-	if exist "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk"
-	if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
+		:: Nuke the desktop shortcut
+		if exist "%USERPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Desktop\Malwarebytes.lnk"
+		if exist "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk"
+		if exist "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk"
+		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
 		
 		:: Install our config
 		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -108,16 +109,16 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log_with_date.bat "    Done."
-	) )
+	) 
+)
 
 :mbam_run
-	call functions\log_with_date.bat "   Starting MBAM -%MBAM%- to run scan. "
+	call functions\log_with_date.bat "   Launching %MBAM%, click 'scan' in the MBAM window."
 	:: Scan for and launch appropriate architecture version
 	start "" "%MBAM%"
 
 	call functions\log_with_date.bat "   Done."
 	call functions\log_with_date.bat "!  NOTE: You must manually click SCAN in the MBAM window!"
-
 
 :skip_mbam
 
