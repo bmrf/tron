@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
+:: Version:       1.2.7 ! mbam:        Fix syntax error in if statement
+::                1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
 ::                1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
 ::                1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
 ::                1.2.3 ! sophos:      Fix bug in Sophos code where we wouldn't download updates even if we have a network connection. Thanks to github:gkraker04
@@ -32,8 +33,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.6
-set STAGE_3_SCRIPT_DATE=2020-01-11
+set STAGE_3_SCRIPT_VERSION=1.2.7
+set STAGE_3_SCRIPT_DATE=2020-01-13
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -69,12 +70,14 @@ title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 set EXISTING_MBAM=no
 :: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
-if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" (
-	set MBAM=%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe
+
+if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\" (
+	set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
 	set EXISTING_MBAM=yes
 ) 
-if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" (
-	set MBAM=%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe
+
+if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\" (
+	set MBAM="%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
 	set EXISTING_MBAM=yes
 )
 
@@ -82,7 +85,7 @@ if /i %EXISTING_MBAM%==yes (
 	call functions\log_with_date.bat "   Existing MBAM installation detected. Skipping installation."
 	goto mbam_run
 )
-
+pause
 if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
 ) else (
