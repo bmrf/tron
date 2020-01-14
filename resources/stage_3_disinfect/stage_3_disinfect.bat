@@ -85,7 +85,7 @@ if /i %EXISTING_MBAM%==yes (
 	call functions\log_with_date.bat "   Existing MBAM installation detected. Skipping installation."
 	goto mbam_run
 )
-pause
+
 if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
 ) else (
