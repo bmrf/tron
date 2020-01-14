@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 ! mbam:        Fix syntax error in if statement
+:: Version:       1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
+::                      - certcache:   Move job to clear CryptNet SSL certificate cache to Stage 1: Tempclean, where it makes more sense
+::                1.2.7 ! mbam:        Fix syntax error in if statement
 ::                1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
 ::                1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
 ::                1.2.4 ! sophos:      Fix (rare) bug where Sophos would fail to delete its service after running. Thanks to u/Nightfoxsd420
@@ -56,21 +58,14 @@ if /i "%LOGFILE%"=="" (
 call functions\log_with_date.bat "  stage_3_disinfect begin..."
 
 
-:: JOB: Clear CryptNet SSL certificate cache (Vista and up)
-if %WIN_VER_NUM% geq 6.0 (
-	title Tron v%TRON_VERSION% [stage_3_disinfect] [Clear CryptNet SSL cache]
-	call functions\log_with_date.bat "   Launch job 'Clear CryptNet SSL certificate cache'..."
-	if /i %DRY_RUN%==no	certutil -URLcache * delete  >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	call functions\log_with_date.bat "   Done."
-)
-
-
 :: JOB: MBAM (Malwarebytes Anti-Malware)
+:: There is a bug in this section that needs to be re-worked. In all scenarios we still attempt to run MBAM, even if asked not to install it.
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
-set EXISTING_MBAM=no
-:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
-:: run the v3 installation to get it up-to-date. tl;dr we consider an MBAM v2 installation "not installed" for the purposes of Tron
 
+:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
+:: run the v3 installation to get it up-to-date. tl;dr we consider MBAM v2 installation "not installed" for the purposes of Tron
+
+set EXISTING_MBAM=no
 if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\" (
 	set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
 	set EXISTING_MBAM=yes
@@ -86,8 +81,12 @@ if /i %EXISTING_MBAM%==yes (
 	goto mbam_run
 )
 
+:: Failsafe; make sure %MBAM% is set to the default location for our installation below
+set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
+
+:: Skip MBAM installation if requested, otherwise install it and launch it. In all scenarios, MBAM will still launch
 if /i %SKIP_MBAM_INSTALL%==yes (
-	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping MBAM installation."
+	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping installation."
 ) else (
 	call functions\log_with_date.bat "   Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM and remove desktop icon
@@ -118,10 +117,8 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 :mbam_run
 	call functions\log_with_date.bat "   Launching %MBAM%, click 'scan' in the MBAM window."
 	:: Scan for and launch appropriate architecture version
-	start "" "%MBAM%"
-
+	if %DRY_RUN%==no start "" "%MBAM%"
 	call functions\log_with_date.bat "   Done."
-	call functions\log_with_date.bat "!  NOTE: You must manually click SCAN in the MBAM window!"
 
 :skip_mbam
 
