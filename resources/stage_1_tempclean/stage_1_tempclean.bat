@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
+:: Version:       1.2.6 + cryptcache:  Import job CryptNet SSL certificate cache clear from Stage 3, where it didn't make sense to be
+::                1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
 ::                      / change:      Skip Bleachbit on Windows XP since as of v3 Bleachbit dropped support for XP
 ::                1.2.4 ! bugfix:      Fix syntax error in if statement in job 'netsh branchcache flush'
 ::                1.2.3 + feature:     Add job 'netsh branchcache flush'
@@ -34,8 +35,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.5
-set STAGE_1_SCRIPT_DATE=2019-11-03
+set STAGE_1_SCRIPT_VERSION=1.2.6
+set STAGE_1_SCRIPT_DATE=2020-01-14
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -55,6 +56,15 @@ if /i "%LOGFILE%"=="" (
 :: STAGE 1: TEMPCLEAN :: // Begin jobs
 ::::::::::::::::::::::::
 call functions\log_with_date.bat "  stage_1_tempclean begin..."
+
+
+:: JOB: Clear CryptNet SSL certificate cache (Vista and up)
+if %WIN_VER_NUM% geq 6.0 (
+	title Tron v%TRON_VERSION% [stage_3_disinfect] [Clear CryptNet SSL cache]
+	call functions\log_with_date.bat "   Launch job 'Clear CryptNet SSL certificate cache'..."
+	if /i %DRY_RUN%==no	certutil -URLcache * delete  >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	call functions\log_with_date.bat "   Done."
+)
 
 
 :: JOB: Clean Internet Explorer; Windows built-in method. Only works on Vista and up
@@ -108,7 +118,7 @@ if /i %DRY_RUN%==no (
 	)
 
 	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 12 >NUL
+	ping 127.0.0.1 -n 16 >NUL
 )
 call functions\log_with_date.bat "   Done."
 :skip_bleachbit
