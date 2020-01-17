@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.7.7 + Add additional user-submitted entries
+:: Version:       1.7.8 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.7.7
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-01-11
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.7.8
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-01-16
 
 
 :: GUID LIST
@@ -6703,6 +6703,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {0E7DAF70-FB54-4B91-B192-7E771C25AEEB}
 
 :: Intel Computing Improvement Program
+{A9133872-C9FE-45CC-8F01-D1947B0F09EA}
 {2C895850-899F-4E06-ADB6-28A654FFCF9D}
 {58FBAE3A-E602-47E6-9F32-AE25D48B378A}
 {96FD0BEE-6848-48BB-AA99-A2033DB7F4E4}
@@ -7853,6 +7854,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {F82B6DA3-73AC-4563-8BF8-4A24551CF64C}
 {AAECF7BA-E83B-4A10-87EA-DE0B333F8734}
 
+:: Realtek DASH Client Service
+{57CCB538-80B7-45C1-BEEE-2FB814FB57D7}
+
 :: RealUpgrade
 {28C2DED6-325B-4CC7-983A-1777C8F7FBAB}
 
@@ -8489,6 +8493,8 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {9C618A4D-5428-41B7-8A25-36B311FF8C77}
 
 :: WD Quick View, WD SmartWare, WD Security
+{5B1CF5E0-D321-4766-AEF1-1E9D1C535A10}
+{02FD1EAD-43B8-4D63-AC31-8921005AF2E2}
 {FEC99BFC-19DD-4496-8C09-893FB772498A}
 {2B58AB2C-D980-47FD-8633-E360314BA662}
 {232EB8E6-9B8C-4785-A994-B1E5E2376CDC}
