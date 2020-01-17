@@ -36,7 +36,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_3_SCRIPT_VERSION=1.2.7
-set STAGE_3_SCRIPT_DATE=2020-01-13
+set STAGE_3_SCRIPT_DATE=2020-01-17
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -64,15 +64,14 @@ title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 
 :: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider MBAM v2 installation "not installed" for the purposes of Tron
-
 set EXISTING_MBAM=no
-if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\" (
-	set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
-	set EXISTING_MBAM=yes
-) 
-
-if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\" (
+if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" (
 	set MBAM="%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
+	set EXISTING_MBAM=yes
+)
+
+if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe" (
+	set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
 	set EXISTING_MBAM=yes
 )
 
@@ -81,8 +80,6 @@ if /i %EXISTING_MBAM%==yes (
 	goto mbam_run
 )
 
-:: Failsafe; make sure %MBAM% is set to the default location for our installation below
-set MBAM="%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\mbam.exe"
 
 :: Skip MBAM installation if requested, otherwise install it and launch it. In all scenarios, MBAM will still launch
 if /i %SKIP_MBAM_INSTALL%==yes (
@@ -102,7 +99,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		if exist "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Public\Desktop\Malwarebytes.lnk"
 		if exist "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk" del /f /q "%USERPROFILE%\Default\Desktop\Malwarebytes.lnk"
 		if exist "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk" del /f /q "%ALLUSERSPROFILE%\Desktop\Malwarebytes.lnk"
-		
+
 		:: Install our config
 		copy /y stage_3_disinfect\mbam\*.json "%ProgramData%\Malwarebytes\MBAMService\config\" >> "%LOGPATH%\%LOGFILE%" 2>NUL
 
@@ -111,16 +108,21 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 		stage_3_disinfect\mbam\mbam2-rules.exe /sp- /verysilent /suppressmsgboxes /log="%RAW_LOGS%\mbam_rules_install.log" /norestart
 		type "%RAW_LOGS%\mbam_rules_install.log" >> "%LOGPATH%\%LOGFILE%"
 		call functions\log_with_date.bat "    Done."
-	) 
+	)
 )
 
 :mbam_run
-	call functions\log_with_date.bat "   Launching MBAM, click 'scan' in the MBAM window."
-	:: Scan for and launch appropriate architecture version
-	if %DRY_RUN%==no start "" "%MBAM%"
-	call functions\log_with_date.bat "   Done."
+REM Scan for and launch appropriate architecture version
+if %DRY_RUN%==no (
+	if exist ""%MBAM%"" (
+		call functions\log_with_date.bat "   Launching MBAM, click 'scan' in the MBAM window."
+		start "" ""%MBAM%""
+		call functions\log_with_date.bat "   Done."
+	)
+)
 
 :skip_mbam
+
 
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
@@ -165,12 +167,12 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
 		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
 		del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
-		
-		REM Rarely happens, but occasionally Sophos will terminate and fail to delete the service it loads. Run a delete op against it just in case it didn't get removed. 
+
+		REM Rarely happens, but occasionally Sophos will terminate and fail to delete the service it loads. Run a delete op against it just in case it didn't get removed.
 		sc delete SophosVirusRemovalTool >> "%LOGPATH%\%LOGFILE%" 2>NUL
 		%REG% delete HKLM\SYSTEM\CurrentControlSet\Services\SophosVirusRemovalTool /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		
-		
+
+
 	)
 	call functions\log_with_date.bat "   Done."
 )
