@@ -3,7 +3,7 @@
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
-::                      - certcache:   Move job to clear CryptNet SSL certificate cache to Stage 1: Tempclean, where it makes more sense
+::                      - certcache:   Move job 'Clear CryptNet SSL certificate cache' to Stage 1: Tempclean, where it makes more sense
 ::                1.2.7 ! mbam:        Fix syntax error in if statement
 ::                1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
 ::                1.2.5 * mbam:        Skip install of MBAM and directly launch if it already exists. Thanks to u/RedBaron2
@@ -115,7 +115,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 )
 
 :mbam_run
-	call functions\log_with_date.bat "   Launching %MBAM%, click 'scan' in the MBAM window."
+	call functions\log_with_date.bat "   Launching MBAM, click 'scan' in the MBAM window."
 	:: Scan for and launch appropriate architecture version
 	if %DRY_RUN%==no start "" "%MBAM%"
 	call functions\log_with_date.bat "   Done."
