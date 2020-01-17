@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.4.8 + Add additional user-submitted entries
+Version:       1.4.9 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.8"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-01-11"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.9"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-01-16"
 
 
 # Needed for Removal
@@ -93,6 +93,7 @@ Remove-App "27345RickyWalker.BlackjackMaster3"
 Remove-App "29313JVGoldSoft.5962504421940"
 Remove-App "29534ukaszKurant.Logicos"
 Remove-App "29534ukaszKurant.Logicos2"
+Remove-App "29814LackoLuboslav.Bluetoothanalyzer"
 Remove-App "29982CsabaHarmath.UnCompress*"
 Remove-App "2FE3CB00.PICSART-PHOTOSTUDIO"
 Remove-App "2FE3CB00.PicsArt-PhotoStudio*"
@@ -379,6 +380,7 @@ Remove-App "SpotifyAB.SpotifyMusic"
 Remove-App "SprakelsoftUG.CrocsWorld"
 Remove-App "SprakelsoftUG.FlapFlapFlap"
 Remove-App "SymantecCorporation.5478111E43ACF"
+Remove-App "SymantecCorporation.NortonSafeWeb"
 Remove-App "SymantecCorporation.NortonStudio*"
 Remove-App "SynapticsIncorporated.SynHPCommercialDApp"
 Remove-App "SynapticsIncorporated.SynHPConsumerDApp"
