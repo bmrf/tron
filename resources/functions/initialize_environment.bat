@@ -6,8 +6,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=10.9.1
-set TRON_DATE=2020-01-16
+set TRON_VERSION=10.9.2
+set TRON_DATE=2020-01-19
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -64,24 +64,31 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 :: English
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0409" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
+goto detect_network_connection
 :: English UK
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0809" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=gb
+goto detect_network_connection
 :: German
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0407" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=de
+goto detect_network_connection
 :: French
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "040C" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=fr
+goto detect_network_connection
 :: Spanish
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0C0A" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=es
+goto detect_network_connection
 :: Turkish
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "041F" >nul 2>&1
 if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
+goto detect_network_connection
 
 
 :: Detect network connection. We assume it's available unless we actively detect it isn't
+:detect_network_connection
 set NETWORK_AVAILABLE=yes
 :: English
 if %SYSTEM_LANGUAGE%==en %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
