@@ -82,7 +82,7 @@ if /i %EXISTING_MBAM%==yes (
 )
 
 
-:: Skip MBAM installation if requested, otherwise install it and launch it. In all scenarios, MBAM will still launch
+:: Skip MBAM installation if requested, otherwise install and launch. In all scenarios, MBAM will still attempt to launch if it is detected
 if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "! SKIP_MBAM_INSTALL (-sm) set. Skipping installation."
 ) else (
