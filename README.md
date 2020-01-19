@@ -28,7 +28,7 @@ I got tired of running these utilities manually and decided to just script every
 
 10. [License](#license)
 
-11. [Contact Info](#other)
+11. [Problems and Support](#problems-and-support)
 
 12. [Script exit codes](#script-exit-codes)
 
@@ -394,9 +394,9 @@ In each release, the file `\tron\integrity_verification\checksums.txt` contains 
 Tron and any included subscripts and `.reg` files I've written are free to use/redistribute/whatever under the **MIT license**. It'd be nice if you sent an email and let me know if you do something cool with it, but it's not required. All 3rd-party tools Tron calls (MBAM, TDSSK, etc) are bound by their respective licenses. It is YOUR responsibility to determine if you can use them in your specific situation.
 
 
-# OTHER
+# PROBLEMS AND SUPPORT
 
-I try to respond to messages quickly. If you have a question, suggestion or problem, post it to the subreddit so everyone can get eyes on it. As a last resort you may email me directly.
+Please look [here](https://old.reddit.com/r/TronScript/wiki/index#wiki_cq_.28common_questions.29) first for a list of common issues (Tron appearing to be stalled, etc). If it doesn't answer your issue, make a top-level post to [r/TronScript](https://old.reddit.com/r/TronScript) and myself or one of the community members will look at the issue. Additionally, you can reach me 24/7 [on Keybase](https://keybase.io/vocatus). 
 
 Hope this is helpful to other PC techs,
 
