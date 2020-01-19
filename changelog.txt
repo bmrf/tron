@@ -10,9 +10,15 @@ Version legend:
   | | |
   | | minor change, update or bugfix
   | regular release or feature change, backwards compatible
-  major release or feature change, might break backwards compatibility
+  major release or feature change, might break backwards compatibility (CLI switches change, etc)
 
 
+
+#########################
+# v10.9.2 // 2020-01-19 #
+#########################
+ ! Stage 3 bugfixes. It's PROBABLY fixed.....3rd times the charm
+ * Improved network detection code in initialize_environment.bat. Thanks to u/McGanondorf
 
 
 #########################
