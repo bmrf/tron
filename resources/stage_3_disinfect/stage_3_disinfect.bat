@@ -35,8 +35,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.7
-set STAGE_3_SCRIPT_DATE=2020-01-17
+set STAGE_3_SCRIPT_VERSION=1.2.8
+set STAGE_3_SCRIPT_DATE=2020-01-19
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -64,6 +64,7 @@ title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 
 :: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider MBAM v2 installation "not installed" for the purposes of Tron
+
 set EXISTING_MBAM=no
 if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe" (
 	set MBAM="%ProgramFiles%\Malwarebytes\Anti-Malware\mbam.exe"
