@@ -223,7 +223,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set EULA_ACCEPTED=no
   ```
 
-- To have Tron send an email report when finished, change this to `yes`:
+- To have Tron send an email report when finished, change this to `yes` (requires you to configure `SwithMailSettings.xml` with your SMTP info):
   ```
   set EMAIL_REPORT=no
   ```
