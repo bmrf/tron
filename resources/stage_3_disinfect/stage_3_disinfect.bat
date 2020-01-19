@@ -1,4 +1,4 @@
-:: Purpose:       Sub-script containing all commands for Tron's Stage 3: Disinfect stage. Called by tron.bat and returns control when finished
+:: Purpose:       Sub-script containing all commands for Tron Stage 3: Disinfect. Called by tron.bat and returns control when finished
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
@@ -59,10 +59,10 @@ call functions\log_with_date.bat "  stage_3_disinfect begin..."
 
 
 :: JOB: MBAM (Malwarebytes Anti-Malware)
-:: There is a bug in this section that needs to be re-worked. In all scenarios we still attempt to run MBAM, even if asked not to install it.
+:: This needs to be re-worked. In all scenarios we attempt to run MBAM, even if asked not to install it. Probably just need to skip entire section if -sm is used.
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes Anti-Malware]
 
-:: The path in v3 changed from v2, so we only check for a v3 installation and skip installing if it exists. If v2 exists, we
+:: MBAM install path changed v2 to v3, so we only check for v3 installation and skip installing if it exists. If v2 exists, we
 :: run the v3 installation to get it up-to-date. tl;dr we consider MBAM v2 installation "not installed" for the purposes of Tron
 
 set EXISTING_MBAM=no
@@ -122,9 +122,6 @@ if %DRY_RUN%==no (
 	)
 )
 
-:skip_mbam
-
-
 
 :: JOB: Kaspersky Virus Removal Tool (KVRT)
 title Tron v%TRON_VERSION% [stage_3_disinfect] [Kaspersky VRT]
@@ -147,7 +144,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 	call functions\log_with_date.bat "! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
 ) else (
 	call functions\log_with_date.bat "   Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
-	call functions\log_with_date.bat "   Scanning output is REDUCED by default (use -v to show)..."
+	call functions\log_with_date.bat "   Scanning output REDUCED by default (use -v to show full output)..."
 	if /i %DRY_RUN%==no (
 		echo.
 
