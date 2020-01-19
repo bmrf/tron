@@ -63,29 +63,45 @@ for /f "tokens=3*" %%i IN ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Curren
 :: Detect system language. This determines which string we look for in ipconfig output for determining if we have an active network connection
 :: English
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0409" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=en
-goto detect_network_connection
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=en
+	goto detect_network_connection
+)
+
 :: English UK
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0809" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=gb
-goto detect_network_connection
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=gb
+	goto detect_network_connection
+)
+
 :: German
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0407" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=de
-goto detect_network_connection
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=de
+	goto detect_network_connection
+)
+
 :: French
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "040C" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=fr
-goto detect_network_connection
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=fr
+	goto detect_network_connection
+)
+
 :: Spanish
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0C0A" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=es
-goto detect_network_connection
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=es
+	goto detect_network_connection
+)
+
 :: Turkish
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "041F" >nul 2>&1
-if /i %ERRORLEVEL%==0 set SYSTEM_LANGUAGE=tr
-goto detect_network_connection
-
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=tr
+	goto detect_network_connection
+)
 
 :: Detect network connection. We assume it's available unless we actively detect it isn't
 :detect_network_connection
@@ -113,7 +129,7 @@ set USERPROFILES=%CD%
 popd
 
 
-:: Build log directories if they don't already exist
+:: Build log directories if they don't exist
 for %%D in ("%LOGPATH%","%QUARANTINE_PATH%","%BACKUPS%","%RAW_LOGS%","%SUMMARY_LOGS%") do (
 	if not exist %%D mkdir %%D
 )
