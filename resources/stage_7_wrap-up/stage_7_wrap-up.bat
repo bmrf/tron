@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
+:: Version:       1.0.2 / Change the display output from disk space reclaimed calculation to assumg GB's instead of MB's
+::                1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
 ::                1.0.0 + Initial break-out of code from tron.bat into discrete subscript
 @echo off
 
@@ -9,8 +10,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.1
-set STAGE_7_SCRIPT_DATE=2018-012-13
+set STAGE_7_SCRIPT_VERSION=1.0.2
+set STAGE_7_SCRIPT_DATE=2020-01-28
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -129,10 +130,13 @@ set bytes=%bytes: =%
 :: Old method (broken in Win10 build 17763 (1809) and up)
 :: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 
-:: GB version
-::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
-:: MB version
-set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
+:: GB version of the calculation
+set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024/1024
+
+:: MB version of the calculation
+::set /a FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
+
+:: Set the space for display
 set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
 
 
