@@ -68,7 +68,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_2_SCRIPT_VERSION=1.4.6
-set STAGE_2_SCRIPT_DATE=2019-06-05
+set STAGE_2_SCRIPT_DATE=2019-02-28
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -205,7 +205,8 @@ call functions\log_with_date.bat "   Done."
 :: JOB: Remove crapware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
-call functions\log_with_date.bat "   ERRORS ABOUT 'SHUTTING DOWN' ARE SAFE TO IGNORE"
+call functions\log_with_date.bat "   Tron is NOT stalled here, this portion just takes a long time"
+call functions\log_with_date.bat "   Errors about 'SHUTTING DOWN' are safe to ignore"
 setlocal EnableExtensions EnableDelayedExpansion
 if /i %DRY_RUN%==no (
 
