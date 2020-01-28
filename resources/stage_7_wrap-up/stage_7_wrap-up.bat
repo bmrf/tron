@@ -1,7 +1,7 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 / Change the display output from disk space reclaimed calculation to assumg GB's instead of MB's
+:: Version:       1.0.2 / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
 ::                1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
 ::                1.0.0 + Initial break-out of code from tron.bat into discrete subscript
 @echo off
