@@ -63,8 +63,8 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [-a | -asm -c -d -dev -e -er -m -o -p -r -sa -sap -scs -sdb -sd -sdc
-              -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
+    tron.bat [-a | -asm -c -d -dev -e -er -m -o -p -r -rmb -sa -sap -scs -sdb -sd
+              -sdc -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
 
     Optional switches (can be combined):
 
@@ -91,6 +91,8 @@ Command-line use is fully supported. All switches are optional and can be used s
      -p   Preserve power settings (don't reset to Windows default)
 
      -r   Reboot automatically (auto-reboot 15 seconds after completion)
+     
+     -rmb Remove Malwarebytes (uninstall it) after Tron is complete
 
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
@@ -246,6 +248,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
   ```
   set AUTO_REBOOT_DELAY=0
+  ```
+
+- To automatically remove the Malwarebytes installation at the end of Tron, change this to `yes`:
+  ```
+  set REMOVE_MALWAREBYTES=no
   ```
 
 - To skip ALL anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
