@@ -45,7 +45,7 @@ I got tired of running these utilities manually and decided to just script every
 
 3. Right-click `tron.bat` and select "**Run as Administrator**"
 
-4. Wait anywhere from **3-10 hours** (yes, it really takes that long; no, do **not** cancel it in the middle of running)
+4. Wait anywhere from **3-10 hours** (it really takes that long; do **not** cancel it in the middle of running)
 
       *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
