@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
+:: Version:       1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+::                      / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
 ::                1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
 ::                1.0.0 + Initial break-out of code from tron.bat into discrete subscript
 @echo off
@@ -11,7 +12,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_7_SCRIPT_VERSION=1.0.2
-set STAGE_7_SCRIPT_DATE=2020-01-28
+set STAGE_7_SCRIPT_DATE=2020-01-31
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
