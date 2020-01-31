@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8 / Rename all instances of "argument(s)" to "switch(es)" to maintain project consistency
+:: Version:       1.1.9 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+::                1.1.8 / Rename all instances of "argument(s)" to "switch(es)" to maintain project consistency
 ::                1.1.7 + Add value of WIN_VER_NUM to -c output
 ::                1.1.6 + Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.1.5 - Remove references to patching Java due to removal of that functionality
@@ -55,8 +56,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.1.8
-set SCRIPT_DATE=2019-07-15
+set SCRIPT_VERSION=1.1.9
+set SCRIPT_DATE=2020-01-31
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -159,6 +160,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    PRESERVE_METRO_APPS:    %PRESERVE_METRO_APPS%
 	echo    PRESERVE_POWER_SCHEME:  %PRESERVE_POWER_SCHEME%
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
+	echo    REMOVE_MALWAREBYTES:    %REMOVE_MALWAREBYTES%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
 	echo    SKIP_APP_PATCHES:       %SKIP_APP_PATCHES%
@@ -267,11 +269,12 @@ if /i "%SAFEBOOT_OPTION%"=="MINIMAL" (
 	echo  NOTE
 	echo.
 	echo  The system is in Safe Mode without Network support.
-	echo  Tron functions best in "Safe Mode with Networking" in
-	echo  order to download Windows and anti-virus updates.
+	echo  Tron functions best in regular boot mode or 
+	echo  "Safe Mode with Networking" in order to download 
+	echo  Windows and anti-virus definition file updates.
 	echo.
-	echo  Tron will still function, but rebooting to "Safe Mode
-	echo  with Networking" is recommended.
+	echo  Tron will still function, but rebooting to regular
+	echo  mode or "Safe Mode with Networking" is recommended.
 	echo.
 	pause
 	cls
@@ -758,6 +761,7 @@ for %%i in (%*) do (
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
+	if /i %%i==-rmb set REMOVE_MALWAREBYTES=no
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sap set SKIP_APP_PATCHES=yes
 	if /i %%i==-scs set SKIP_CUSTOM_SCRIPTS=yes
@@ -786,10 +790,10 @@ goto :eof
 	cls
 	echo.
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
-	echo  Author: vocatus on reddit.com/r/TronScript
+	echo  Author: vocatus on old.reddit.com/r/TronScript
 	echo.
-	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -sa -sap -scs -sd -sdb -sdc
-	echo                    -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
+	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -r -rmb -sa -sap -scs -sd -sdb
+	echo                    -sdc -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional switches ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -805,14 +809,15 @@ goto :eof
 	echo    -o   Power off after running ^(overrides -r^)
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -r   Reboot automatically 15 seconds after script completion
+	echo    -rmb Remove Malwarebytes ^(uninstall it^) after Tron is complete
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
 	echo    -sap Skip application patches ^(don't patch 7-Zip or Adobe Flash^)
 	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
-	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 5 defrag^)
+	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 6 defrag^)
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
-	echo    -se  Skip Event Log clear ^(don't backup and clear Windows Event Logs^)
+	echo    -se  Skip Event Log clear ^(don't backup then wipe Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
