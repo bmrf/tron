@@ -2,14 +2,15 @@
 ::                Sub-stage scripts also call this file if they're launched directly.
 :: Requirements:  n/a
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 + Add new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
+:: Version:       1.0.4 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+::                1.0.3 + Add SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.0.2 - Remove references to Java
 ::                1.0.1 + Add AUTORUN_IN_SAFE_MODE (-asm) switch and associated variable. Combine this with -a to automatically reboot to Safe Mode prior to running (legacy behavior)
 ::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
 
 :: Script version
-set TRON_SETTINGS_SCRIPT_VERSION=1.0.3
-set TRON_SETTINGS_SCRIPT_DATE=2019-03-09
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.4
+set TRON_SETTINGS_SCRIPT_DATE=2020-01-31
 
 
 :::::::::::::::
@@ -59,6 +60,7 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: AUTO_SHUTDOWN          (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
+:: REMOVE_MALWAREBYTES    (-rmb) = Remove Malwarebytes (uninstall it) after Tron is complete
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner switches to individually toggle usage
 :: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip or Adobe Flash Player)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
@@ -89,6 +91,7 @@ set NO_PAUSE=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
 set AUTO_REBOOT_DELAY=0
+set REMOVE_MALWAREBYTES=no
 set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_APP_PATCHES=no
 set SKIP_CUSTOM_SCRIPTS=no
