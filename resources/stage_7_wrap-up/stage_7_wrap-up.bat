@@ -108,6 +108,22 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
+:: JOB: Remove Malwarebytes (-rmb) if requested
+if %REMOVE_MALWAREBYTES%==yes (
+    title Tron v%TRON_VERSION% [stage_7_wrap-up] [Remove Malwarebytes]
+    call functions\log_with_date.bat "!  REMOVE_MALWAREBYTES (-rmb) set to "%REMOVE_MALWAREBYTES%", uninstalling..."
+    
+    if %DRY_RUN%==no (
+        if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+        if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+        if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
+        if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
+    )
+call functions\log_with_date.bat "   Done."
+)
+
+
+
 :: JOB: Create post-run Restore Point
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Create Restore Point]
 if %WIN_VER_NUM% geq 6.0 (
