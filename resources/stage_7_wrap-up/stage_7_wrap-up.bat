@@ -12,7 +12,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_7_SCRIPT_VERSION=1.0.2
-set STAGE_7_SCRIPT_DATE=2020-01-31
+set STAGE_7_SCRIPT_DATE=2020-02-05
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -66,7 +66,7 @@ if /i %DRY_RUN%==no (
 
 		REM Strip out random one-apostrophe lines
 		findstr /v /r "^'" "%TEMP%\tron_diff_temp.txt" > %SUMMARY_LOGS%\tron_removed_files.txt
-		
+
 		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
 		REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
 		copy /y %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\before.txt >NUL
@@ -99,8 +99,8 @@ call functions\log_with_date.bat "   Done. Summary logs are at "%SUMMARY_LOGS%\"
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Collect logs]
 call functions\log_with_date.bat "   Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\*.l*" "%RAW_LOGS%" >NUL
-	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs\*.xml" "%RAW_LOGS%" >NUL
+	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\*.l*" "%RAW_LOGS%\" >NUL
+	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs\*.xml" "%RAW_LOGS%\" >NUL
 	if exist "%LOGPATH%\mbam-log*" move /y "%LOGPATH%\mbam-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\Sophos*" move /y "%LOGPATH%\Sophos*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
@@ -113,13 +113,14 @@ call functions\log_with_date.bat "   Done."
 if %REMOVE_MALWAREBYTES%==yes (
     title Tron v%TRON_VERSION% [stage_7_wrap-up] [Remove Malwarebytes]
     call functions\log_with_date.bat "!  REMOVE_MALWAREBYTES (-rmb) set to "%REMOVE_MALWAREBYTES%", uninstalling..."
-    
+
     if %DRY_RUN%==no (
         if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
         if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
         if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
         if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
     )
+
 call functions\log_with_date.bat "   Done."
 )
 
