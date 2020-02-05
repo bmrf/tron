@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 * diskcleanup: Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
+:: Version:       1.2.8 + ccleaner:    Add support for SKIP_BROWSER_CLEANUP (-sdc) switch, to prevent wiping cookies and browsing history. Thanks to tbr:sebastian
+::                      - bleachbit:   Remove BleachBit as it does not support cookie whitelisting. Once BleachBit supports cookie whitelisting, we'll switch over to it exclusively
+::                1.2.7 * diskcleanup: Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
 ::                1.2.6 + cryptcache:  Import job 'Clear CryptNet SSL certificate cache' from Stage 3, where it didn't make sense to be
 ::                1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
 ::                      / change:      Skip Bleachbit on Windows XP since as of v3 Bleachbit dropped support for XP
@@ -36,8 +38,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.7
-set STAGE_1_SCRIPT_DATE=2020-01-30
+set STAGE_1_SCRIPT_VERSION=1.2.8
+set STAGE_1_SCRIPT_DATE=2020-02-05
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -102,27 +104,27 @@ call functions\log_with_date.bat "   Done."
 
 
 :: JOB: BleachBit
-if %WIN_VER_NUM% LEQ 5.2 (
-	call functions\log_with_date.bat " ! Bleachbit v3 not supported on Windows XP. Skipping."
-	goto skip_bleachbit
-)
-
-title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
-call functions\log_with_date.bat "   Launch job 'BleachBit'..."
-if /i %DRY_RUN%==no (
-
-	if %VERBOSE%==yes (
-		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
-		:: Thanks Windows Batch for not having a TEE equivalent
-		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
-		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
-	)
-
-	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
-	ping 127.0.0.1 -n 16 >NUL
-)
-call functions\log_with_date.bat "   Done."
-:skip_bleachbit
+:: if %WIN_VER_NUM% LEQ 5.2 (
+:: 	call functions\log_with_date.bat " ! Bleachbit v3 not supported on Windows XP. Skipping."
+:: 	goto skip_bleachbit
+:: )
+:: 
+:: title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
+:: call functions\log_with_date.bat "   Launch job 'BleachBit'..."
+:: if /i %DRY_RUN%==no (
+:: 
+:: 	if %VERBOSE%==yes (
+:: 		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
+:: 		:: Thanks Windows Batch for not having a TEE equivalent
+:: 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
+:: 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: 	)
+:: 
+:: 	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
+:: 	ping 127.0.0.1 -n 16 >NUL
+:: )
+:: call functions\log_with_date.bat "   Done."
+:: :skip_bleachbit
 
 
 :: JOB: Delete duplicate files in the "Downloads" folder of each user profile
