@@ -1,5 +1,6 @@
 Note this file is just a list of which cookies CCleaner will ignore.
-Altering anything here will have no effect; you need to launch CCleaner and edit the options section regarding cookies if you want to add or remove exclusions. This is just for quick reference.
+Altering anything here will have no effect; you need to launch CCleaner and edit the options section regarding cookies if 
+you want to add or remove exclusions. This is just for quick reference.
 
 *53.com
 *amazon.com
