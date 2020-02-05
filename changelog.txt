@@ -14,13 +14,14 @@ Version legend:
 
 
 #########################
-# v10.9.3 // 2020-02-xx #
+# v11.0.0 // 2020-02-xx #
 #########################
  + tron.bat                        v1.1.8
      + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+	 + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian. Note that as of v11.0.0, Tron automatically preserves most common login cookies by default. Chase.com, Spotify.com, gmail.com, etc.
 
 functions
- . initialize_environment.bat      v10.8.9
+ * initialize_environment.bat      v10.10.0
  . prerun_checks_and_tasks.bat     v1.1.0
  . tron_settings.bat               v1.0.3
 
@@ -40,10 +41,19 @@ Stage 1: Tempclean
  * stage_1_tempclean.bat           v1.2.7
      * Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
 
- . CCleaner                        v5.63.7540
- . BleachBit                       v3.0.0
+ * CCleaner                        v5.63.7540
+    * Add whitelist of common cookie domains to NOT wipe (Gmail, various online banking sites, etc)
+
+ - BleachBit                       v3.0.0
+    - Remove BleachBit, for a couple reasons (even though I prefer it over CCleaner):
+	   1. Performs the same function as CCleaner
+       2. No support for excluding certain cookie domains from wiping (main reason)
+	  Once BleachBit supports cookie whitelisting, we'll switch over to it exclusively.
+
  . finddupe.exe                    v1.25
- . TempFileCleanup                 v1.1.7-TRON
+ * TempFileCleanup                 v1.1.8-TRON
+    * Streamline user profile cleanup code, remove a redundant code block
+
  . USB Device Cleanup              v1.2.0
 
 Stage 2: De-bloat
