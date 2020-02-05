@@ -63,8 +63,8 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [-a | -asm -c -d -dev -e -er -m -o -p -r -rmb -sa -sap -scs -sdb -sd
-              -sdc -sdu -se -sk -sm -sor -spr -ss -str -swo -swu -udl -v -x] | [-h]
+    tron.bat [-a | -c -d -dev -e -er -m -o -p -r -rmb -sa -sap -scc -scs -sd -sdb
+          -sdc -sdu -se -sk -sl -sm -sor -spr -ss -str -swu -swo -udl -v -x] | [-h]
 
     Optional switches (can be combined):
 
@@ -100,9 +100,11 @@ Command-line use is fully supported. All switches are optional and can be used s
 
      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 
-     -sdb Skip de-bloat (OEM bloatware removal; implies -m)
+     -scc Skip cookie cleanup (not recommended, Tron auto-preserves most common login cookies)
 
      -sd  Skip defrag (force Tron to ALWAYS skip Stage 6 defrag)
+
+     -sdb Skip de-bloat (OEM bloatware removal; implies -m)
      
      -sdc Skip DISM component (SxS store) cleanup
      
@@ -263,6 +265,11 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 - To skip application patches (don't patch 7-Zip or Adobe Flash) change this to `yes`:
   ```
   set SKIP_APP_PATCHES=no
+  ```
+
+  - To leave ALL cookies intact (not recommended, Tron auto-preserves most common login cookies such as Spotify, Gmail, etc), change this to `yes`:
+  ```
+  set SKIP_COOKIE_CLEANUP=no
   ```
 
 - To skip custom scripts (stage 8) regardless whether or not `.bat` files are present in the `stage_8_custom_scripts` folder, change this to yes:
@@ -532,25 +539,23 @@ Master script that launches everything else. It performs many actions on its own
   ```
 
 
-2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners. Note that CCleaner wipes `%AppData%` Local Storage. Edit [ccleaner.ini](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/ccleaner/ccleaner.ini) and change `(App)Local Storage*=True` to `(App)Local Storage*=False` if you don't want this behavior. Note that you must also do this for BleachBit (below)
+2. **[CCLeaner](https://www.piriform.com/ccleaner)**: CCLeaner utility by Piriform. Used to clean temp files before running AV scanners. Note that CCleaner wipes `%AppData%` Local Storage. Edit [ccleaner.ini](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/ccleaner/ccleaner.ini) and change `(App)Local Storage*=True` to `(App)Local Storage*=False` if you don't want this behavior. Also note that Tron automatically preserves most common login cookies (Chase.com, gmail.com, etc). Use the `-scc` switch to leave ALL cookies intact (not recommended)
 
-3. **[BleachBit](http://bleachbit.sourceforge.net/)**: BleachBit utility. Used to clean temp files before running AV scanners. Edit `BleachBit.ini` and disable any items you wish to preserve (for example, Local Storage for Chrome)
+3. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/tempfilecleanup/TempFileCleanup.bat)**: Script I wrote to clean some areas that other tools seem to miss
 
-4. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/tempfilecleanup/TempFileCleanup.bat)**: Script I wrote to clean some areas that other tools seem to miss
+4. **[USB Device Cleanup](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Uninstalls unused or not present USB devices from the system (non-existent thumb drives, etc etc). Uses `drivecleanup.exe` from [Uwe Sieber](http://www.uwe-sieber.de/)
 
-5. **[USB Device Cleanup](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Uninstalls unused or not present USB devices from the system (non-existent thumb drives, etc etc). Uses `drivecleanup.exe` from [Uwe Sieber](http://www.uwe-sieber.de/)
+5. **[Cleanup duplicate downloads](https://github.com/jeremitu/finddupe)**: Searches for and delete duplicate files found in the Downloads folders of each user profile (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe`, etc). Does not touch any other folders. Uses a UTF-8-friendly port Sentex's original [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) utility
 
-6. **[Cleanup duplicate downloads](https://github.com/jeremitu/finddupe)**: Searches for and delete duplicate files found in the Downloads folders of each user profile (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe`, etc). Does not touch any other folders. Uses a UTF-8-friendly port Sentex's original [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) utility
+6. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
 
-7. **Clear Windows event logs**: Back up Windows event logs to `%LOGPATH%` directory, then clear all entries
-
-8. **Clear Windows Update cache**: Purge uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space. Accomplished via this command:
+7. **Clear Windows Update cache**: Purge uninstaller files for already-installed Windows Updates. Typically frees up quite a bit of space. Accomplished via this command:
     
     ```
     rmdir /s /q %windir%\softwaredistribution\download
     ```
 
-9. **Flush BranchCache cache**: Tron executes the command `netsh branchcache flush` to flush any cached data in the BranchCache (win7 and up only)
+8. **Flush BranchCache cache**: Tron executes the command `netsh branchcache flush` to flush any cached data in the BranchCache (win7 and up only)
 
 
 ## STAGE 2: De-bloat
