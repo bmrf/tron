@@ -295,7 +295,7 @@ echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
-echo  *  1 TempClean: TempFileClean/BleachBit/CCleaner/IE ^& EvtLogs clean   *
+echo  *  1 TempClean: TempFileClean/CCleaner/IE ^& Event Logs clean          *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
@@ -412,7 +412,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "                          Command-line switches: %*"
 	call functions\log.bat "                          Time zone: %TIME_ZONE_NAME%"
 	call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBOOT_OPTION%"
-	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% GB"
+	call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 	call functions\log.bat "-------------------------------------------------------------------------------"
 )
 
@@ -658,7 +658,7 @@ call functions\log.bat "                          Safe Mode: %SAFE_MODE% %SAFEBO
 call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 call functions\log.bat "                          Warnings detected?:   %WARNINGS_DETECTED%"
 call functions\log.bat "                          Debug logs uploaded?: %UPLOAD_DEBUG_LOGS%"
-call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% GB"
+call functions\log.bat "                          Free space before Tron run: %FREE_SPACE_BEFORE% MB"
 call functions\log.bat "                          Free space after Tron run:  %FREE_SPACE_AFTER% GB"
 call functions\log.bat "                          Disk space reclaimed:       %FREE_SPACE_SAVED% GB *"
 call functions\log.bat ""
