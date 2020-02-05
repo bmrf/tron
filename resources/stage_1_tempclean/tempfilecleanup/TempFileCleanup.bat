@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
+:: Version:       1.1.8-TRON * Streamline user profile cleanup code, remove a redundant code block
+::                1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
 ::                           - Remove deletion of built-in Windows wallpaper images. On modern systems the space use is negligible
 ::                1.1.6-TRON * Use %REG% instead of relative calls
 ::                1.1.5-TRON ! Fix syntax bug that was preventing CBS log cleanup. Thanks to github:jonasjovaisas
@@ -26,24 +27,20 @@
 ::                           - Removed logging (Tron handles logging)
 SETLOCAL
 
-
 :::::::::::::::
 :: VARIABLES :: -------------- These are the defaults. Change them if you so desire. --------- ::
 :::::::::::::::
 :: No user-set variables for this script
 
-
 :: --------------------------- Don't edit anything below this line --------------------------- ::
-
 
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.7-TRON
-set SCRIPT_UPDATED=2019-11-03
-
+set SCRIPT_VERSION=1.1.8-TRON
+set SCRIPT_UPDATED=2020-02-05
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
@@ -57,8 +54,53 @@ echo   Cleaning USER temp files...
 ::::::::::::::::::::::
 :: Version-agnostic :: (these jobs run regardless of OS version)
 ::::::::::::::::::::::
-:: Create log line
-echo.  && echo  ! Cleaning USER temp files... && echo.
+:: Requires the use of Tron's internal %USERPROFILES% variable
+for /D %%x in ("%USERPROFILES%\*") do (
+	del /F /Q "%%x\Documents\*.tmp" 2>NUL
+	del /F /Q "%%x\My Documents\*.tmp" 2>NUL
+	del /F /S /Q "%%x\*.blf" 2>NUL
+	del /F /S /Q "%%x\*.regtrans-ms" 2>NUL
+	del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\http*.*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\*" /AH 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Microsoft\Dr Watson\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
+	del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\http*.*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Dr Watson\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
+	del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
+	del /F /S /Q "%%x\Recent\*" 2>NUL
+)
+
+echo.  && echo   Done. && echo.
 
 :: Previous Windows versions cleanup. These are left behind after upgrading an installation from XP/Vista/7/8 to a higher version
 REM Disabled for Tron
@@ -78,69 +120,18 @@ REM if exist %SystemDrive%\$Windows.~WS (
 	REM rmdir /S /Q %SystemDrive%\$Windows.~WS\
 	REM )
 
+
+
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-if %WIN_VER_NUM% lss 6.0 (
-	for /D %%x in ("%SystemDrive%\Documents and Settings\*") do (
-		del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
-		del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
-		del /F /S /Q "%%x\Application Data\Microsoft\Dr Watson\*" 2>NUL
-		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
-		del /F /S /Q "%%x\Application Data\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
-		del /F /S /Q "%%x\Application Data\Sun\Java\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\ApplicationHistory\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Cache\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Local Storage\http*.*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Dr Watson\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Internet Explorer\Recovery\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Application Data\Microsoft\Terminal Server Client\Cache\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Temp\*" 2>NUL
-		del /F /S /Q "%%x\Local Settings\Temporary Internet Files\*" 2>NUL
-		del /F /S /Q "%%x\Recent\*" 2>NUL
-		del /F /Q "%%x\My Documents\*.tmp" 2>NUL
-	)
-) else (
-	for /D %%x in ("%SystemDrive%\Users\*") do (
-		del /F /S /Q "%%x\*.blf" 2>NUL
-		del /F /S /Q "%%x\*.regtrans-ms" 2>NUL
-		del /F /S /Q "%%x\AppData\LocalLow\Sun\Java\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Cache\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIconsOld\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\JumpListIcons\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Local Storage\http*.*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Google\Chrome\User Data\Default\Media Cache\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Internet Explorer\Recovery\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Terminal Server Client\Cache\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Caches\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Explorer\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\History\low\*" /AH 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\INetCache\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\Temporary Internet Files\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportArchive\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WER\ReportQueue\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
-		del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
-		del /F /S /Q "%%x\Recent\*" 2>NUL
-		del /F /Q "%%x\Documents\*.tmp" 2>NUL
-	)
-)
 
-echo.  && echo   Done. && echo.
-
-
+:: nothing currently
 
 ::::::::::::::::::::::::::::
 :: SYSTEM CLEANUP SECTION :: -- Most stuff here requires Admin rights
 ::::::::::::::::::::::::::::
 echo   Cleaning SYSTEM temp files...  && echo.
-
 
 ::::::::::::::::::::::
 :: Version-agnostic :: (these jobs run regardless of OS version)
@@ -150,7 +141,7 @@ del /F /S /Q "%WINDIR%\TEMP\*" 2>NUL
 
 :: JOB: Root drive garbage (usually C drive)
 rmdir /S /Q %SystemDrive%\Temp 2>NUL
-for %%i in (bat,txt,log,jpg,jpeg,tmp,bak,backup,exe) do (
+for %%i in (bat,cmd,txt,log,jpg,jpeg,tmp,temp,bak,backup,exe) do (
 	del /F /Q "%SystemDrive%\*.%%i" 2>NUL
 )
 
@@ -202,7 +193,6 @@ if exist "%ProgramFiles(x86)%\NVIDIA Corporation\Installer" rmdir /s /q "%Progra
 if exist "%ProgramFiles(x86)%\NVIDIA Corporation\Installer2" rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\Installer2" 2>NUL
 if exist "%ProgramData%\NVIDIA Corporation\Downloader" rmdir /s /q "%ProgramData%\NVIDIA Corporation\Downloader" 2>NUL
 if exist "%ProgramData%\NVIDIA\Downloader" rmdir /s /q "%ProgramData%\NVIDIA\Downloader" 2>NUL
-
 
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
@@ -279,7 +269,6 @@ if %WIN_VER_NUM% lss 6.0 (
 	popd
 )
 
-echo   Done. && echo.
 echo   Done. && echo.
 
 ::::::::::::::::::::::::::
