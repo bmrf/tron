@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.5 - feature:      Remove entire Java Runtime patching section
+:: Version:       1.2.6 * improvement:  Suppress Windows Defender update output unless running in verbose mode
+:::               1.2.5 - feature:      Remove entire Java Runtime patching section
 ::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.3 ! bugfix:       Remove dead code that was incorrectly attempting to install Acrobat Reader DC updates
 ::                1.2.2 * improvement:  Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -31,8 +32,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.2.5
-set STAGE_5_SCRIPT_DATE=2019-02-07
+set STAGE_5_SCRIPT_VERSION=1.2.6
+set STAGE_5_SCRIPT_DATE=2020-02-05
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -110,7 +111,12 @@ if %FLASH_DETECTED%==yes (
 if exist "%ProgramFiles%\Windows Defender\mpcmdrun.exe" (
 	title Tron v%TRON_VERSION% [stage_5_patch] [Update Windows Defender]
 	call functions\log_with_date.bat "   Updating Windows Defender..."
-	if /i %DRY_RUN%==no "%ProgramFiles%\Windows Defender\mpcmdrun.exe" -SignatureUpdate
+
+	if /i %DRY_RUN%==no (
+		if %VERBOSE%==no "%ProgramFiles%\Windows Defender\mpcmdrun.exe" -SignatureUpdate >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if %VERBOSE%==yes "%ProgramFiles%\Windows Defender\mpcmdrun.exe" -SignatureUpdate
+	)
+	
 	call functions\log_with_date.bat "   Done."
 )
 
