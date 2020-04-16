@@ -1,7 +1,35 @@
-Some of my favorite quotes about Tron or resulting from its use. Positive first, negative at the bottom.
+Some of my favorite quotes about Tron or resulting from its use. Negative first, positive at the bottom.
+
+
+# Negative
+
+Guys, this script is trash. -- /u/smileymalaise
+
+I have not seen a single post in the sub that says anything close to "Tron is working out as expected… "
+https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eiz9kxh/
+
+Recently i could not resist and downloaded few things which seems affected my PC those were 1) Yourporn.com videos 2) few PDf adult comics. I don’t exactly know how my PC got infected. -- u/xxxfoodpunk
+
+The personal files were my 'Funtime' files if you catch my drift. I had created a folder maze in the random empty Intel folder in C:. -- u/Spiraticus
+
+This script is cargo cult bulls***. -- u/meandertothehorizon
+
+Tron is dangerous and I won't be silenced by the downvotes. -- u/meandertothehorizon
+
+Hahahahahaha -- u/meandertothehorizon
 
 
 # Positive
+
+Just wanted to thank you - everything finished running and my computer is so much faster than before now! Thanks! -- u/Mathematicalsguy
+https://www.reddit.com/r/TronScript/comments/7yf1v0/possible_issue_running_tron/duino3e/
+
+My computer used to take a solid 10 mins to load after bootup, ran Tron for the first time and down to about 2-4 now. -- u/Mbusc1
+https://www.reddit.com/r/TronScript/comments/7sbkmd/my_computer_used_to_take_a_solid_10_mins_to_load/
+
+As a user of Tronscript i'm damn happy with it. -- u/FuckingHateMath
+
+Oh my god this program has changed my life, my computer is finally bloat free and quick as a missile. -- u/Eledyssil
 
 Thanks to the developers as well, it picked my crawling laptop with SSD back to its glory. Even though there were no viruses. -- https://www.reddit.com/r/TronScript/comments/d613an/im_really_impressed/f0rodof/
 
@@ -35,17 +63,7 @@ Creator, contributors, community members. Thanks a ton. Tron rocks. Running verb
 This project is an inspiration. Great work from the script to the documentation to the engagement. All around 10 out of 10. -- u/Letstalkaboudit
 https://www.reddit.com/r/TronScript/comments/88ojd8/just_another_thankful_user/
 
-Just wanted to thank you - everything finished running and my computer is so much faster than before now! Thanks! -- u/Mathematicalsguy
-https://www.reddit.com/r/TronScript/comments/7yf1v0/possible_issue_running_tron/duino3e/
-
-My computer used to take a solid 10 mins to load after bootup, ran Tron for the first time and down to about 2-4 now. -- u/Mbusc1
-https://www.reddit.com/r/TronScript/comments/7sbkmd/my_computer_used_to_take_a_solid_10_mins_to_load/
-
-As a user of Tronscript i'm damn happy with it. -- u/FuckingHateMath
-
 Holy living sh** I did not realize this was the Tron Script guy. You are a professional above all other professionals. Thank you for your work. -- u/fetchingTurtle
-
-Oh my god this program has changed my life, my computer is finally bloat free and quick as a missile. -- u/Eledyssil
 
 Vocatus, I just need to say that I've been using Tron since the beginning and I appreciate you keeping this up to date and not letting the project die out. It's saved me so much time. Being able to set and forget this to run overnight and come back to a functioning PC magically in the morning is the best feeling ever. I'm not into Bitcoin but if you have a PayPal account, you should post it. I'd definitely buy you a few beers. -- u/rm_11
 
@@ -71,24 +89,3 @@ If I sucked dicks, you would be first in line. -- u/markevens
 I'm a sysadmin at a school and often get infected/broken computers in for rep. I tried this tool on a computer that didn't want to boot and it worked flawlessly! -- u/Freezingcow
 
 [The system] runs better after running Tron (back to booting in ~7 seconds like when originally built, compared to almost 20 sec it had slowed down to). Thanks again for everything! -- u/BroPaterno
-
-
-
-
-# Negative
-
-
-Guys, this script is trash. -- /u/smileymalaise
-
-I have not seen a single post in the sub that says anything close to "Tron is working out as expected… "
-https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eiz9kxh/
-
-Recently i could not resist and downloaded few things which seems affected my PC those were 1) Yourporn.com videos 2) few PDf adult comics. I don’t exactly know how my PC got infected. -- u/xxxfoodpunk
-
-The personal files were my 'Funtime' files if you catch my drift. I had created a folder maze in the random empty Intel folder in C:. -- u/Spiraticus
-
-This script is cargo cult bulls***. -- u/meandertothehorizon
-
-Tron is dangerous and I won't be silenced by the downvotes. -- u/meandertothehorizon
-
-Hahahahahaha -- u/meandertothehorizon
