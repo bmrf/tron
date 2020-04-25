@@ -90,10 +90,10 @@ Command-line use is fully supported. All switches are optional and can be used s
 
      -p   Preserve power settings (don't reset to Windows default)
 
+     -pmb Preserve Malwarebytes (don't uninstall it) after Tron is complete
+     
      -r   Reboot automatically (auto-reboot 15 seconds after completion)
      
-     -rmb Remove Malwarebytes (uninstall it) after Tron is complete
-
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
      -sap Skip application patches (don't patch 7-Zip or Adobe Flash)
@@ -247,14 +247,14 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set PRESERVE_POWER_SCHEME=no
   ```
 
+- To preserve Malwarebytes installation (skip removal) at the end of Tron, change this to `yes`:
+  ```
+  set PRESERVE_MALWAREBYTES=no
+  ```
+
 - To configure post-run reboot, change this value (in seconds). `0` disables auto-reboot:
   ```
   set AUTO_REBOOT_DELAY=0
-  ```
-
-- To automatically remove the Malwarebytes installation at the end of Tron, change this to `yes`:
-  ```
-  set REMOVE_MALWAREBYTES=no
   ```
 
 - To skip ALL anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
@@ -590,7 +590,7 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **[Clear CryptNet SSL cache](https://github.com/bmrf/tron/issues/86)**: Wipe the Windows CryptNet SSL certificate cache by executing this command:  `certutil -URLcache * delete`
 
-2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` switches to skip this component
+2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` switches to skip this component. Use the `-pmb` switch to NOT uninstall it at the end of the script
 
 3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
 
@@ -657,6 +657,8 @@ Tron updates these programs if they exist on the system. If a program does not a
 3. **email_report**: Send an email report with the log file attached when Tron is finished. Requires you to specify your SMTP settings in `\resources\stage_7_wrap-up\email_report\SwithMailSettings.xml`
 
 4. **upload debug logs**: Upload 'tron.log' and the system GUID dump (list of all installed program GUIDs) and Metro app list dump to the Tron developer (vocatus). Please use this option if possible, log files are extremely helpful in developing Tron! NOTE: `tron.log` can contain personal information like names of files on the system, the computer name, user name, etc, so if you're concerned about this please look through a Tron log first to understand what will be sent. I don't care what files are on random systems on the Internet, but just something to be aware of
+
+5. **Remove Malwarebytes**: Automatically remove the Malwarebytes installation. Use the `-pmb` switch to skip this and leave it on the system
 
 ## STAGE 8: Custom Scripts
 
