@@ -6,8 +6,8 @@
 
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=11.0.0
-set TRON_DATE=2020-02-05
+set TRON_VERSION=11.1.0
+set TRON_DATE=2020-04-25
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -116,7 +116,7 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: French
-if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de sous" >NUL 2>&1
+if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
 if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de subred" >NUL 2>&1
