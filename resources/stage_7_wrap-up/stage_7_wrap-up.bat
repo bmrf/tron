@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+:: Version:       1.0.3 / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
+::                1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
 ::                      / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
 ::                1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
 ::                1.0.0 + Initial break-out of code from tron.bat into discrete subscript
@@ -11,8 +12,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.2
-set STAGE_7_SCRIPT_DATE=2020-02-05
+set STAGE_7_SCRIPT_VERSION=1.0.3
+set STAGE_7_SCRIPT_DATE=2020-04-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -109,18 +110,18 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
-:: JOB: Remove Malwarebytes (-rmb) if requested
-if %REMOVE_MALWAREBYTES%==yes (
-    title Tron v%TRON_VERSION% [stage_7_wrap-up] [Remove Malwarebytes]
-    call functions\log_with_date.bat "!  REMOVE_MALWAREBYTES (-rmb) set to "%REMOVE_MALWAREBYTES%", uninstalling..."
-
-    if %DRY_RUN%==no (
-        if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-        if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
-        if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
-        if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
-    )
-
+:: JOB: Skip removal of Malwarebytes if requested
+title Tron v%TRON_VERSION% [stage_7_wrap-up] [Remove Malwarebytes]
+if %PRESERVE_MALWAREBYTES%==yes (
+	call functions\log_with_date.bat "!  PRESERVE_MALWAREBYTES (-pmb) set to "%PRESERVE_MALWAREBYTES%", skipping removal."
+) else (
+	call functions\log_with_date.bat "   Uninstalling Malwarebytes..."
+	if %DRY_RUN%==no (
+		if exist "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if exist "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" "%ProgramFiles(x86)%\Malwarebytes\Anti-Malware\unins000.exe" /verysilent /suppressmsgboxes /norestart >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if exist "%ProgramFiles%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if exist "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" rmdir "%ProgramFiles(x86)%\Malwarebytes Anti-Malware\" /s /q >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
 call functions\log_with_date.bat "   Done."
 )
 
