@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.4 ! Fix typo in Microsoft.Lucille entry
+Version:       1.3.5 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.4"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2019-11-23"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.5"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-03-31"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -68,10 +68,14 @@ Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
 Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.DiagnosticDataViewer"
+Remove-App "Microsoft.ForzaHorizon3Demo"
+Remove-App "Microsoft.ForzaMotorsport7Demo"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
+Remove-App "Microsoft.GamingApp"
 Remove-App "Microsoft.GetHelp"                         # Get Help link
 Remove-App "Microsoft.Getstarted"                      # Get Started link
 Remove-App "Microsoft.HelpAndTips"
+Remove-App "Microsoft.HoganThreshold"
 Remove-App "Microsoft.LanguageExperiencePacken-GB"
 Remove-App "Microsoft.LanguageExperiencePackes-es"
 Remove-App "Microsoft.LanguageExperiencePackes-mx"
