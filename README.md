@@ -418,12 +418,12 @@ Hope this is helpful to other PC techs,
 
 If you feel overly charitable, donations are accepted at these addresses:
 
+Monero (preferred): `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
 
 Bitcoin: `1Biw8gx2kD7mZf66ZdNgB9tG1pE9YA3kEd`
 
 Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
 
-Monero (preferred): `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
 
 # SCRIPT EXIT CODES
 When Tron exits, it will pass an exit code indicating the final status (success/warning/error/failure/etc).
@@ -455,31 +455,31 @@ Master script that launches everything else. It performs many actions on its own
 
 1. **Make log directories**: Create the master log directory and sub-directories if they don't exist. By default this is `%SystemDrive%\Logs\tron.log`
 
-1. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
+2. **Detect Windows & IE versions**: Determines quite a few things in the script, such as which versions of various commands get executed
 
-2. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` switch to override this behavior and allow running on unsupported Windows versions. Currently only triggers on Windows Server 2016.
+3. **Unsupported OS blocker**: Throw an alert message if running on an unsupported OS, then exit. Use the `-dev` switch to override this behavior and allow running on unsupported Windows versions. Currently only triggers on Windows Server 2016.
 
-3. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
+4. **Disk configuration check**: Check if the system drive is an SSD, Virtual Disk, or throws an unspecified error (couldn't be read by `smartctl.exe`) and set the `SKIP_DEFRAG` variable to `yes_ssd`, `yes_vm`, or `yes_error` respectively. If any of these conditions are triggered, Tron skips **Stage 5 defrag** automatically
 
-4. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
+5. **Detect free space**: Detect and save available hard drive space to compare against later. Simply used to show how much space was reclaimed; does not affect any script functions
 
-5. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
+6. **Detect resume**: Detect whether or not we're resuming after an interrupted run (e.g. from a reboot)
 
-6. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8 and up only; enabled by default on Server 2012/2012 R2)
+7. **Enable F8 Safe Mode selection**: Re-enable the ability to use the `F8` key on bootup (Windows 8 and up only; enabled by default on Server 2012/2012 R2)
 
-7. **Check for network connection**: Check for an active network connection, and skip the update checks if one isn't found
+8. **Check for network connection**: Check for an active network connection, and skip the update checks if one isn't found
 
-7. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the old version
+9. **Check for update**: Compare the local copy of Tron to the version on the official repo (does this by reading latest version number from `sha256sums.txt`). If the local copy is out of date, Tron will ask to automatically download the latest copy (**always** recommended). If permitted, it will download a copy to the desktop, verify the SHA256 hash, then self-destruct (delete) the old version
 
-8. **Update debloat lists**: Connect to Github and download the latest version of the Stage 2 debloat lists at initial launch. Use the `-sdu` (`SKIP_DEBLOAT_UPDATE`) switch to prevent this behavior. I recommend letting Tron update the lists unless you have a good, specific reason not to
+10. **Update debloat lists**: Connect to Github and download the latest version of the Stage 2 debloat lists at initial launch. Use the `-sdu` (`SKIP_DEBLOAT_UPDATE`) switch to prevent this behavior. I recommend letting Tron update the lists unless you have a good, specific reason not to
 
-8. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
+11. **Detect Administrator rights**: Detect whether or not we're running as Administrator and alert the user if we're not
 
-9. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
+12. **Create RunOnce entry**: Create the following registry key to support resuming if there is an interruption: `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /v "*tron_resume" /t REG_SZ /d "%~dp0tron.bat %-resume"`. The `*` prefix on the key name forces Windows to execute it in Safe Mode.
 
    Note: `-resume` is an internal switch not meant for human use at the command-line. If you use it, things will break and I will laugh at you.
 
-10. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
+13. **SMART check**: Dump the SMART status of all hard disks in the system, then display an alert if any drive reports one of the following status codes: `Error`,`Degraded`,`Unknown`,`PredFail`,`Service`,`Stressed`,`NonRecover`
 
 
 ## STAGE 0: Prep
