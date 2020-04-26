@@ -63,7 +63,7 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [-a | -c -d -dev -e -er -m -o -p -r -rmb -sa -sap -scc -scs -sd -sdb
+    tron.bat [-a | -c -d -dev -e -er -m -o -p -pmb -r -sa -sap -scc -scs -sd -sdb
           -sdc -sdu -se -sk -sl -sm -sor -spr -ss -str -swu -swo -udl -v -x] | [-h]
 
     Optional switches (can be combined):
