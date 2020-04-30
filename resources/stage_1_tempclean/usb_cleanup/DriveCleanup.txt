@@ -1,0 +1,97 @@
+
+DriveCleanup v1.2.0 - removes non present drives from the device tree
+Freeware by Uwe Sieber (c) 2007-2016
+
+Works under Windows XP and higher only. Under x64 edtitions of Windows
+only the x64 version works.
+
+
+Removes from the device tree non present 
+- USB hubs
+- USB mass storage devices 
+- USB Disk devices
+- USB CDROM devices
+- USB Floppy devices
+- USB Storage Volumes
+- USB WPD devices (Vista, Win7, Win8 and higher only)
+
+and their registry items under
+
+HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\UsbFlags
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2\CPC\Volume
+
+Usage:
+
+DriveCleanup [-t] [-n] [-u] [-d] [-c] [-f] [-v] [-r]
+
+no params:  cleanup all
+-t          test mode
+-n          no wait for keypress when finished if started standalone
+-u          only USB mass storage devices 
+-d          only USB Disk devices
+-c          only USB CDROM devices
+-f          only USB Floppy devices
+-v          only USB Storage Volume devices
+-r          only registry items of USB volumes
+-w          only USB WPD devices
+
+Called with admin previleges and without a parameter it removes all types of devices
+listed above and cleans the registry.
+Without admin previleges it switches to test mode and shows the item it would remove.
+
+
+Samples:
+
+DriveCleanup -t
+test mode, lists devices and registry items to remove
+
+DriveCleanup
+removes non present devices related to drives and their registry items
+
+DriveCleanup -v -d
+removes non present USB Storage Volumes and USB Disks
+
+
+Administrator previleges are required for cleanup.
+
+
+DriveCleanup isn't stricly limited to drives, USB hubs and the Enum\NextParentID.xxxxx.n
+values may be not drive related.
+Deleteing automatically any type of non-present device seems to be too dangerous, therefore
+I've made a GUI tool for this, so it's up to the user not to delete something important...
+http://www.uwe-sieber.de/misc_tool_e.html#devicecleanup
+
+
+DriveCleanup calls Windows device manangement functions for deleting devices entries. If it shows OK
+then Windows responded that this succeeded. When finished DriveCleanup checks all again and should
+find zero devices if it showed OK for all before. Sometimes Windows says OK but in fact the device
+is still present.
+
+
+Since Vista Administrators have no more write access to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum
+and even being the owner they have no right to change the permissions. Therefore deleting unreferenced
+NextParentID.xxxxx.n items needs more than admin previleges. To get these, DriveCleanup starts itself in
+the SYSTEM context to change Enum's security descriptor, performs the cleanup and restores the security
+descriptor. Maybe this alerts security software.
+
+
+
+
+Licence: Freeware
+
+Allowed:
+- usage in any environment, including commercial
+- include in software products, including commercial
+- include on CD/DVD of computer magazines
+
+Not allowed:
+- modify any of the files
+- offer for download by means of a "downloader" software
+
+
+Uwe Sieber
+Jan 2016
