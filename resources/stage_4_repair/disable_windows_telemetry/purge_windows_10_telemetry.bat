@@ -471,7 +471,7 @@ if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 :: SPYBOT ANTI-BEACON IMMUNIZATIONS
 if %STANDALONE%==no (
 	call functions\log.bat "     Applying Spybot Anti-Beacon protections, please wait..."
-	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.6.0.42.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
+	"stage_4_repair\disable_windows_telemetry\Spybot Anti-Beacon v1.7.0.47.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
 ) else (
 	echo "Applying Spybot Anti-Beacon protections, please wait..."
 	"Spybot Anti-Beacon v1.7.0.47.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
