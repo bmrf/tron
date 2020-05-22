@@ -1,3 +1,5 @@
+
+
 Some of my favorite quotes about Tron. Negative first, positive at the bottom.
 
 
@@ -18,10 +20,12 @@ This script is cargo cult bulls***. -- u/meandertothehorizon
 
 Tron is dangerous and I won't be silenced by the downvotes. -- u/meandertothehorizon
 
-Hahahahahaha -- u/meandertothehorizon
-
 
 # Positive
+
+I’ve used this script A LOT over that last 4 years as part of my job. A customers SBS 2011 server was crypto’d last week. We did a file level restore over the top, removed the old files that were renamed, and ran Tron through it. Sucker works better than it did previously. Fantastic script /u/vocatus. Does the trick each and every time I run it. -- u/DrQuack32
+https://www.reddit.com/r/TronScript/comments/gop93w/on_a_positive_note/
+
 
 Just wanted to thank you - everything finished running and my computer is so much faster than before now! Thanks! -- u/Mathematicalsguy
 https://www.reddit.com/r/TronScript/comments/7yf1v0/possible_issue_running_tron/duino3e/
