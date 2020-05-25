@@ -762,7 +762,7 @@ for %%i in (%*) do (
 	if /i %%i==-np set NO_PAUSE=yes
 	if /i %%i==-o set AUTO_SHUTDOWN=yes
 	if /i %%i==-p set PRESERVE_POWER_SCHEME=yes
-	if /i %%i==-pmb set PRESERVE_MALWAREBYTES=no
+	if /i %%i==-pmb set PRESERVE_MALWAREBYTES=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
 	if /i %%i==-sap set SKIP_APP_PATCHES=yes
