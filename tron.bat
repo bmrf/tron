@@ -59,7 +59,7 @@ SETLOCAL
 :::::::::::::::::::::
 color 0f
 set SCRIPT_VERSION=1.2.0
-set SCRIPT_DATE=2020-04-25
+set SCRIPT_DATE=2020-05-25
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
