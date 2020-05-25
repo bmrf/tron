@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
+:: Version:       1.3.1-TRON - Windows Updates: remove outdated job that used to uninstall "bad" updates
+::                1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
 ::                1.2.9-TRON ! bugfix: Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
 ::                1.2.8-TRON ! bugfix: Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from this script into appropriate location in the Stage 2 debloat script. Thanks to u/Tenelia
 ::                1.2.7-TRON ! Fix standalone and Tron-called execution due to typo in STANDALONE variable comparison command. Thanks to u/bubonis
@@ -46,8 +47,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.3.0-TRON
-set SCRIPT_UPDATED=2019-11-03
+set SCRIPT_VERSION=1.3.1-TRON
+set SCRIPT_UPDATED=2020-05-25
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 set STANDALONE=no
@@ -90,137 +91,6 @@ if /i not "%WIN_VER:~0,9%"=="Windows 1" (
 :::::::::::::
 :: EXECUTE ::
 :::::::::::::
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::
-:: REMOVE BAD UPDATES
-if %STANDALONE%==no (
-	call functions\log.bat "     Uninstalling bad updates, please wait..."
-) else (
-	echo "Uninstalling bad updates, please wait..."
-)
-
-if "%VERBOSE%"=="yes" (
-	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
-	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet
-	REM KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
-	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet
-	REM KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
-	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet
-	REM KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
-	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet
-	REM KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
-	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet
-	REM KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
-	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet
-	REM KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
-	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet
-	REM KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
-	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet
-	REM KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
-	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet
-	REM KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
-	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet
-	REM KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
-	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet
-	REM KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
-	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet
-	REM KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
-	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet
-	REM KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
-	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet
-	REM KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
-	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet
-	REM KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
-	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet
-	REM KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
-	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet
-	REM KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
-	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet
-	REM KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
-	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet
-	REM KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
-	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet
-	REM KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
-	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet
-	REM Additional KB entries removed by Microsoft; originally associated with telemetry
-	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet
-	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet
-) else (
-	REM KB 2902907 (https://support.microsoft.com/en-us/kb/2902907)
-	start /wait "" wusa /uninstall /kb:2902907 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 2922324 (https://support.microsoft.com/en-us/kb/2922324)
-	start /wait "" wusa /uninstall /kb:2922324 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 2952664 (https://support.microsoft.com/en-us/kb/2952664)
-	start /wait "" wusa /uninstall /kb:2952664 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 2976978 (https://support.microsoft.com/en-us/kb/2976978)
-	start /wait "" wusa /uninstall /kb:2976978 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 2977759 (https://support.microsoft.com/en-us/kb/2977759)
-	start /wait "" wusa /uninstall /kb:2977759 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 2990214 (https://support.microsoft.com/en-us/kb/2990214)
-	start /wait "" wusa /uninstall /kb:2990214 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3012973 (https://support.microsoft.com/en-us/kb/3012973)
-	start /wait "" wusa /uninstall /kb:3012973 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3014460 (https://support.microsoft.com/en-us/kb/3014460)
-	start /wait "" wusa /uninstall /kb:3014460 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3015249 (https://support.microsoft.com/en-us/kb/3015249)
-	start /wait "" wusa /uninstall /kb:3015249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3021917 (https://support.microsoft.com/en-us/kb/3021917)
-	start /wait "" wusa /uninstall /kb:3021917 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3022345 (https://support.microsoft.com/en-us/kb/3022345)
-	start /wait "" wusa /uninstall /kb:3022345 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3035583 (https://support.microsoft.com/en-us/kb/3035583)
-	start /wait "" wusa /uninstall /kb:3035583 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3044374 (https://support.microsoft.com/en-us/kb/3044374)
-	start /wait "" wusa /uninstall /kb:3044374 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3050265 (https://support.microsoft.com/en-us/kb/3050265)
-	start /wait "" wusa /uninstall /kb:3050265 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3050267 (https://support.microsoft.com/en-us/kb/3050267)
-	start /wait "" wusa /uninstall /kb:3050267 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3065987 (https://support.microsoft.com/en-us/kb/3065987)
-	start /wait "" wusa /uninstall /kb:3065987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3068708 (https://support.microsoft.com/en-us/kb/3068708)
-	start /wait "" wusa /uninstall /kb:3068708 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3075249 (https://support.microsoft.com/en-us/kb/3075249)
-	start /wait "" wusa /uninstall /kb:3075249 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3075851 (https://support.microsoft.com/en-us/kb/3075851)
-	start /wait "" wusa /uninstall /kb:3075851 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3075853 (https://support.microsoft.com/en-us/kb/3075853)
-	start /wait "" wusa /uninstall /kb:3075853 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM KB 3080149 (https://support.microsoft.com/en-us/kb/3080149)
-	start /wait "" wusa /uninstall /kb:3080149 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	REM Additional KB entries removed by Microsoft; originally associated with telemetry
-	start /wait "" wusa /uninstall /kb:2976987 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-	start /wait "" wusa /uninstall /kb:3068707 /norestart /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
-)
-
-if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::
-:: BLOCK BAD UPDATES
-if %STANDALONE%==no (
-	call functions\log.bat "     Blocking bad updates, please wait..."
-) else (
-	echo "Blocking bad updates, please wait..."
-)
-echo.
-
-
-:: This line needed if we're being called from Tron. In standalone mode we'll already be in the appropriate directory
-if %STANDALONE%==no pushd stage_4_repair\disable_windows_telemetry >nul 2>&1
-
-:: Batch 1
-start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3080149 3075853 3075851 3075249 3068708 3068707 3065987 3050267 3050265 3044374 3035583 3022345 
-
-:: Batch 2
-start "" /b /wait cscript.exe ".\block_windows_updates.vbs" 3021917 3015249 3014460 3012973 2990214 2977759 2976987 2976978 2952664 2922324 2902907
-
-if %STANDALONE%==no popd
-
-if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
-
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SCHEDULED TASKS
@@ -732,7 +602,7 @@ if %STANDALONE%==no (
 	echo "Miscellaneous cleanup, please wait..."
 )
 
-:: Kill GWX/Skydrive/Spynet/Telemetry/waitifisense/etc
+:: Kill GWX/Skydrive/Spynet/Telemetry/wifisense/etc
 if "%VERBOSE%"=="yes" (
 	taskkill /f /im gwx.exe /t
 	if %STANDALONE%==no (
