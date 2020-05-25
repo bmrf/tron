@@ -7,6 +7,7 @@
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
 :: Version:       1.3.1-TRON - Windows Updates: remove outdated job that used to uninstall "bad" updates
+::                           + bugfix: Add registry entry to re-enable the webcam in the rare case where O&OShutUp10 disables it
 ::                1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
 ::                1.2.9-TRON ! bugfix: Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
 ::                1.2.8-TRON ! bugfix: Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from this script into appropriate location in the Stage 2 debloat script. Thanks to u/Tenelia
@@ -25,7 +26,7 @@
 ::                1.1.7-TRON + Add job "OandOShutUp10." Tron now automatically applies all immunizations from OandOShutUp10
 ::                1.1.6-TRON ! Fix broken path on setacl.exe call. Thanks to u/Seascan
 ::                           ! Fix broken path on Spybot call. Thanks to u/Seascan
-::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file 
+::                           * Embed contents of 'disable_telemetry_registry_entries.reg' directly into script. Removes dependence on an external .reg file
 ::                1.1.5-TRON ! Fix incorrect path in call to 'disable_telemetry_registry_entries.reg.' Thanks to u/T_Belfs
 ::                1.1.4-TRON + Add log messages explaining each step in the process. These will error out in stand-alone mode (since no log function) but can be safely ignored
 ::                1.1.3-TRON + Add job "Spybot Anti-Beacon." Tron now automatically applies all immunizations from Spybot Anti-Beacon
@@ -99,7 +100,7 @@ if %STANDALONE%==no (
 ) else (
 	echo "Removing telemetry-related scheduled tasks...."
 )
-	
+
 
 if "%VERBOSE%"=="yes" (
 	schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
@@ -274,24 +275,24 @@ if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
 	%REG% add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
-	
+
 	REM Keylogger
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
-	
+
 	REM Wifi sense; this is a nasty one, privacy-wise
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisenseopen" /t REG_DWORD /d "0" /f
-	
+
 	REM Windows Defender sample reporting
 	%REG% add "HKLM\software\microsoft\windows defender\spynet" /v "spynetreporting" /t REG_DWORD /d "0" /f
 	%REG% add "HKLM\software\microsoft\windows defender\spynet" /v "submitsamplesconsent" /t REG_DWORD /d "0" /f
-	
+
 	REM DiagTrack service
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
-	
+
 	REM "WAP Push Message Routing Service"
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f
-	
+
 	REM Disable Cortana globally
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d "0" /f
@@ -304,24 +305,24 @@ if "%VERBOSE%"=="yes" (
 	REM GPO options to disable telemetry
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	%REG% add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM Keylogger
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM Wifi sense; this is a nasty one, privacy-wise
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisenseopen" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM Windows Defender sample reporting
 	%REG% add "HKLM\software\microsoft\windows defender\spynet" /v "spynetreporting" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	%REG% add "HKLM\software\microsoft\windows defender\spynet" /v "submitsamplesconsent" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM DiagTrack service
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM "WAP Push Message Routing Service"
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 	REM Disable Cortana globally
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
@@ -330,7 +331,7 @@ if "%VERBOSE%"=="yes" (
 	REM Disable "Search online and include web results"
 	%REG% add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 	%REG% add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
-	
+
 )
 
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
@@ -345,7 +346,7 @@ if %STANDALONE%==no (
 ) else (
 	echo "Applying Spybot Anti-Beacon protections, please wait..."
 	"Spybot Anti-Beacon v1.7.0.47.exe" /apply /silent >> "%LOGPATH%\%LOGFILE%" 2>&1
-)	
+)
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
@@ -359,6 +360,11 @@ if %STANDALONE%==no (
 	echo "Applying OandOShutUp10 protections, please wait..."
 	OOShutUp10.exe .\ooshutup10_tron_settings.cfg /quiet >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
+
+:: Reg fix for the rare case where O&OShutUp10 disables the webcam. 64-bit version is first, 32-bit version is second
+if %PROCESSOR_ARCHITECTURE%==AMD64 reg add "HKEY_LOCAL_Machine\SOFTWARE\WOW6432Node\Microsoft\Windows Media Foundation\Platform" /f /v EnableFrameServerMode /t REG_SZ /d 0 >> "%LOGPATH%\%LOGFILE%" 2>&1
+reg add "HKEY_LOCAL_Machine\SOFTWARE\Microsoft\Windows Media Foundation\Platform" /f /v EnableFrameServerMode /t REG_SZ /d 0 >> "%LOGPATH%\%LOGFILE%" 2>&1
+
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
 
@@ -630,7 +636,7 @@ if "%VERBOSE%"=="yes" (
 		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn setowner -ownr n:administrators
 		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\gwx" -ot reg -actn ace -ace "n:administrators;p:full"
 		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn setowner -ownr n:administrators
-		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"	
+		setacl.exe -on "hkey_local_machine\software\policies\microsoft\windows\skydrive" -ot reg -actn ace -ace "n:administrators;p:full"
 	)
 ) else (
 	taskkill /f /im gwx.exe /t >> "%LOGPATH%\%LOGFILE%" 2>&1
