@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.3 / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
+:: Version:       1.0.4 - Remove post-run restore point creation, since there's really no point in creating it
+::                1.0.3 / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
 ::                1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
 ::                      / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
 ::                1.0.1 ! Apply u/Paul_NZ's disk space calculation fix from prerun_checks_and_tasks.bat
@@ -12,8 +13,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.3
-set STAGE_7_SCRIPT_DATE=2020-04-25
+set STAGE_7_SCRIPT_VERSION=1.0.4
+set STAGE_7_SCRIPT_DATE=2020-05-25
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -125,20 +126,6 @@ if %PRESERVE_MALWAREBYTES%==yes (
 call functions\log_with_date.bat "   Done."
 )
 
-
-
-:: JOB: Create post-run Restore Point
-title Tron v%TRON_VERSION% [stage_7_wrap-up] [Create Restore Point]
-if %WIN_VER_NUM% geq 6.0 (
-	REM Remove the stupid restore point creation 24 hour cooldown timer Microsoft brilliantly introduced in Windows 8 and up
-	if %WIN_VER_NUM% geq 6.2 %REG% add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\SystemRestore" /t reg_dword /v SystemRestorePointCreationFrequency /d 0 /f >nul 2>&1
-	REM Create the restore point
-	echo "%WIN_VER%" | %FINDSTR% /i /c:"server" >NUL || (
-		call functions\log_with_date.bat "   Creating post-run Restore Point..."
-		if /i %DRY_RUN%==no	powershell "Checkpoint-Computer -Description 'TRON v%TRON_VERSION%: Post-run checkpoint' | Out-Null" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	)
-)
-call functions\log_with_date.bat "   OK."
 
 
 :: JOB: Calculate saved disk space
