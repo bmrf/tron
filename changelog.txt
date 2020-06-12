@@ -13,6 +13,279 @@ Version legend:
   major release or feature change, might break backwards compatibility (CLI switches change, etc)
 
 
+
+#########################
+# v11.1.1 // 2020-05-25 #
+#########################
+ ! tron.bat                        v1.2.0
+     ! Fix -pmb switch behavior. Thanks to u/kaikemy
+
+functions
+ . initialize_environment.bat      v11.1.1
+ . prerun_checks_and_tasks.bat     v1.1.0
+ . tron_settings.bat               v1.0.4
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.9
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.2.0.53
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.12.3 x86
+ . nircmdc                         v2.86
+ . siv                             v5.44
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.7
+ * CCleaner                        v5.66.7716
+    - Disable clearing of Taskbar Jump Lists. Thanks to u/D00shene
+
+ . finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.8-TRON
+ . USB Device Cleanup              v1.6.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.8
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ . Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+
+ - purge_windows_7-8-81_telemetry.bat
+     - Windows Updates: remove outdated job that used to uninstall "bad" updates
+
+ - purge_windows_10_telemetry.bat
+     - Windows Updates: remove outdated job that used to uninstall "bad" updates
+
+ . Spybot Anti-Beacon              v1.7.0.47
+ * O&O ShutUp10                    v1.8.1410
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.6
+ . 7-Zip                           v19.00        (multi-language)
+ * Adobe Flash Player              v32.0.0.371   (language ignored)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2019-12-14
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ * stage_7_wrap-up.bat             v1.0.3
+    - Remove post-run restore point creation
+
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ . AdwCleaner                      v8.0.4.0
+ . Autoruns                        v13.96
+ . BlueScreenView                  v1.55
+ . ComboFix                        v19.11.4.1
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.52 x64
+ . PC Hunter                       v1.52 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
+# v11.1.0 // 2020-04-25 #
+#########################
+ / tron.bat                        v1.2.0
+     / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
+
+functions
+ . initialize_environment.bat      v11.1.0
+ . prerun_checks_and_tasks.bat     v1.1.0
+ . tron_settings.bat               v1.0.4
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.9
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ * wget                            v1.12.3 x86
+ * nircmdc                         v2.86
+ . siv                             v5.44
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.7
+ . CCleaner                        v5.65.7632
+ . finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.8-TRON
+ . USB Device Cleanup              v1.6.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.8
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ . Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.7.0.47
+ . O&O ShutUp10                    v1.8.1409
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.6
+ . 7-Zip                           v19.00        (multi-language)
+ * Adobe Flash Player              v32.0.0.363   (language ignored)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2019-12-14
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ * stage_7_wrap-up.bat             v1.0.3
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v8.0.4.0
+ . Autoruns                        v13.96
+ . BlueScreenView                  v1.55
+ . ComboFix                        v19.11.4.1
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.52 x64
+ . PC Hunter                       v1.52 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
+# v11.0.1 // 2020-03-31 #
+#########################
+ + tron.bat                        v1.1.9
+
+functions
+ . initialize_environment.bat      v11.0.1
+ . prerun_checks_and_tasks.bat     v1.1.0
+ . tron_settings.bat               v1.0.4
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.2.9
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.1.0.3432
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.19.4 x86
+ . nircmdc                         v2.81
+ . siv                             v5.44
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.7
+ * CCleaner                        v5.65.7632
+
+ . finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.8-TRON
+ . USB Device Cleanup              v1.6.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.8
+ . Sophos Virus Removal Tool       v2.6.1
+ . Kaspersky Virus Removal Tool    v15.0.22.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ . Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.7.0.47
+ * O&O ShutUp10                    v1.8.1409
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.6
+ . 7-Zip                           v19.00        (multi-language)
+ * Adobe Flash Player              v32.0.0.344   (language ignored)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v6.6.0.4594 2017-11-05 r4594
+ . drivedb.h                       2019-12-14
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.2
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v8.0.3.0
+ . Autoruns                        v13.96
+ . BlueScreenView                  v1.55
+ . ComboFix                        v19.11.4.1
+ . Net Adapter Repair              v1.2
+ . PC Hunter                       v1.52 x64
+ . PC Hunter                       v1.52 x86
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
 #########################
 # v11.0.0 // 2020-02-05 #
 #########################
@@ -22,9 +295,8 @@ functions
  * initialize_environment.bat      v11.0.0
  . prerun_checks_and_tasks.bat     v1.1.0
  * tron_settings.bat               v1.0.4
-     + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
-     + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian.
-       Note that as of v11.0.0, Tron automatically preserves most common login cookies by default. Chase.com, Spotify.com, gmail.com, etc.
+     + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically uninstall Malwarebytes at the end of the run
+     + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian. Note that as of v11.0.0, Tron automatically preserves most common login cookies by default. Chase.com, Spotify.com, gmail.com, etc.
 
 Stage 0: Prep
  . stage_0_prep.bat                v1.2.9
@@ -40,7 +312,7 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  * stage_1_tempclean.bat           v1.2.7
-     * Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
+     ! Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
 	 + Add code to support the new SKIP_COOKIE_CLEANUP (-scc) switch
 
  * CCleaner                        v5.63.7540
@@ -82,8 +354,8 @@ Stage 4: Repair
  . Repair file extensions          v1.0.0
 
 Stage 5: Patch
- * stage_5_patch.bat               v1.2.6
-    * Suppress Windows Defender update output unless running in verbose mode
+ ! stage_5_patch.bat               v1.2.6
+    ! Suppress Windows Defender update output unless running in verbose mode
 
  . 7-Zip                           v19.00        (multi-language)
  * Adobe Flash Player              v32.0.0.321   (language ignored)
@@ -96,9 +368,7 @@ Stage 6: Optimize
  . Defraggler                      v2.22.995
 
 Stage 7: Wrap-up
- / stage_7_wrap-up.bat             v1.0.2
-     / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
-
+ . stage_7_wrap-up.bat             v1.0.2
  . SwithMail.exe                   v2.2.4.0
 
 Stage 8: Custom Scripts
