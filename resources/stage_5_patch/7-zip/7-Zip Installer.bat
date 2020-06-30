@@ -2,7 +2,7 @@
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
 :: History:       1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Old versions now removed prior to installation. Thanks to u/strifethe9tailedfox
-::                1.2.2-TRON * Make architecture-agnostic, now will detect correct system architecture and install relevant package
+::                1.2.2-TRON * Make installer script architecture-agnostic, now will detect correct system architecture and install relevant package
 ::                           * Replace all hard-coded system file paths with relevant variable for better portability
 ::                1.2.1-TRON - Remove logging of ftype and assoc output since it's not of any consequence
 ::                1.2.0-TRON - Remove logging functions since Tron handles logging
@@ -16,6 +16,7 @@
 ::                e.g. 7-Zip v9.20.bat associate_all  
 ::
 ::                Default is "associate_common" unless told otherwise
+@echo off
 
 
 :::::::::::::::
@@ -31,7 +32,7 @@ set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip
 ::::::::::
 @echo off
 set VERSION=1.2.3-TRON
-set UPDATED=2019-07-13
+set UPDATED=2020-06-30
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
