@@ -1,7 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 ! Fix regression re: disk space calculation fix
+:: Version:       1.1.1 * Switch to alternate Administrator rights check
+::                1.1.0 ! Fix regression re: disk space calculation fix
 ::                1.0.9 ! Fix disk space calculation on Win10 build 17763 (1809) and up due to fsutil output changing. Thanks to u/Paul_NZ
 ::                1.0.8 + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
 ::                      - Suppress "The operation completed successfully" output from bcdedit command
@@ -14,11 +15,12 @@
 ::                1.0.1 + Add automatic update of drivedb.h prior to scanning hard drives. This ensures we're always on the latest definitions file
 ::                        Silently fails if no network connection
 ::                1.0.0 . Initial write, forked out of v9.9.0 of tron.bat
+@echo off
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.1.0
-set PRERUN_CHECKS_SCRIPT_DATE=2018-12-13
+set PRERUN_CHECKS_SCRIPT_VERSION=1.1.1
+set PRERUN_CHECKS_SCRIPT_DATE=2020-07-20
 
 
 
@@ -30,7 +32,14 @@ set PRERUN_CHECKS_SCRIPT_DATE=2018-12-13
 :: Skip this check if we're in Safe Mode because Safe Mode command prompts always start with Admin rights
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i not "%SAFE_MODE%"=="yes" (
-	fsutil dirty query %systemdrive% >NUL 2>&1
+	
+	
+	%REG% query "HKU\S-1-5-19\Environment" > NUL
+	
+	REM Alternate method
+	REM fsutil dirty query %systemdrive% >NUL 2>&1
+	
+	
 	if /i not !ERRORLEVEL!==0 (
 		color cf
 		cls
