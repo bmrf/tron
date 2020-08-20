@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.8.4+ Add additional user-submitted entries
+:: Version:       1.8.5 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.8.4
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-07-13
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.8.5
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-08-20
 
 
 :: GUID LIST
@@ -4811,6 +4811,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-07-13
 {C7FB1A71-D808-4CD2-997D-837B39EA7EB0}
 
 :: Dell Digital Delivery
+{CC5730C7-C867-43BD-94DA-00BB3836906F}
 {40B4F37A-DBE4-49AE-9B42-B4C49A81D2C9}
 {4B38FF9D-7308-411D-93BF-CCF259B476ED}
 {82157E05-6529-4355-9271-5160703457A7}
@@ -4955,6 +4956,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-07-13
 {644B991F-B109-4360-9DA3-40CDAD13961C}
 
 :: Dell SupportAssist and Dell SupportAssist Remediation
+{6D2933E3-DC42-44E5-B80E-DACDD64ADFF5}
+{57CBE96A-3AA5-4421-A87C-6C6C3B6C5ECA}
+{1906C253-4035-4CA5-A501-075E691CCEC9}
 {17F0E5C2-638A-4645-A341-03E9C2FDCFF4}
 {03C35F56-A9AD-4B59-B061-B8CE41C4C22B}
 {B7682259-63F5-42FA-933B-ACD343CF7049}
@@ -6590,6 +6594,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {1F73FB9B-71BC-47F8-8AA6-DA9076E4E52B}
 
 :: HP Shop for Supplies (HPSSupply)
+{7902E313-FF0F-4493-ACB1-A8147B78DCD0}
 {AC35A885-0F8F-4857-B7DA-6E8DFB43E6B3}
 
 :: HP SkinsHP1
@@ -6925,6 +6930,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {3EE9923D-3045-46AB-9CAA-E375993AEB4A}
 
 :: Intel Driver && Support Assistant
+{0B6D9E45-696A-452C-B0FE-32A37F1792F9}
 {192E8D15-4497-476D-A2DC-728658EFDF5D}
 {3EAAD5EA-1D87-442D-8426-FD4FCE62119D}
 {31990087-E845-4714-B8D2-750497D90341}
@@ -8712,6 +8718,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {E8D46836-CD55-453C-A107-A59EC51CB8DC}
 
 :: VS Immersive Activate Helper
+{A71406B5-E487-4B01-8E59-D466841350F5}
 {78500789-0EBE-4490-BE43-F9EF8250BF42}
 {54FBC9A9-CCA1-417E-ACA6-203A32A39F37}
 
