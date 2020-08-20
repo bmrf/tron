@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.5.3 + Add additional user-submitted entries
+Version:       1.5.4 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.5.3"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-05-25"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.5.4"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-08-20"
 
 
 # Needed for Removal
@@ -227,6 +227,7 @@ Remove-App "AD2F1837.HPPrimeFree"
 Remove-App "AD2F1837.HPPrimeGraphingCalculator"
 Remove-App "AD2F1837.HPPrivacySettings"
 Remove-App "AD2F1837.HPRegistration"
+Remove-App "AD2F1837.HPScanandCapture"
 Remove-App "AD2F1837.HPSupportAssistant"
 Remove-App "AD2F1837.HPSureShieldAI"
 Remove-App "AD2F1837.HPSystemEventUtility"
@@ -286,6 +287,7 @@ Remove-App "BD9B8345.Socialife*"
 Remove-App "BD9B8345.VAIOCare*"
 Remove-App "BD9B8345.VAIOMessageCenter*"
 Remove-App "BrowseTechLLC.AdRemover"
+Remove-App "C27EB4BA.DROPBOX"
 Remove-App "C27EB4BA.DropboxOEM"
 Remove-App "COMPALELECTRONICSINC.AlienwareOSDKits"
 Remove-App "COMPALELECTRONICSINC.AlienwareTypeCaccessory"
@@ -337,6 +339,7 @@ Remove-App "DellInc.DellShop"
 Remove-App "DellInc.DellSupportAssistforPCs"
 Remove-App "DellInc.DellUpdate"
 Remove-App "DellInc.MyDell"
+Remove-App "DellPrinter.DellDocumentHub"
 Remove-App "DeviceDoctor.RAROpener"
 Remove-App "DevolverDigital.MyFriendPedroWin10"
 Remove-App "DolbyLaboratories.DolbyAccess*"
@@ -521,6 +524,7 @@ Remove-App "king.com.CandyCrushSodaSaga"
 Remove-App "king.com.FarmHeroesSaga"
 Remove-App "king.com.ParadiseBay"
 Remove-App "n-tvNachrichtenfernsehenG.n-tvNachrichten"
+Remove-App "rara.com.rara.com"
 Remove-App "sMedioforHP.sMedio360*"
 Remove-App "sMedioforToshiba.TOSHIBAMediaPlayerbysMedioTrueLin*"
 Remove-App "www.cyberlink.com.AudioDirectorforLGE"
