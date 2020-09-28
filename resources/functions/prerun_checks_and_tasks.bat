@@ -60,25 +60,27 @@ if /i not "%SAFE_MODE%"=="yes" (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
-if "%WIN_VER:~0,19%"=="Windows Server 2016" (
-	if /i %DEV_MODE%==no (
-		color 0c
-		echo.
-		echo  ^! ERROR
-		echo.
-		echo    Tron does not support "%WIN_VER%" ^(yet^).
-		echo.
-		echo    If you want to override and run anyway, re-run
-		echo    Tron from the command-line with the -dev flag.
-		echo.
-		echo    Keep in mind that by doing this you're waiving
-		echo    your already non-existent warranty!
-		echo.
-		pause
-		exit 3
-	)
-)
+:: Currently disabled, all OS versions are supported
+
+::  :: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
+::  if "%WIN_VER:~0,19%"=="Windows Server 2016" (
+::  	if /i %DEV_MODE%==no (
+::  		color 0c
+::  		echo.
+::  		echo  ^! ERROR
+::  		echo.
+::  		echo    Tron does not support "%WIN_VER%" ^(yet^).
+::  		echo.
+::  		echo    If you want to override and run anyway, re-run
+::  		echo    Tron from the command-line with the -dev flag.
+::  		echo.
+::  		echo    Keep in mind that by doing this you're waiving
+::  		echo    your already non-existent warranty!
+::  		echo.
+::  		pause
+::  		exit 3
+::  	)
+::  )
 
 
 
