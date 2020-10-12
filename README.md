@@ -678,16 +678,14 @@ Tron does not run these automatically because most do not support command-line u
 
 5. **[ComboFix](http://www.bleepingcomputer.com/download/combofix/)**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 8 (no Windows 8.1 or above)
 
-6. **[PCHunter](http://www.majorgeeks.com/files/details/pc_hunter.html)**: Tool to scan for rootkits and other malicious items. Replaces gmer
+6. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp file and random junkware remover
 
-7. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp file and random junkware remover
+7. **[Net Adapter Repair](http://www.bleepingcomputer.com/download/netadapter-repair-all-in-one/)**: Utility to repair most aspects of Windows network connections
 
-8. **[Net Adapter Repair](http://www.bleepingcomputer.com/download/netadapter-repair-all-in-one/)**: Utility to repair most aspects of Windows network connections
+8. **Remote Support Reboot Config**: Tool to quickly configure auto-login and other parameters for running Tron via a remote connection. Thanks to reddit.com/user/cuddlychops06
 
-9. **Remote Support Reboot Config**: Tool to quickly configure auto-login and other parameters for running Tron via a remote connection. Thanks to reddit.com/user/cuddlychops06
+9. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to reddit.com/user/cuddlychops06
 
-10. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to reddit.com/user/cuddlychops06
+10. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-11. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
-
-12. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
+11. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
