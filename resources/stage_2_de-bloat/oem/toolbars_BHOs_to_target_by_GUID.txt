@@ -3,15 +3,15 @@
 ::                Any line that starts with "::" or the word "set" will be ignored by Tron
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.9 + Add additional user-submitted entries
+:: Version:       1.2.0 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted)
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
 
 
 :: PREP
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.1.9
-set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-02-05
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.2.0
+set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-11-02
 
 
 
@@ -2291,6 +2291,9 @@ set TOOLBARS_BHOS_TO_TARGET_BY_GUID_SCRIPT_DATE=2020-02-05
 
 :: YoutubeAdBlocker
 {4820778D-AB0D-6D18-C316-52A6A0E1D507}
+
+:: YouTube By Click
+{7FD6E732-614E-429C-AE59-A9EFA144AE34}
 
 :: YouTube Downloader Toolbar
 {9B596622-FDDA-4e28-97F8-998C522FA58E}
