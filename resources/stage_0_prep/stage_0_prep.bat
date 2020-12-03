@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.9 * improvement:  Attempt to install .NET 3.5 if it's missing (win10 systems only), to enable Stinger scan. Thanks to u/bubonis
+:: Version:       1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
+::                1.2.9 * improvement:  Attempt to install .NET 3.5 if it's missing (win10 systems only), to enable Stinger scan. Thanks to u/bubonis
 ::                1.2.8 * improvement:  Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
 ::                1.2.7 ! bugfix:       Fix incorrect path in rkill whitelist call. Thanks to github:KingZee
 ::                1.2.6 * improvement:  Skip Metro app list dump if system is in Safe Mode, since it doesn't work in Safe Mode
@@ -42,8 +43,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.2.9
-set STAGE_0_SCRIPT_DATE=2019-07-13
+set STAGE_0_SCRIPT_VERSION=1.3.0
+set STAGE_0_SCRIPT_DATE=2020-12-02
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -339,12 +340,16 @@ if %WIN_VER_NUM% geq 6.1 (
 )
 
 
-:: JOB: Reduce SysRestore space
+:: JOB: Reduce System Restore space
 title Tron v%TRON_VERSION% [stage_0_prep] [System Restore Modifications]
 call functions\log_with_date.bat "   Reducing max allowed System Restore space to 7%%%% of disk..."
 if /i %DRY_RUN%==no (
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
-	%SystemRoot%\System32\reg.exe add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+	if %WIN_VER_NUM% leq 6.3 (
+		%REG% add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+		%REG% add "\\%COMPUTERNAME%\HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\Cfg" /v DiskPercent /t REG_DWORD /d 00000007 /f>> "%LOGPATH%\%LOGFILE%"
+	) else (
+		vssadmin resize shadowstorage /for=%systemdrive% /on=%systemdrive% /maxsize=7% >> "%LOGPATH%\%LOGFILE%" 2>&1
+	)
 )
 call functions\log_with_date.bat "   Done."
 
