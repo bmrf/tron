@@ -63,7 +63,7 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [-a | -c -d -dev -e -er -m -o -p -pmb -r -sa -sap -scc -scs -sd -sdb
+    tron.bat [ [-a | -asm] -c -d -dev -e -er -m -o -p -pmb -r -sa -sap -scc -scs -sd -sdb
           -sdc -sdu -se -sk -sl -sm -sor -spr -ss -str -swu -swo -udl -v -x] | [-h]
 
     Optional switches (can be combined):
@@ -104,7 +104,7 @@ Command-line use is fully supported. All switches are optional and can be used s
 
      -sd  Skip defrag (force Tron to ALWAYS skip Stage 6 defrag)
 
-     -sdb Skip de-bloat (OEM bloatware removal; implies -m)
+     -sdb Skip de-bloat (entire OEM bloatware removal process; implies -m)
      
      -sdc Skip DISM component (SxS store) cleanup
      
