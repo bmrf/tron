@@ -408,7 +408,7 @@ if /i %RESUME_DETECTED%==no (
 	call functions\log.bat "-------------------------------------------------------------------------------"
 	call functions\log.bat " Tron v%TRON_VERSION% (%TRON_DATE%)"
 	call functions\log.bat "                          %WIN_VER% (%PROCESSOR_ARCHITECTURE%)"
-	call functions\log.bat "                          Executing as %USERDOMAIN%\%USERNAME% on %COMPUTERNAME%"
+	call functions\log.bat "                          Executing as "%USERDOMAIN%\%USERNAME%" on %COMPUTERNAME%"
 	call functions\log.bat "                          Logfile: %LOGPATH%\%LOGFILE%"
 	call functions\log.bat "                          Command-line switches: %*"
 	call functions\log.bat "                          Time zone: %TIME_ZONE_NAME%"
@@ -818,7 +818,7 @@ goto :eof
 	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -scc Skip cookie cleanup ^(not recommended, Tron auto-preserves most common login cookies^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 6 defrag^)
-	echo    -sdb Skip de-bloat ^(OEM bloatware removal; implies -m^)
+	echo    -sdb Skip de-bloat ^(entire OEM bloatware removal process; implies -m^)
 	echo    -sdc Skip DISM cleanup ^(SxS component store deflation^)
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 	echo    -se  Skip Event Log clear ^(don't backup then wipe Windows Event Logs^)
