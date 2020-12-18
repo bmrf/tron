@@ -9,6 +9,9 @@ I don't think you know what you are doing, which is dangerous. -- u/rfehr613
 
 Guys, this script is trash. -- u/smileymalaise
 
+Not all that fucked, but definitely a lot slower than it should have been. Now when I boot up it speedily informs me that no bootable partition can be found, so it's a lot faster. u/KennyFulgencio
+https://www.reddit.com/r/TronScript/comments/keezqx/how_fcked_up_was_computer_when_you_made_the_big/gg3qit4/
+
 I have not seen a single post in the sub that says anything close to "Tron is working out as expected… "
 https://www.reddit.com/r/TronScript/comments/b3d4g9/tron_broke_win10_laptop_battery_slider/eiz9kxh/
 
@@ -20,12 +23,19 @@ This script is cargo cult bulls***. -- u/meandertothehorizon
 
 Tron is dangerous and I won't be silenced by the downvotes. -- u/meandertothehorizon
 
+Hahahahahaha -- u/meandertothehorizon
+
 
 # Positive
 
+Tron rules. -- u/Automatic-Tea-9440
+https://www.reddit.com/r/TronScript/comments/keezqx/how_fcked_up_was_computer_when_you_made_the_big/gg30rbu/
+
+Gotcha. From one nerd to what I presume to be another, thank you for everything you do. You are what's right in the world. Keep up the good work, you're beautiful, and remember we're all in this together ❤ -- u/saysthingsbackwards
+https://www.reddit.com/r/TronScript/comments/gqfmwu/tron_v1111_20200525_fix_pmb_switch_behavior/fvv4iin/
+
 I’ve used this script A LOT over that last 4 years as part of my job. A customers SBS 2011 server was crypto’d last week. We did a file level restore over the top, removed the old files that were renamed, and ran Tron through it. Sucker works better than it did previously. Fantastic script /u/vocatus. Does the trick each and every time I run it. -- u/DrQuack32
 https://www.reddit.com/r/TronScript/comments/gop93w/on_a_positive_note/
-
 
 Just wanted to thank you - everything finished running and my computer is so much faster than before now! Thanks! -- u/Mathematicalsguy
 https://www.reddit.com/r/TronScript/comments/7yf1v0/possible_issue_running_tron/duino3e/
