@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.5.7 + Add additional user-submitted entries
+Version:       1.5.8 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.5.7"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-12-16"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.5.8"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2020-12-18"
 
 
 # Needed for Removal
@@ -272,6 +272,7 @@ Remove-App "AcerIncorporated.AcerCollection"
 Remove-App "AcerIncorporated.AcerCollectionS"
 Remove-App "AcerIncorporated.AcerExplorer"
 Remove-App "AcerIncorporated.AcerRegistration"
+Remove-App "AcerIncorporated.PredatorSenseV30"
 Remove-App "AcerIncorporated.PredatorSenseV31"
 Remove-App "AcerIncorporated.QuickAccess"
 Remove-App "AcerIncorporated.UserExperienceImprovementProgram"
