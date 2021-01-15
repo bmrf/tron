@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.6 * improvement:  Suppress Windows Defender update output unless running in verbose mode
+:: Version:       1.2.7 - removal:      Remove Adobe Flash update job, as Adobe deprecated Flash as of 2020-12-31
+::                1.2.6 * improvement:  Suppress Windows Defender update output unless running in verbose mode
 :::               1.2.5 - feature:      Remove entire Java Runtime patching section
 ::                1.2.4 * improvement:  Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.3 ! bugfix:       Remove dead code that was incorrectly attempting to install Acrobat Reader DC updates
@@ -32,8 +33,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_5_SCRIPT_VERSION=1.2.6
-set STAGE_5_SCRIPT_DATE=2020-02-05
+set STAGE_5_SCRIPT_VERSION=1.2.7
+set STAGE_5_SCRIPT_DATE=2021-12-15
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -83,24 +84,6 @@ if %SEVENZIP_DETECTED%==yes (
 	endlocal
 	call functions\log_with_date.bat "   Done."
 )
-
-
-:: JOB: Adobe Flash Player
-:: Basic check for existence of a Flash installation. If ANY Flash installation is detected, launch the update script
-:: The update script has additional checks to only update existing versions (e.g. Chrome vs. Active X) if they exist on the machine
-set FLASH_DETECTED=no
-if exist "%windir%\SysWOW64\Macromed\Flash" set FLASH_DETECTED=yes
-if exist "%windir%\System32\Macromed\Flash" set FLASH_DETECTED=yes
-if %FLASH_DETECTED%==yes (
-	title Tron v%TRON_VERSION% [stage_5_patch] [Update Adobe Flash Player]
-	call functions\log_with_date.bat "   Adobe Flash detected, updating..."
-	call functions\log_with_date.bat "   Launch job 'Update Adobe Flash Player'..."
-	setlocal
-	if /i %DRY_RUN%==no call "stage_5_patch\adobe\flash_player\Adobe Flash Player Installer.bat"
-	endlocal
-	call functions\log_with_date.bat "   Done."
-)
-
 
 
 :: JOB: Skip point for if -sap (skip application patches) switch was used
