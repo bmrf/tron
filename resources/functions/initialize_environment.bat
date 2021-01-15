@@ -3,11 +3,11 @@
 ::                Do not edit this script
 :: Requirements:  The ability to look and not touch
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-
+@echo off
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=11.1.2
-set TRON_DATE=2020-07-13
+set TRON_VERSION=11.1.6
+set TRON_DATE=2020-01-15
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
