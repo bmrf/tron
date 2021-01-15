@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
+:: Version:       1.2.1 - Remove references to Adobe Flash
+::                1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
 ::                1.1.9 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run. Thanks to tbr:greg
 ::                      + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian
 ::                1.1.8 / Rename all instances of "argument(s)" to "switch(es)" to maintain project consistency
@@ -58,8 +59,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.2.0
-set SCRIPT_DATE=2020-05-25
+set SCRIPT_VERSION=1.2.1
+set SCRIPT_DATE=2021-01-15
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -300,7 +301,7 @@ echo  *  1 TempClean: TempFileClean/CCleaner/IE ^& Event Logs clean          *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
-echo  *  5 Patch:     Update 7-Zip/Flash/Windows, DISM base cleanup         *
+echo  *  5 Patch:     Update 7-Zip/Windows, DISM base cleanup               *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
 echo  *  7 Wrap-up:   collect logs, send email report (if requested)        *
 echo  *  8 Custom:    If present, execute user-provided custom scripts      *
@@ -814,7 +815,7 @@ goto :eof
 	echo    -pmb Preserve Malwarebytes ^(don't uninstall it^) after Tron is complete
 	echo    -r   Reboot automatically 15 seconds after script completion
 	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
-	echo    -sap Skip application patches ^(don't patch 7-Zip or Adobe Flash^)
+	echo    -sap Skip application patches ^(don't patch 7-Zip^)
 	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -scc Skip cookie cleanup ^(not recommended, Tron auto-preserves most common login cookies^)
 	echo    -sd  Skip defrag ^(force Tron to ALWAYS skip Stage 6 defrag^)
