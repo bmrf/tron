@@ -2,7 +2,8 @@
 ::                Sub-stage scripts also call this file if they're launched directly.
 :: Requirements:  n/a
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
+:: Version:       1.0.5 - Remove references to Adobe Flash
+::                1.0.4 + Add PRESERVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
 ::                      + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian
 ::                1.0.3 + Add SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.0.2 - Remove references to Java
@@ -10,8 +11,8 @@
 ::                1.0.0 . Initial write; forked out of v9.9.0 of tron.bat
 
 :: Script version
-set TRON_SETTINGS_SCRIPT_VERSION=1.0.4
-set TRON_SETTINGS_SCRIPT_DATE=2020-02-05
+set TRON_SETTINGS_SCRIPT_VERSION=1.0.5
+set TRON_SETTINGS_SCRIPT_DATE=2021-01-15
 
 
 :::::::::::::::
@@ -60,10 +61,10 @@ set SUMMARY_LOGS=%LOGPATH%\summary_logs
 :: NO_PAUSE               (-np)  = Set to yes to skip pause at the end of the script
 :: AUTO_SHUTDOWN          (-o)   = Shutdown after the finishing. Overrides auto-reboot
 :: PRESERVE_POWER_SCHEME  (-p)   = Preserve active power scheme. Default is to reset power scheme to Windows defaults at the end of Tron
+:: PRESERVE_MALWAREBYTES  (-pmb) = Preserve Malwarebytes (don't uninstall it) after Tron is complete
 :: AUTO_REBOOT_DELAY      (-r)   = Post-run delay (in seconds) before rebooting. Set to 0 to disable auto-reboot
-:: REMOVE_MALWAREBYTES    (-rmb) = Remove Malwarebytes (uninstall it) after Tron is complete
 :: SKIP_ANTIVIRUS_SCANS   (-sa)  = Skip ALL antivirus scans (KVRT, MBAM, SAV). Use per-scanner switches to individually toggle usage
-:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip or Adobe Flash Player)
+:: SKIP_APP_PATCHES       (-sap) = Set to yes to skip application patches (don't patch 7-Zip)
 :: SKIP_COOKIE_CLEANUP    (-scc) = Set to yes to preserve ALL cookies (not recommended, Tron auto-preserves most common login cookies)
 :: SKIP_CUSTOM_SCRIPTS    (-scs) = Set to yes to forcibly skip Stage 8: Custom Scripts regardless whether or not .bat files exist in the directory
 :: SKIP_DEFRAG            (-sd)  = Set to yes to override the SSD detection check and force Tron to always skip defrag regardless of the drive type
@@ -92,8 +93,8 @@ set PRESERVE_METRO_APPS=no
 set NO_PAUSE=no
 set AUTO_SHUTDOWN=no
 set PRESERVE_POWER_SCHEME=no
+set PRESERVE_MALWAREBYTES=no
 set AUTO_REBOOT_DELAY=0
-set REMOVE_MALWAREBYTES=no
 set SKIP_ANTIVIRUS_SCANS=no
 set SKIP_APP_PATCHES=no
 set SKIP_COOKIE_CLEANUP=no
