@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
+:: Version:       1.3.1 ! bugfix:       Fix minor syntax bug in code comments around McAfee section. Thanks to u/Phr057
+::                1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
 ::                      * improvement:  Switch hardcoded reg.exe path to use Tron's internal %REG% variable in system restore job
 ::                1.2.9 * improvement:  Attempt to install .NET 3.5 if it's missing (win10 systems only), to enable Stinger scan. Thanks to u/bubonis
 ::                1.2.8 * improvement:  Add killing of McAffee RealProtect and SiteAdvisor on systems where Stinger side-loads it without the users permission
@@ -268,11 +269,11 @@ call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
 call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 if /i %DRY_RUN%==no (
 
-	:: Run the scan
+	REM Run the scan
 	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
 
-	:: Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
-	:: SiteAdvisor x86
+	REM Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
+	REM SiteAdvisor x86
 	if exist "%ProgramFiles(x86)%\McAfee\SiteAdvisor\" (
 		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
 		taskkill /f /im "saUpd.exe" /t >nul 2>&1
@@ -280,7 +281,7 @@ if /i %DRY_RUN%==no (
 		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Siteadvisor" >nul 2>&1
 	)
 
-	:: SiteAdvisor x64
+	REM SiteAdvisor x64
 	if exist "%ProgramFiles%\McAfee\SiteAdvisor\" (
 		taskkill /f /im "SiteAdv.exe" /t >nul 2>&1
 		taskkill /f /im "saUpd.exe" /t >nul 2>&1
@@ -288,7 +289,7 @@ if /i %DRY_RUN%==no (
 		rmdir /s /q "%ProgramFiles%\McAfee\Siteadvisor" >nul 2>&1
 	)
 
-	:: RealProtect x86
+	REM RealProtect x86
 	if exist "%ProgramFiles(x86)%\McAfee\Real Protect\" (
 		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
 		rmdir /s /q "%ProgramFiles(x86)%\McAfee\Real Protect" >nul 2>&1
@@ -296,7 +297,7 @@ if /i %DRY_RUN%==no (
 		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
 	)
 
-	:: RealProtect x64
+	REM RealProtect x64
 	if exist "%ProgramFiles%\McAfee\Real Protect\" (
 		taskkill /f /im "RealProtect.exe" /t >nul 2>&1
 		rmdir /s /q "%ProgramFiles%\McAfee\Real Protect" >nul 2>&1
