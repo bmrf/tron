@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.9.0 + Add additional user-submitted entries
+:: Version:       1.9.1 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.0
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-01-15
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.1
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-02-12
 
 
 :: GUID LIST
@@ -184,6 +184,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-01-15
 {39F6E2B4-CFE8-C30A-66E8-489651F0F34C}
 
 :: Adobe Refresh Manager
+{AC76BA86-0804-1033-1959-000182442176}
 {AC76BA86-0804-1033-1959-001824382551}
 {AC76BA86-0804-1033-1959-001824399311}
 {AC76BA86-0804-1033-1959-001824406920}
@@ -5390,6 +5391,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {9F205E94-9E42-4486-A92A-DF3F6CB85444}
 
 :: Epson Software Updater
+{28C66F35-69BF-4376-BC80-4D5F4808FF3C}
 {FD036A57-F81D-4865-AAF0-811558EA76AE}
 {1028AD34-EB8A-4136-9A93-27FC60FD0A40}
 {C7AA3D65-1F84-4590-AFAA-0777A04B6687}
@@ -5696,6 +5698,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {52B18ABC-AD5F-4C3C-B391-04F57B380449}
 
 :: HP Client Security Manager
+{333684DD-5BF9-474C-84A4-10201C98141C}
 {8EBB0358-0C1C-429A-89E1-17798C8FA3C2}
 {BFF648D3-5594-4F9B-9611-CFFACA84B4D7}
 {6D1D8BB0-2C49-4B80-94A8-FCA725ED6AE3}
@@ -6343,6 +6346,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies
+{1DDC5451-BE8B-4092-AB04-E92127242886}
 {59846C4E-739E-48F2-9B26-79F81D5C3074}
 {081246BF-0E0F-408A-85D1-B76E9A971A00}
 {8D9801F9-62AA-4AD1-87A5-028CCE97DDDC}
@@ -6463,6 +6467,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {531000B3-DBEE-4115-BBF3-DA48B67C053F}
 
 :: HP SoftPaq Download Manager
+{76D4147B-1544-480B-80E7-69BE8461127F}
 {51388444-3369-4569-bbf3-98582f5e67a1}
 {f41e84dd-bf67-4276-a972-df8f69ff28b6}
 {23544215-E6E6-448B-B6E9-6268D5B3E74D}
@@ -7120,6 +7125,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{FFDBB433-5725-4224-9D44-648BD12DACFE}
+{721F3055-6A35-4F74-A317-740E3F220468}
+{4ADC1C4F-BDF6-4BC0-905C-B99A4227D635}
 {FE33E8EF-2B5A-4AAB-9650-9645BBD2B8B3}
 {DBF0C0C0-C8CF-4F01-8B04-F80FC3B88EF6}
 {BD135157-92CB-471A-9BFF-BB04E6ECF25B}
@@ -8101,6 +8109,27 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: New York Times Reader
 {491ADA37-04EE-2ECE-9F86-DDC0106047AC}
+
+:: NI Customer Experience Improvement Program
+{06D45807-36E0-49CE-B066-EB3E17880E82}
+
+:: NI Error Reporting
+{2427D588-169C-4BD2-AC1A-7311C05FDE11}
+{5EE25A4F-6C48-4514-BCFF-0493C8E82F45}
+{C1771155-665A-4C7F-B85D-D4AACF786223}
+
+:: NI Help Assistant
+{40181E81-8E14-435C-8D7B-ACF206717FCA}
+{1BEB1215-66E8-422C-ACC1-BE46C4217FD7}
+
+:: NI Measurement Studio Common Help
+{5497DD47-C545-4036-8C5B-5B1674E60883}
+
+:: NI PXI Platform Software Error Files
+{94B72FB2-90F7-4C00-A76E-2A85034C52F9}
+
+:: NI VISA (NI-VISA) Documentation
+{16EF12DC-46BF-4AA5-B7C3-D7CFB7CB070E}
 
 :: Nikon Message Center
 {B014EE44-9197-4513-9613-71E6EB1B514E}
