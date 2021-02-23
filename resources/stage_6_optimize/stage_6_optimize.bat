@@ -51,7 +51,7 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 )
 
 
-:: JOB: Reset the system page file settings
+:: JOB: Pre-compile the .NET cache
 title Tron v%TRON_VERSION% [stage_6_optimize] [ngen .NET compilation]
 call functions\log_with_date.bat "   Launch job 'ngen .NET compilation'..."
 if /i %DRY_RUN%==no (
