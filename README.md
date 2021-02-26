@@ -37,7 +37,7 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-0. FIRST THINGS FIRST: **REBOOT THE COMPUTER BEFORE RUNNING TRON.** This is to allow any pending updates to finish. If you don't do this and the computer reboots during Tron with pending updates, you can brick the system. To re-iterate: It is very important to reboot the computer before running Tron.
+0. FIRST THINGS FIRST: **REBOOT THE COMPUTER BEFORE RUNNING TRON.** This is to allow any pending updates to finish. If you don't do this and the computer reboots during Tron with pending updates, it can brick the system. To re-iterate: it is very important to reboot the computer before running Tron.
 
 1. [Download Tron](https://old.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://old.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
 
