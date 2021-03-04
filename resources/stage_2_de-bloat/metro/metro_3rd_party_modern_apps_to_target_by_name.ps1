@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.6.0 + Add additional user-submitted entries
+Version:       1.6.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,9 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.0"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-02-12"
-
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.1"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-03-04"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -259,6 +258,7 @@ Remove-App "AD2F1837.HPClassroomManager"
 Remove-App "AD2F1837.HPConnectedMusic"
 Remove-App "AD2F1837.HPConnectedPhotopoweredbySnapfish"
 Remove-App "AD2F1837.HPCoolSense"
+Remove-App "AD2F1837.HPDesktopSupportUtilities"
 Remove-App "AD2F1837.HPFileViewer"
 Remove-App "AD2F1837.HPGames"
 Remove-App "AD2F1837.HPInc.EnergyStar"
@@ -272,6 +272,7 @@ Remove-App "AD2F1837.HPPrimeFree"
 Remove-App "AD2F1837.HPPrimeGraphingCalculator"
 Remove-App "AD2F1837.HPPrivacySettings"
 Remove-App "AD2F1837.HPProgrammableKey"
+Remove-App "AD2F1837.HPQuickDrop"
 Remove-App "AD2F1837.HPRegistration"
 Remove-App "AD2F1837.HPScanandCapture"
 Remove-App "AD2F1837.HPSupportAssistant"
@@ -285,6 +286,7 @@ Remove-App "AD2F1837.HPWorkWise"
 Remove-App "AD2F1837.SavingsCenterFeaturedOffers"
 Remove-App "AD2F1837.SmartfriendbyHPCare"
 Remove-App "AD2F1837.bulbDigitalPortfolioforHPSchoolPack"
+Remove-App "AD2F1837.myHP"
 Remove-App "ASUSCloudCorporation.MobileFileExplorer"
 Remove-App "AccuWeather.AccuWeatherforWindows8*"
 Remove-App "AcerIncorporated*"
@@ -505,6 +507,7 @@ Remove-App "Playtika.CaesarsSlotsFreeCasino*"
 Remove-App "Pleemploi.Pleemploi"
 Remove-App "PortraitDisplays.DellCinemaColor"
 Remove-App "Priceline"
+Remove-App "PricelinePartnerNetwork.Booking.comAPACBigsavingso"
 Remove-App "PricelinePartnerNetwork.Booking.comBigsavingsonhot"
 Remove-App "PricelinePartnerNetwork.Booking.comEMEABigsavingso"
 Remove-App "PricelinePartnerNetwork.Booking.comUSABigsavingson"
