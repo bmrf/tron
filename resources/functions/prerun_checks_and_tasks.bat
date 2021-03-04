@@ -1,7 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 * Switch to alternate Administrator rights check
+:: Version:       1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
+::                1.1.1 * Switch to alternate Administrator rights check
 ::                1.1.0 ! Fix regression re: disk space calculation fix
 ::                1.0.9 ! Fix disk space calculation on Win10 build 17763 (1809) and up due to fsutil output changing. Thanks to u/Paul_NZ
 ::                1.0.8 + Add some display messages explaining what we're doing (detecting disks, updating drivedb, etc)
@@ -19,8 +20,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.1.1
-set PRERUN_CHECKS_SCRIPT_DATE=2020-07-20
+set PRERUN_CHECKS_SCRIPT_VERSION=1.1.2
+set PRERUN_CHECKS_SCRIPT_DATE=2020-03-04
 
 
 
@@ -60,27 +61,26 @@ if /i not "%SAFE_MODE%"=="yes" (
 ENDLOCAL DISABLEDELAYEDEXPANSION
 
 
-:: Currently disabled, all OS versions are supported
-
-::  :: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
-::  if "%WIN_VER:~0,19%"=="Windows Server 2016" (
-::  	if /i %DEV_MODE%==no (
-::  		color 0c
-::  		echo.
-::  		echo  ^! ERROR
-::  		echo.
-::  		echo    Tron does not support "%WIN_VER%" ^(yet^).
-::  		echo.
-::  		echo    If you want to override and run anyway, re-run
-::  		echo    Tron from the command-line with the -dev flag.
-::  		echo.
-::  		echo    Keep in mind that by doing this you're waiving
-::  		echo    your already non-existent warranty!
-::  		echo.
-::  		pause
-::  		exit 3
-::  	)
-::  )
+:: CHECK: Detect unsupported OS. If we are, complain to the user and bail out
+if "%WIN_VER:~0,10%"=="Windows XP" (
+  	if /i %DEV_MODE%==no (
+  		color 0c
+  		echo.
+  		echo  ^! ERROR
+  		echo.
+REM  	echo    Tron does not support "%WIN_VER%" ^(yet^).
+		echo    Tron does not support "%WIN_VER%".
+  		echo.
+  		echo    If you want to override and run anyway, re-run
+  		echo    Tron from the command-line with the -dev switch.
+  		echo.
+  		echo    Keep in mind that by doing this some things might
+  		echo    not function as intended.
+  		echo.
+  		pause
+  		exit 3
+  	)
+)
 
 
 
