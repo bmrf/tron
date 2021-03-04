@@ -68,8 +68,6 @@ Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
 Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.DiagnosticDataViewer"
-Remove-App "Microsoft.ForzaHorizon3Demo"
-Remove-App "Microsoft.ForzaMotorsport7Demo"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
 Remove-App "Microsoft.GamingApp"
 Remove-App "Microsoft.GetHelp"                         # Get Help link
