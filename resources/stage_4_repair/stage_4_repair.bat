@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
+:: Version:       1.2.8 + improvement: Add job to disable Microsoft's silent background installation of "suggested" 3rd party apps
+::                1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
 ::                1.2.6 * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.5 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.2.4 ! bugfix:      DISM cleanup wasn't skipped even if the -sdc switch was used. Thanks to u/HittingSmoke
@@ -35,8 +36,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.7
-set STAGE_4_SCRIPT_DATE=2019-10-18
+set STAGE_4_SCRIPT_VERSION=1.2.8
+set STAGE_4_SCRIPT_DATE=2021-03-16
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -248,6 +249,15 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 )
 
 
+:: JOB: Disable Microsoft 3rd-party app silent installation (sigh...)
+title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
+call functions\log_with_date.bat "   Launch job 'Disable silent installation of 3rd-party apps'..."
+if /i %DRY_RUN%==no (
+	%REG% ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /d 0 /f
+)
+call functions\log_with_date.bat "   Done."
+
+
 :: JOB: Disable NVIDIA telemetry (sigh...)
 title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
 call functions\log_with_date.bat "   Launch job 'Disable NVIDIA telemetry'..."
@@ -291,4 +301,4 @@ call functions\log_with_date.bat "   Done."
 
 
 :: Stage complete
-call functions\log_with_date.bat "  stage_4_repair complete."	
+call functions\log_with_date.bat "  stage_4_repair complete."
