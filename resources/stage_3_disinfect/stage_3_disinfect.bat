@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
+:: Version:       1.2.9 ! kvrt:        Update KVRT commandline since they randomly renamed "-dontcryptsupportinfo" to "-dontencrypt"
+::                1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
 ::                      - certcache:   Move job 'Clear CryptNet SSL certificate cache' to Stage 1: Tempclean, where it makes more sense
 ::                1.2.7 ! mbam:        Fix syntax error in if statement
 ::                1.2.6 ! mbam:        Fix error where we'd attempt to launch %MBAM% but the variable was empty. Thanks to u/thementallydeceased
@@ -35,9 +36,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.8
-set STAGE_3_SCRIPT_DATE=2020-01-19
-
+set STAGE_3_SCRIPT_VERSION=1.2.9
+set STAGE_3_SCRIPT_DATE=2020-03-16
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
@@ -131,7 +131,7 @@ if /i %SKIP_KASPERSKY_SCAN%==yes (
 	call functions\log_with_date.bat "   Launch job 'Kaspersky Virus Removal Tool'..."
 	call functions\log_with_date.bat "   Tool-specific log will be saved to "%RAW_LOGS%\Reports""
 	if /i %DRY_RUN%==no (
-		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontcryptsupportinfo
+		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontencrypt
 		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices" >> "%LOGPATH%\%LOGFILE%" 2>&1
 	)
 	call functions\log_with_date.bat "   Done."
@@ -144,7 +144,7 @@ if /i %SKIP_SOPHOS_SCAN%==yes (
 	call functions\log_with_date.bat "! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
 ) else (
 	call functions\log_with_date.bat "   Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
-	call functions\log_with_date.bat "   Scanning output REDUCED by default (use -v to show full output)..."
+	call functions\log_with_date.bat "   Scan output REDUCED by default (use -v to show full output)..."
 	if /i %DRY_RUN%==no (
 		echo.
 
