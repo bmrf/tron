@@ -103,6 +103,13 @@ if /i %ERRORLEVEL%==0 (
 	goto detect_network_connection
 )
 
+:: Italian
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0410" >nul 2>&1
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=it
+	goto detect_network_connection
+)
+
 :: Detect network connection. We assume it's available unless we actively detect it isn't
 :detect_network_connection
 set NETWORK_AVAILABLE=yes
@@ -121,7 +128,9 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
 if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de subred" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-
+:: Italian
+if %SYSTEM_LANGUAGE%==it %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
