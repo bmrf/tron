@@ -6,8 +6,8 @@
 @echo off
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=11.1.6
-set TRON_DATE=2020-01-15
+set TRON_VERSION=11.2.1
+set TRON_DATE=2021-06-02
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -82,6 +82,13 @@ if /i %ERRORLEVEL%==0 (
 	goto detect_network_connection
 )
 
+:: Italian
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0410" >nul 2>&1
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=it
+	goto detect_network_connection
+)
+
 :: French
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "040C" >nul 2>&1
 if /i %ERRORLEVEL%==0 (
@@ -103,13 +110,6 @@ if /i %ERRORLEVEL%==0 (
 	goto detect_network_connection
 )
 
-:: Italian
-reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0410" >nul 2>&1
-if /i %ERRORLEVEL%==0 (
-	set SYSTEM_LANGUAGE=it
-	goto detect_network_connection
-)
-
 :: Detect network connection. We assume it's available unless we actively detect it isn't
 :detect_network_connection
 set NETWORK_AVAILABLE=yes
@@ -122,15 +122,16 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: German
 if %SYSTEM_LANGUAGE%==de %WinDir%\system32\ipconfig /all | %FIND% /i "Subnetzmaske" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: Italian
+if %SYSTEM_LANGUAGE%==it %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: French
 if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
 if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de subred" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
-:: Italian
-if %SYSTEM_LANGUAGE%==it %WinDir%\system32\ipconfig /all | %FIND% /i "Subnet Mask" >NUL 2>&1
-if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+
 
 :: Build USERPROFILES variable which works across ALL versions of Windows for determining location of C:\Users or C:\Documents and Settings
 pushd "%USERPROFILE%\.."
