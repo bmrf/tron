@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.9.3 + Add additional user-submitted entries
+:: Version:       1.9.4 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.3
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-05-04
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.4
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-06-02
 
 
 :: GUID LIST
@@ -1432,6 +1432,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-05-04
 {431DD095-10B2-1390-AF45-22EBADE16D25}
 
 :: CCC Catalyst Control Center multi-lingual Help files. Too many to individually list, Google each GUID for more info. Also listed as CCC Help
+{364B2826-EEB6-A31B-F25B-5CBB78273414}
 {02ECBFCB-7B32-E912-27A9-B7E104E2E720}
 {07F315CD-7B83-D077-1658-CFBB6DCCA11E}
 {084314D3-25B6-BAEF-8BFC-0913A1FB801D}
@@ -5096,6 +5097,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-05-04
 {644B991F-B109-4360-9DA3-40CDAD13961C}
 
 :: Dell SupportAssist and Dell SupportAssist Remediation
+{E9E87628-7D88-4557-9A80-49B2B4A81460}
+{5106801D-CA18-4173-85B9-D74C33358F7F}
 {C4EF62FF-E6B9-4CE8-A514-1DDA49CB0C47}
 {C5A70974-2F89-4BE0-90F7-749E62468C4D}
 {900D0BCD-0B86-4DAA-B639-89BE70449569}
@@ -6380,6 +6383,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies
+{0AF24D23-22CC-44D8-B0B5-D8222C92D1EB}
 {1DC2E25B-08E2-4203-BD66-9B2BD189ECCE}
 {59846C4E-739E-48F2-9B26-79F81D5C3074}
 {081246BF-0E0F-408A-85D1-B76E9A971A00}
@@ -6501,6 +6505,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {531000B3-DBEE-4115-BBF3-DA48B67C053F}
 
 :: HP SoftPaq Download Manager
+{fb21c919-50fa-4c74-8f86-e6465620cb09}
 {51388444-3369-4569-bbf3-98582f5e67a1}
 {f41e84dd-bf67-4276-a972-df8f69ff28b6}
 {23544215-E6E6-448B-B6E9-6268D5B3E74D}
@@ -7162,6 +7167,8 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{FEAA68D6-DA1D-4440-91B6-43906444FA49}
+{DCC7FC90-C9BC-445B-A12B-ACC4278102BA}
 {FE33E8EF-2B5A-4AAB-9650-9645BBD2B8B3}
 {DBF0C0C0-C8CF-4F01-8B04-F80FC3B88EF6}
 {BD135157-92CB-471A-9BFF-BB04E6ECF25B}
