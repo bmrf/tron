@@ -15,6 +15,178 @@ Version legend:
 
 
 #########################
+# v11.2.1 // 2021-06-02 #
+#########################
+ . tron.bat                        v1.2.1
+
+functions
+ * initialize_environment.bat      v11.2.1
+    + Add Italian language support for network detection. Thanks to github:AsterITA
+
+ . prerun_checks_and_tasks.bat     v1.1.1
+ . tron_settings.bat               v1.0.4
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.3.1
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.2.0.253
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.12.3 x86
+ . nircmdc                         v2.86
+ . siv                             v5.56
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.8
+ * CCleaner                        v5.80.8743
+ . finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.8-TRON
+ . USB Device Cleanup              v1.6.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ * metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.9
+ . Sophos Virus Removal Tool       v2.9.0
+ * Kaspersky Virus Removal Tool    v20.0.8.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ . Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.7.0.47
+ * O&O ShutUp10                    v1.8.1421
+     + Disable "Meet Now" icon in the taskbar
+
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.7
+ . 7-Zip                           v19.00        (multi-language)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v7.2.0.r5155 2020-12-30 r5155
+ . drivedb.h                       2021-01-15
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.3
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ . AdwCleaner                      v8.2.0.0
+ . Autoruns                        v13.100
+ . BlueScreenView                  v1.55
+ . ComboFix                        v19.11.4.1
+ . Net Adapter Repair              v1.2
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
+# v11.2.0 // 2021-05-04 #
+#########################
+ . tron.bat                        v1.2.1
+
+functions
+ . initialize_environment.bat      v11.2.0
+ . prerun_checks_and_tasks.bat     v1.1.1
+ . tron_settings.bat               v1.0.4
+
+Stage 0: Prep
+ . stage_0_prep.bat                v1.3.1
+ . rkill                           v2.9.1.0
+ . ProcessKiller                   v2.0.0-TRON
+ . TDSS Killer                     v3.1.0.12
+ * McAfee Stinger                  v12.2.0.234
+ . erunt                           v1.1j
+ . caffeine                        v1.6.2.0
+ . wget                            v1.12.3 x86
+ . nircmdc                         v2.86
+ . siv                             v5.56
+
+Stage 1: Tempclean
+ . stage_1_tempclean.bat           v1.2.8
+ * CCleaner                        v5.79.8704
+ . finddupe.exe                    v1.25
+ . TempFileCleanup                 v1.1.8-TRON
+ . USB Device Cleanup              v1.6.0
+
+Stage 2: De-bloat
+ . stage_2_de-bloat.bat            v1.4.5
+ * programs_to_target_by_GUID.txt
+ . toolbars_BHOs_to_target_by_GUID.txt
+ . programs_to_target_by_name.txt
+ * metro_3rd_party_modern_apps_to_target_by_name.ps1
+ . metro_Microsoft_modern_apps_to_target_by_name.ps1
+
+Stage 3: Disinfect
+ . stage_3_disinfect.bat           v1.2.9
+ . Sophos Virus Removal Tool       v2.9.0
+ . Kaspersky Virus Removal Tool    v15.0.24.0
+ . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
+ . Malwarebytes included defs:     2019-10-17
+
+Stage 4: Repair
+ . stage_4_repair.bat              v1.2.8
+ . purge_windows_7-8-81_telemetry.bat
+ . purge_windows_10_telemetry.bat
+ . Spybot Anti-Beacon              v1.7.0.47
+ * O&O ShutUp10                    v1.8.1420
+ . Repair file extensions          v1.0.0
+
+Stage 5: Patch
+ . stage_5_patch.bat               v1.2.7
+ . 7-Zip                           v19.00        (multi-language)
+ . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
+
+Stage 6: Optimize
+ . stage_6_optimize.bat            v1.0.9
+ . smartctl                        v7.2.0.r5155 2020-12-30 r5155
+ . drivedb.h                       2021-01-15
+ . Defraggler                      v2.22.995
+
+Stage 7: Wrap-up
+ . stage_7_wrap-up.bat             v1.0.3
+ . SwithMail.exe                   v2.2.4.0
+
+Stage 8: Custom Scripts
+ . Tron will execute any .bat file placed in this directory prior to script completion
+
+Stage 9: Manual tools
+ . ADSSpy                          v1.11.0.0
+ * AdwCleaner                      v8.2.0.0
+ * Autoruns                        v13.100
+ . BlueScreenView                  v1.55
+ . ComboFix                        v19.11.4.1
+ . Net Adapter Repair              v1.2
+ . Remote Support Reboot Config    v1.0.0
+ . Safe Mode Boot Selector.bat     v1.0.0
+ . ServicesRepair                  v1.0.0.3
+ . Tron Reset Tool                 v1.0.0
+
+
+
+#########################
 # v11.1.9 // 2021-03-16 #
 #########################
  . tron.bat                        v1.2.1
@@ -62,6 +234,8 @@ Stage 3: Disinfect
 
 Stage 4: Repair
  . stage_4_repair.bat              v1.2.8
+     + Add job to disable Microsoft's silent background installation of "suggested" 3rd party apps
+
  . purge_windows_7-8-81_telemetry.bat
  . purge_windows_10_telemetry.bat
  . Spybot Anti-Beacon              v1.7.0.47
