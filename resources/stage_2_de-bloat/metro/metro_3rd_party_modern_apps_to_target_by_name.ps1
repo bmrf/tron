@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.6.2 + Add additional user-submitted entries
+Version:       1.6.3 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.2"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-05-04"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.3"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-06-02"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -140,6 +140,7 @@ Remove-App "30472FranciscoRodrigues.14392819EE0CF"
 Remove-App "31653Sparkx.DrakeVideos"
 Remove-App "32004CLEVERBIT.49301721A13B4"
 Remove-App "32443PocketNet.Paper.io"
+Remove-App "32573MMSoftware.MyMP4toMP3Converter"
 Remove-App "32940RyanW.Fiorini.BeyonceUltimate"
 Remove-App "32940RyanW.Fiorini.PinkUltimate"
 Remove-App "32988BernardoZamora.BackgammonPro"
@@ -173,6 +174,7 @@ Remove-App "4408APPStar.RiderUWP"
 Remove-App "44218hungrymousegames.Mou"
 Remove-App "44352GadgetWE.UnitConversion"
 Remove-App "45375MiracleStudio.Splix.io"
+Remove-App "45383DigitalAttitudeGames.UnoWithFriends"
 Remove-App "45515SkyLineGames.Backgammon.free"
 Remove-App "45604EntertainmentandMusi.Open7-Zip"
 Remove-App "46928bounde.EclipseManager*"
@@ -185,6 +187,7 @@ Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "50072StevenMayall.MusicBee"
 Remove-App "50856m1dfLL.TestFrameworkProd06221501"
 Remove-App "51248Raximus.Dobryplan"
+Remove-App "51CA791E.AvastAntivirusDownloadCenter"
 Remove-App "5269FriedChicken.YouTubeVideosDownloader*"
 Remove-App "52755VolatileDove.LovingCubeEngine-experimentaledi"
 Remove-App "55407EducationLife.LearntoMicrosoftAccess2010forBe"
@@ -383,6 +386,7 @@ Remove-App "DBA41F73.ColorNoteNotepadNotes"
 Remove-App "DTSInc.51789B84BE3D7"
 Remove-App "DTSInc.DTSCustomforAsus"
 Remove-App "DTSInc.DTSHeadphoneXv1"
+Remove-App "DTSInc.DTSSoundUnbound"
 Remove-App "DailymotionSA.Dailymotion*"
 Remove-App "Deezer.62021768415AF"
 Remove-App "DellInc.AlienwareCommandCenter"
