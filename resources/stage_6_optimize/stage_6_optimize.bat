@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 6: Optimize stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 + feature:     Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
+:: Version:       1.1.0 / change:      Change defrag threshold from 5% fragmentation level to 7% fragmentation level
+::                1.0.9 + feature:     Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
 ::                1.0.8 * smart:       Improve SMART detection routine to also switch problem codes and set the appropriate variables
 ::                1.0.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
 ::                1.0.6 * bugfix:      Preface WMIC calls with null input to ensure the pipe is closed, fixes WMI hanging on WinXP machines. Thanks to github:salsifis
@@ -17,8 +18,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_6_SCRIPT_VERSION=1.0.9
-set STAGE_6_SCRIPT_DATE=2018-09-18
+set STAGE_6_SCRIPT_VERSION=1.1.0
+set STAGE_6_SCRIPT_DATE=2021-07-23
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -78,7 +79,7 @@ if /i "%SKIP_DEFRAG%"=="yes_disk_smart_problem_code" call functions\log_with_dat
 if /i "%SKIP_DEFRAG%"=="no" (
 	title Tron v%TRON_VERSION% [stage_6_optimize] [Defrag]
 	call functions\log_with_date.bat "   Launch job 'Defrag %SystemDrive%'..."
-	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 5
+	if /i %DRY_RUN%==no stage_6_optimize\defrag\defraggler.exe %SystemDrive% /MinPercent 7
 	call functions\log_with_date.bat "   Done."
 )
 
