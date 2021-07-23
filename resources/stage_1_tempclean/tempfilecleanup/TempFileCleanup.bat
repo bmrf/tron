@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.8-TRON * Streamline user profile cleanup code, remove a redundant code block
+:: Version:       1.1.9-TRON - Remove all Windows XP specific code blocks since support for it is now deprecated
+::                1.1.8-TRON * Streamline user profile cleanup code, remove a redundant code block
 ::                1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
 ::                           - Remove deletion of built-in Windows wallpaper images. On modern systems the space use is negligible
 ::                1.1.6-TRON * Use %REG% instead of relative calls
@@ -39,8 +40,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.8-TRON
-set SCRIPT_UPDATED=2020-02-05
+set SCRIPT_VERSION=1.1.9-TRON
+set SCRIPT_UPDATED=2021-07-23
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
@@ -197,16 +198,6 @@ if exist "%ProgramData%\NVIDIA\Downloader" rmdir /s /q "%ProgramData%\NVIDIA\Dow
 ::::::::::::::::::::::
 :: Version-specific :: (these jobs run depending on OS version)
 ::::::::::::::::::::::
-:: JOB: Windows XP/2k3: "guided tour" annoyance
-if %WIN_VER_NUM% lss 6.0 (
-	del /f /q %WINDIR%\System32\dllcache\tourstrt.exe 2>NUL
-	del /f /q %WINDIR%\System32\dllcache\tourW.exe 2>NUL
-	del /f /q %WINDIR%\System32\tourstart.exe
-	rmdir /S /Q %WINDIR%\Help\Tours 2>NUL
-)
-
-:: JOB: Disable Windows Tour bubble popup (Windows XP only; new user accounts only)
-if %WIN_VER_NUM% lss 6.0 %REG% add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Applets\Tour" /v RunCount /t REG_DWORD /d 00000000 /f
 
 :: JOB: Windows Server: remove built-in media files (all Server versions)
 echo %WIN_VER% | findstr /i /c:"server" >NUL
@@ -236,38 +227,6 @@ if %ERRORLEVEL%==0 (
 ::      these only exist on Vista and up, so we look for "Microsoft", and assuming we don't find it, clear out the folder
 echo %WIN_VER% | findstr /v /i /c:"Microsoft" >NUL && del /F /Q %WINDIR%\logs\CBS\* 2>NUL
 
-:: JOB: Windows XP/2003: Cleanup hotfix uninstallers. They use a lot of space so removing them is beneficial.
-:: Really we should use a tool that deletes their corresponding registry entries, but oh well.
-
-::  0. Check Windows version.
-::    We simply look for "Microsoft" in the version name, because only versions prior to Vista had the word "Microsoft" as part of their version name
-::    Everything after XP/2k3 drops the "Microsoft" prefix
-if %WIN_VER_NUM% lss 6.0 (
-	:: 1. If we made it here we're doing the cleanup. Notify user and log it.
-	echo.
-	echo  ! Windows XP/2003 detected.
-	echo    Removing hotfix uninstallers...
-	echo.
-	echo.  && echo  ! Windows XP/2003 detected. Removing hotfix uninstallers...
-
-	:: 2. Build the list of hotfix folders. They always have "$" signs around their name, e.g. "$NtUninstall092330$" or "$hf_mg$"
-	pushd %WINDIR%
-	dir /A:D /B $*$ > "%TEMP%\hotfix_nuke_list.txt" 2>NUL
-
-	:: 3. Do the hotfix clean up
-	for /f %%i in ("%TEMP%\hotfix_nuke_list.txt") do (
-		echo Deleting %%i...
-		echo Deleted folder %%i
-		rmdir /S /Q %%i 2>NUL
-		)
-
-	:: 4. Log that we are done with hotfix cleanup and leave the Windows directory
-	echo    Done.  && echo.
-	echo    Done.
-	del "%TEMP%\hotfix_nuke_list.txt"
-	echo.
-	popd
-)
 
 echo   Done. && echo.
 
