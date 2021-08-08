@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.6.4 + Add additional user-submitted entries
+Version:       1.6.5 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.4"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-07-23"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.5"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-08-08"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -531,7 +531,6 @@ Remove-App "PricelinePartnerNetwork.Booking.comEMEABigsavingso"
 Remove-App "PricelinePartnerNetwork.Booking.comUSABigsavingson"
 Remove-App "PricelinePartnerNetwork.Priceline.comTheBestDealso"
 Remove-App "PublicationsInternational.iCookbookSE*"
-Remove-App "ROBLOXCorporation.ROBLOX"
 Remove-App "RVAppStudios.PicstoWordPro-WordGames"
 Remove-App "RandomSaladGamesLLC.GinRummyProforHP*"
 Remove-App "RandomSaladGamesLLC.HeartsforHP"
