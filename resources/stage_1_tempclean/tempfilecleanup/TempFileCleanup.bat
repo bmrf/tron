@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.9-TRON - Remove all Windows XP specific code blocks since support for it is now deprecated
+:: Version:       1.2.0-TRON + Add Microsoft Teams cache cleanup. Thanks to github:bknickelbine
+::                1.1.9-TRON - Remove all Windows XP specific code blocks since support for it is now deprecated
 ::                1.1.8-TRON * Streamline user profile cleanup code, remove a redundant code block
 ::                1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
 ::                           - Remove deletion of built-in Windows wallpaper images. On modern systems the space use is negligible
@@ -40,8 +41,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.1.9-TRON
-set SCRIPT_UPDATED=2021-07-23
+set SCRIPT_VERSION=1.2.0-TRON
+set SCRIPT_UPDATED=2021-08-30
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
@@ -79,8 +80,8 @@ for /D %%x in ("%USERPROFILES%\*") do (
 	del /F /S /Q "%%x\AppData\Local\Microsoft\Windows\WebCache\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
-	del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Microsoft\Teams\Service Worker\CacheStorage\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 	del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 	del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
