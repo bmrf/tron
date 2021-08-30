@@ -80,6 +80,7 @@ for /D %%x in ("%USERPROFILES%\*") do (
 	del /F /S /Q "%%x\AppData\Local\Temp\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Adobe\Flash Player\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Macromedia\Flash Player\*" 2>NUL
+	del /F /S /Q "%%x\AppData\Roaming\Microsoft\Teams\Service Worker\CacheStorage\*" 2>NUL
 	del /F /S /Q "%%x\AppData\Roaming\Microsoft\Windows\Recent\*" 2>NUL
 	del /F /S /Q "%%x\Application Data\Adobe\Flash Player\*" 2>NUL
 	del /F /S /Q "%%x\Application Data\Macromedia\Flash Player\*" 2>NUL
