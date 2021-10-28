@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.9.6 + Add additional user-submitted entries
+:: Version:       1.9.7 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.6
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-09-30
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.7
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2021-10-28
 
 
 :: GUID LIST
@@ -5761,6 +5761,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {52B18ABC-AD5F-4C3C-B391-04F57B380449}
 
 :: HP Client Security Manager
+{F7690003-F3D8-47BB-BB17-DE0C9A457BAF}
 {4B78BFF4-3BF3-4D31-AA1D-00D6AC370CE4}
 {456CC699-FD29-4835-9CE6-BB3E63DC76E3}
 {7BF2C8A7-BDC5-4893-9A6D-B1B85AFC502A}
@@ -7988,6 +7989,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {90150000-008C-0409-0000-0000000FF1CE}
 
 :: Microsoft Office 16 Click-to-Run and Click-to-Run Localization Component
+{90160000-008C-0415-1000-0000000FF1CE}
 {90160000-008C-0401-1000-0000000FF1CE}
 {90160000-008C-0416-1000-0000000FF1CE}
 {90160000-008C-040D-1000-0000000FF1CE}
@@ -9177,6 +9179,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {69FDFBB6-351D-4B8C-89D8-867DC9D0A2A4}
 
 :: Windows PC Health Check
+{77ACFAF7-E5AB-410D-BA14-BBEBF89422DE}
 {00DC4B60-5FC9-4629-8147-EF81ADF0EEA6}
 
 :: Windows Store Gift Card Promo
