@@ -168,7 +168,7 @@ if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
 
 :: JOB: Clear MUI cache
-%REG% delete "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
+%REG% del "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> %LOGPATH%\%LOGFILE%
