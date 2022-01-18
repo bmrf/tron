@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.6.6 + Add additional user-submitted entries
+Version:       1.6.7 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.6"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-09-30"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.7"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2022-01-18"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -101,6 +101,7 @@ Remove-App "22450.BestVideoConverter"
 Remove-App "22546Cidade.MusicVideoMakerMiniMovie"
 Remove-App "23385HappyFamilyGames.CanYouEscapeAdventure"
 Remove-App "24213gaogroup.Upto8MergeBlockInHexaLinesPuzzle"
+Remove-App "24649CandyKingdomCraftGam.PixelArtColorbyNumber"
 Remove-App "24711Mixilab.Animotica"
 Remove-App "24712m1dfmmengesha.TestFrameworkBP052015"
 Remove-App "24712m1dfmmengesha.TestFrameworkBackpublish050515"
