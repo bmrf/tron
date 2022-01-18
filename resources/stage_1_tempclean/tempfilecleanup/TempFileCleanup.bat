@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.0-TRON + Add Microsoft Teams cache cleanup. Thanks to github:bknickelbine
+:: Version:       1.2.1-TRON ! Fix syntax bug in REG command. Thanks to github:bobbie25
+::                1.2.0-TRON + Add Microsoft Teams cache cleanup. Thanks to github:bknickelbine
 ::                1.1.9-TRON - Remove all Windows XP specific code blocks since support for it is now deprecated
 ::                1.1.8-TRON * Streamline user profile cleanup code, remove a redundant code block
 ::                1.1.7-TRON + Add removal of cached NVIDIA driver installers. Thanks to u/strifethe9tailedfox
@@ -41,8 +42,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.2.0-TRON
-set SCRIPT_UPDATED=2021-08-30
+set SCRIPT_VERSION=1.2.1-TRON
+set SCRIPT_UPDATED=2022-01-18
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
