@@ -3,72 +3,35 @@
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.9 - Remove a few redundant entries that are covered by wildcard
-::                1.0.8 / Trim spaces in some entries
-::                1.0.7 - Remove "Comodo%%" wildcard since it was removing security software. Thanks to u/11rednazo
-::                1.0.6 - Remove "ASUS%%" wildcard since it was catching Asus Smart Gesture, the touchpad driver. Thanks to u/SubtleContradiction
-::                1.0.5 + Add "Lenovo Service Bridge"
-::                      - Remove some redundant "search" entries
-::                1.0.4 - Remove more specific "toolbar" entries
-::                1.0.3 - Remove most specifically-named "toolbar" entries since these are all covered by the "%%toolbar%%" keyword
-::                1.0.2 * Clean up formatting to support new tick counter in de-bloat code
-::                1.0.1 + Add SimilarDeals. Thanks u/Padankadank
+:: Version:       1.1.0 + Add additional user-submitted entries
 ::                1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.0.9
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2019-12-14
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.1.0
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2020-01-28
 
 
 
 :: TARGET LIST
-%%555%%
-%%AdBlocknWatch%%
-%%AppToU%%
-%%CCC%%Help%%
-%%ClipGenie%%
-%%CoolWWW%%
-%%Coupon%%
-%%Cydoor%%
-%%Esuack%%
-%%FashionLife%%
-%%Freenpro25%%
-%%Gamevance%%
-%%MapsGalaxy%%
-%%QuickTime%%
-%%SaferSurf%%
-%%SaveForYou%%
-%%Savings%%
-%%Search%%
-%%Shop_and_Up%%
-%%Shopper%%
-%%SpeedUpMyPC%%
-%%TidyNetwork%%
-%%Toolbar%%
-%%Trial%%
-%%Virtumundo%%
-%%VirusProtectPro%%
-%%WeatherBug%%
-%%WhenUsave%%
-%%Zango%%
-%%iBryte%%
-%%iStart123%%
 180%%Solution%%
 24x7%%Help
 3vix%%
-AVG%%TuneUp%%
+%%555%%
 Acer%%
+%%AdBlocknWatch%%
 Adobe%%Shockwave%%
-Advanced Registry%%
 Advanced%%FX Engine
+Advanced Registry%%
 Akamai%%
 Altnet
 Amazon Browser%%
 Any Video Converter%%
 AppsHat
+%%AppToU%%
 ArcadeParlor
 AtuZi
+AVG%%TuneUp%%
 Baidu PC Faster%%
 Big Fish%%
 Bing%%
@@ -77,48 +40,66 @@ Bonzi Buddy%%
 Browser%%Optimize%%
 BrowserSafeguard%%
 Buzzdock%%
-CWA Reminder by We-Care.com%%
+%%CCC%%Help%%
+CCleaner Browser
 ClickForSale
+%%ClipGenie%%
 CloudScout%%
+%%CoolWWW%%
+%%Coupon%%
+CWA Reminder by We-Care.com%%
+%%Cydoor%%
 DealPly%%
 DealScout for Internet Explorer
 Dell%%
 Discovery Tools
 Download Updater%%
 DriverUpdate%%
+eBay%%
+eMachines%%
+%%Esuack%%
 Face Theme
-File Type Assistant%%
-Files Opened
+%%FashionLife%%
 FilesFrog Update Checker
+Files Opened
+File Type Assistant%%
+flash-Enhancer%%
 Free Download Manager%%
+%%Freenpro25%%
 Free Studio%%
 Free YouTube%%
+%%Gamevance%%
 GetSavin
 HD-Total-%%
 HP%%Assistant%%
+HP%%Connection%%
 HP%%Documentation%%
 HP%%Guide%%
 HP%%Help%%
 HP%%Notifications%%
 HP%%Registration%%
+hpStatusAlerts%%
 HP%%Study%%
 HP%%Support%%
 HP%%Update%%
+%%iBryte%%
 IB%%Updater%%
-IObit%%
-IWon%%
 Iminent
 InfoAtoms
 InstaCodecs
-Intel%%ME%%UninstallLegacy
 Intel%%Management%%
+Intel%%ME%%UninstallLegacy
 Intel%%Smart%%
+IObit%%
+%%iStart123%%
+IWon%%
 Launch Manager%%
 Lenovo%%
 LinkSwift%%
-Live Updater
 Live! Cam Avatar%%
-MPlayerplus%%
+Live Updater
+lucky leap%%
+%%MapsGalaxy%%
 MapsGalaxy%%
 McAfee Security Scan
 Media Buzz
@@ -129,22 +110,24 @@ Mindspark%%
 MobileWiFi%%
 Mobogenie
 Move Media%%
+MPlayerplus%%
 My HP%%
-My Web Searc%%
 MyPC Backup%%
+My Web Searc%%
 Nero%%
 Norton Internet%%
 OMG Music Plus%%
 OOBE%%
 Optimizer%%
 Orbit Downloader
-PMB%%
 Pdf995%%
 Plus-HD-1.3
+PMB%%
 Price Check by AOL
 PrivDog
 Productivity%%Toolbar for IE
 QuickShare
+%%QuickTime%%
 Qwiklinx
 RadioRage%%
 Raptr
@@ -158,15 +141,21 @@ Remote Play with Playstation%%
 Rich Media View
 Rock Turner
 Roxio%%
-SLOW-PCfighter
+%%SaferSurf%%
+%%SaveForYou%%
 SaveOn%%
+%%Savings%%
 ScorpionSave%%
+%%Search%%
 SelectionLinks
-Shop To Win
+%%Shop_and_Up%%
 ShopAtHome%%
+%%Shopper%%
 Shopper%%
 Shopping%%
+Shop To Win
 SimilarDeals%%
+SLOW-PCfighter
 SmartWebPrinting%%
 Smiley Central%%
 SocialSafe
@@ -175,30 +164,38 @@ Software Updater
 Soluto
 Sonic CinePlayer%%
 Sony Music%%
-SpeedUpMyPc%%
 Speedial%%
+%%SpeedUpMyPC%%
+SpeedUpMyPc%%
 Super Optimizer%%
 SweetIM for Messenger%%
 SweetPacks%%
 SySaver
 The Gator
+%%TidyNetwork%%
 TidyNetwork.com
+%%Toolbar%%
 Toolbar%%
 TopArcadeHits
 Toshiba%%
+%%Trial%%
 Uninstall Helper
 UserGuide%%
 VAIO%%
 VGClient%%
 Video Converter%%
-Video Player
 VideoDownloadConverter%%
 VideoFileDownload
+Video Player
+%%Virtumundo%%
+%%VirusProtectPro%%
 VisualBee%%
 Wajam
+%%WeatherBug%%
 WebConnect%%
 Webshots%%
 WhenU%%
+%%WhenUsave%%
 WildGames%%
 WildTangent%%
 Windows Internet Guard%%
@@ -209,10 +206,6 @@ Yahoo%%Toolbar
 Yammer%%
 Yontoo%%
 YouTube Downloader%%
+%%Zango%%
 ZD Manager
 Zip Opener Packages
-eBay%%
-eMachines%%
-flash-Enhancer%%
-hpStatusAlerts%%
-lucky leap%%
