@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       1.9.8 + Add additional user-submitted entries
+:: Version:       1.9.9 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.8
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-01-18
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=1.9.9
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-04-20
 
 
 :: GUID LIST
@@ -319,6 +319,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-01-18
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
 
 :: AMD Catalyst Control Center Next Localization
+{43F6D22B-E0E9-EE90-9B62-1C5FC5D15A55}
 {29306290-76E1-BF93-BD39-C548495CC4E4}
 {29612BF6-6D8A-4CE8-12AC-777144642135}
 {2A1637CE-9314-EA72-0F2C-E6E8CC805B7B}
@@ -4971,6 +4972,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-01-18
 {C7FB1A71-D808-4CD2-997D-837B39EA7EB0}
 
 :: Dell Digital Delivery
+{A9758B6E-19FC-4DB4-A031-AFE6C2327A35}
+{8D1CFB63-E958-4A5C-8BBC-A5F5DF4ED32F}
 {3722784A-D530-4C82-BB78-4DF3E1A4CAD9}
 {81C48559-E2EB-4F18-9854-51331B9DB552}
 {CC5730C7-C867-43BD-94DA-00BB3836906F}
@@ -5052,6 +5055,8 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-01-18
 {AA2AFD30-F80C-401C-9B85-03A05A2F7EFD}
 
 :: Dell Mobile Connect Drivers
+{AAB336F0-6FC6-4BFE-AD7E-315FCDF20156}
+{1E754E2C-CF3B-42CB-B36D-D560CEA96149}
 {0B5978E6-D912-4E4F-B117-A164F68BC95C}
 {04DF02C6-E3D7-4D26-A44C-6F8A2E218D2C}
 
@@ -5119,6 +5124,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2022-01-18
 {644B991F-B109-4360-9DA3-40CDAD13961C}
 
 :: Dell SupportAssist and Dell SupportAssist Remediation
+{45FD01F4-B11B-4A58-B465-1D600B5CDF64}
 {E0659C89-D276-4B77-A5EC-A8F2F042E78F}
 {9EF0AEB0-9AD2-40E6-8667-D7520C508941}
 {EC45CAE6-9000-43EC-B7BA-54D3D654BF21}
@@ -6399,7 +6405,8 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: HP Notes
 {86BAB08A-5E66-4C53-82E3-C1E91673C7CA}
 
-:: HP Notifications
+:: HP Notifications (SoftwareUpdateNotification, Software Update Notification)
+{E28A6F15-BFBE-4D20-8B5F-6EABAA1E545E}
 {84937F28-9CB4-49E7-A2CF-E32D97E6DAE6}
 {19F557DE-662A-4FEA-B635-1CACD56CC483}
 {FDBB153D-8F11-4C93-BC0A-9BBF95B26427}
@@ -7219,6 +7226,14 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{FE51B16C-A025-418A-A5D6-07D93B643AFB}
+{F9790CBE-C3E6-4565-A1A2-17DD480ECF39}
+{E04E7192-DD1D-4266-80F3-D5C94E264B9D}
+{8E1338CD-2B65-47CB-94F1-8092443EC46B}
+{7AA30DD8-C2AC-4523-AA73-BBAA60B6EF00}
+{485C0285-31CE-41A4-A763-6DEBCD77C2E6}
+{38FF9297-58C2-414F-BD49-355872F8418D}
+{05622855-82CE-4EF6-B20B-6BCCAAA1DA09}
 {FEAA68D6-DA1D-4440-91B6-43906444FA49}
 {DCC7FC90-C9BC-445B-A12B-ACC4278102BA}
 {FE33E8EF-2B5A-4AAB-9650-9645BBD2B8B3}
@@ -7423,6 +7438,8 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 :: ! NOTE: /u/kamakaze_chickn suggested disabling for Tron as it reportedly gives noticable performance improvement over stock msahci driver
 :: last checked: 2017-04-02
 ::  Please comment on this program at reddit.com/r/TronScript on the main release thread
+:: {AB0A64ED-7DD5-4524-A157-ED7051AB4F21}
+:: {05B14383-780D-407E-99CD-F64406E45BB2}
 :: {31D97AAF-A1E5-4B77-BEBF-EB0C67DF7D63}
 :: {E4945B75-A983-48E7-9AB6-B84AF13AF9B3}
 :: {98A452E7-A559-4687-A58C-0C6A3EBEB625}
@@ -7528,6 +7545,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {78091D68-706D-4893-B287-9F1DFB24F7AF}
 
 :: Intel Update Manager
+{B991A1BC-DE0F-41B3-9037-B2F948F706EC}
 {89E5F369-612A-4A5E-8BF2-7938C76ABF29}
 {7224B7CE-196C-4E2A-A1AE-1D7BF259FD36}
 {AA8BC571-E96E-4478-927F-CB44CC7D7D07}
@@ -8485,6 +8503,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {AAFEFB05-CF98-48FC-985E-F04CD8AD620D}
 
 :: Samsung Update
+{0D53FAA9-D62D-4CA8-9B56-A62887D95EBE}
 {06E8E156-6993-4A23-805A-B95C0012D743}
 
 :: SaveVid Plug-In
@@ -9198,6 +9217,9 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 
 :: World of Warcraft FREE Trial
 {02EBDBB9-4600-41D3-B566-40CB861511D2}
+
+:: Xerox Desktop Print Experience
+{69859063-6ABA-BDAC-FFC5-E9327CFC6E3C}
 
 :: Xerox PowerENGAGE
 {171BF116-713F-43AA-B236-D6188522E609}
