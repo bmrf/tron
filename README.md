@@ -418,8 +418,6 @@ Hope this is helpful to other PC techs,
 
 If you feel overly charitable, donations are accepted at these addresses:
 
-Monero (preferred): `4GG9KsJhwcW3zapDw62UaS71ZfFBjH9uwhc8FeyocPhUHHsuxj5zfvpZpZcZFHWpxoXD99MVt6PnR9QfftXDV8s6HbYdDuZEDZ947uiEje`
-
 Bitcoin: `1Biw8gx2kD7mZf66ZdNgB9tG1pE9YA3kEd`
 
 Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
