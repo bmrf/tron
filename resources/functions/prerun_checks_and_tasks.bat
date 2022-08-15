@@ -1,7 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
+:: Version:       1.1.3 ! Fix disk space calculation on Win11 and up due to fsutil output changing.
+::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
 ::                1.1.0 ! Fix regression re: disk space calculation fix
 ::                1.0.9 ! Fix disk space calculation on Win10 build 17763 (1809) and up due to fsutil output changing. Thanks to u/Paul_NZ
@@ -20,8 +21,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.1.2
-set PRERUN_CHECKS_SCRIPT_DATE=2020-03-04
+set PRERUN_CHECKS_SCRIPT_VERSION=1.1.3
+set PRERUN_CHECKS_SCRIPT_DATE=2022-08-15
 
 
 
@@ -162,8 +163,10 @@ popd
 
 
 :: TASK: Get free space on the system drive and stash it for comparison later
-for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
+for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FINDSTR% /i "avail free" ^| %FIND% /N " " ^| %FINDSTR% /l "[1]"') do set bytes=%%a
 set bytes=%bytes: =%
+set bytes=%bytes:,=%
+
 :: MB version
 set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
 
