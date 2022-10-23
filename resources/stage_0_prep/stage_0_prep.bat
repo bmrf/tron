@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.1 ! bugfix:       Fix minor syntax bug in code comments around McAfee section. Thanks to u/Phr057
+:: Version:       1.3.2 * improvement:  Add support for x64 version of McAfee Stinger
+::                1.3.1 ! bugfix:       Fix minor syntax bug in code comments around McAfee section. Thanks to u/Phr057
 ::                1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
 ::                      * improvement:  Switch hardcoded reg.exe path to use Tron's internal %REG% variable in system restore job
 ::                1.2.9 * improvement:  Attempt to install .NET 3.5 if it's missing (win10 systems only), to enable Stinger scan. Thanks to u/bubonis
@@ -45,8 +46,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.3.0
-set STAGE_0_SCRIPT_DATE=2020-12-02
+set STAGE_0_SCRIPT_VERSION=1.3.2
+set STAGE_0_SCRIPT_DATE=2022-10-23
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -112,7 +113,7 @@ call functions\log_with_date.bat "   OK."
 :skip_restore_point_creation
 
 
-:: JOB: Capture screenshot of the desktop. First hide all windows, then capture the screenshot, then restore all windows
+:: JOB: Capture screenshot of the desktop. First hide all windows, then capture screenshot, then restore all windows
 title Tron v%TRON_VERSION% [stage_0_prep] [screenshot]
 call functions\log_with_date.bat "   Saving desktop screenshot to "%RAW_LOGS%"..."
 if /i %DRY_RUN%==no (
@@ -269,8 +270,12 @@ call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
 call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 if /i %DRY_RUN%==no (
 
-	REM Run the scan
-	start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	REM Run the scan (CPU architecture dependent)
+	if /i %PROCESSOR_ARCHITECTURE%==AMD64 ( 
+		start /wait stage_0_prep\mcafee_stinger\stinger64.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	) else (
+		start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+	)
 
 	REM Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
 	REM SiteAdvisor x86
