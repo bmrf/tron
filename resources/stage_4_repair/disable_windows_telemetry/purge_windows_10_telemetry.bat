@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.3.1-TRON - Windows Updates: remove outdated job that used to uninstall "bad" updates
+:: Version:       1.3.2-TRON + Add additional Diagtrack-Listener registry location for disabling. Thanks to github:starmania
+::                1.3.1-TRON - Windows Updates: remove outdated job that used to uninstall "bad" updates
 ::                           + bugfix: Add registry entry to re-enable the webcam in the rare case where O&OShutUp10 disables it
 ::                1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
 ::                1.2.9-TRON ! bugfix: Switch Xbox service startup status to "manual" vs. "disabled". Thanks to u/EnderProGaming
@@ -48,8 +49,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.3.1-TRON
-set SCRIPT_UPDATED=2020-05-27
+set SCRIPT_VERSION=1.3.2-TRON
+set SCRIPT_UPDATED=2022-10-23
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 set STANDALONE=no
@@ -272,12 +273,21 @@ if %STANDALONE%==no (
 )
 
 if "%VERBOSE%"=="yes" (
+	REM Disable Microsoft 3rd-party app silent installation (sigh...)
+title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
+call functions\log_with_date.bat "   Launch job 'Disable silent 3rd-party app installation'..."
+if /i %DRY_RUN%==no (
+	%REG% ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /d 0 /f
+)
+call functions\log_with_date.bat "   Done."
+	
 	REM GPO options to disable telemetry
 	%REG% add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
 	%REG% add "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
 
 	REM Keylogger
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
+	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
 
 	REM Wifi sense; this is a nasty one, privacy-wise
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f
@@ -308,6 +318,7 @@ if "%VERBOSE%"=="yes" (
 
 	REM Keylogger
 	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%REG% add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f /v "Start" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 	REM Wifi sense; this is a nasty one, privacy-wise
 	%REG% add "HKLM\software\microsoft\wcmsvc\wifinetworkmanager" /v "wifisensecredshared" /t REG_DWORD /d "0" /f >> "%LOGPATH%\%LOGFILE%" 2>&1
