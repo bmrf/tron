@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.7 + Add additional user-submitted entries
+Version:       1.3.8 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.7"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2021-06-02"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.8"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2022-10-23"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -68,18 +68,32 @@ Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
 Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.DiagnosticDataViewer"
+Remove-App "Microsoft.ForzaHorizon3Demo"
+Remove-App "Microsoft.ForzaMotorsport7Demo"
+Remove-App "Microsoft.FrenchRiviera"
 Remove-App "Microsoft.FreshPaint"                      # Canvas app
 Remove-App "Microsoft.GamingApp"
 Remove-App "Microsoft.GetHelp"                         # Get Help link
 Remove-App "Microsoft.Getstarted"                      # Get Started link
 Remove-App "Microsoft.HelpAndTips"
 Remove-App "Microsoft.HoganThreshold"
+Remove-App "Microsoft.LanguageExperiencePackcs-CZ"
 Remove-App "Microsoft.LanguageExperiencePacken-GB"
 Remove-App "Microsoft.LanguageExperiencePackes-es"
 Remove-App "Microsoft.LanguageExperiencePackes-mx"
+Remove-App "Microsoft.LanguageExperiencePacket-EE"
+Remove-App "Microsoft.LanguageExperiencePackhi-IN"
+Remove-App "Microsoft.LanguageExperiencePackid-ID"
 Remove-App "Microsoft.LanguageExperiencePacklt-lt"
+Remove-App "Microsoft.LanguageExperiencePackms-MY"
 Remove-App "Microsoft.LanguageExperiencePacknl-nl"
+Remove-App "Microsoft.LanguageExperiencePackpl-PL"
 Remove-App "Microsoft.LanguageExperiencePackpt-BR"
+Remove-App "Microsoft.LanguageExperiencePacksv-SE"
+Remove-App "Microsoft.LanguageExperiencePackuk-UA"
+Remove-App "Microsoft.LanguageExperiencePackvi-VN"
+Remove-App "Microsoft.LanguageExperiencePackzh-CN"
+Remove-App "Microsoft.LanguageExperiencePackzh-TW"
 Remove-App "Microsoft.Lucille"                         # "Browser Choice" screen required by the EU antitrust regulation
 Remove-App "Microsoft.Messaging"                       # Messaging app
 Remove-App "Microsoft.MicrosoftJackpot"                # Jackpot app
@@ -105,6 +119,7 @@ Remove-App "Microsoft.Windows.FeatureOnDemand.InsiderHub"
 Remove-App "Microsoft.WindowsFeedbackHub"              # Feedback app
 Remove-App "Microsoft.WindowsReadingList"
 Remove-App "Microsoft.WorldNationalParks"
+Remove-App "MicrosoftCorporationII.QuickAssist"
 Remove-App "Windows.CBSPreview"
 Remove-App "Windows.ContactSupport"
 
