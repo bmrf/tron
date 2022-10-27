@@ -174,7 +174,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
 
 - To change the master directory where all of Tron's output goes, edit this line:
   ```
-  set LOGPATH=%SystemDrive%\Logs\tron
+  set LOGPATH=%SystemDrive%\logs\tron
   ```
 
 - To change the name of the master log file, edit this line:
