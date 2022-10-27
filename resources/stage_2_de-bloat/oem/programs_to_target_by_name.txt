@@ -3,13 +3,13 @@
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 + Add additional user-submitted entries
+:: Version:       1.1.1 + Add additional user-submitted entries
 ::                1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.1.0
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2020-01-28
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.1.1
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2022-10-27
 
 
 
@@ -30,6 +30,7 @@ Any Video Converter%%
 AppsHat
 %%AppToU%%
 ArcadeParlor
+Ask%%Toolbar
 AtuZi
 AVG%%TuneUp%%
 Baidu PC Faster%%
@@ -179,6 +180,7 @@ Toolbar%%
 TopArcadeHits
 Toshiba%%
 %%Trial%%
+Search App by Ask%%
 Uninstall Helper
 UserGuide%%
 VAIO%%
@@ -192,6 +194,7 @@ Video Player
 VisualBee%%
 Wajam
 %%WeatherBug%%
+WebBar%%
 WebConnect%%
 Webshots%%
 WhenU%%
@@ -204,6 +207,7 @@ Yahoo%%Browser%%
 Yahoo%%Software%%
 Yahoo%%Toolbar
 Yammer%%
+yessearches%%
 Yontoo%%
 YouTube Downloader%%
 %%Zango%%
