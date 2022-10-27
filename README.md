@@ -51,7 +51,7 @@ I got tired of running these utilities manually and decided to just script every
 
 5. **Reboot!** Reboot the system before doing *anything else*.
 
-By default the master log is at `C:\Logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
+By default the master log is at `C:\logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
 Depending how badly the system is infected, it could take anywhere from 3 to 10 hours to run. I've personally observed times between 4-8 hours, and one user reported a run time of 30 hours. Basically set it and forget it.
 
