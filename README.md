@@ -96,7 +96,7 @@ Command-line use is fully supported. All switches are optional and can be used s
      
      -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
 
-     -sap Skip application patches (don't patch 7-Zip or Adobe Flash)
+     -sap Skip application patches (don't patch 7-Zip)
 
      -scs Skip custom scripts (has no effect if you haven't supplied custom scripts)
 
