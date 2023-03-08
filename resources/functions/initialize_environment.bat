@@ -6,8 +6,8 @@
 @echo off
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=12.0.5
-set TRON_DATE=2023-02-02
+set TRON_VERSION=12.0.6
+set TRON_DATE=2023-03-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -110,6 +110,14 @@ if /i %ERRORLEVEL%==0 (
 	goto detect_network_connection
 )
 
+:: Brazilian Portuguese
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0416" >nul 2>&1
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=pb
+	goto detect_network_connection
+)
+
+
 :: Detect network connection. We assume it's available unless we actively detect it isn't
 :detect_network_connection
 set NETWORK_AVAILABLE=yes
@@ -130,6 +138,12 @@ if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "Masque de"
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Spanish
 if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de subred" >NUL 2>&1
+if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: Turkish
+::if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "xxxx" >NUL 2>&1
+::if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
+:: Brazilian Portugese
+if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de Sub-rede" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
