@@ -143,7 +143,7 @@ if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 ::if %SYSTEM_LANGUAGE%==fr %WinDir%\system32\ipconfig /all | %FIND% /i "xxxx" >NUL 2>&1
 ::if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 :: Brazilian Portugese
-if %SYSTEM_LANGUAGE%==es %WinDir%\system32\ipconfig /all | %FIND% /i "de Sub-rede" >NUL 2>&1
+if %SYSTEM_LANGUAGE%==pb %WinDir%\system32\ipconfig /all | %FIND% /i "de Sub-rede" >NUL 2>&1
 if /i not %ERRORLEVEL%==0 set NETWORK_AVAILABLE=no
 
 
