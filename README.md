@@ -505,7 +505,7 @@ Master script that launches everything else. It performs many actions on its own
 
 9. **Check and repair WMI**: Check WMI interface and attempt repair if broken. Tron uses WMI for a lot of stuff including ISO date format conversion, OEM bloatware removal, and various other things, so having it functioning is critical
 
-10. **[McAfee Stinger](http://www.mcafee.com/us/downloads/free-tools/stinger.aspx)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
+10. **[McAfee Stinger](https://www.mcafee.com/en-us/consumer-corporate/mcafee-labs/free-tools/stinger.html)**: Anti-malware/rootkit/virus standalone scanner from McAfee. Does not support plain-text logs so we save HTML log to Tron's `%LOGPATH%`. Tron executes Stinger as follows:
 
   ```
   stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%LOGPATH%" --RPTALL --DELETE
