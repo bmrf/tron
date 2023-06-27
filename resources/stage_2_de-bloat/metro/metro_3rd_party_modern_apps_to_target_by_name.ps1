@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.6.8 + Add additional user-submitted entries
+Version:       1.7.0 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.6.9"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2023-06-09"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.0"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2023-06-27"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -96,6 +96,7 @@ Remove-App "1867LennardSprong.PortablePuzzleCollection"
 Remove-App "19341LukasLangrock.ShutdownTimerClassic"
 Remove-App "19453.net.Rufus"
 Remove-App "19471SolitaireCardGames.SpiderSolitaire-2020"
+Remove-App "196472660.PacManCat"
 Remove-App "19965MattHafner.WifiAnalyzer"
 Remove-App "20815shootingapp.AirFileViewer"
 Remove-App "21090PaddyXu.QuickLook"
@@ -130,6 +131,7 @@ Remove-App "26704KathyGrobbelaar.GPSRoutes"
 Remove-App "26720RandomSaladGamesLLC.CribbageDeluxe"
 Remove-App "26720RandomSaladGamesLLC.HeartsDeluxe*"
 Remove-App "26720RandomSaladGamesLLC.Hexter"
+Remove-App "26720RandomSaladGamesLLC.SimpleFreeCell"
 Remove-App "26720RandomSaladGamesLLC.SimpleMahjong"
 Remove-App "26720RandomSaladGamesLLC.SimpleMinesweeper"
 Remove-App "26720RandomSaladGamesLLC.SimpleSolitaire*"
@@ -219,8 +221,10 @@ Remove-App "47404LurkingDarknessOfRoy.SimpleStrategyRTS"
 Remove-App "47492CenterpointGaming.CrosshairV2"
 Remove-App "48682KiddoTest.Frameworkuapbase"
 Remove-App "48938DngVnPhcThin.Deeep.io"
+Remove-App "49005RoyalPuzzleSagaGames.MinesweeperOriginal"
 Remove-App "49306atecsolution.FilesUWP"
 Remove-App "4961ThePlaymatE.DigitalImagination"
+Remove-App "4978BestGameStudio.ChessGameReal"
 Remove-App "4AE8B7C2.Booking.comPartnerApp"
 Remove-App "4AE8B7C2.Booking.comPartnerEdition*"
 Remove-App "50072StevenMayall.MusicBee"
@@ -262,6 +266,7 @@ Remove-App "60311BAFDEV.MyVideoDownloaderforYouTube"
 Remove-App "60708Glauco.RecordingStudio"
 Remove-App "61706EasyBrain.EscapeGame50Rooms1"
 Remove-App "62307pauljohn.3GPViewerFree"
+Remove-App "62327DamTechDesigns.UltimateEnglishSpellingQiuz"
 Remove-App "62535WambaDev.FastYouTubeDownloaderFREE"
 Remove-App "64126VectorLabsGames.WorldsBiggestCrosswordPuzzles"
 Remove-App "64360VelerSoftware.DevToys"
@@ -369,6 +374,7 @@ Remove-App "AcerIncorporated.AcerCollection"
 Remove-App "AcerIncorporated.AcerCollectionS"
 Remove-App "AcerIncorporated.AcerExplorer"
 Remove-App "AcerIncorporated.AcerRegistration"
+Remove-App "AcerIncorporated.MixedRealityHeadset"
 Remove-App "AcerIncorporated.NitroSenseV31"
 Remove-App "AcerIncorporated.PredatorSenseV30"
 Remove-App "AcerIncorporated.PredatorSenseV31"
@@ -449,6 +455,7 @@ Remove-App "COMPALELECTRONICSINC.AlienwareTypeCaccessory"
 Remove-App "COMPALELECTRONICSINC.Alienwaredockingaccessory"
 Remove-App "CanonicalGroupLimited.Ubuntu22.04LTS"
 Remove-App "ChaChaSearch.ChaChaPushNotification*"
+Remove-App "CharmGames.FORMDemoExperience"
 Remove-App "CirqueCorporation.DellPointStick"
 Remove-App "ClearChannelRadioDigital.iHeartRadio*"
 Remove-App "Clipchamp.Clipchamp"
