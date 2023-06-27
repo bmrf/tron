@@ -21,6 +21,8 @@ SearchUI
 ; screen reader (requested by u/maj01)
 nvdahelperremoteloader
 nvda
-; Windows Terminal Processes (requested by TylersComputersKC)
+
+; Windows Terminal Processes (requested by github:TylersComputersKC)
 WindowsTerminal
 OpenConsole
+wt
