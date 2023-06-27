@@ -48,3 +48,4 @@ C:\Windows\System32\conhost.exe
 %systemdrive%\Documents and Settings\All Users\Application Data\JWrapper-Remote Access\JWAppsSharedConfig\SimpleService.exe
 %systemdrive%\Documents and Settings\All Users\Application Data\JWrapper-Remote Access\JWrapper-Windows32JRE-00000000000-complete\bin\Remote Access.exe
 %systemdrive%\Documents and Settings\Administrator\Application Data\JWrapper-Remote Support\JWrapper-Windows32JRE-00028603591-complete\bin\javaw.exe
+%WINDIR%\System32\wt.exe
