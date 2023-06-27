@@ -2,9 +2,11 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.8 + ccleaner:    Add support for SKIP_BROWSER_CLEANUP (-sdc) switch, to prevent wiping cookies and browsing history. Thanks to tbr:sebastian
-::                      - bleachbit:   Remove BleachBit as it does not support cookie whitelisting. Once BleachBit supports cookie whitelisting, we'll switch over to it exclusively
+:: Version:       1.2.9 + ccleaner:    Add deletion of CCleanerCrashReporting task schedule job. Thanks to github:rktfier
+::                1.2.8 ! bugfix:      Wrap missed reference to %TEMP% in quotes. Thanks to u/TheDarkThought
 ::                1.2.7 * diskcleanup: Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
+::                      + ccleaner:    Add SKIP_COOKIE_CLEANUP (-scc) switch, to preserve ALL cookies. Thanks to tbr:sebastian
+::                      - bleachbit:   Remove BleachBit as it does not support cookie whitelisting. Once BleachBit supports cookie whitelisting, we'll switch over to it exclusively
 ::                1.2.6 + cryptcache:  Import job 'Clear CryptNet SSL certificate cache' from Stage 3, where it didn't make sense to be
 ::                1.2.5 + feature:     Add running of built in Windows Disk Cleanup. Thanks to u/thementallydeceased
 ::                      / change:      Skip Bleachbit on Windows XP since as of v3 Bleachbit dropped support for XP
@@ -38,8 +40,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.8
-set STAGE_1_SCRIPT_DATE=2020-02-05
+set STAGE_1_SCRIPT_VERSION=1.2.9
+set STAGE_1_SCRIPT_DATE=2023-06-27
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -90,36 +92,62 @@ call functions\log_with_date.bat "   Done."
 :: Fun fact, if ccleaner64.exe is present and you call ccleaner.exe on a 64-bit system, CCleaner will silently abort the launch request and launch ccleaner64.exe instead
 title Tron v%TRON_VERSION% [stage_1_tempclean] [CCleaner]
 call functions\log_with_date.bat "   Launch job 'CCleaner'..."
+
+:: Swap out the config file if SKIP_COOKIE_CLEANUP was requested
+if /i %SKIP_COOKIE_CLEANUP%==yes (
+	call functions\log_with_date.bat "!  SKIP_COOKIE_CLEANUP (-scc) set to %SKIP_COOKIE_CLEANUP%. Preserving ALL cookies. "
+
+	REM Swap out the config file
+	if %DRY_RUN%==no (
+		rename stage_1_tempclean\ccleaner\ccleaner.ini ccleaner.ini.default >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		rename stage_1_tempclean\ccleaner\ccleaner_skip_cookie_cleanup.ini ccleaner.ini >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	)
+)
+
 if /i %DRY_RUN%==no (
 	if /i %VERBOSE%==yes call functions\log_with_date.bat "!  VERBOSE (-v) output requested but not supported by CCleaner. Sorry."
 	if %PROCESSOR_ARCHITECTURE%==x86 start "" stage_1_tempclean\ccleaner\ccleaner.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	if %PROCESSOR_ARCHITECTURE%==AMD64 start "" stage_1_tempclean\ccleaner\ccleaner64.exe /auto>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	:: Hardcoded delay to let CCleaner finish
-	ping 127.0.0.1 -n 180 > nul 2>&1
+	ping 127.0.0.1 -n 190 > nul 2>&1
 	:: Now we kill it in case it's hung
 	if %PROCESSOR_ARCHITECTURE%==x86 taskkill /f /im ccleaner.exe >nul 2>&1
 	if %PROCESSOR_ARCHITECTURE%==AMD64 taskkill /f /im ccleaner64.exe >nul 2>&1
 )
+
+:: Reset the config files back to default if SKIP_COOKIE_CLEANUP was requested
+if /i %SKIP_COOKIE_CLEANUP%==yes (
+	if %DRY_RUN%==no (
+		rename stage_1_tempclean\ccleaner\ccleaner.ini ccleaner_skip_cookie_cleanup.ini >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		rename stage_1_tempclean\ccleaner\ccleaner.ini.default ccleaner.ini >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	)
+
+:: Nuke the Task Scheduler jobs CCleaner inserts
+if exist "%WINDIR%\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+if exist "%WINDIR%\system32\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\system32\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+schtasks /delete /tn "CCleanerCrashReporting" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+
+)
 call functions\log_with_date.bat "   Done."
 
 
-:: JOB: BleachBit
+:: JOB: BleachBit (disabled until BleachBit supports cookie domain whitelisting)
 :: if %WIN_VER_NUM% LEQ 5.2 (
 :: 	call functions\log_with_date.bat " ! Bleachbit v3 not supported on Windows XP. Skipping."
 :: 	goto skip_bleachbit
 :: )
-:: 
+::
 :: title Tron v%TRON_VERSION% [stage_1_tempclean] [BleachBit]
 :: call functions\log_with_date.bat "   Launch job 'BleachBit'..."
 :: if /i %DRY_RUN%==no (
-:: 
+::
 :: 	if %VERBOSE%==yes (
 :: 		:: OK yes, this is wonky. If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
-:: 		:: Thanks Windows Batch for not having a TEE equivalent
+:: 		:: Thanks Windows for not having a TEE equivalent
 :: 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
 :: 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: 	)
-:: 
+::
 :: 	stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --clean >> "%LOGPATH%\%LOGFILE%" 2>NUL
 :: 	ping 127.0.0.1 -n 16 >NUL
 :: )
@@ -133,7 +161,7 @@ call functions\log_with_date.bat "   Launch job 'Clean duplicate files from Down
 if %DRY_RUN%==no (
 	REM We use Tron's USERPROFILES variable to account for possibilty of C:\Users (Vista and up) or C:\Documents and Settings (XP/2003)
 	dir "%USERPROFILES%\" /B > "%TEMP%\userlist.txt"
-	for /f "tokens=* delims= " %%i in (%TEMP%\userlist.txt) do (
+	for /f "tokens=* delims= " %%i in ("%TEMP%\userlist.txt") do (
 		REM OK this is clumsy. We check three locations for Downloads, hence three sets of commands (three sets in the VERBOSE code, three sets in the non-VERBOSE code)
 		if %VERBOSE%==yes (
 			REM VERBOSE mode
