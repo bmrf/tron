@@ -123,10 +123,11 @@ if /i %SKIP_COOKIE_CLEANUP%==yes (
 	)
 
 :: Nuke the Task Scheduler jobs CCleaner inserts
-if exist "%WINDIR%\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-if exist "%WINDIR%\system32\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\system32\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
-schtasks /delete /tn "CCleanerCrashReporting" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
+if /i %DRY_RUN%==no (
+	if exist "%WINDIR%\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	if exist "%WINDIR%\system32\tasks\CCleanerCrashReporting" del /f /q "%WINDIR%\system32\tasks\CCleanerCrashReporting" >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	schtasks /delete /tn "CCleanerCrashReporting" /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
+	)
 )
 call functions\log_with_date.bat "   Done."
 
