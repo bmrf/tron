@@ -1,4 +1,4 @@
-:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC. All Windows versions XP and up are supported
+:: Purpose:       Runs a series of cleaners and anti-virus engines to clean up/disinfect a Windows PC. All Windows versions Vista and up are supported
 ::                  Kevin Flynn:  "Who's that guy?"
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
@@ -174,6 +174,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
+	echo    SKIP_ADWCLEANER_SCAN:   %SKIP_ADWCLEANER_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
 	echo    SKIP_ONEDRIVE_REMOVAL:  %SKIP_ONEDRIVE_REMOVAL%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
@@ -775,6 +776,7 @@ for %%i in (%*) do (
 	if /i %%i==-sdu set SKIP_DEBLOAT_UPDATE=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
+	if /i %%i==-sad set SKIP_ADWCLEANER_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
 	if /i %%i==-sor set SKIP_ONEDRIVE_REMOVAL=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
@@ -824,6 +826,7 @@ goto :eof
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 	echo    -se  Skip Event Log clear ^(don't backup then wipe Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
+	echo    -sad Skip AdwCleaner ^ scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
