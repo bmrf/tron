@@ -2,7 +2,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-::                1.3.3 * improvement:  Add support for silent installation of .NET Framework 3.5
+::                1.3.3 * improvement:  Add support for silent installation of .NET Framework 3.5 and add host file exclusion
 :: Version:       1.3.2 * improvement:  Add support for x64 version of McAfee Stinger
 ::                1.3.1 ! bugfix:       Fix minor syntax bug in code comments around McAfee section. Thanks to u/Phr057
 ::                1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
@@ -208,6 +208,12 @@ if /i %DRY_RUN%==no (
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	call functions\log_with_date.bat "   Done."
 )
+
+:: JOB: Add host exclusion to Windows Defender to prevent Telemetry noise
+title Tron v%TRON_VERSION% [stage_0_prep] [HostFileExclusion]
+call functions\log_with_date.bat "   Launch job 'Add Host File Exclusion to Windows Defender'..."
+if /i %DRY_RUN%==no powershell.exe -Command Add-MpPreference -ExclusionPath "c:\Windows\System32\drivers\etc\hosts"
+call functions\log_with_date.bat "   Done."
 
 :: JOB: ProcessKiller
 title Tron v%TRON_VERSION% [stage_0_prep] [ProcessKiller]
