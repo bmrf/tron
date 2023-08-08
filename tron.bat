@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.1 - Remove references to Adobe Flash
+:: Version:       1.2.2 - Add AdwCleaner scan functionality and (-sad) switch to skip
+::                1.2.1 - Remove references to Adobe Flash
 ::                1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
 ::                1.1.9 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run. Thanks to tbr:greg
 ::                      + Add SKIP_COOKIE_CLEANUP (-scc) switch to have Tron preserve ALL cookies. Thanks to tbr:sebastian
