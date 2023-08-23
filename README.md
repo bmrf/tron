@@ -63,7 +63,7 @@ NOTE: Each sub-stage script (e.g. `stage_2_de-bloat.bat`) can be run individuall
 
 Command-line use is fully supported. All switches are optional and can be used simultaneously. *
 
-    tron.bat [ [-a | -asm] -c -d -dev -e -er -m -o -p -pmb -r -sa -sap -scc -scs -sd -sdb
+    tron.bat [ [-a | -asm] -c -d -dev -e -er -m -o -p -pmb -r -sa -sac -sap -scc -scs -sd -sdb
           -sdc -sdu -se -sk -sl -sm -sor -spr -ss -str -swu -swo -udl -v -x] | [-h]
 
     Optional switches (can be combined):
@@ -94,7 +94,9 @@ Command-line use is fully supported. All switches are optional and can be used s
      
      -r   Reboot automatically (auto-reboot 15 seconds after completion)
      
-     -sa  Skip ALL anti-virus scans (KVRT, MBAM, SAV)
+     -sa  Skip ALL anti-virus scans (AdwCleaner, KVRT, MBAM, SAV)
+
+     -sac Skip AdwCleaner scan
 
      -sap Skip application patches (don't patch 7-Zip)
 
@@ -257,11 +259,16 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTO_REBOOT_DELAY=0
   ```
 
-- To skip ALL anti-virus scan engines (MBAM, KVRT, Sophos), change this to `yes`:
+- To skip ALL anti-virus scan engines (AdwCleaner, MBAM, KVRT, Sophos), change this to `yes`:
   ```
   set SKIP_ANTIVIRUS_SCANS=no
   ```
-   
+
+- To skip AdwCleaner scan, change this to `yes`:
+  ```
+  set SKIP_ADWCLEANER_SCAN=no
+  ```
+
 - To skip application patches (don't patch 7-Zip or Adobe Flash) change this to `yes`:
   ```
   set SKIP_APP_PATCHES=no
@@ -590,9 +597,11 @@ Master script that launches everything else. It performs many actions on its own
 
 2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` switches to skip this component. Use the `-pmb` switch to NOT uninstall it at the end of the script
 
-3. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
+3. **[Malwarebytes AdwClenaer](https://support.malwarebytes.com/hc/en-us/articles/360050633534-Commands-for-Malwarebytes-AdwCleaner)**: Command-line anti-virus scanner. Use the `-sa` or `-sac` switches to skip this component
 
-4. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` switch to get more verbose output. Use the `-sa` or `-ss` switches to skip this component
+4. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
+
+5. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` switch to get more verbose output. Use the `-sa` or `-ss` switches to skip this component
 
 
 ## STAGE 4: Repair
@@ -668,22 +677,20 @@ Tron does not run these automatically because most do not support command-line u
 
 1. **[ADSSpy](http://www.bleepingcomputer.com/download/ads-spy/)**: Scans for hidden NTFS Alternate Data Streams
 
-2. **[AdwCleaner](https://toolslib.net/downloads/viewdownload/1-adwcleaner/)**: Popular user-suggested adware removal tool
+2. **[aswMBR](http://public.avast.com/~gmerek/aswMBR.htm)**: Rootkit scanner
 
-3. **[aswMBR](http://public.avast.com/~gmerek/aswMBR.htm)**: Rootkit scanner
+3. **[autoruns](https://technet.microsoft.com/en-us/sysinternals/bb963902.aspx)**: Examine and remove programs that run at startup
 
-4. **[autoruns](https://technet.microsoft.com/en-us/sysinternals/bb963902.aspx)**: Examine and remove programs that run at startup
+4. **[ComboFix](http://www.bleepingcomputer.com/download/combofix/)**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 8 (no Windows 8.1 or above)
 
-5. **[ComboFix](http://www.bleepingcomputer.com/download/combofix/)**: The "scorched-earth policy" of malware removal. Only works on Windows XP through Windows 8 (no Windows 8.1 or above)
+5. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp file and random junkware remover
 
-6. **[Junkware Removal Tool](http://thisisudax.org/)**: Temp file and random junkware remover
+6. **[Net Adapter Repair](http://www.bleepingcomputer.com/download/netadapter-repair-all-in-one/)**: Utility to repair most aspects of Windows network connections
 
-7. **[Net Adapter Repair](http://www.bleepingcomputer.com/download/netadapter-repair-all-in-one/)**: Utility to repair most aspects of Windows network connections
+7. **Remote Support Reboot Config**: Tool to quickly configure auto-login and other parameters for running Tron via a remote connection. Thanks to reddit.com/user/cuddlychops06
 
-8. **Remote Support Reboot Config**: Tool to quickly configure auto-login and other parameters for running Tron via a remote connection. Thanks to reddit.com/user/cuddlychops06
+8. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to reddit.com/user/cuddlychops06
 
-9. **Safe Mode Boot Selector.bat**: Batch file to quickly select bootup method to use (Safe Mode, Network, etc). Thanks to reddit.com/user/cuddlychops06
+9. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
 
-10. **ServicesRepair.exe**: ESET utility for fixing broken Windows services
-
-11. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
+10. **Tron Reset Tool**: Tool to quickly reset Tron if it gets interrupted or breaks while running
