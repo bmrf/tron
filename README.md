@@ -597,7 +597,7 @@ Master script that launches everything else. It performs many actions on its own
 
 2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Anti-malware scanner. Because there is no command-line support for MBAM, we simply install it and continue with the rest of the script. This way a tech can click **Scan** whenever they're around, but the script doesn't stall waiting for user input. Use the `-sa` or `-sm` switches to skip this component. Use the `-pmb` switch to NOT uninstall it at the end of the script
 
-3. **[Malwarebytes AdwClenaer](https://support.malwarebytes.com/hc/en-us/articles/360050633534-Commands-for-Malwarebytes-AdwCleaner)**: Command-line anti-virus scanner. Use the `-sa` or `-sac` switches to skip this component
+3. **[Malwarebytes AdwCleaner](https://support.malwarebytes.com/hc/en-us/articles/360050633534-Commands-for-Malwarebytes-AdwCleaner)**: Command-line anti-virus scanner. Use the `-sa` or `-sac` switches to skip this component
 
 4. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
 
