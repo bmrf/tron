@@ -132,8 +132,8 @@ if /i %SKIP_ADWCLEANER_SCAN%==yes (
 ) else (
 	call functions\log_with_date.bat "   Launch job 'Malwarebytes AdwCleaner'..."
 	call functions\log_with_date.bat "   Tool-specific log will be saved to "%RAW_LOGS%\AdwCleaner""
-	if /i %DRY_RUN%==no ( 
-		start /wait stage_3_disinfect\malwarebytes_adwcleaner\adwcleaner.exe /clean /noreboot /path "%RAW_LOGS%" 
+	if /i %DRY_RUN%==no (
+		start /wait stage_3_disinfect\malwarebytes_adwcleaner\adwcleaner.exe /eula /clean /noreboot /path "%RAW_LOGS%"
 		start /wait stage_3_disinfect\malwarebytes_adwcleaner\adwcleaner.exe /uninstall
 	)
 	call functions\log_with_date.bat "   Done."
