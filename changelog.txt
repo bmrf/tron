@@ -38,7 +38,7 @@ Stage 0: Prep
  * McAfee Stinger                  v12.2.0.529
  . erunt                           v1.1j
  . caffeine                        v1.6.2.0
- . wget                            v1.12.3 x86
+ * wget                            v1.21.4 x86
  . nircmdc                         v2.86
  . siv                             v5.56
 
@@ -98,7 +98,7 @@ Stage 8: Custom Scripts
 Stage 9: Manual tools
  . ADSSpy                          v1.11.0.0
  - AdwCleaner                      v8.4.0.0 ! -- removed and moved to Stage 3: Disinfect
- . Autoruns                        v14.09
+ * Autoruns                        v14.10
  . BlueScreenView                  v1.55
  . Net Adapter Repair              v1.2
  . Remote Support Reboot Config    v1.0.0
