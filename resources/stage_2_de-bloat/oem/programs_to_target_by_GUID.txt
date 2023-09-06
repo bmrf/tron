@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       2.0.3 + Add additional user-submitted entries
+:: Version:       2.0.4 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.3
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-06-27
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.4
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-09-05
 
 
 :: GUID LIST
@@ -333,6 +333,12 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-06-27
 {0DCCD5F4-29E7-4AA0-8C1D-F8E1503B91F4}
 
 :: AMD Catalyst Control Center Next Localization
+{4B17EB4C-FF8D-E0C3-A576-E143A82CC7D9}
+{349AA249-E523-D0AB-235A-4B3B77DE6C9E}
+{2019DF89-50CE-0EFE-8E15-5D2E9355736A}
+{0B6AC8F2-F8AA-C034-90D6-0DDA78389033}
+{0078B0A2-7F60-1FDE-BD14-76DCD7C47885}
+{0091B985-1F06-AC61-374A-BDCCC5405945}
 {FCE8438C-3272-D63F-479F-670F082B294B}
 {EC688BD0-240D-AE40-55F3-234E54919AE6}
 {B28CF677-E2C8-12CA-52BB-19B6F066D36A}
@@ -1149,6 +1155,9 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-06-27
 {149D912F-03DB-4895-913E-820CB11965C0}
 {4AC74ED1-719B-46DA-8B8A-340FBF892291}
 {A996C182-3724-4DF1-A4BC-66154FE57DFE}
+
+:: AVG Update Helper
+{EDB7AEE7-E932-4836-AE50-D3B0B7766CB5}
 
 :: AVG Zen
 {F1A0BB73-A9DC-4B18-9F20-6368191FBAC5}
@@ -5929,6 +5938,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {9E7DCA29-89CB-4F9D-8216-B5569C1EABC3}
 
 :: HP Collaboration Keyboard for Skype for Business (gross ....wtf HP)
+{EB3C860F-DE26-4C8E-BE69-BAC6340DCCEE}
 {5F2F870A-4393-4348-95DB-8678F555C789}
 {28819280-AA9E-445B-8B77-C71A103E8288}
 {9CC5EA4E-707F-4404-B52B-AA1BE256C11E}
@@ -6346,6 +6356,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {DB3147AB-4024-4773-8EC0-A1FE5B44933D}
 
 :: HP Help, HP eDocs and User Guide GUIDs (most of these should be caught in the wildcard scan)
+{7F61E4CD-CB8C-4A6A-A166-DF1B20BC2F2D}
 {9477806C-4CDB-4878-8B9D-800933878781}
 {46AB916F-CBC9-4A22-ADE9-489C28508CA6}
 {3A9BFF68-1F70-4225-993C-8AECE63348D6}
@@ -6573,6 +6584,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {21706D5B-A09C-42F1-95B5-CBDFE20F9852}
 
 :: HP Product Improvement Studies (why....)
+{56C1FBE0-5E83-4681-808F-18AFB63D2927}
 {86A0DB9F-56DE-45E1-B290-8698D1E4FDCC}
 {C0A2290E-A5B8-4EAB-8819-A6212D7B3605}
 {9B06BC2D-1E18-4437-A58C-7773D090E397}
@@ -7400,6 +7412,8 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{A605C249-8DDE-4D4A-8D11-739F412ED4E6}
+{B4380A5C-5E86-46B5-B23E-EE67C5B40858}
 {C4728652-2637-4067-ADA2-7B17DD26ECCE}
 {532B2704-482F-4F6B-8B24-44780CC325C4}
 {02A60659-049B-4E62-9E13-C52BF2A01AB4}
@@ -8199,6 +8213,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {90150000-008C-0409-0000-0000000FF1CE}
 
 :: Microsoft Office 16 Click-to-Run and Click-to-Run Localization Component
+{90160000-008C-0415-0000-0000000FF1CE}
 {90160000-008C-0404-1000-0000000FF1CE}
 {90160000-008C-0406-1000-0000000FF1CE}
 {90160000-008C-0414-1000-0000000FF1CE}
