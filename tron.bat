@@ -3,7 +3,7 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 - Add AdwCleaner scan functionality and (-sad) switch to skip
+:: Version:       1.2.2 + Add references and variables for new AdwCleaner job
 ::                1.2.1 - Remove references to Adobe Flash
 ::                1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
 ::                1.1.9 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run. Thanks to tbr:greg
@@ -60,8 +60,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.2.1
-set SCRIPT_DATE=2021-01-15
+set SCRIPT_VERSION=1.2.2
+set SCRIPT_DATE=2023-08-xx
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -167,6 +167,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    QUARANTINE_PATH:        %QUARANTINE_PATH%
 	echo    SELF_DESTRUCT:          %SELF_DESTRUCT%
 	echo    SKIP_ANTIVIRUS_SCANS:   %SKIP_ANTIVIRUS_SCANS%
+	echo    SKIP_ADWCLEANER_SCAN:   %SKIP_ADWCLEANER_SCAN%
 	echo    SKIP_APP_PATCHES:       %SKIP_APP_PATCHES%
 	echo    SKIP_CUSTOM_SCRIPTS:    %SKIP_CUSTOM_SCRIPTS%
 	echo    SKIP_DEBLOAT:           %SKIP_DEBLOAT%
@@ -175,7 +176,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_DISM_CLEANUP:      %SKIP_DISM_CLEANUP%
 	echo    SKIP_EVENT_LOG_CLEAR:   %SKIP_EVENT_LOG_CLEAR%
 	echo    SKIP_KASPERSKY_SCAN:    %SKIP_KASPERSKY_SCAN%
-	echo    SKIP_ADWCLEANER_SCAN:   %SKIP_ADWCLEANER_SCAN%
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
 	echo    SKIP_ONEDRIVE_REMOVAL:  %SKIP_ONEDRIVE_REMOVAL%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
@@ -301,7 +301,7 @@ echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/CCleaner/IE ^& Event Logs clean          *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
-echo  *  3 Disinfect: Sophos/KVRT/MBAM/DISM repair                          *
+echo  *  3 Disinfect: AdwCleaner/Sophos/KVRT/MBAM/DISM repair               *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
 echo  *  5 Patch:     Update 7-Zip/Windows, DISM base cleanup               *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
@@ -502,7 +502,7 @@ title Tron v%TRON_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call functions\log_with_date.bat "! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (Sophos, KVRT, MBAM)."
+	call functions\log_with_date.bat "! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (AdwCleaner, Sophos, KVRT, MBAM)."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -768,6 +768,7 @@ for %%i in (%*) do (
 	if /i %%i==-pmb set PRESERVE_MALWAREBYTES=yes
 	if /i %%i==-r set AUTO_REBOOT_DELAY=15
 	if /i %%i==-sa set SKIP_ANTIVIRUS_SCANS=yes
+	if /i %%i==-sac set SKIP_ADWCLEANER_SCAN=yes
 	if /i %%i==-sap set SKIP_APP_PATCHES=yes
 	if /i %%i==-scs set SKIP_CUSTOM_SCRIPTS=yes
 	if /i %%i==-scc set SKIP_COOKIE_CLEANUP=yes
@@ -777,7 +778,6 @@ for %%i in (%*) do (
 	if /i %%i==-sdu set SKIP_DEBLOAT_UPDATE=yes
 	if /i %%i==-se set SKIP_EVENT_LOG_CLEAR=yes
 	if /i %%i==-sk set SKIP_KASPERSKY_SCAN=yes
-	if /i %%i==-sad set SKIP_ADWCLEANER_SCAN=yes
 	if /i %%i==-sm set SKIP_MBAM_INSTALL=yes
 	if /i %%i==-sor set SKIP_ONEDRIVE_REMOVAL=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
@@ -799,8 +799,8 @@ goto :eof
 	echo  Tron v%TRON_VERSION% ^(%TRON_DATE%^)
 	echo  Author: vocatus on old.reddit.com/r/TronScript
 	echo.
-	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -pmb -r -sa -sap -scc -scs -sd
-	echo                    -sdb -sdc -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
+	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -pmb -r -sa -sac -sap -scc -scs
+	echo                    -sd -sdb -sdc -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional switches ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -817,7 +817,8 @@ goto :eof
 	echo    -p   Preserve power settings ^(don't reset to Windows default^)
 	echo    -pmb Preserve Malwarebytes ^(don't uninstall it^) after Tron is complete
 	echo    -r   Reboot automatically 15 seconds after script completion
-	echo    -sa  Skip ALL anti-virus scans ^(KVRT, MBAM, SAV^)
+	echo    -sa  Skip ALL anti-virus scans ^(AdwCleaner, KVRT, MBAM, SAV^)
+	echo    -sac Skip AdwCleaner scan
 	echo    -sap Skip application patches ^(don't patch 7-Zip^)
 	echo    -scs Skip custom scripts ^(has no effect if you haven't supplied custom scripts^)
 	echo    -scc Skip cookie cleanup ^(not recommended, Tron auto-preserves most common login cookies^)
@@ -827,7 +828,6 @@ goto :eof
 	echo    -sdu Skip debloat update. Prevent Tron from auto-updating the S2 debloat lists
 	echo    -se  Skip Event Log clear ^(don't backup then wipe Windows Event Logs^)
 	echo    -sk  Skip Kaspersky Virus Rescue Tool ^(KVRT^) scan
-	echo    -sad Skip AdwCleaner ^ scan
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
