@@ -2,7 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.9 ! kvrt:        Update KVRT commandline since they randomly renamed "-dontcryptsupportinfo" to "-dontencrypt", causing a popup window to appear
+:: Version:       1.3.1 + adwcleaner:  Add AdwCleaner job. Thanks to u/fr0stedfl4ke
+::                1.3.0 + mbam:        Add "/NOICON" switch to MBAM install to prevent desktop icon. Thanks to github:numdouglas and github:DRCHRIS2
+::                1.2.9 ! kvrt:        Update KVRT commandline since they randomly renamed "-dontcryptsupportinfo" to "-dontencrypt", causing a popup window to appear
 ::                1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
 ::                      - certcache:   Move job 'Clear CryptNet SSL certificate cache' to Stage 1: Tempclean, where it makes more sense
 ::                1.2.7 ! mbam:        Fix syntax error in if statement
@@ -36,8 +38,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.2.9
-set STAGE_3_SCRIPT_DATE=2020-03-16
+set STAGE_3_SCRIPT_VERSION=1.3.1
+set STAGE_3_SCRIPT_DATE=2023-08-xx
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
@@ -89,7 +91,7 @@ if /i %SKIP_MBAM_INSTALL%==yes (
 	call functions\log_with_date.bat "   Launch job 'Install Malwarebytes Anti-Malware'..."
 	:: Install MBAM and remove desktop icon
 	if /i %DRY_RUN%==no (
-		"stage_3_disinfect\mbam\mb3-setup-54035.54035-3.6.1.2711-1.0.482-1.0.7469.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL
+		"stage_3_disinfect\mbam\mb3-setup-54035.54035-3.6.1.2711-1.0.482-1.0.7469.exe" /SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES /NOCANCEL /NOICON
 
 		:: Nuke MBAM which arrogantly auto-starts even though we didn't request it
 		net stop mbamservice >> "%LOGPATH%\%LOGFILE%" 2>NUL
@@ -123,15 +125,16 @@ if %DRY_RUN%==no (
 )
 
 
-:: JOB: AdwCleaner (MBAM AdwCleaner)
-title Tron v%TRON_VERSION% [stage_3_disinfect] [AdwCleaner]
+:: JOB: Malwarebytes AdwCleaner
+title Tron v%TRON_VERSION% [stage_3_disinfect] [Malwarebytes AdwCleaner]
 if /i %SKIP_ADWCLEANER_SCAN%==yes (
-	call functions\log_with_date.bat "! SKIP_ADWCLEANER_SCAN (-sad) set. Skipping AdwCleaner scan."
+	call functions\log_with_date.bat "! SKIP_ADWCLEANER_SCAN (-sac) set. Skipping AdwCleaner scan."
 ) else (
-	call functions\log_with_date.bat "   Launch job 'AdwCleaner'..."
-	call functions\log_with_date.bat "   Tool-specific log will be saved to "%RAW_LOGS%\Reports""
-	if /i %DRY_RUN%==no (
-		start /wait stage_3_disinfect\adwcleaner\adwcleaner.exe /eula /path "%RAW_LOGS%" /clean /noreboot
+	call functions\log_with_date.bat "   Launch job 'Malwarebytes AdwCleaner'..."
+	call functions\log_with_date.bat "   Tool-specific log will be saved to "%RAW_LOGS%\AdwCleaner""
+	if /i %DRY_RUN%==no ( 
+		start /wait stage_3_disinfect\malwarebytes_adwcleaner\adwcleaner.exe /clean /noreboot /path "%RAW_LOGS%" 
+		start /wait stage_3_disinfect\malwarebytes_adwcleaner\adwcleaner.exe /uninstall
 	)
 	call functions\log_with_date.bat "   Done."
 )
