@@ -3,7 +3,7 @@
   <ServerSettings>
     <FromName>Tron</FromName>
     <FromAddress>YOUR.EMAIL.ADDRESS@example.com</FromAddress>
-    <Username />
+    <Username>YOUR.EMAIL.ADDRESS@example.com<Username />
     <Password>YOUR-PASSWORD-HERE</Password>
     <ObscurePassword>False</ObscurePassword>
     <MailServer>smtp.gmail.com</MailServer>
@@ -28,7 +28,7 @@
 	
 	<!-- 
 	For "Body" section, Tron passes in the following variables as parameters (%Param1%, etc):
-	Param1: Tron version, domain name, and username (from Tron's %SCRIPT_VERSION %SCRIPT_DATE% %USERDOMAIN%\%USERNAME%)
+	Param1: Tron version, domain name, and username (from Tron's %TRON_VERSION %TRON_DATE% %USERDOMAIN%\%USERNAME%)
 	Param2: Logpath\logfile (from Tron's %LOGPATH%\%LOGFILE%)
 	Param3: Safe Mode info (from Tron's %SAFE_MODE% %SAFEBOOT_OPTION%)
 	Param4: Disk space info (from Tron's %FREE_SPACE_BEFORE%/%FREE_SPACE_AFTER%/%FREE_SPACE_SAVED%)
