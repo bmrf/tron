@@ -6,8 +6,8 @@
 @echo off
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=12.0.6
-set TRON_DATE=2023-09-xx
+set TRON_VERSION=12.0.7
+set TRON_DATE=2023-10-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -91,6 +91,20 @@ if /i %ERRORLEVEL%==0 (
 
 :: French
 reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "040C" >nul 2>&1
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=fr
+	goto detect_network_connection
+)
+
+:: French Canadian #1
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0409" >nul 2>&1
+if /i %ERRORLEVEL%==0 (
+	set SYSTEM_LANGUAGE=fr
+	goto detect_network_connection
+)
+
+:: French Canadian #2
+reg query "hklm\system\controlset001\control\nls\language" /v Installlanguage | %FIND% /i "0C0C" >nul 2>&1
 if /i %ERRORLEVEL%==0 (
 	set SYSTEM_LANGUAGE=fr
 	goto detect_network_connection
