@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.7.1 + Add additional user-submitted entries
+Version:       1.7.2 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.1"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2023-09-05"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.2"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2023-10-17"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -270,6 +270,7 @@ Remove-App "5CB722CC.CookingDiaryTastyHills"
 Remove-App "60145ScottBrogden.ditto-cp"
 Remove-App "60311BAFDEV.MyVideoDownloaderforYouTube"
 Remove-App "60708Glauco.RecordingStudio"
+Remove-App "61083ApeApps.PDFDocumentScanner"
 Remove-App "61706EasyBrain.EscapeGame50Rooms1"
 Remove-App "62307pauljohn.3GPViewerFree"
 Remove-App "62327DamTechDesigns.UltimateEnglishSpellingQiuz"
@@ -725,6 +726,7 @@ Remove-App "TOSHIBATEC.ToshibaPrintExperience"
 Remove-App "TeenGamesLLC.HelicopterSimulator3DFree-ContinuumRe"
 Remove-App "TelegraphMediaGroupLtd.TheTelegraphforLenovo*"
 Remove-App "TelltaleGames.MinecraftStoryMode-ATelltaleGamesSer"
+Remove-App "TheFunPimps.7DaystoDiePC"
 Remove-App "TheNewYorkTimes.NYTCrossword*"
 Remove-App "ThumbmunkeysLtd.PhototasticCollage"
 Remove-App "ThumbmunkeysLtd.PhototasticCollage*"
