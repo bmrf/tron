@@ -15,13 +15,14 @@ Version legend:
 
 
 #########################
-# v12.0.6 // 2023-09-xx #
+# v12.0.6 // 2023-09-17 #
 #########################
  . tron.bat                        v1.2.1
 
 functions
  + initialize_environment.bat      v12.0.6
       + Add network-detection support for Brazilian Portugese systems. Thanks to u/HeadCrusherBR
+	  + Add network-detection support for alternate French language systems. Thanks to u/TownGlad8884
 
  . prerun_checks_and_tasks.bat     v1.1.1
  . tron_settings.bat               v1.0.4
@@ -62,6 +63,8 @@ Stage 2: De-bloat
 Stage 3: Disinfect
  . stage_3_disinfect.bat           v1.2.9
  + Malwarebytes AdwCleaner         v8.4.0
+     + Added automation of Malwarebytes AdwCleaner. Thanks to u/fr0stedfl4ke
+
  ! Sophos Virus Removal Tool       v2.9.0 !-- Will be REMOVED in next version due to Sophos blocking further use of the tool to receive updates
  * Kaspersky Virus Removal Tool    v20.0.11.0
  * Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
@@ -84,13 +87,14 @@ Stage 5: Patch
 
 Stage 6: Optimize
  . stage_6_optimize.bat            v1.1.0
- . smartctl                        v7.3.0 r5338 2022-02-28
+ * smartctl                        v7.4.1 r5530 2023-08-01
  . drivedb.h                       2022-10-23
  . Defraggler                      v2.22.995
 
 Stage 7: Wrap-up
  . stage_7_wrap-up.bat             v1.0.3
- . SwithMail.exe                   v2.2.4.0
+ ! SwithMail.exe                   v2.2.4.0
+	! Fix missing "<Username>" opening statement in default SwithMailConfig file. Thanks to github:killmasta93
 
 Stage 8: Custom Scripts
  . Tron will execute any .bat file placed in this directory prior to script completion
