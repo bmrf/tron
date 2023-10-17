@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       2.0.4 + Add additional user-submitted entries
+:: Version:       2.0.5 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.4
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-09-05
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.5
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-10-17
 
 
 :: GUID LIST
@@ -767,7 +767,11 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-09-05
 {A3728759-51D3-E983-D9B1-15629FBCB134}
 
 :: AMD OEM Application Profile
+{D9559CE2-9C58-F414-43EA-F908FEA13BB8}
 {C89A97B6-F991-EBB5-77B7-927BCF420EBE}
+
+:: AMD Privacy View
+{D8E24EA6-807B-48D0-86D6-A9C5E74B8F2C}
 
 :: AMD Problem Report Wizard , ATI Problem Report Wizard
 {6B2565E9-FF59-686F-1729-66D1FEDF6ABE}
@@ -5584,7 +5588,12 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {10144CFE-D76C-4CFA-81A1-37A1642349A3}
 {9F205E94-9E42-4486-A92A-DF3F6CB85444}
 
+:: Epson ReadyInk Agent
+{A9B4584F-A29E-4880-97E6-1744B4AF2AF8}
+
 :: Epson Software Updater
+{2A369D40-CE23-421A-8173-3C303A0A8355}
+{26A9B753-4B5D-46D8-A329-5CEF96FC22D2}
 {14898485-6509-496B-8C30-D5DB8C1C8639}
 {28C66F35-69BF-4376-BC80-4D5F4808FF3C}
 {FD036A57-F81D-4865-AAF0-811558EA76AE}
@@ -6100,6 +6109,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {D9D8900B-CFEB-44C6-B417-D6308B5B145D}
 
 :: HP Documentation
+{5C67CECE-B908-4BCF-B585-8C170B817C1D}
 {17C797EF-1D27-41CF-8A52-024F33A8A8FE}
 {DCB0919F-F0A6-4C63-800F-B6825D6C0434}
 {DE15C5EC-7C30-44BF-ACEB-03960FC5601D}
@@ -7388,6 +7398,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {3EE9923D-3045-46AB-9CAA-E375993AEB4A}
 
 :: Intel Driver && Support Assistant
+{0F7F6F7B-684E-435A-9FCE-C8A1F71EDA14}
 {E4EC6B50-5A65-41DD-AC35-E1839BF685E8}
 {513BFF20-438E-4C8B-9C41-DE06B47D3148}
 {0B6D9E45-696A-452C-B0FE-32A37F1792F9}
@@ -7412,6 +7423,10 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {387B63A5-5016-1015-B06B-A9A1030E3125}
 
 :: Intel Management Engine Components/Driver
+{B7F27296-F1AE-46BB-8BD7-5E0EED0EA1AC}
+{BF1D4FDD-6613-4F36-AE24-EDE3D7E30CF4}
+{9EB5F95A-335A-414D-BECE-BA2CE114A856}
+{1A9FE6B4-801A-4AF0-AEDB-EA49BD80C9F2}
 {A605C249-8DDE-4D4A-8D11-739F412ED4E6}
 {B4380A5C-5E86-46B5-B23E-EE67C5B40858}
 {C4728652-2637-4067-ADA2-7B17DD26ECCE}
@@ -7602,10 +7617,15 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {BB8F471D-B914-4BEB-9D9C-05256CAB97CA}
 
 :: Intel OEM Extension
+{05C41CDE-0CEF-41A8-B615-E58427D33AAC}
 {19413FA8-118C-42C3-9B78-9E4955CCE7D0}
 {11A7CF05-625B-4C27-A290-6962DFF87ADE}
 {082E9943-568C-4BDC-9D7C-40386B9B4B90}
 {FEB772C1-919E-4145-9691-AFFAC915496F}
+
+:: Intel Optanet Pinning Explorer Extensions
+{A6961DC0-8F0E-4593-B336-FD3E7F27999C}
+{ACA5CFAC-9E99-4764-A7AD-AF5CF3FA15BF}
 
 :: Intel Pro Alerting Agent
 {FCDDBA94-7389-49E5-B287-2661460BAF18}
@@ -9016,6 +9036,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {B4092C6D-E886-4CB2-BA68-FE5A88D31DE6}
 
 :: Sql Server Customer Experience Improvement Program (various versions)
+{C965F01C-76EA-4BD7-973E-46236AE312D7}
 {0D9BD39A-A870-4FDF-B590-1E9787CF16D9}
 {894F30EB-3F0A-422F-9225-EB00DC9414EA}
 {BED1EA3D-592D-4305-9D1F-20F03726EFC1}
