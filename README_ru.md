@@ -522,3 +522,91 @@ Bitcoin Cash: `18sXTTrAViPZVQtm63zBK6aCK3XfJpEThk`
 14. **Уменьшение места для системного восстановления**: Ограничивает использование службы восстановления системы только 7% от доступного места на жестком диске
 
 15. **Отключение режима сна**: Tron использует `caffeine.exe` для отключения режима сна при запуске сценария. В конце сценария сбрасываются настройки энергосбережения до значений по умолчанию Windows. Используйте переключатель `-p`, чтобы предотвратить сброс настроек энергосбережения до значений по умолчанию Windows.
+
+## ЭТАП 1: Очистка временных файлов
+
+*[ссылка на код Этапа 1](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/stage_1_tempclean.bat)*
+
+1. **Очистка Internet Explorer**: Выполняется только в Internet Explorer версии 7 и выше. Запускает следующий встроенный инструмент Windows для очистки и сброса настроек Internet Explorer:
+
+  ```
+  rundll32.exe inetcpl.cpl,ClearMyTracksByProcess 4351
+  ```
+
+2. **[CCLeaner](https://www.piriform.com/ccleaner)**: Утилита CCLeaner от Piriform. Используется для очистки временных файлов перед запуском антивирусных сканеров. Обратите внимание, что CCLeaner очищает `%AppData%` Local Storage. Отредактируйте [ccleaner.ini](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/ccleaner/ccleaner.ini) и измените `(App)Local Storage*=True` на `(App)Local Storage*=False`, если вы не хотите такого поведения. Также обратите внимание, что Tron автоматически сохраняет большинство общих файлов cookie для входа в систему (Chase.com, gmail.com и т. д.). Используйте переключатель `-scc`, чтобы сохранить ВСЕ файлы cookie (не рекомендуется).
+
+3. **[TempFileCleanup.bat](https://github.com/bmrf/tron/blob/master/resources/stage_1_tempclean/tempfilecleanup/TempFileCleanup.bat)**: Скрипт, который я написал, чтобы очистить некоторые области, которые, кажется, упускаются другими инструментами.
+
+4. **[USB Device Cleanup](http://www.uwe-sieber.de/drivetools_e.html#drivecleanup)**: Удаляет неиспользуемые или отсутствующие устройства USB из системы (несуществующие флеш-накопители и т. д.). Использует `drivecleanup.exe` от [Uwe Sieber](http://www.uwe-sieber.de/).
+
+5. **[Очистка дубликатов загрузок](https://github.com/jeremitu/finddupe)**: Ищет и удаляет дублирующиеся файлы, найденные в папках Downloads каждого профиля пользователя (`ChromeInstaller(1).exe`, `ChromeInstaller(2)exe` и так далее). Не затрагивает другие папки. Использует порт оригинальной утилиты [Find Dupe](http://www.sentex.net/~mwandel/finddupe/) от Sentex, совместимый с UTF-8.
+
+6. **Очистка журналов событий Windows**: Создает резервную копию журналов событий Windows в каталоге `%LOGPATH%`, затем очищает все записи.
+
+7. **Очистка кеша обновлений Windows**: Удаляет файлы деинсталляторов для уже установленных обновлений Windows. Обычно освобождает довольно много места. Выполняется с помощью следующей команды:
+
+  ```
+  rmdir /s /q %windir%\softwaredistribution\download
+  ```
+
+8. **Очистка кеша BranchCache**: Tron выполняет команду `netsh branchcache flush`, чтобы очистить любые кешированные данные в BranchCache (только win7 и выше).
+
+## ЭТАП 2: Очистка от мусора
+
+*[ссылка на код Этапа 2](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/stage_2_de-bloat.bat)*
+
+1. **Очистка от мусора OEM** (по имени): Используется WMI для попытки удаления любой программы, указанной в [этом файле](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/oem/programs_to_target_by_name.txt):
+
+  ```
+  \tron\resources\stage_2_de-bloat\oem\programs_to_target_by_name.txt
+  ```
+
+2. **Очистка от мусора OEM** (по GUID): Используется WMI для попытки удаления списка конкретных GUID, указанных в [этом файле](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/oem/programs_to_target_by_GUID.txt):
+
+  ```
+  \tron\resources\stage_2_de-bloat\oem\programs_to_target_by_GUID.txt
+  ```
+
+3. **Панели инструментов и BHO** (по GUID): Используется WMI для попытки удаления списка конкретных GUID, указанных в [этом файле](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/oem/toolbars_BHOs_to_target_by_GUID.txt):
+
+  ```
+  \tron\resources\stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt
+  ```
+
+4. **Очистка от мусора Metro**: Удаляет множество встроенных приложений Metro, которые редко используются (НЕ удаляет такие вещи, как Калькулятор, Paint и т. д.), а затем очищает их из кеша (всегда можно загрузить позже из Windows Update). На Windows 8/8.1 удаляет все стандартные приложения "Modern". На Windows 10 и выше удаляет только определенные Modern-приложения. Полный список удаленных Metro-приложений можно посмотреть [здесь](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_Microsoft_modern_apps_to_target_by_name.ps1) (Microsoft) и [здесь](https://github.com/bmrf/tron/blob/master/resources/stage_2_de-bloat/metro/metro_3rd_party_modern_apps_to_target_by_name.ps1) (OEM/3rd party). Используйте переключатель `-sdb` (пропустить *все* удаления мусора) или `-m` (пропустить только очистку Metro), чтобы пропустить это действие. Как и списки GUID выше, вы также можете настроить эти файлы, чтобы добавлять или удалять приложения из целевого списка. Обратите внимание, что сценарии PowerShell очистки Metro также поддерживают автономное выполнение, если, например, вам просто нужно удалить ненужные приложения Metro с машины.
+
+5. **Удаление интеграции OneDrive**: Удаляет принудительную интеграцию OneDrive (только для Windows 10). Tron сначала проверяет, существуют ли какие-либо файлы в папке OneDrive по умолчанию (`%USERPROFILE%\OneDrive\`), и пропускает удаление, если они найдены. Как дополнительная мера безопасности, Tron оставляет папку OneDrive нетронутой независимо от того, будет OneDrive удален или нет. Используйте переключатель `-sor`, чтобы полностью пропустить удаление OneDrive.
+
+## ЭТАП 3: Дезинфекция
+
+*[ссылка на код Этапа 3](https://github.com/bmrf/tron/blob/master/resources/stage_3_disinfect/stage_3_disinfect.bat)*
+
+1. **[Очистка кеша CryptNet SSL](https://github.com/bmrf/tron/issues/86)**: Удаление кеша сертификатов Windows CryptNet SSL с помощью выполнения следующей команды:  `certutil -URLcache * delete`
+
+2. **[Malwarebytes Anti-Malware](https://www.malwarebytes.org/)**: Антивирусный сканер. Поскольку для MBAM нет поддержки командной строки, мы просто устанавливаем его и продолжаем выполнение остальной части скрипта. Таким образом, специалист может нажать **Scan** всякий раз, когда он рядом, но скрипт не останавливается, ожидая ввода пользователя. Используйте переключатели `-sa` или `-sm`, чтобы пропустить этот компонент. Используйте переключатель `-pmb`, чтобы НЕ удалять его в конце сценария.
+
+3. **[Malwarebytes AdwCleaner](https://support.malwarebytes.com/hc/en-us/articles/360050633534-Commands-for-Malwarebytes-AdwCleaner)**: Командный антивирусный сканер. Используйте переключатели `-sa` или `-sac`, чтобы пропустить этот компонент.
+
+4. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Инструмент удаления вирусов Kaspersky. Используйте переключатели `-sa` или `-sk`, чтобы пропустить этот компонент.
+
+5. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Командный антивирусный сканер. Используйте переключатель `-v`, чтобы получить более подробный вывод. Используйте переключатели `-sa` или `-ss`, чтобы пропустить этот компонент.
+
+## ЭТАП 4: Восстановление
+
+*[ссылка на код Этапа 4](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/stage_4_repair.bat)*
+
+0. **Очистка установщика MSI**: Используйте утилиту Microsoft `msizap.exe` для удаления забытых файлов установщика MSI из кэша установщика.
+
+1. **[Проверка системных файлов](https://support.microsoft.com/en-us/kb/929833)**: Утилита Microsoft для проверки файловой системы на наличие ошибок и их возможного восстановления. Tron выполняет эту операцию только на Windows Vista и выше (XP и более ранние требуют перезагрузки).
+
+2. **[Проверка и восстановление образа DISM](https://support.microsoft.com/en-us/help/929833/use-the-system-file-checker-tool-to-repair-missing-or-corrupted-system)**: Утилита Microsoft для проверки хранилища образов Windows (вроде более мощной утилиты System File Checker). Только для Windows 8 и выше.
+
+3. **chkdsk**: Проверяет диск на наличие ошибок и запланирует выполнение chkdsk с восстановлением при следующей перезагрузке (отмечает том как "грязный"), если обнаружены ошибки.
+
+4. **Отключение "телеметрии" Windows**: Отключение "телеметрии" Windows (слежение за пользователем), только для Windows 7 и выше. Tron удаляет "плохие" обновления, которые Microsoft выпустила для систем Windows 7/8/8.1 после выпуска Windows 10. Эти обновления обратно портировали функции слежения/шпионажа, которые изначально присутствуют в Windows 10. См. код ([Win7/8/8.1](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_7-8-81_telemetry.bat), [Win10](https://github.com/bmrf/tron/blob/master/resources/stage_4_repair/disable_windows_telemetry/purge_windows_10_telemetry.bat)), чтобы узнать точно, какие обновления KB удаляются. Tron также останавливает и удаляет службу `DiagTrack` ("Служба отслеживания диагностики"). Если система работает под управлением Windows 10, Tron также проводит более глубокое отключение функций телеметрии Windows, включая автоматическое применение всех служб из инструментов [Spybot Anti-Beacon](https://www.safer-networking.org/spybot-anti-beacon/) и [O&O ShutUp10](https://www.oo-software.com/en/shutup10). Перейдите к коду в `\tron\resources\stage_4_repair\disable_windows_telemetry\`, чтобы точно увидеть, что удаляется и отключается. ПРИМЕЧАНИЕ: Этот раздел может занять некоторое время для выполнения, НЕ ОТМЕНЯЙТЕ ЕГО. Используйте параметр `-str`, чтобы просто отключить телеметрию, а не удалять ее.
+
+5. **Отключение напоминаний об обновлении Windows 10**: Отключает напоминания о обновлении до Windows 10 на Windows 7/8/8.1, переключая соответствующие параметры реестра. Пользователи всё равно могут вручную обновить систему, если им это необходимо, но теперь это не будет происходить автоматически через системный трей, автоматическое скачивание или установка Windows 10 без их разрешения.
+
+6. **Восстановление сети**: Tron выполняет небольшое исправление сети. Конкретно выполняет следующие команды: `ipconfig /flushdns`, `netsh interface ip delete arpcache`, `netsh winsock reset catalog`.
+
+7. **Восстановление расширений файлов**: Tron восстанавливает большинство стандартных расширений файлов с помощью пакетного файла, который выполняет цикл через несколько файлов реестра, хранящихся в `\tron\resources\stage_4_repair\repair_file_extensions\`.
