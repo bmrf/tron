@@ -28,7 +28,11 @@ Hahahahahaha -- u/meandertothehorizon
 
 # Positive
 
-I've just tested it with the new initialize_environment.bat. It worked correctly, detected the network connection and updated some stuff. Now Brazilian IT people will have this great tool working as intended. This makes TronScript even more reliable and convenient for us. Thanks a lot! -- u/HeadCrusherBR
+Wow, just ran Tron on my system and I'm impressed! -- u/Thisispqs
+https://www.reddit.com/r/TronScript/comments/17y187g/wow_tron_script_sped_up_my_computer/
+
+Firstly, holy shit this software works so flawlessly and thank you so much u/vocatus for creating such an awesome utility free of charge and keeping it open source. It is so nice to actually see all of the source code in git as well as all the various PRs and commits to see what this stuff is actually doing and how the community has helped it grow over the years! Especially in a time when so much shit is locked down to an endless degree. -- u/ManyITQuestions
+https://www.reddit.com/r/TronScript/comments/123opuf/ran_tron_again_last_night/
 
 Tron rules. -- u/Automatic-Tea-9440
 https://www.reddit.com/r/TronScript/comments/keezqx/how_fcked_up_was_computer_when_you_made_the_big/gg30rbu/
