@@ -3,7 +3,8 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2 + Add references and variables for new AdwCleaner job
+:: Version:       1.2.3 - Remove all code related to Sophos as it's deprecated
+::                1.2.2 + Add references and variables for new AdwCleaner job
 ::                1.2.1 - Remove references to Adobe Flash
 ::                1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
 ::                1.1.9 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run. Thanks to tbr:greg
@@ -60,8 +61,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.2.2
-set SCRIPT_DATE=2023-08-xx
+set SCRIPT_VERSION=1.2.3
+set SCRIPT_DATE=2024-03-09
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -179,7 +180,6 @@ if /i %CONFIG_DUMP%==yes (
 	echo    SKIP_MBAM_INSTALL:      %SKIP_MBAM_INSTALL%
 	echo    SKIP_ONEDRIVE_REMOVAL:  %SKIP_ONEDRIVE_REMOVAL%
 	echo    SKIP_PAGEFILE_RESET:    %SKIP_PAGEFILE_RESET%
-	echo    SKIP_SOPHOS_SCAN:       %SKIP_SOPHOS_SCAN%
 	echo    SKIP_TELEMETRY_REMOVAL: %SKIP_TELEMETRY_REMOVAL%
 	echo    SKIP_WINDOWS_UPDATES:   %SKIP_WINDOWS_UPDATES%
 	echo    SKIP_WSUS_OFFLINE:      %SKIP_WSUS_OFFLINE%
@@ -301,7 +301,7 @@ echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
 echo  *  1 TempClean: TempFileClean/CCleaner/IE ^& Event Logs clean          *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
-echo  *  3 Disinfect: AdwCleaner/Sophos/KVRT/MBAM/DISM repair               *
+echo  *  3 Disinfect: AdwCleaner/KVRT/MBAM/DISM repair                      *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
 echo  *  5 Patch:     Update 7-Zip/Windows, DISM base cleanup               *
 echo  *  6 Optimize:  defrag %SystemDrive% (mechanical only, SSDs skipped)             *
@@ -502,7 +502,7 @@ title Tron v%TRON_VERSION% [stage_3_disinfect]
 if /i %SKIP_ANTIVIRUS_SCANS%==no (
 	call stage_3_disinfect\stage_3_disinfect.bat
 ) else (
-	call functions\log_with_date.bat "! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (AdwCleaner, Sophos, KVRT, MBAM)."
+	call functions\log_with_date.bat "! SKIP_ANTIVIRUS_SCANS (-sa) set. Skipping Stage 3 (AdwCleaner, KVRT, MBAM)."
 )
 
 :: Since this whole section takes a long time to run, set the date again in case we crossed over midnight during the scans
@@ -782,7 +782,6 @@ for %%i in (%*) do (
 	if /i %%i==-sor set SKIP_ONEDRIVE_REMOVAL=yes
 	if /i %%i==-spr set SKIP_PAGEFILE_RESET=yes
 	if /i %%i==-str set SKIP_TELEMETRY_REMOVAL=yes
-	if /i %%i==-ss set SKIP_SOPHOS_SCAN=yes
 	if /i %%i==-swu set SKIP_WINDOWS_UPDATES=yes
 	if /i %%i==-swo set SKIP_WSUS_OFFLINE=yes
 	if /i %%i==-udl set UPLOAD_DEBUG_LOGS=yes
@@ -800,7 +799,7 @@ goto :eof
 	echo  Author: vocatus on old.reddit.com/r/TronScript
 	echo.
 	echo   Usage: tron.bat ^[ ^[-a^|-asm^] -c -d -dev -e -er -m -np -o -p -pmb -r -sa -sac -sap -scc -scs
-	echo                    -sd -sdb -sdc -sdu -se -sk -sm -sor -spr -ss -str -swu -swo -udl -v -x^] ^| ^[-h^]
+	echo                    -sd -sdb -sdc -sdu -se -sk -sm -sor -spr -str -swu -swo -udl -v -x^] ^| ^[-h^]
 	echo.
 	echo   Optional switches ^(can be combined^):
 	echo    -a   Automatic mode ^(no welcome screen or prompts; implies -e^)
@@ -831,7 +830,6 @@ goto :eof
 	echo    -sm  Skip Malwarebytes Anti-Malware ^(MBAM^) installation
 	echo    -sor Skip OneDrive removal regardless whether it's in use or not
 	echo    -spr Skip page file settings reset ^(don't set to "Let Windows manage the page file"^)
-	echo    -ss  Skip Sophos Anti-Virus ^(SAV^) scan
 	echo    -str Skip Telemetry Removal ^(just turn telemetry off instead of removing it^)
 	echo    -swu Skip Windows Updates entirely ^(ignore both WSUS Offline and online methods^)
 	echo    -swo Skip user-supplied WSUS Offline updates ^(if they exist; online updates still attempted^)
