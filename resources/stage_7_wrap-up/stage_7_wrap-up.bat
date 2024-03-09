@@ -104,7 +104,7 @@ call functions\log_with_date.bat "   Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
 	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs\*.xml" "%RAW_LOGS%\" >NUL
 	if exist "%SystemDrive%\AdwCleaner\Logs" copy /Y "%SystemDrive%\AdwCleaner\Logs\*.txt" "%RAW_LOGS%\" >NUL
-	if exist "%SystemDrive%\AdwCleaner" del /f /q "%SystemDrive%\AdwCleaner"
+	if exist "%SystemDrive%\AdwCleaner" rmdir /s /q "%SystemDrive%\AdwCleaner" >NUL
 	if exist "%LOGPATH%\mbam-log*" move /y "%LOGPATH%\mbam-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%RAW_LOGS%\"
