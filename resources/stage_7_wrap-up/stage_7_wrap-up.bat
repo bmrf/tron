@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.4 - Remove post-run restore point creation, since there's really no point in creating it
+:: Version:       1.0.5 + Add collection of AdwCleaner raw logs
+::                1.0.4 - Remove post-run restore point creation, since there's really no point in creating it
 ::                1.0.3 / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
 ::                1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
 ::                      / Change the display output from disk space reclaimed calculation to assume GB's instead of MB's
@@ -13,8 +14,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.4
-set STAGE_7_SCRIPT_DATE=2020-05-25
+set STAGE_7_SCRIPT_VERSION=1.0.5
+set STAGE_7_SCRIPT_DATE=2024-03-09
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -43,7 +44,7 @@ if %PRESERVE_POWER_SCHEME%==yes (
 ) else (
 	call functions\log_with_date.bat "   Resetting Windows power settings to defaults and re-enabling screensaver..."
 	if %DRY_RUN%==no (
-		REM Check for Windows XP/2k3
+		REM Check for Windows Server 2003
 		if %WIN_VER_NUM% lss 6.0 %WINDIR%\system32\powercfg.exe /RestoreDefaultPolicies >NUL 2>&1
 		REM Run commands for all other versions of Windows
 		%WINDIR%\system32\powercfg.exe -restoredefaultschemes >NUL 2>&1
@@ -101,10 +102,10 @@ call functions\log_with_date.bat "   Done. Summary logs are at "%SUMMARY_LOGS%\"
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Collect logs]
 call functions\log_with_date.bat "   Saving misc logs to "%RAW_LOGS%\"..."
 if /i %DRY_RUN%==no (
-	if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs" copy /Y "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\*.l*" "%RAW_LOGS%\" >NUL
 	if exist "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs" copy /Y "%ProgramData%\Malwarebytes\Malwarebytes Anti-Malware\logs\*.xml" "%RAW_LOGS%\" >NUL
+	if exist "%SystemDrive%\AdwCleaner\Logs" copy /Y "%SystemDrive%\AdwCleaner\Logs\*.txt" "%RAW_LOGS%\" >NUL
+	if exist "%SystemDrive%\AdwCleaner" del /f /q "%SystemDrive%\AdwCleaner"
 	if exist "%LOGPATH%\mbam-log*" move /y "%LOGPATH%\mbam-log*" "%RAW_LOGS%\"
-	if exist "%LOGPATH%\Sophos*" move /y "%LOGPATH%\Sophos*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\protection-log*" move /y "%LOGPATH%\protection-log*" "%RAW_LOGS%\"
 	if exist "%LOGPATH%\jre*" move /y "%LOGPATH%\jre*" "%RAW_LOGS%\"
 )
