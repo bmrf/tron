@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.1 + adwcleaner:  Add AdwCleaner job. Thanks to u/fr0stedfl4ke
+:: Version:       1.3.2 - sopohs:      Remove all code related to Sophos due to it being deprecated
+::                1.3.1 + adwcleaner:  Add AdwCleaner job. Thanks to u/fr0stedfl4ke
 ::                1.3.0 + mbam:        Add "/NOICON" switch to MBAM install to prevent desktop icon. Thanks to github:numdouglas and github:DRCHRIS2
 ::                1.2.9 ! kvrt:        Update KVRT commandline since they randomly renamed "-dontcryptsupportinfo" to "-dontencrypt", causing a popup window to appear
 ::                1.2.8 ! mbam:        Fix 2nd edge case where %MBAM% wasn't getting set correctly
@@ -38,8 +39,9 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_3_SCRIPT_VERSION=1.3.1
-set STAGE_3_SCRIPT_DATE=2023-08-xx
+set STAGE_3_SCRIPT_VERSION=1.3.2
+set STAGE_3_SCRIPT_DATE=2023-03-09
+-09
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
@@ -150,44 +152,6 @@ if /i %SKIP_KASPERSKY_SCAN%==yes (
 	if /i %DRY_RUN%==no (
 		start /wait stage_3_disinfect\kaspersky_virus_removal_tool\KVRT.exe -d "%RAW_LOGS%" -accepteula -adinsilent -silent -processlevel 2 -dontencrypt
 		if exist "%RAW_LOGS%\Legal notices" rmdir /s /q "%RAW_LOGS%\Legal notices" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	)
-	call functions\log_with_date.bat "   Done."
-)
-
-
-:: JOB: Sophos Virus Remover
-title Tron v%TRON_VERSION% [stage_3_disinfect] [Sophos Virus Remover]
-if /i %SKIP_SOPHOS_SCAN%==yes (
-	call functions\log_with_date.bat "! SKIP_SOPHOS_SCAN (-ss) set. Skipping SAV scan."
-) else (
-	call functions\log_with_date.bat "   Launch job 'Sophos Virus Removal Tool' (slow, be patient)..."
-	call functions\log_with_date.bat "   Scan output REDUCED by default (use -v to show full output)..."
-	if /i %DRY_RUN%==no (
-		echo.
-
-		REM Check whether or not we have a network connection and activate the appropriate config file
-		if exist stage_3_disinfect\sophos_virus_remover\config.xml del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
-		if /i %NETWORK_AVAILABLE%==no (
-			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_no.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
-		) else (
-			copy /a /y stage_3_disinfect\sophos_virus_remover\config_network_connected_yes.xml stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
-		)
-
-		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
-		if /i %VERBOSE%==no	(
-			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes
-		) else (
-			stage_3_disinfect\sophos_virus_remover\svrtcli.exe -yes -debug
-		)
-		type "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >> "%LOGPATH%\%LOGFILE%" 2>&1
-		if exist "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" del /f /q "%ProgramData%\Sophos\Sophos Virus Removal Tool\logs\SophosVirusRemovalTool.log" >nul 2>&1
-		del /f /q stage_3_disinfect\sophos_virus_remover\config.xml >> "%LOGPATH%\%LOGFILE%" 2>&1
-
-		REM Rarely happens, but occasionally Sophos will terminate and fail to delete the service it loads. Run a delete op against it just in case it didn't get removed.
-		sc delete SophosVirusRemovalTool >> "%LOGPATH%\%LOGFILE%" 2>NUL
-		%REG% delete HKLM\SYSTEM\CurrentControlSet\Services\SophosVirusRemovalTool /f >> "%LOGPATH%\%LOGFILE%" 2>NUL
-
-
 	)
 	call functions\log_with_date.bat "   Done."
 )
