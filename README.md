@@ -122,8 +122,6 @@ Command-line use is fully supported. All switches are optional and can be used s
 
      -spr Skip page file reset (don't set to "Let Windows manage the page file")
 
-     -ss  Skip Sophos Anti-Virus (SAV) scan
-
      -str Skip Telemetry Removal (just turn telemetry off instead of removing it)
 
      -swu Skip Windows Updates entirely (ignore both WSUS Offline and online methods)
@@ -259,7 +257,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set AUTO_REBOOT_DELAY=0
   ```
 
-- To skip ALL anti-virus scan engines (AdwCleaner, MBAM, KVRT, Sophos), change this to `yes`:
+- To skip ALL anti-virus scan engines (AdwCleaner, MBAM, KVRT), change this to `yes`:
   ```
   set SKIP_ANTIVIRUS_SCANS=no
   ```
@@ -329,11 +327,6 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_PAGEFILE_RESET=no
   ```
 
-- To skip scanning with Sophos Anti-Virus (SAV), change this to `yes`:
-  ```
-  set SKIP_SOPHOS_SCAN=no
-  ```
-  
 - To skip removal of the Windows "telemetry" (user tracking) updates, change this to `yes`:
   ```
   set SKIP_TELEMETRY_REMOVAL=no
@@ -600,8 +593,6 @@ Master script that launches everything else. It performs many actions on its own
 3. **[Malwarebytes AdwCleaner](https://support.malwarebytes.com/hc/en-us/articles/360050633534-Commands-for-Malwarebytes-AdwCleaner)**: Command-line anti-virus scanner. Use the `-sa` or `-sac` switches to skip this component
 
 4. **[KVRT](http://www.kaspersky.com/antivirus-removal-tool)**: Kaspersky Virus Removal Tool. Use the `-sa` or `-sk` switches to skip this component
-
-5. **[Sophos Virus Removal Tool](https://www.sophos.com/en-us/products/free-tools/virus-removal-tool.aspx)**: Command-line anti-virus scanner. Use the `-v` switch to get more verbose output. Use the `-sa` or `-ss` switches to skip this component
 
 
 ## STAGE 4: Repair
