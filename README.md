@@ -267,7 +267,7 @@ If you don't want to use the command-line and don't like Tron's defaults, you ca
   set SKIP_ADWCLEANER_SCAN=no
   ```
 
-- To skip application patches (don't patch 7-Zip or Adobe Flash) change this to `yes`:
+- To skip application patches (don't patch 7-Zip) change this to `yes`:
   ```
   set SKIP_APP_PATCHES=no
   ```
@@ -624,11 +624,9 @@ Tron updates these programs if they exist on the system. If a program does not a
 
 1. **[7-Zip](http://7-zip.org/faq.html)**: Open-source compression and extraction tool. Use the `-sap` switch to skip this action
 
-2. **Adobe Flash Player**: Used by YouTube and various other sites. Use the `-sap` switch to skip this action
+2. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, Tron executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if they're present in the relevant directory. See [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates) above for more information on using offline update packages with Tron
 
-3. **Windows updates**: Runs Windows update via this command:  `wuauclt /detectnow /updatenow`. Use the `-swu` switch to skip this action. If bundled WSUS Offline updates are detected, Tron executes those instead. Use the `-swo` switch to force skipping WSUS Offline updates even if they're present in the relevant directory. See [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates) above for more information on using offline update packages with Tron
-
-4. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
+3. **DISM base reset**: Recompile the "Windows Image Store" (SxS store). This typically results in multiple GB's of space freed up. Windows 8 and up only. Any Windows Updates installed *prior* to this point will become "baked in" (uninstallable). Use the `-sdc` switch to skip this action
 
 
 ## STAGE 6: Optimize
