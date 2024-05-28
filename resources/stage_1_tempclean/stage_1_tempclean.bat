@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.9 + ccleaner:    Add deletion of CCleanerCrashReporting task schedule job. Thanks to github:rktfier
+:: Version:       1.3.0 ! bugfix:      Remove single quotes around variables in the USB cleanup section. Thanks to github:borekon and github:RedBaron2
+::                1.2.9 + ccleaner:    Add deletion of CCleanerCrashReporting task schedule job. Thanks to github:rktfier
 ::                1.2.8 ! bugfix:      Wrap missed reference to %TEMP% in quotes. Thanks to u/TheDarkThought
 ::                1.2.7 * diskcleanup: Improve Windows Disk Cleanup to suppress output unless we're running with VERBOSE switch
 ::                      + ccleaner:    Add SKIP_COOKIE_CLEANUP (-scc) switch, to preserve ALL cookies. Thanks to tbr:sebastian
@@ -40,8 +41,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_1_SCRIPT_VERSION=1.2.9
-set STAGE_1_SCRIPT_DATE=2023-06-27
+set STAGE_1_SCRIPT_VERSION=1.3.0
+set STAGE_1_SCRIPT_DATE=2024-05-28
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -199,7 +200,7 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_1_tempclean] [USB Device Cleanup]
 call functions\log_with_date.bat "   Launch job 'USB Device Cleanup'..."
 if /i %DRY_RUN%==no (
-	if /i '%PROCESSOR_ARCHITECTURE%'=='AMD64' (
+	if /i %PROCESSOR_ARCHITECTURE%==AMD64 (
 		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -t -n
 		"stage_1_tempclean\usb_cleanup\DriveCleanup x64.exe" -n >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	) else (
