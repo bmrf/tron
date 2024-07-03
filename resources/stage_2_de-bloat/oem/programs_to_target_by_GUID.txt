@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       2.0.5 + Add additional user-submitted entries
+:: Version:       2.0.6 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.5
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-10-17
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.6
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2024-07-03
 
 
 :: GUID LIST
@@ -195,6 +195,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-10-17
 {39F6E2B4-CFE8-C30A-66E8-489651F0F34C}
 
 :: Adobe Refresh Manager
+{AC76BA86-0804-1033-1959-018244601067}
 {AC76BA86-0804-1033-1959-018244601042}
 {AC76BA86-0804-1033-1959-018244601047}
 {AC76BA86-0804-1033-1959-001824369436}
@@ -827,6 +828,7 @@ set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2023-10-17
 {75B629B2-E7D8-4B4B-87F8-97F8C8031A61}
 
 :: AMD User Experience Program Installer
+{ED4FFD7F-1B52-4588-AB90-3D6DB87CFE0A}
 {D72D52E9-CB82-48BE-98FC-6BADF6DB42AB}
 {E0BCDBAB-9E36-4AD8-9613-1108AEBB1377}
 {B48DA4F9-2E0C-41D1-9BBD-54E667820B49}
@@ -5453,6 +5455,7 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 {D87149B3-7A1D-4548-9CBF-032B791E5908}
 
 :: DiagnosticsHub_CollectionService
+{1CF005A8-0AAE-47D9-AC51-EA5F980ED550}
 {FECAFEB5-8D0E-4AE4-8FA0-745BAA835C35}
 
 :: DIBS 1.7.0
@@ -9306,6 +9309,7 @@ if exist "%ProgramData%\Microsoft\OEMOffice15\OOBE\x86\oemoobe.msi" "%ProgramDat
 {A388A713-9839-4510-B683-F637779D8C4C}
 
 :: VS Immersive Activate Helper
+{FFFF1EAF-0FE4-4E67-82C2-CA5DB41BB093}
 {A71406B5-E487-4B01-8E59-D466841350F5}
 {78500789-0EBE-4490-BE43-F9EF8250BF42}
 {54FBC9A9-CCA1-417E-ACA6-203A32A39F37}
