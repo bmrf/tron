@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.7.2 + Add additional user-submitted entries
+Version:       1.7.4 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.3"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2024-07-03"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.4"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2024-09-25"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -276,6 +276,7 @@ Remove-App "61706EasyBrain.EscapeGame50Rooms1"
 Remove-App "62307pauljohn.3GPViewerFree"
 Remove-App "62327DamTechDesigns.UltimateEnglishSpellingQiuz"
 Remove-App "62535WambaDev.FastYouTubeDownloaderFREE"
+Remove-App "6317TinyGames.SolitaireCollection"
 Remove-App "64126VectorLabsGames.WorldsBiggestCrosswordPuzzles"
 Remove-App "64360VelerSoftware.DevToys"
 Remove-App "64885BlueEdge.OneCalendar*"
@@ -301,6 +302,8 @@ Remove-App "8075Queenloft.PassportIDPhotoMakerStudio"
 Remove-App "81295E39.AnimalPuzzle"
 Remove-App "828B5831.HiddenCityMysteryofShadows"
 Remove-App "828B5831.HomicideSquadHiddenCrimes"
+Remove-App "828B5831.SheriffofMahjong"
+Remove-App "828B5831.SherlockHiddenMatch-3Cases"
 Remove-App "828B5831.TheIslandCastawayLostWorldHD"
 Remove-App "88449BC3.TodoistTo-DoListTaskManager"
 Remove-App "89006A2E.AutodeskSketchBook*"
@@ -450,6 +453,7 @@ Remove-App "BooStudioLLC.8ZipLite"
 Remove-App "BooStudioLLC.TorrexLite-TorrentDownloader"
 Remove-App "BrowseTechLLC.AdRemover"
 Remove-App "BytedancePte.Ltd.TikTok"
+Remove-App "C1E561A0.DellTouchpadSettings"
 Remove-App "C27EB4BA.DROPBOX"
 Remove-App "C27EB4BA.DropboxOEM"
 Remove-App "CLEVOCO.504814C03D814"
@@ -758,6 +762,7 @@ Remove-App "WavesAudio.MaxxAudioProforDell2019"
 Remove-App "WavesAudio.MaxxAudioProforDell2020"
 Remove-App "WavesAudio.MaxxAudioProforDell2021"
 Remove-App "WavesAudio.MaxxAudioProforDell2021"
+Remove-App "WavesAudio.MaxxAudioProforDell2022"
 Remove-App "WavesAudio.WavesMaxxAudioProforDell"
 Remove-App "Weather.TheWeatherChannelforHP*"
 Remove-App "Weather.TheWeatherChannelforLenovo*"
@@ -832,6 +837,7 @@ Remove-App "www.cyberlink.com.PowerDirectorforLGE"
 Remove-App "www.cyberlink.com.PowerMediaPlayerforLGE"
 Remove-App "www.disneyplus.com-DA63139"
 Remove-App "www.duolingo.com-A936D01F"
+Remove-App "www.facebook.com-1C2D851A"
 Remove-App "www.funimation.com-E1E7B854"
 Remove-App "www.google.com.co-232A924E"
 Remove-App "www.instagram.com-353F720C"
