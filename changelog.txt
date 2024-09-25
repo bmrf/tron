@@ -30,7 +30,7 @@ Stage 0: Prep
  . rkill                           v2.9.1.0
  . ProcessKiller                   v2.0.0-TRON
  . TDSS Killer                     v3.1.0.12
- . McAfee Stinger                  v13.0.0.123
+ * McAfee Stinger                  v13.0.0.192
  . erunt                           v1.1j
  . caffeine                        v1.6.2.0
  . wget                            v1.21.4 x86
@@ -39,7 +39,6 @@ Stage 0: Prep
 
 Stage 1: Tempclean
  . stage_1_tempclean.bat           v1.3.0
-     ! Remove single quotes around variables in the USB cleanup section. Thanks to github:borekon and github:RedBaron2
  . CCleaner                        v6.24.11060
  . finddupe.exe                    v1.25
  . TempFileCleanup                 v1.2.2-TRON
@@ -54,11 +53,9 @@ Stage 2: De-bloat
  . metro_Microsoft_modern_apps_to_target_by_name.ps1
 
 Stage 3: Disinfect
- * stage_3_disinfect.bat           v1.3.2
-     - Remove all code related to Sophos due to it being deprecated
- . Malwarebytes AdwCleaner         v8.4.0
- . Sophos Virus Removal Tool       !-- REMOVED due to Sophos blocking further use of the tool to receive updates
- . Kaspersky Virus Removal Tool    v20.0.11.0
+ . stage_3_disinfect.bat           v1.3.2
+ * Malwarebytes AdwCleaner         v8.4.2
+ * Kaspersky Virus Removal Tool    v20.0.12.0
  . Malwarebytes Anti-Malware       v3.6.1.2711-1.0.482-1.0.7469
  . Malwarebytes included defs:     2019-10-17
 
@@ -67,12 +64,12 @@ Stage 4: Repair
  . purge_windows_7-8-81_telemetry.bat
  . purge_windows_10_telemetry.bat
  . Spybot Anti-Beacon              v1.7.0.47
- * O&O ShutUp10                    v1.9.1437
+ * O&O ShutUp10                    v1.9.1439
  . Repair file extensions          v1.0.0
 
 Stage 5: Patch
  . stage_5_patch.bat               v1.2.7
- . 7-Zip                           v24.06 (multi-language)
+ * 7-Zip                           v24.08 (multi-language)
  . Windows updates                 Pulled down live using: 'wuauclt /detectnow /updatenow'
 
 Stage 6: Optimize
@@ -83,8 +80,7 @@ Stage 6: Optimize
 
 Stage 7: Wrap-up
  . stage_7_wrap-up.bat             v1.0.3
- * SwithMail.exe                   v2.2.4.0
-     * Update SwithMail config file with new SMTP server for uploading debug logs
+ . SwithMail.exe                   v2.2.4.0
 
 Stage 8: Custom Scripts
  . Tron will execute any .bat file placed in this directory prior to script completion
