@@ -2,8 +2,9 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-::                1.3.3 * improvement:  Add support for silent installation of .NET Framework 3.5 and add host file exclusion
-:: Version:       1.3.2 * improvement:  Add support for x64 version of McAfee Stinger
+:: Version:       1.3.3 * improvement:  Add removal of "Trellix" versions of Stinger directories
+::                      * improvement:  Kill three additional services McAfee/Trellix creates: McShield, mfefire, mfemms
+::                1.3.2 * improvement:  Add support for x64 version of McAfee Stinger
 ::                1.3.1 ! bugfix:       Fix minor syntax bug in code comments around McAfee section. Thanks to u/Phr057
 ::                1.3.0 * improvement:  Use vssadmin command to alter allowed System Restore disk space on win8.1 and up. Thanks to u/D00shene
 ::                      * improvement:  Switch hardcoded reg.exe path to use Tron's internal %REG% variable in system restore job
@@ -47,8 +48,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_0_SCRIPT_VERSION=1.3.2
-set STAGE_0_SCRIPT_DATE=2022-10-23
+set STAGE_0_SCRIPT_VERSION=1.3.3
+set STAGE_0_SCRIPT_DATE=2025-01-09
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -124,6 +125,7 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
+
 :: JOB: rkill
 title Tron v%TRON_VERSION% [stage_0_prep] [rkill]
 call functions\log_with_date.bat "   Launch job 'rkill'..."
@@ -136,32 +138,6 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
-:NETFrameWorkInstall
-SETLOCAL ENABLEDELAYEDEXPANSION
-:: JOB: Checking if .NET Framework 3.5 is installed
-call functions\log_with_date.bat "   Checking .NET Framework 3.5 existence..."
-%REG% query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
-call functions\log_with_date.bat "   Done."
-
-:: If .NET 3.5 is missing, try to install it (win10 only)
-if not %ERRORLEVEL%==0 (
-
-	REM If on Win10 try installation
-	if /i "%WIN_VER:~0,10%"=="Windows 10" (
-		call functions\log_with_date.bat "   System is missing .NET 3.5, attempting installation, please wait..."
-		if /i %DRY_RUN%==no dism.exe /online /enable-feature /featurename:NetFX3 /All /quiet /norestart
-		if not !ERRORLEVEL!==0 (
-			call functions\log_with_date.bat "  ! .NET installation failed."
-	    ) else (
-		    if !ERRORLEVEL!==0  (
-			call functions\log_with_date.bat "   Done."
-        )	
-    )
-)
-)
-	
-	
-SETLOCAL DISABLEDELAYEDEXPANSION
 
 :: JOB: Get pre-run system state (installed programs, complete file list)
 title Tron v%TRON_VERSION% [stage_0_prep] [Analyze System State]
@@ -199,6 +175,7 @@ if /i %WIN_VER_NUM% geq 6.2 (
 	)
 )
 
+
 :: JOB: Disable system sleep and screen saver
 if /i %DRY_RUN%==no (
 	call functions\log_with_date.bat "   Launch job 'Temporarily disable system sleep and screensaver'..."
@@ -209,11 +186,6 @@ if /i %DRY_RUN%==no (
 	call functions\log_with_date.bat "   Done."
 )
 
-:: JOB: Add host exclusion to Windows Defender to prevent Telemetry noise
-title Tron v%TRON_VERSION% [stage_0_prep] [HostFileExclusion]
-call functions\log_with_date.bat "   Launch job 'Add Host File Exclusion to Windows Defender'..."
-if /i %DRY_RUN%==no powershell.exe -Command Add-MpPreference -ExclusionPath "c:\Windows\System32\drivers\etc\hosts"
-call functions\log_with_date.bat "   Done."
 
 :: JOB: ProcessKiller
 title Tron v%TRON_VERSION% [stage_0_prep] [ProcessKiller]
@@ -222,6 +194,7 @@ pushd stage_0_prep\processkiller
 if /i %DRY_RUN%==no start "" /wait ProcessKiller.exe /silent
 popd
 call functions\log_with_date.bat "   Done."
+
 
 :: JOB: Set system clock via NTP
 title Tron v%TRON_VERSION% [stage_0_prep] [SetSystemClock]
@@ -263,43 +236,47 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
-:: JOB McAfee Stinger
+
+:: JOB: Trellix Stinger
 SETLOCAL ENABLEDELAYEDEXPANSION
+:: Check if .NET 3.5 is installed, since Stinger relies on it
 %REG% query "hklm\software\microsoft\net framework setup\ndp\v3.5" /v Install 2>nul | %FIND% /i "0x1" >nul 2>&1
 
-:: Validate .NET Installation and OS Environment
-if %ERRORLEVEL%==0 if "%WIN_VER:~0,10%"=="Windows 10" goto :WinNetTrue 
-if not %ERRORLEVEL%==0 if "%WIN_VER:~0,10%"=="Windows 10" goto :WinNetError
-if %ERRORLEVEL%==0 if not "%WIN_VER:~0,10%"=="Windows 10" goto :WinNetUnsupported
-if not %ERRORLEVEL%==0 if not "%WIN_VER:~0,10%"=="Windows 10" goto :WinNetUnsupported
+:: If .NET 3.5 is missing, try to install it (win10 only), otherwise skip Stinger entirely
+if not %ERRORLEVEL%==0 (
 
-:WinNetTrue
-		if /i %DRY_RUN%==no (
-		goto :start_stinger_scan
-)
-:WinNetError
-		if /i %DRY_RUN%==no (
-		call functions\log_with_date.bat " ! .NET installation failed, skipping McAfee Stinger scan."
+	REM If on Win10 try installation
+	if /i "%WIN_VER:~0,10%"=="Windows 10" (
+		call functions\log_with_date.bat "   System is missing .NET 3.5, attempting installation, please wait..."
+		if %DRY_RUN%==no dism.exe /online /enable-feature /featurename:NetFX3 /source:C:sourcessxs /LimitAccess >> "%LOGPATH%\%LOGFILE%" 2>&1
+		if not !ERRORLEVEL!==0  (
+			REM Installation failed, skip Stinger
+			call functions\log_with_date.bat " ! .NET installation failed, skipping Trellix Stinger scan."
+			goto :skip_stinger
+		) else (
+			REM Installation succeeded, run Stinger
+			goto :start_stinger_scan
+		)
+	) else (
+		REM We're on any Windows version that ISN'T 10, so just skip it entirely
+		call functions\log_with_date.bat "   System is missing .NET 3.5, skipping Trellix Stinger scan."
 		goto :skip_stinger
-)
-:WinNetUnsupported
-		if /i %DRY_RUN%==no (
-		call functions\log_with_date.bat "   Unsupported OS, skipping McAfee Stinger scan."
-		goto :skip_stinger
+
+	)
 )
 SETLOCAL DISABLEDELAYEDEXPANSION
-				
-:start_stinger_scan
 
-call functions\log_with_date.bat "   Launch job 'McAfee Stinger'..."
+:start_stinger_scan
+title Tron v%TRON_VERSION% [stage_0_prep] [Trellix Stinger]
+call functions\log_with_date.bat "   Launch job 'Trellix Stinger'..."
 call functions\log_with_date.bat "   Stinger doesn't support text logs, saving HTML log to "%RAW_LOGS%\""
 if /i %DRY_RUN%==no (
 
 	REM Run the scan (CPU architecture dependent)
 	if /i %PROCESSOR_ARCHITECTURE%==AMD64 ( 
-		start /wait stage_0_prep\mcafee_stinger\stinger64.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+		start /wait stage_0_prep\trellix_stinger\stinger64.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
 	) else (
-		start /wait stage_0_prep\mcafee_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
+		start /wait stage_0_prep\trellix_stinger\stinger32.exe --GO --SILENT --PROGRAM --REPORTPATH="%RAW_LOGS%" --DELETE
 	)
 
 	REM Kill off RealProtect and SiteAdvisor in case Stinger side-loaded it (seems to happen only sporadically)
@@ -334,12 +311,28 @@ if /i %DRY_RUN%==no (
 		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
 		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
 	)
+	
+	REM Trellix version (x86 and x64)
+	if exist "%ProgramFiles%\stinger" (
+		taskkill /f /im "stinger*" /t >nul 2>&1
+		rmdir /s /q "%ProgramFiles(x86)%\stinger" >nul 2>&1
+		rmdir /s /q "%ProgramFiles%\stinger" >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\McAfee\RealProtect" /f >nul 2>&1
+		%REG% delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RealProtect" /f >nul 2>&1
+	)
+	
+	REM Kill services
+	sc delete McShield >nul 2>&1
+	sc delete mfefire >nul 2>&1
+	sc delete mfemms >nul 2>&1
 
 	call functions\log_with_date.bat "   Done."
 )
 
+
 :skip_stinger
 SETLOCAL DISABLEDELAYEDEXPANSION
+
 
 :: JOB: TDSS Killer
 title Tron v%TRON_VERSION% [stage_0_prep] [TDSS Killer]
@@ -351,6 +344,7 @@ if /i %DRY_RUN%==no (
 	del "%TEMP%\tdsskiller.log" 2>NUL
 )
 call functions\log_with_date.bat "   Done."
+
 
 :: JOB: Purge oldest shadow copies
 title Tron v%TRON_VERSION% [stage_0_prep] [Purge oldest shadow copies]
