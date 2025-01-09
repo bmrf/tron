@@ -23,7 +23,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=19.00
+set BINARY_VERSION=24.09
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
