@@ -239,7 +239,7 @@ if /i not %EULA_ACCEPTED%==yes (
 	echo  ************************** ANNOYING DISCLAIMER **************************
 	echo  * HEY^^! READ THE INSTRUCTIONS and understand what Tron does, because it  *
 	echo  * does a lot of stuff that, while not harmful, can be annoying if not   *
-	echo  * expected. e.g. wiping temp files, Local Store, cookies, etc. So if    *
+	echo  * expected. e.g. wiping temp files, LocalStore, cookies, etc. So if     *
 	echo  * Tron does something you didn't expect and you didn't read the         *
 	echo  * instructions, it is YOUR FAULT.                                       *
 	echo  *                                                                       *
