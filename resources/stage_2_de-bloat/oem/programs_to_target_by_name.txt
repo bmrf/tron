@@ -3,7 +3,7 @@
 ::                To use a wildcard in a name use double ampersand characters (e.g. ASUS%%)
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.1 + Add additional user-submitted entries
+:: Version:       1.1.2 + Add AmouryCrate to list
 ::                1.0.0 * Convert list to new format to support looping directly from the Stage 2 script. This allows us to override the uninstall block caused by entries in PendingFileRenameOperations
 
 
@@ -32,6 +32,7 @@ AppsHat
 ArcadeParlor
 Ask%%Toolbar
 AtuZi
+ArmouryCrate%%
 AVG%%TuneUp%%
 Baidu PC Faster%%
 Big Fish%%
