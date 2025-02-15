@@ -280,7 +280,15 @@ if /i %DRY_RUN%==no (
 )
 call functions\log_with_date.bat "   Done."
 
-
+title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove HP Easybits]
+:: This command will re-install ALL default Windows 10 apps:
+if exist c:\users\public\desktop\for kids.lnk del c:\users\public\desktop\for kids.lnk
+if exist c:\users\public\desktop\pour les enfants.lnk del c:\users\public\desktop\pour les enfants.lnk
+if exist c:\users\public\desktop\voor kinderen.lnk del c:\users\public\desktop\voor kinderen.lnk
+if exist c:\users\public\desktop\für kinder.lnk del c:\users\public\desktop\für kinder.lnk
+if exist c:\users\public\desktop\para niños.lnk del c:\users\public\desktop\para niños.lnk
+if exist c:\users\public\desktop\per bambini.lnk del c:\users\public\desktop\per bambini.lnk
+call functions\log_with_date.bat "   Done."
 
 :: JOB: Remove default Metro apps (Windows 8 and up)
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove default metro apps]
