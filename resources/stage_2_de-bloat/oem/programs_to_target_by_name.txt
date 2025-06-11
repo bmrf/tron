@@ -8,8 +8,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.1.1
-set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2022-10-27
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_VERSION=1.1.3
+set PROGRAMS_TO_TARGET_BY_NAME_SCRIPT_DATE=2025-06-11
 
 
 
@@ -24,15 +24,15 @@ Adobe%%Shockwave%%
 Advanced%%FX Engine
 Advanced Registry%%
 Akamai%%
-Веселая ферма
-Герои Эллады 2. Олимпия
-Магическая энциклопедия. Лунный свет
-Магнат курортов
-Масяня в полной Африке
-Мои HP Игры
-Натали Брукс. Тайны одноклассников
-Сага о вампире. Добро пожаловать в Hell Lock
-Сокровища Монтесумы 3
+Веселая ферма%%
+Герои Эллады 2. Олимпия%%
+Магическая энциклопедия. Лунный свет%%
+Магнат курортов%%
+Масяня в полной Африке%%
+Мои HP Игры%%
+Натали Брукс. Тайны одноклассников%%
+Сага о вампире. Добро пожаловать в Hell Lock%%
+Сокровища Монтесумы 3%%
 Altnet
 Amazon Browser%%
 Any Video Converter%%
