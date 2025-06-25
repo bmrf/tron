@@ -20,7 +20,7 @@ I got tired of running these utilities manually and decided to just script every
 
 6. [Changing Defaults](#change-defaults-advanced)
 
-7. [Executing Custom/3rd-party Scripts](#executing-3rd-party-custom-scripts)
+7. [Executing custom/3rd-party Scripts](#executing-3rd-party-custom-scripts)
 
 8. [Executing bundled WSUS Offline updates](#executing-bundled-wsus-offline-updates)
 
