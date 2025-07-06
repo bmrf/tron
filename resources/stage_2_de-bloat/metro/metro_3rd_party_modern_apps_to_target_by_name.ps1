@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.7.5 + Add additional user-submitted entries
+Version:       1.7.6 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.5"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2025-01-09"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.6"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2025-07-06"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -129,6 +129,7 @@ Remove-App "24712m1dfmmengesha.TestFrameworkBackpublish050515"
 Remove-App "24712m1dfmmengesha.TestFrameworkwin81appxneutral06"
 Remove-App "24712m1dfmmengesha.mxtest2"
 Remove-App "24728AkshatKumarSingh.30376E696B184"
+Remove-App "24862ThomasDao.UpNote"
 Remove-App "25231MatthiasShapiro.BrickInstructions"
 Remove-App "25529kineapps.MyCalendar"
 Remove-App "25841LowtechStudios.io.Slither.io"
@@ -173,6 +174,7 @@ Remove-App "32004CLEVERBIT.49301721A13B4"
 Remove-App "32443PocketNet.Paper.io"
 Remove-App "32573MMSoftware.MyMP4toMP3Converter"
 Remove-App "32669SamG.ModernFlyouts"
+Remove-App "32739DavidXanatos.UpdateManagerforWindows"
 Remove-App "32940RyanW.Fiorini.BeyonceUltimate"
 Remove-App "32940RyanW.Fiorini.PinkUltimate"
 Remove-App "32988BernardoZamora.BackgammonPro"
@@ -622,6 +624,7 @@ Remove-App "HPConnectedMusic*"
 Remove-App "HPConnectedPhotopoweredbySnapfish*"
 Remove-App "HPRegistration*"
 Remove-App "HeatmiserUK.HeatmiserNeo"
+Remove-App "Hiddify.HiddifyNext"
 Remove-App "HoodedHorse.ManorLords"
 Remove-App "HuluLLC.HuluPlus*"
 Remove-App "ICEpower.AudioWizard"
@@ -697,6 +700,7 @@ Remove-App "PublicationsInternational.iCookbookSE*"
 Remove-App "RVAppStudios.PicstoWordPro-WordGames"
 Remove-App "RandomSaladGamesLLC.GinRummyProforHP*"
 Remove-App "RandomSaladGamesLLC.HeartsforHP"
+Remove-App "Rayen.RyTuneX"
 Remove-App "ReaderNotificationClient"
 Remove-App "RealFightingLLC.JurassicCityWalk"
 Remove-App "RealtekSemiconductorCorp.HPAudioControl"
@@ -723,6 +727,7 @@ Remove-App "STMicroelectronicsMEMS.DellFreeFallDataProtection"
 Remove-App "ScreenovateTechnologies.AlienwareMobileConnect"
 Remove-App "ScreenovateTechnologies.DellMobileConnect"
 Remove-App "ScreenovateTechnologies.DellMobileConnectPlus"
+Remove-App "Seelen.SeelenUI"
 Remove-App "SegaNetworksInc.56538047DFC80"
 Remove-App "SenaryTechnologyLimited.SenarySmartAudio"
 Remove-App "ShazamEntertainmentLtd.Shazam*"
@@ -865,6 +870,7 @@ Remove-App "www.primevideo.com-4A8A3C0C"
 Remove-App "www.reddit.com-A180F948"
 Remove-App "www.robotitus.com-360F6BC"
 Remove-App "www.skillshare.com-E516E82C"
+Remove-App "www.tiktok.com-42B672B6"
 Remove-App "www.twitch.tv-7A868999"
 Remove-App "www.uniquehomestays.com-847F70B0"
 Remove-App "www.urbandictionary.com-668FDB9"
