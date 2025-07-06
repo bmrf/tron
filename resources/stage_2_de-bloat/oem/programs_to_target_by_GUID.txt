@@ -3,7 +3,7 @@
 ::                Any line that starts with ":: " or the word "set" will be ignored
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ), PGP key: 0x07d1490f82a211a2
-:: Version:       2.0.9 + Add additional user-submitted entries
+:: Version:       2.1.0 + Add additional user-submitted entries
 ::                <outdated changelog comments omitted>
 ::                1.0.0 + Add script version and date variables to support automatic updates at Tron runtime
 
@@ -11,8 +11,8 @@
 
 
 :: PREP
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.0.9
-set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2025-06-11
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_VERSION=2.1.0
+set PROGRAMS_TO_TARGET_BY_GUID_SCRIPT_DATE=2025-07-11
 
 
 :: GUID LIST
@@ -6147,6 +6147,9 @@ wmic product where name="Dell Protected Workspace" call uninstall /nointeractive
 
 :: HID Monitor
 {2FB493E5-EE80-4236-AEBD-D06F56446C02}
+
+:: Honeygain
+{AB2A0F4C-A18E-4F8F-8FCE-C510D13946E6}
 
 :: HowToGuide
 {36580EEB-4EDF-4880-BBD4-097E2C645ECD}
