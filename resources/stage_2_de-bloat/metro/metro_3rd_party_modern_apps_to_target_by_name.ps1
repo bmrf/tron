@@ -835,7 +835,7 @@ Remove-App "dashboard.honeygain.com-428F5130"
 Remove-App "dashradio.com-9C6DEE15"
 Remove-App "de.crazygames.com-566E88D8"
 Remove-App "de.crazygames.com-5E59F8A4"
-Remove-App "de.crazygames.com-E1935D59'
+Remove-App "de.crazygames.com-E1935D59"
 Remove-App "de.crazygames.com-FB40E42E"
 Remove-App "eBayInc.eBay*"
 Remove-App "esobiIncorporated.newsXpressoMetro*"
