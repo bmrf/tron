@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded 3rd-party Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.7.7 + Add additional user-submitted entries
+Version:       1.7.8 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.7"
-$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2025-08-30"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.7.8"
+$METRO_3RD_PARTY_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2026-04-08"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -213,7 +213,7 @@ Remove-App "40459File-New-Project.EarTrumpet"
 Remove-App "40517HUTStudio.Rider"
 Remove-App "40538vasetest101.TESTFRAMEWORKABO2"
 Remove-App "41038AXILESOFT.ACGMEDIAPLAYER"
-Remove-App "41747ArnoKlenke.CPUPulse
+Remove-App "41747ArnoKlenke.CPU"
 Remove-App "41879VbfnetApps.FileDownloader"
 Remove-App "41879VbfnetApps.MyIPTVPlayer"
 Remove-App "42384ReddysSoftware.UDP-SenderReciever"
