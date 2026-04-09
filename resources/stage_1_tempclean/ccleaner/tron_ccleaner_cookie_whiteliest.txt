@@ -9,6 +9,7 @@ Altering anything here will have no effect; you need to launch CCleaner and edit
 *capitalone360.com
 *chase.com
 *facebook.com
+*fidelity.com
 *github.com
 *gmail.com
 *hbonow.com
@@ -28,6 +29,7 @@ accounts.spotify.com
 aol.com
 c.paypal.com
 facebook.com
+fidelity.com
 google.com
 hsbc.com
 lastpass.com
