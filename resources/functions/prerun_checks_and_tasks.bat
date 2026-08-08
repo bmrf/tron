@@ -150,7 +150,7 @@ pushd stage_6_optimize\defrag\
 
 	:: Look for known problem codes and set skip_defrag if so
 	set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
-	for /f %%i in ('^<NUL %WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
+	for /f %%i in ('%WMIC_COMPAT% DiskDriveStatus') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
 		set SMART_PROBLEM_CODE=%%i
 		set SKIP_DEFRAG=yes_disk_smart_problem_code
 		set WARNINGS_DETECTED=yes_disk_smart_problem_code
@@ -162,10 +162,7 @@ popd
 
 
 :: TASK: Get free space on the system drive and stash it for comparison later
-for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-set bytes=%bytes: =%
-:: MB version
-set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
+for /f %%a in ('%WMIC_COMPAT% DriveFreeMb %SystemDrive%') do set FREE_SPACE_BEFORE=%%a
 
 :: These two lines were the old code for checking disk space. fsutil output changed in Win10 build 17763 (1809) which broke these two methods.
 :: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a

@@ -144,10 +144,9 @@ title Tron v%TRON_VERSION% [stage_0_prep] [Analyze System State]
 call functions\log_with_date.bat "   Generating pre-run system profile..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
-	if %PROCESSOR_ARCHITECTURE%==x86 start stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
-	if %PROCESSOR_ARCHITECTURE%==AMD64 start stage_0_prep\log_tools\siv\siv64x.exe -save=[software]="%RAW_LOGS%\installed-programs-before.txt"
+	%WMIC_COMPAT% ProductDump > "%RAW_LOGS%\installed-programs-before.txt" 2>NUL
 	:: Get list of all files on system
-	stage_0_prep\log_tools\everything\everything.exe -create-filelist "%RAW_LOGS%\filelist-before.txt" %SystemDrive%
+	%WMIC_COMPAT% CreateFileList "%RAW_LOGS%\filelist-before.txt" %SystemDrive% >> "%LOGPATH%\%LOGFILE%" 2>&1
 )
 call functions\log_with_date.bat "   Done."
 
@@ -156,9 +155,7 @@ call functions\log_with_date.bat "   Done."
 title Tron v%TRON_VERSION% [stage_0_prep] [GUID dump]
 call functions\log_with_date.bat "   Dumping GUID list to "%RAW_LOGS%"..."
 if /i %DRY_RUN%==no (
-	<NUL %WMIC% product get identifyingnumber,name,version /all > "%TEMP%\wmic_dump_temp.txt" 2>NUL
-	type "%TEMP%\wmic_dump_temp.txt" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
-	del /f /q "%TEMP%\wmic_dump_temp.txt" 2>nul
+	%WMIC_COMPAT% ProductDump > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
 )
 call functions\log_with_date.bat "   Done."
 
@@ -216,7 +213,7 @@ title Tron v%TRON_VERSION% [stage_0_prep] [Check+Fix WMI]
 call functions\log_with_date.bat "   Launch job 'Check WMI health'..."
 SETLOCAL ENABLEDELAYEDEXPANSION
 if /i %DRY_RUN%==no (
-	<NUL %WMIC% timezone >NUL
+	%WMIC_COMPAT% TimeZoneName >NUL
 	if /i not !ERRORLEVEL!==0 (
 		call functions\log_with_date.bat "!  WMI appears to be broken. Calling WMI repair sub-script."
 		call functions\log_with_date.bat "              This will take time, please be patient..."

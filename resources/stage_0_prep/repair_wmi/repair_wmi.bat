@@ -35,7 +35,7 @@ set ATTEMPT=0
 
 :BEGINCHK
 echo CHECKING WMI... ATTEMPT:%ATTEMPT%...
-wmic computersystem get name
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\..\functions\wmic_compat.ps1" WmiCheck
 IF %ERRORLEVEL%==0 goto SUCCESS
 IF %ATTEMPT%==0 GOTO REPAIR1
 IF %ATTEMPT%==1 GOTO REPAIR2

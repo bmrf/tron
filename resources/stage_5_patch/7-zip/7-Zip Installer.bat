@@ -34,7 +34,7 @@ set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip
 set VERSION=1.2.3-TRON
 set UPDATED=2020-06-30
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+FOR /f %%a in ('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "..\..\functions\wmic_compat.ps1" LocalDateTime ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Get into the correct directory
@@ -47,7 +47,7 @@ pushd "%~dp0"
 :: Uninstall other versions of 7-zip
 IF EXIST "%ProgramFiles%\7-Zip\Uninstall.exe" "%ProgramFiles%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
 IF EXIST "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
-wmic product where "name like '7-Zip%%'" uninstall /nointeractive
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "..\..\functions\wmic_compat.ps1" UninstallProductLike "7-Zip%%"
 
 
 :: Detect system architecture and install appropriate version

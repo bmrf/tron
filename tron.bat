@@ -101,6 +101,7 @@ if exist tron_stage.txt (
 if exist tron_stage.txt call :parse_cmdline_args %RESUME_SWITCHES%
 if exist tron_stage.txt (
 	call functions\log_with_date.bat "! Incomplete run detected. Resuming at %RESUME_STAGE% using switches %RESUME_SWITCHES%..."
+	set RESUME_DETECTED=yes
 	REM We can assume Caffeine isn't running (keeps system awake) if we're resuming, so go ahead and re-launch it before jumping to our stage
 	start "" stage_0_prep\caffeine\caffeine.exe -noicon
 	goto %RESUME_STAGE%
@@ -217,7 +218,7 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WIN_VER_NUM:            %WIN_VER_NUM%
-	echo    WMIC:                   %WMIC%
+	echo    WMIC_COMPAT:            %WMIC_COMPAT%
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
 )
@@ -743,7 +744,7 @@ ENDLOCAL
 :::::::::::::::
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
-for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+for /f %%a in ('%WMIC_COMPAT% LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 

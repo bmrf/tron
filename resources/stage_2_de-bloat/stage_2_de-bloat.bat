@@ -83,11 +83,19 @@ if /i "%LOGFILE%"=="" (
 
 	set STANDALONE=yes
 )
-:: Do the GUID dump that some portions below rely on. We have to run the file through the 'type' command to convert the output from UCS-2 Little Endian to UTF-8/ANSI so the for loops below can read it
-if %STANDALONE%==yes (
-	<NUL %WMIC% product get identifyingnumber,name,version /all > "%TEMP%\wmic_dump_temp.txt" 2>NUL
-	type "%TEMP%\wmic_dump_temp.txt" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
-	del /f /q "%TEMP%\wmic_dump_temp.txt" 2>nul
+:: Do the GUID dump that some portions below rely on.
+set "GUID_DUMP=%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt"
+if not exist "%RAW_LOGS%" mkdir "%RAW_LOGS%" >NUL 2>&1
+if %STANDALONE%==yes if /i %DRY_RUN%==no (
+	%WMIC_COMPAT% ProductDump > "%GUID_DUMP%" 2>NUL
+)
+if not exist "%GUID_DUMP%" (
+	call functions\log_with_date.bat "!  GUID dump missing. Regenerating installed-program GUID list..."
+	if /i %DRY_RUN%==no %WMIC_COMPAT% ProductDump > "%GUID_DUMP%" 2>NUL
+)
+if not exist "%GUID_DUMP%" (
+	call functions\log_with_date.bat "!  Unable to generate GUID dump. GUID-based removals will be skipped."
+	echo IdentifyingNumber  Name  Version> "%GUID_DUMP%"
 )
 
 
@@ -125,7 +133,7 @@ if /i %DRY_RUN%==no (
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
 	REM Loop through the local GUID dump and see if any GUIDs match from the target list
-	for /f "tokens=1" %%a in (%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt) do (
+	for /f "usebackq tokens=1" %%a in ("%GUID_DUMP%") do (
 		for /f "tokens=1" %%j in (stage_2_de-bloat\oem\programs_to_target_by_GUID.txt) do (
 			if /i %%j==%%a (
 
@@ -171,7 +179,7 @@ if /i %DRY_RUN%==no (
 	SETLOCAL ENABLEDELAYEDEXPANSION
 
 	REM Loop through the local GUID dump and see if any GUIDs match from the target list
-	for /f "tokens=1" %%a in (%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt) do (
+	for /f "usebackq tokens=1" %%a in ("%GUID_DUMP%") do (
 		for /f "tokens=1" %%j in (stage_2_de-bloat\oem\toolbars_BHOs_to_target_by_GUID.txt) do (
 			if /i %%j==%%a (
 
@@ -228,7 +236,7 @@ if /i %DRY_RUN%==no (
 
 			REM Do the removal
 			if /i %VERBOSE%==yes echo    %%i
-			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>&1
+			%WMIC_COMPAT% UninstallProductLike "%%i">> "%LOGPATH%\%LOGFILE%" 2>&1
 
 			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
