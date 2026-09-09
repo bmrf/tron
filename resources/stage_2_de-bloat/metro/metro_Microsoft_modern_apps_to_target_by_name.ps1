@@ -4,7 +4,7 @@ Purpose:       Script to remove many of the pre-loaded Microsoft Metro "modern a
 Requirements:  1. Administrator access
                2. Windows 8 and up
 Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-Version:       1.3.9 + Add additional user-submitted entries
+Version:       1.4.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -12,8 +12,8 @@ $ErrorActionPreference = "SilentlyContinue"
 ########
 # PREP #
 ########
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.3.9"
-$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2023-09-05"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_VERSION = "1.4.1"
+$METRO_MICROSOFT_MODERN_APPS_TO_TARGET_BY_NAME_SCRIPT_DATE = "2026-09-09"
 
 # Needed for Removal
 $AppxPackages = Get-AppxProvisionedPackage -online | select-object PackageName,Displayname
@@ -68,6 +68,7 @@ Remove-App "Microsoft.BingTravel"                      # Travel app
 Remove-App "Microsoft.BioEnrollment"
 Remove-App "Microsoft.ConnectivityStore"
 Remove-App "Microsoft.DiagnosticDataViewer"
+Remove-App "Microsoft.Edge.GameAssist"
 Remove-App "Microsoft.ForzaHorizon3Demo"
 Remove-App "Microsoft.ForzaMotorsport7Demo"
 Remove-App "Microsoft.FrenchRiviera"
@@ -95,9 +96,11 @@ Remove-App "Microsoft.LanguageExperiencePackvi-VN"
 Remove-App "Microsoft.LanguageExperiencePackzh-CN"
 Remove-App "Microsoft.LanguageExperiencePackzh-TW"
 Remove-App "Microsoft.Lucille"                         # "Browser Choice" screen required by the EU antitrust regulation
+Remove-App "Microsoft.M365Companions"
 Remove-App "Microsoft.Messaging"                       # Messaging app
 Remove-App "Microsoft.MicrosoftJackpot"                # Jackpot app
 Remove-App "Microsoft.MicrosoftJigsaw"                 # Jigsaw app
+Remove-App "Microsoft.MicrosoftJournal"
 Remove-App "Microsoft.MicrosoftMahjong"                # Advertising framework
 Remove-App "Microsoft.MicrosoftOfficeHub"
 Remove-App "Microsoft.MicrosoftPowerBIForWindows"      # Power BI app - Business analytics
