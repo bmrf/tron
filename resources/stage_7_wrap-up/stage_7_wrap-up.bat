@@ -58,43 +58,11 @@ title Tron v%TRON_VERSION% [stage_7_wrap-up] [Generate Summary Logs]
 call functions\log_with_date.bat "   Calculating post-run results for summary logs..."
 if /i %DRY_RUN%==no (
 	:: Get list of installed programs
-	stage_0_prep\log_tools\siv\siv32x.exe -save=[software]="%RAW_LOGS%\installed-programs-after.txt"
+	%WMIC_COMPAT% ProductDump > "%RAW_LOGS%\installed-programs-after.txt" 2>NUL
 	:: Get list of all files
-	stage_0_prep\log_tools\everything\everything.exe -create-filelist %RAW_LOGS%\filelist-after.txt %SystemDrive%
-
-		REM Parse everything
-
-		REM Step 1: Find FILES that were deleted and dump them to summary logs
-		stage_0_prep\log_tools\comm\diff.exe --changed-group-format='%%^<' --unchanged-group-format='' %RAW_LOGS%\filelist-before.txt %RAW_LOGS%\filelist-after.txt | %FIND% /i /v "$RECYCLE" | %FIND% /i /v "AppData\" | %FIND% /i /v "ntuser.dat" | %find% /i /v "Filename,Size" | %find% /i /v "'''" > "%TEMP%\tron_diff_temp.txt"
-
-		REM Strip out random one-apostrophe lines
-		findstr /v /r "^'" "%TEMP%\tron_diff_temp.txt" > %SUMMARY_LOGS%\tron_removed_files.txt
-
-		REM Step 2: Find PROGRAMS that were removed. This is super ugly and complicated, but lets us avoid bundling another external utility
-		REM Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
-		copy /y %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\before.txt >NUL
-		for /f "delims=" %%a in (%RAW_LOGS%\before.txt) do echo %%a>> %RAW_LOGS%\before1.txt
-		more +3 %RAW_LOGS%\before1.txt >> %RAW_LOGS%\before2.txt
-		%FINDSTR% /v /i "[==" %RAW_LOGS%\before2.txt > %RAW_LOGS%\installed-programs-before.txt
-
-		REM AFTER: Compact the files by removing blank lines, stripping top 4 lines off file, then last two lines, then output to the final text file for comparison
-		copy /y %RAW_LOGS%\installed-programs-after.txt %RAW_LOGS%\after.txt >NUL
-		for /f "delims=" %%a in (%RAW_LOGS%\after.txt) do echo %%a>> %RAW_LOGS%\after1.txt
-		more +3 %RAW_LOGS%\after1.txt >> %RAW_LOGS%\after2.txt
-		%FINDSTR% /v /i "[==" %RAW_LOGS%\after2.txt > %RAW_LOGS%\installed-programs-after.txt
-
-		REM Calculate differences, using GnuWin32 coreutil's comm.exe
-		stage_0_prep\log_tools\comm\comm.exe -23 %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt > %SUMMARY_LOGS%\tron_removed_programs.txt
-
-		REM If the parsed file is the same as the original, we can assume nothing was removed, so just echo that into the file
-		fc /b %RAW_LOGS%\installed-programs-before.txt %RAW_LOGS%\installed-programs-after.txt >NUL
-		if %ERRORLEVEL%==0 echo No programs were removed.> %SUMMARY_LOGS%\tron_removed_programs.txt
-
-		REM Cleanup
-		del /f /q "%TEMP%\tron_diff_temp.txt" 2>NUL
-		del /f /q %RAW_LOGS%\before*txt 2>NUL
-		del /f /q %RAW_LOGS%\after*txt 2>NUL
-	)
+	%WMIC_COMPAT% CreateFileList "%RAW_LOGS%\filelist-after.txt" %SystemDrive% >> "%LOGPATH%\%LOGFILE%" 2>&1
+	%WMIC_COMPAT% GenerateSummaries "%RAW_LOGS%" "%SUMMARY_LOGS%" >> "%LOGPATH%\%LOGFILE%" 2>&1
+)
 call functions\log_with_date.bat "   Done. Summary logs are at "%SUMMARY_LOGS%\""
 
 
@@ -131,14 +99,13 @@ call functions\log_with_date.bat "   Done."
 
 :: JOB: Calculate saved disk space
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
-for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-set bytes=%bytes: =%
+for /f %%a in ('%WMIC_COMPAT% DriveFreeMb %SystemDrive%') do set FREE_SPACE_AFTER=%%a
 
 :: Old method (broken in Win10 build 17763 (1809) and up)
 :: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
 
 :: GB version of the calculation
-set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024/1024
+::set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024/1024
 
 :: MB version of the calculation
 ::set /a FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024

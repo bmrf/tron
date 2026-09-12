@@ -34,19 +34,19 @@ set WIN_VER_NUM=undetected
 
 
 :: Force path to some system utilities in case the system PATH is messed up
-set WMIC=%SystemRoot%\System32\wbem\wmic.exe
+set WMIC_COMPAT=powershell.exe -NoProfile -ExecutionPolicy Bypass -File "functions\wmic_compat.ps1"
 set FIND=%SystemRoot%\System32\find.exe
 set FINDSTR=%SystemRoot%\System32\findstr.exe
 set REG=%SystemRoot%\System32\reg.exe
 
 
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd)
-for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+for /f %%a in ('%WMIC_COMPAT% LocalDateTime ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 
 :: Get Time Zone name and value
-for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
+for /f "USEBACKQ delims=" %%i IN (`%WMIC_COMPAT% TimeZoneName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
 
 
 :: Resume-related stuff (resuming from an interrupted run)
