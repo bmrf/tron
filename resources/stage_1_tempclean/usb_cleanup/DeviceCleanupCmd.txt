@@ -1,0 +1,118 @@
+
+DeviceCleanupCmd V1.5.1 - removes non present Devices from the device tree
+Freeware by Uwe Sieber (c) 2007-2025
+
+Commandline tool which removes non present devices from the device tree
+which match one of the given patterns.
+
+
+Works under Window 2000, XP, Vista, Windows 7, 8, 10, 11 and their Server versions
+
+Under x64 edtitions of Windows only the x64 version can remove devices.
+
+
+
+Usage:
+
+DeviceCleanupCmd pattern1 [pattern2] [patternN] [-e:excludepattern1] [-t] [-s] [-m:min-age] [-v] [-n]
+
+-e:excludepattern  pattern not to remove (one -e:xxx for each)
+-t  test only
+-s  skip creation of a system restore point
+-b  clean non-connected Bluetooth devices too
+-bo clean non-connected Bluetooth devices only
+-m  minimum age of devices to remove
+-v  verbose mode
+-n  no wait for key press when finished
+
+patterns are device IDs, device classes or friendly names. Wildcards can be used.
+
+Samples:
+
+remove all non present devices whose device IDs begin with HID\VID_045E
+DeviceCleanupCmd HID\VID_045E*
+
+remove all non present devices whose device IDs contain VID_045E&PID_1234
+DeviceCleanupCmd "*VID_045E&PID_1234*"
+(Because of the contained & character the ID must be enclosed in quotation marks.)
+
+remove all bluetooth devices but not COM9 and COM10
+DeviceCleanupCmd BTH* -e:"* (COM9)" -e:"* (COM10)"
+(Because of the contained space character the string must be enclosed in quotation marks.)
+
+remove all non present devices whose device class is Media
+DeviceCleanupCmd Media
+
+remove all non present devices
+DeviceCleanupCmd *
+
+remove all non present devices not used for at least one year
+DeviceCleanupCmd * -m:1y
+
+Units are y - year, m - month, d - days, h - hours, i - minutes, s - seconds
+
+Test mode (shows which devices would be removed)
+DeviceCleanupCmd * -t
+
+Non-PnP devices and 'soft' devices are not deleted because they might not automatically
+re-installed. These are devices whose ID begins with
+- HTREE\ROOT\
+- ROOT\
+- SWD\
+- SW\{
+
+If you want to delete them, use a pattern that begins with one of these strings.
+Or use the GUI version of DeviceCleanup.
+
+By default a System Restore Point (SRP) is created before the first device is removed
+(provided Windows has a System Restore).
+Since Windows 8 only one SRP within 24 hours can be created. For any further the API
+pretends to have created one but did nothing in fact.
+This can be overruled by setting the registry value SystemRestorePointCreationFrequency under
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore to a minimal
+allowed interval in minutes, 0 disables the blocking completely.
+When creating a System Restore Point, DeviceCleanup sets this value to 0 temporarily.
+
+
+If the last device using a certain COM-port is removed then the reservation under
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\COM Name Arbiter
+is removed.
+Since Windows 10 version 1903 there is a sub-key "Devices" where Windows tries to keeps track of
+COM-ports and their devices. Windows uses this to remove the reservation when a COM-port device
+is uninstalled. Finally after 25 years. Of course Windows does not check for other devices
+which use the same COM port. DeviceCleanupCmd does.
+
+
+Since V1.5 it can remove non-connected Bluetooth devices. When doing so Windows removes
+all devices derived from this Bluetooth device from the device manager.
+
+
+
+Administrator privileges are required for cleanup.
+
+A GUI version is available too:
+https://www.uwe-sieber.de/misc_tools_e.html#devicecleanup
+
+
+
+Licence: Freeware
+
+Allowed:
+- usage in any environment, including commercial
+- include in software products, including commercial
+- include on CD/DVD of computer magazines
+- making available for download by means of package managers
+
+Not allowed:
+- modify any of the files
+- offer for download by means of a "downloader" software
+
+
+
+Uwe Sieber
+September 2025
+
+
+
+
+
