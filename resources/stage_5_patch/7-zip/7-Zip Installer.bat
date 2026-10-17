@@ -23,7 +23,7 @@
 :: VARIABLES :: -- Set these to your desired values
 :::::::::::::::
 :: Package to install. Do not use trailing slashes (\)
-set BINARY_VERSION=24.09
+set BINARY_VERSION=26.04
 set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip"
 
 
@@ -33,8 +33,14 @@ set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip
 @echo off
 set VERSION=1.2.3-TRON
 set UPDATED=2020-06-30
+:: PowerShell engine variables are normally inherited from Tron's initialize_environment.bat. If run standalone, default to Windows PowerShell
+if not defined PS_WMI_MODE (
+	set PS_CMD="%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+	set PS_GET=Get-WmiObject
+	set PS_WMI_MODE=wmi
+)
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
-FOR /f %%a in ('WMIC OS GET LocalDateTime ^| find "."') DO set DTS=%%a
+FOR /f %%a in ('^<NUL %PS_CMD% "$d = (%PS_GET% Win32_OperatingSystem).LocalDateTime; if ($d -is [DateTime]) { $d.ToString('yyyyMMddHHmmss', [Globalization.CultureInfo]::InvariantCulture) + '.000000' } else { $d }" ^| find "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 :: Get into the correct directory
@@ -47,7 +53,9 @@ pushd "%~dp0"
 :: Uninstall other versions of 7-zip
 IF EXIST "%ProgramFiles%\7-Zip\Uninstall.exe" "%ProgramFiles%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
 IF EXIST "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
-wmic product where "name like '7-Zip%%'" uninstall /nointeractive
+:: Equivalent of: wmic product where "name like '7-Zip%%'" uninstall /nointeractive
+if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $p = @(Get-WmiObject Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (' + $o.__RELPATH + ')->Uninstall()'; 'ReturnValue = ' + $o.Uninstall().ReturnValue + ';' }; exit 0"
+if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $p = @(Get-CimInstance Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (Win32_Product.IdentifyingNumber=''' + $o.IdentifyingNumber + ''')->Uninstall()'; 'ReturnValue = ' + (Invoke-CimMethod -InputObject $o -MethodName Uninstall).ReturnValue + ';' }; exit 0"
 
 
 :: Detect system architecture and install appropriate version
