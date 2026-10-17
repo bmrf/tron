@@ -205,11 +205,11 @@ title Tron v%TRON_VERSION% [stage_1_tempclean] [USB Device Cleanup]
 call functions\log_with_date.bat "   Launch job 'USB Device Cleanup'..."
 if /i %DRY_RUN%==no (
 	if /i %PROCESSOR_ARCHITECTURE%==AMD64 (
-		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x64.exe" * -m:3m -v -t
-		"stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x64.exe" * -m:3m -t >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x64.exe" * -m:3m -v -s
+		"stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x64.exe" * -m:3m -s >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	) else (
-		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x86.exe" * -m:3m -v -t
-		"stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x86.exe" * -m:3m - >> "%LOGPATH%\%LOGFILE%" 2>NUL
+		if %VERBOSE%==yes "stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x86.exe" * -m:3m -v -s
+		"stage_1_tempclean\usb_cleanup\DeviceCleanupCmd x86.exe" * -m:3m -s >> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
 )
 call functions\log_with_date.bat "   Done."
