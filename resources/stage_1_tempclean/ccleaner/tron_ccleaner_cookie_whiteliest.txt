@@ -44,6 +44,7 @@ www.google.com
 www.lastpass.com
 www.netflix.com
 www.paypal.com
+www.hulu.com
 yahoo.com
 pinterest.com
 tds.net
