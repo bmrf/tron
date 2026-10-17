@@ -6,7 +6,8 @@
 ::                  - win10-unfu**k: https://github.com/dfkt/win10-unfuck
 ::                  - WindowsLies:   https://github.com/WindowsLies/BlockWindows
 ::                  - ... and many other places around the web
-:: Version:       1.3.2-TRON + Add additional Diagtrack-Listener registry location for disabling. Thanks to github:starmania
+:: Version:       1.3.3-TRON - Remove null-route code sections that were more relevant circa 2016
+::                1.3.2-TRON + Add additional Diagtrack-Listener registry location for disabling. Thanks to github:starmania
 ::                1.3.1-TRON - Windows Updates: remove outdated job that used to uninstall "bad" updates
 ::                           + bugfix: Add registry entry to re-enable the webcam in the rare case where O&OShutUp10 disables it
 ::                1.3.0-TRON ! bugfix: Switch "manual" to "demand" on service startup changes
@@ -49,13 +50,12 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 @echo off
-set SCRIPT_VERSION=1.3.2-TRON
-set SCRIPT_UPDATED=2022-10-23
+set SCRIPT_VERSION=1.3.3-TRON
+set SCRIPT_UPDATED=2026-10-17
 
 :: Populate dependent variables if we didn't inherit them from Tron (standalone execution)
 set STANDALONE=no
 if /i "%LOGPATH%"=="" (
-	set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 	set FIND=%SystemRoot%\System32\find.exe
 	set FINDSTR=%SystemRoot%\System32\findstr.exe
 	set REG=%SystemRoot%\System32\reg.exe
@@ -375,237 +375,6 @@ if %STANDALONE%==no (
 :: Reg fix for the rare case where O&OShutUp10 disables the webcam. 64-bit version is first, 32-bit version is second
 if %PROCESSOR_ARCHITECTURE%==AMD64 reg add "HKEY_LOCAL_Machine\SOFTWARE\WOW6432Node\Microsoft\Windows Media Foundation\Platform" /f /v EnableFrameServerMode /t REG_SZ /d 0 >> "%LOGPATH%\%LOGFILE%" 2>&1
 reg add "HKEY_LOCAL_Machine\SOFTWARE\Microsoft\Windows Media Foundation\Platform" /f /v EnableFrameServerMode /t REG_SZ /d 0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-
-if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
-
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::
-:: NULL ROUTE BAD HOSTS
-if %STANDALONE%==no (
-	call functions\log.bat "     Null-routing bad hosts, please wait..."
-) else (
-	echo "Null-routing bad hosts, please wait..."
-)
-
-:: Run this command to flush ALL routes IMMEDIATELY. It will delete your default route so you'll need to reboot or do an ipconfig /release & ipconfig /renew to get back online
-::route -f
-
-:: Run this command to clear persistent routes only, takes effect at reboot. This will undo all the below changes
-::%REG% delete HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\PersistentRoutes /va /f
-
-:: The reason we can't do this via firewall ACL entries or host file entries is because Windows maliciously ignores any rules blocking access to telemetry servers.
-:: Currently the only known solution is installing null-routes in the route table.
-
-if "%VERBOSE%"=="yes" (
-	:: a-0001.a-msedge.net
-	route -p add 204.79.197.200/32 0.0.0.0
-	:: a23-218-212-69.deploy.static.akamaitechnologies.com
-	route -p add 23.218.212.69/32 0.0.0.0
-	:: a.ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0
-	route -p add 8.253.14.126/32 0.0.0.0
-	route -p add 8.254.25.126/32 0.0.0.0
-	:: a.ads2.msads.net
-	route -p add 93.184.215.200/32 0.0.0.0
-	:: a.ads2.msn.com
-	route -p add 198.78.194.252/32 0.0.0.0
-	route -p add 198.78.209.253/32 0.0.0.0
-	route -p add 8.254.23.254/32 0.0.0.0
-	:: ac3.msn.com
-	route -p add 131.253.14.76/32 0.0.0.0
-	:: ads1.msads.net
-	route -p add 23.201.58.73/32 0.0.0.0
-	:: ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0
-	route -p add 8.253.14.126/32 0.0.0.0
-	route -p add 8.254.25.126/32 0.0.0.0
-	:: adsmockarc.azurewebsites.net
-	route -p add 191.236.16.12/32 0.0.0.0
-	:: ads.msn.com
-	route -p add 157.56.91.82/32 0.0.0.0
-	:: auth.gfx.ms
-	route -p add 23.61.72.70/32 0.0.0.0
-	:: b.ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0
-	route -p add 8.253.14.126/32 0.0.0.0
-	route -p add 8.254.25.126/32 0.0.0.0
-	:: b.ads2.msads.net
-	route -p add 93.184.215.200/32 0.0.0.0
-	:: df.telemetry.microsoft.com
-	route -p add 65.52.100.7/32 0.0.0.0
-	:: help.bingads.microsoft.com
-	route -p add 207.46.202.114/32 0.0.0.0
-	:: oca.telemetry.microsoft.com
-	route -p add 65.55.252.63/32 0.0.0.0
-	:: oca.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.63/32 0.0.0.0
-	:: pre.footprintpredict.com
-	route -p add 204.79.197.200/32 0.0.0.0
-	:: reports.wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.91/32 0.0.0.0
-	:: sb.scorecardresearch.com
-	route -p add 104.79.156.195/32 0.0.0.0
-	:: services.wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.92/32 0.0.0.0
-	:: settings-win.data.microsoft.com
-	route -p add 65.55.44.108/32 0.0.0.0
-	:: s.gateway.messenger.live.com
-	route -p add 157.56.106.210/32 0.0.0.0
-	:: sgmetrics.cloudapp.net
-	route -p add 168.62.11.145/32 0.0.0.0
-	:: spynet2.microsoft.com
-	route -p add 23.96.212.225/32 0.0.0.0
-	:: spynetalt.microsoft.com
-	route -p add 23.96.212.225/32 0.0.0.0
-	:: sqm.df.telemetry.microsoft.com
-	route -p add 65.52.100.94/32 0.0.0.0
-	:: sqm.telemetry.microsoft.com
-	route -p add 65.55.252.93/32 0.0.0.0
-	:: sqm.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.93/32 0.0.0.0
-	:: statsfe1.ws.microsoft.com
-	route -p add 134.170.115.60/32 0.0.0.0
-	route -p add 207.46.114.61/32 0.0.0.0
-	:: statsfe2.update.microsoft.com.akadns.net
-	route -p add 65.52.108.153/32 0.0.0.0
-	:: statsfe2.ws.microsoft.com
-	route -p add 64.4.54.22/32 0.0.0.0
-	:: storeedgefd.dsx.mp.microsoft.com // Disabled for Tron, required for the Microsoft App Store to connect
-	:: route -p add 104.79.153.53/32 0.0.0.0
-	:: telecommand.telemetry.microsoft.com
-	route -p add 65.55.252.92/32 0.0.0.0
-	:: telecommand.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.92/32 0.0.0.0
-	:: telemetry.appex.bing.net
-	route -p add 168.62.187.13/32 0.0.0.0
-	:: telemetry.microsoft.com
-	route -p add 65.52.100.9/32 0.0.0.0
-	:: telemetry.urs.microsoft.com
-	route -p add 131.253.40.37/32 0.0.0.0
-	:: vortex.data.microsoft.com
-	route -p add 64.4.54.254/32 0.0.0.0
-	:: vortex-sandbox.data.microsoft.com
-	route -p add 64.4.54.32/32 0.0.0.0
-	:: vortex-win.data.microsoft.com
-	route -p add 64.4.54.254/32 0.0.0.0
-	:: watson.live.com
-	route -p add 207.46.223.94/32 0.0.0.0
-	:: watson.microsoft.com
-	route -p add 65.55.252.71/32 0.0.0.0
-	:: watson.ppe.telemetry.microsoft.com
-	route -p add 65.52.100.11/32 0.0.0.0
-	:: watson.telemetry.microsoft.com
-	route -p add 65.52.108.29/32 0.0.0.0
-	:: watson.telemetry.microsoft.com.nsatc.net
-	route -p add 65.52.108.29/32 0.0.0.0
-	:: wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.93/32 0.0.0.0
-) else (
-	:: a-0001.a-msedge.net
-	route -p add 204.79.197.200/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: a23-218-212-69.deploy.static.akamaitechnologies.com
-	route -p add 23.218.212.69/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: a.ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.253.14.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.254.25.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: a.ads2.msads.net
-	route -p add 93.184.215.200/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: a.ads2.msn.com
-	route -p add 198.78.194.252/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 198.78.209.253/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.254.23.254/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: ac3.msn.com
-	route -p add 131.253.14.76/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: ads1.msads.net
-	route -p add 23.201.58.73/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.253.14.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.254.25.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: adsmockarc.azurewebsites.net
-	route -p add 191.236.16.12/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: ads.msn.com
-	route -p add 157.56.91.82/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: auth.gfx.ms
-	route -p add 23.61.72.70/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: b.ads1.msn.com
-	route -p add 204.160.124.125/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.253.14.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 8.254.25.126/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: b.ads2.msads.net
-	route -p add 93.184.215.200/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: df.telemetry.microsoft.com
-	route -p add 65.52.100.7/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: help.bingads.microsoft.com
-	route -p add 207.46.202.114/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: oca.telemetry.microsoft.com
-	route -p add 65.55.252.63/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: oca.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.63/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: pre.footprintpredict.com
-	route -p add 204.79.197.200/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: reports.wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.91/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: sb.scorecardresearch.com
-	route -p add 104.79.156.195/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: services.wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.92/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: settings-win.data.microsoft.com
-	route -p add 65.55.44.108/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: s.gateway.messenger.live.com
-	route -p add 157.56.106.210/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: sgmetrics.cloudapp.net
-	route -p add 168.62.11.145/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: spynet2.microsoft.com
-	route -p add 23.96.212.225/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: spynetalt.microsoft.com
-	route -p add 23.96.212.225/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: sqm.df.telemetry.microsoft.com
-	route -p add 65.52.100.94/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: sqm.telemetry.microsoft.com
-	route -p add 65.55.252.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: sqm.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: statsfe1.ws.microsoft.com
-	route -p add 134.170.115.60/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	route -p add 207.46.114.61/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: statsfe2.update.microsoft.com.akadns.net
-	route -p add 65.52.108.153/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: statsfe2.ws.microsoft.com
-	route -p add 64.4.54.22/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: storeedgefd.dsx.mp.microsoft.com // Disabled for Tron. Required for the Microsoft App Store to connect
-	:: route -p add 104.79.153.53/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: telecommand.telemetry.microsoft.com
-	route -p add 65.55.252.92/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: telecommand.telemetry.microsoft.com.nsatc.net
-	route -p add 65.55.252.92/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: telemetry.appex.bing.net
-	route -p add 168.62.187.13/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: telemetry.microsoft.com
-	route -p add 65.52.100.9/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: telemetry.urs.microsoft.com
-	route -p add 131.253.40.37/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: vortex.data.microsoft.com
-	route -p add 64.4.54.254/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: vortex-sandbox.data.microsoft.com
-	route -p add 64.4.54.32/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: vortex-win.data.microsoft.com
-	route -p add 64.4.54.254/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: watson.live.com
-	route -p add 207.46.223.94/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: watson.microsoft.com
-	route -p add 65.55.252.71/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: watson.ppe.telemetry.microsoft.com
-	route -p add 65.52.100.11/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: watson.telemetry.microsoft.com
-	route -p add 65.52.108.29/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: watson.telemetry.microsoft.com.nsatc.net
-	route -p add 65.52.108.29/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-	:: wes.df.telemetry.microsoft.com
-	route -p add 65.52.100.93/32 0.0.0.0 >> "%LOGPATH%\%LOGFILE%" 2>&1
-)
 
 if %STANDALONE%==no (call functions\log.bat "     Done.") else (echo "Done.")
 
