@@ -37,19 +37,17 @@ I got tired of running these utilities manually and decided to just script every
 
 # USE
 
-0. FIRST THINGS FIRST: **REBOOT THE COMPUTER BEFORE RUNNING TRON.** This is to allow any pending updates to finish, and get the system in a somewhat stable state. If you don't do this and the computer reboots during Tron with pending updates, it can brick the system. To re-iterate: it is very important to reboot the computer before running Tron.
+0. FIRST THINGS FIRST: **REBOOT THE COMPUTER BEFORE RUNNING TRON.** This is to allow any pending updates to finish, and get the system in a somewhat stable state. If you don't do this and the computer reboots during Tron with pending updates, it can brick the system. To re-iterate: it is very important to reboot the computer before running Tron. Also, Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended unless the system is too broken to fully boot into the desktop environment.
 
-1. [Download Tron](https://old.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://old.reddit.com/r/TronScript). If you download the self-extracting `.exe` file, run it and it will extract `tron.bat` and the `\resources` folder to the current directory. Copy both of them to the **Desktop** of the target machine.
+1. [Download Tron](https://old.reddit.com/r/TronScript/). The download links are in the top post in [/r/TronScript](https://old.reddit.com/r/TronScript). Download the self-extracting `.exe` file and copy it to the **Desktop** of the target machine. Run the `.exe` (for example `Tron v12.0.8 (2025-01-09).exe`, it will extract `tron.bat` and the `\resources` folder to the current directory.
 
-2. Tron can be run with Windows in either Safe Mode or Regular mode. Regular mode is generally recommended unless the system is severely infected.
+2. Right-click `tron.bat` and select "**Run as Administrator**"
 
-3. Right-click `tron.bat` and select "**Run as Administrator**"
-
-4. Wait anywhere from **3-10 hours** (it really takes that long; do **not** cancel it in the middle of running)
+3. Wait anywhere from **3-10 hours** (it really takes that long; do **not** cancel it in the middle of running)
 
       *Note: You'll need to manually click "scan" in the MBAM window that appears part of the way through Stage 3: Disinfect. Tron will continue in the background with its other tasks while waiting for you though, so the script won't stall if you're not around to hit "scan" immediately.*
 
-5. **Reboot!** Reboot the system before doing *anything else*.
+4. **Reboot!** Reboot the system before doing *anything else*.
 
 By default the master log is at `C:\logs\tron\tron.log`. If you want to change this, read the section on changing defaults below.
 
