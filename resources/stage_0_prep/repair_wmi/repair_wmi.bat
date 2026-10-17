@@ -2,7 +2,8 @@
 :: Requirements:  Broken WMI configuration
 :: Author:        Originally taken from http://craighassan.com/fix-wmi-batch-file/
 ::                Modified by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
+:: Version:       1.0.2 ! Remove errant pause command on line 95 that could stall script
+::                1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
 ::                1.0.0 + Initial write
 SETLOCAL
 
@@ -19,8 +20,8 @@ SETLOCAL
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set SCRIPT_VERSION=1.0.1
-set SCRIPT_UPDATED=2018-07-04
+set SCRIPT_VERSION=1.0.2
+set SCRIPT_UPDATED=2026-10-17
 
 @echo OFF
 REM Test and attempt repair of WMI
@@ -33,9 +34,17 @@ REM 3. Rebuild WMI Repository and restart services
 set LERR=0
 set ATTEMPT=0
 
+:: PowerShell engine variables are normally inherited from Tron's initialize_environment.bat. If run standalone, default to Windows PowerShell
+if not defined PS_WMI_MODE (
+	set PS_CMD="%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+	set PS_GET=Get-WmiObject
+	set PS_WMI_MODE=wmi
+)
+
 :BEGINCHK
 echo CHECKING WMI... ATTEMPT:%ATTEMPT%...
-wmic computersystem get name
+:: Equivalent of: wmic computersystem get name. Exit code 0 = query succeeded, 1 = failed
+<NUL %PS_CMD% "try { 'Name'; (%PS_GET% Win32_ComputerSystem -ErrorAction Stop).Name; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }"
 IF %ERRORLEVEL%==0 goto SUCCESS
 IF %ATTEMPT%==0 GOTO REPAIR1
 IF %ATTEMPT%==1 GOTO REPAIR2
@@ -92,7 +101,6 @@ ping 127.0.0.1 -n 5
 pushd %systemroot%\system32\wbem
 echo 3. REBUILDING WMI REPOSITORY... Deleting WMI Repository& rd /S /Q repository
 if exist %systemroot%\system32\wbem\repository echo 3. REBUILDING WMI REPOSITORY... ERROR! Unable to delete WMI repository. Reboot Required.
-pause
 echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (scecli.dll)& regsvr32 /s %systemroot%\system32\scecli.dll
 echo 3. REBUILDING WMI REPOSITORY... Registering DLLs (userenv.dll)& regsvr32 /s %systemroot%\system32\userenv.dll
 echo 3. REBUILDING WMI REPOSITORY... Compiling MOFs (cimwin32.mof)& mofcomp cimwin32.mof
