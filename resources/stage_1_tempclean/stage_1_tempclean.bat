@@ -200,9 +200,9 @@ if %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
-:: JOB: USB Device Cleanup
-title Tron v%TRON_VERSION% [stage_1_tempclean] [USB Device Cleanup]
-call functions\log_with_date.bat "   Launch job 'USB Device Cleanup'..."
+:: JOB: Device Cleanup
+title Tron v%TRON_VERSION% [stage_1_tempclean] [Device Cleanup]
+call functions\log_with_date.bat "   Launch job 'Device Cleanup'..."
 if /i %DRY_RUN%==no (
 	if /i %PROCESSOR_ARCHITECTURE%==AMD64 (
 		if %VERBOSE%==yes (
