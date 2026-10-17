@@ -3,7 +3,9 @@
 ::                  Program:      "That's Tron. He fights for the User."
 :: Requirements:  Run from the current users desktop. Run as Administrator.
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.3 - Remove all code related to Sophos as it's deprecated
+:: Version:       
+::                1.2.4 + Add new PowerShell-related variables to config dump (-c) output
+::                1.2.3 - Remove all code related to Sophos as it's deprecated
 ::                1.2.2 + Add references and variables for new AdwCleaner job
 ::                1.2.1 - Remove references to Adobe Flash
 ::                1.2.0 / Change REMOVE_MALWAREBYTES to PRESERVE_MALWAREBYTES (-pmb)
@@ -61,8 +63,8 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 color 0f
-set SCRIPT_VERSION=1.2.3
-set SCRIPT_DATE=2024-03-09
+set SCRIPT_VERSION=1.2.4
+set SCRIPT_DATE=2026-10-17
 
 :: Get in the correct drive (~d0) and path (~dp0). Sometimes needed when run from a network or thumb drive.
 :: We stay in the \resources directory for the rest of the script
@@ -217,7 +219,9 @@ if /i %CONFIG_DUMP%==yes (
 	echo    RESUME_STAGE:           %RESUME_STAGE%
 	echo    WIN_VER:                !WIN_VER!
 	echo    WIN_VER_NUM:            %WIN_VER_NUM%
-	echo    WMIC:                   %WMIC%
+	echo    PS_WMI_MODE:            %PS_WMI_MODE%
+	echo    PS_EXE:                 !PS_EXE!
+	echo    PS_VER_MAJOR:           %PS_VER_MAJOR%
 	ENDLOCAL DISABLEDELAYEDEXPANSION
 	exit /b 0
 )
@@ -743,7 +747,7 @@ ENDLOCAL
 :::::::::::::::
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd) so we can use it
 :set_cur_date
-for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+if /i not "%PS_WMI_MODE%"=="none" for /f %%a in ('^<NUL %PS_CMD% "$d = (%PS_GET% Win32_OperatingSystem).LocalDateTime; if ($d -is [DateTime]) { $d.ToString('yyyyMMddHHmmss', [Globalization.CultureInfo]::InvariantCulture) + '.000000' } else { $d }" ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 goto :eof
 
