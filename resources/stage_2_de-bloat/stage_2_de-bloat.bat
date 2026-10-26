@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.4.6 ! bugfix:      Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from Stage 4 telemetry disable script into appropriate location in this script. Thanks to u/Tenelia
+:: Version:       1.4.7 ! bugfix:      Fix incorrectly outputting "%i" to the log file instead of the relevant GUID or program name
+::                1.4.6 ! bugfix:      Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from Stage 4 telemetry disable script into appropriate location in this script. Thanks to u/Tenelia
 ::                1.4.5 + feature:     Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
 ::                1.4.3 + feature:     Add removal of Dell-branded WildTangent games
@@ -67,8 +68,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_2_SCRIPT_VERSION=1.4.6
-set STAGE_2_SCRIPT_DATE=2019-02-28
+set STAGE_2_SCRIPT_VERSION=1.4.7
+set STAGE_2_SCRIPT_DATE=2026-10-26
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -85,9 +86,8 @@ if /i "%LOGFILE%"=="" (
 )
 :: Do the GUID dump that some portions below rely on. We have to run the file through the 'type' command to convert the output from UCS-2 Little Endian to UTF-8/ANSI so the for loops below can read it
 if %STANDALONE%==yes (
-	<NUL %WMIC% product get identifyingnumber,name,version /all > "%TEMP%\wmic_dump_temp.txt" 2>NUL
-	type "%TEMP%\wmic_dump_temp.txt" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
-	del /f /q "%TEMP%\wmic_dump_temp.txt" 2>nul
+	REM Table layout matches the old wmic dump: GUID is the first token on each product line, which Stage 2 relies on. PowerShell writes ANSI/OEM text, so the old 'type' conversion from UCS-2 is no longer needed
+	if /i not "%PS_WMI_MODE%"=="none" <NUL %PS_CMD% "%PS_GET% Win32_Product | Select-Object IdentifyingNumber,Name,Version | Format-Table -AutoSize | Out-String -Width 4096 -Stream | ForEach-Object { $_.TrimEnd() }" > "%RAW_LOGS%\GUID_dump_%COMPUTERNAME%_%CUR_DATE%.txt" 2>NUL
 )
 
 
@@ -139,7 +139,7 @@ if /i %DRY_RUN%==no (
 				REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 				if !errorlevel!==0 (
-					echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					echo Offending entry: %%a >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 					%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 					%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 
@@ -228,7 +228,9 @@ if /i %DRY_RUN%==no (
 
 			REM Do the removal
 			if /i %VERBOSE%==yes echo    %%i
-			<NUL "%WMIC%" product where "name like '%%i'" uninstall /nointeractive>> "%LOGPATH%\%LOGFILE%" 2>&1
+			REM Equivalent of: wmic product where "name like 'ENTRY'" uninstall /nointeractive. Logs each product's relpath and ReturnValue, or the wmic no-instances message on no match. Exit code 1 only if the WMI query itself fails
+			if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $p = @(Get-WmiObject Win32_Product -Filter 'Name LIKE ''%%i''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (' + $o.__RELPATH + ')->Uninstall()'; 'ReturnValue = ' + $o.Uninstall().ReturnValue + ';' }; exit 0">> "%LOGPATH%\%LOGFILE%" 2>&1
+			if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $p = @(Get-CimInstance Win32_Product -Filter 'Name LIKE ''%%i''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (Win32_Product.IdentifyingNumber=''' + $o.IdentifyingNumber + ''')->Uninstall()'; 'ReturnValue = ' + (Invoke-CimMethod -InputObject $o -MethodName Uninstall).ReturnValue + ';' }; exit 0">> "%LOGPATH%\%LOGFILE%" 2>&1
 
 			REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 			%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
