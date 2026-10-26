@@ -303,7 +303,7 @@ echo  *                                                                     *
 echo  * Stage:        Tools:                                                *
 echo  *  0 Prep:      Create SysRestore point/Rkill/ProcessKiller/Stinger/  *
 echo  *               TDSSKiller/registry backup/clean oldest VSS set       *
-echo  *  1 TempClean: TempFileClean/CCleaner/IE ^& Event Logs clean          *
+echo  *  1 TempClean: TempFileClean/BleachBit/IE ^& Event Logs clean         *
 echo  *  2 De-bloat:  Remove OEM bloatware, remove Metro bloatware          *
 echo  *  3 Disinfect: AdwCleaner/KVRT/MBAM/DISM repair                      *
 echo  *  4 Repair:    MSIcleanup/PageFileReset/chkdsk/SFC/telemetry removal *
