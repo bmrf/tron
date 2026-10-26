@@ -3,6 +3,7 @@
 :: Author:        Originally taken from http://craighassan.com/fix-wmi-batch-file/
 ::                Modified by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.2 ! Remove errant pause command on line 95 that could stall script
+::                      + Skip WMI check and repair entirely if the WMI service (winmgmt) isn't present on the system
 ::                1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
 ::                1.0.0 + Initial write
 SETLOCAL
@@ -21,7 +22,7 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set SCRIPT_VERSION=1.0.2
-set SCRIPT_UPDATED=2026-10-17
+set SCRIPT_UPDATED=2026-10-26
 
 @echo OFF
 REM Test and attempt repair of WMI
@@ -33,6 +34,15 @@ REM 3. Rebuild WMI Repository and restart services
 
 set LERR=0
 set ATTEMPT=0
+
+:: Skip the check and repair entirely if WMI isn't present on the system
+:: sc returns 1060 (ERROR_SERVICE_DOES_NOT_EXIST) if the winmgmt service isn't registered. Language-independent and doesn't rely on WMI or PowerShell
+:: goto :eof is used instead of goto END so we don't hit the popd under :END and pop the caller's directory stack
+sc query winmgmt >nul 2>&1
+if %ERRORLEVEL%==1060 (
+	echo WMI SERVICE ^(winmgmt^) NOT PRESENT ON THIS SYSTEM. SKIPPING WMI CHECK AND REPAIR.
+	goto :eof
+)
 
 :: PowerShell engine variables are normally inherited from Tron's initialize_environment.bat. If run standalone, default to Windows PowerShell
 if not defined PS_WMI_MODE (
