@@ -2,7 +2,8 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.8 + improvement: Add job to disable Microsoft's silent background installation of "suggested" 3rd party apps
+:: Version:       1.2.9 - feature:     Remove repair_file_extensions, as due to a bug this had never actually executed during a Tron run
+::                1.2.8 + improvement: Add job to disable Microsoft's silent background installation of "suggested" 3rd party apps
 ::                1.2.7 + telemetry:   Add additional nvidia telemetry tasks to kill
 ::                1.2.6 * improvement: Use %REG% instead of relative calls. Helps on systems with a broken PATH variable
 ::                1.2.5 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -36,8 +37,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_4_SCRIPT_VERSION=1.2.8
-set STAGE_4_SCRIPT_DATE=2021-03-16
+set STAGE_4_SCRIPT_VERSION=1.2.9
+set STAGE_4_SCRIPT_DATE=2026-10-26
 
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -78,7 +79,7 @@ if %WIN_VER_NUM% geq 6.2 (
 	if /i %SKIP_DISM_CLEANUP%==yes (
 		call functions\log_with_date.bat "!  SKIP_DISM_CLEANUP (-sdc) set. Skipping DISM cleanup."
 		goto skip_dism_cleanup
-		)
+	)
 	
 	call functions\log_with_date.bat "   Launch job 'DISM Windows image check'..."
 	if /i %DRY_RUN%==yes goto skip_dism_cleanup
@@ -250,7 +251,7 @@ if /i "%RUN_7_OR_8_TELEM%"=="yes" (
 
 
 :: JOB: Disable Microsoft 3rd-party app silent installation (sigh...)
-title Tron v%TRON_VERSION% [stage_4_repair] [disable NVIDIA telemetry]
+title Tron v%TRON_VERSION% [stage_4_repair] [disable 3rd party app installation]
 call functions\log_with_date.bat "   Launch job 'Disable silent installation of 3rd-party apps'..."
 if /i %DRY_RUN%==no (
 	%REG% ADD "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /d 0 /f
@@ -286,16 +287,15 @@ if /i %DRY_RUN%==no (
 call functions\log_with_date.bat "   Done."
 
 
-:: JOB: Repair file extensions
-title Tron v%TRON_VERSION% [stage_4_repair] [repair file extensions]
-call functions\log_with_date.bat "   Launch job 'Repair file extensions'..."
-if /i %DRY_RUN%==no (
-	setlocal
-	call stage_4_repair\repair_file_extensions\repair_file_extensions.bat
-	endlocal
-)
-call functions\log_with_date.bat "   Done."
-
+:: :: JOB: Repair file extensions
+:: title Tron v%TRON_VERSION% [stage_4_repair] [repair file extensions]
+:: call functions\log_with_date.bat "   Launch job 'Repair file extensions'..."
+:: if /i %DRY_RUN%==no (
+:: 	setlocal
+:: 	call stage_4_repair\repair_file_extensions\repair_file_extensions.bat
+:: 	endlocal
+:: )
+:: call functions\log_with_date.bat "   Done."
 
 
 
