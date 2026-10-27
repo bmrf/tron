@@ -1,8 +1,11 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm").
-::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran. Thanks to u/jchristyr
+:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm")
+::                      ! Pass each device's type (-d) from 'smartctl --scan' through to smartctl. It was being dropped, so NVMe, USB and RAID
+::                        devices could be queried with the wrong protocol and return incomplete data or a false 'Read Device Identity Failed'
+::                      * Query each disk once and check the saved output, instead of querying every disk three times
+::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran
 ::                1.1.3 ! Fix free disk space calculation
 ::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
@@ -144,12 +147,33 @@ pushd stage_6_optimize\defrag\
 	) ) ) )
 
 	:: Do the scan
+	:: Each line of "smartctl --scan" looks like "/dev/sda -d ata # /dev/sda, ATA device". Pass the device AND its -d type to smartctl,
+	:: otherwise NVMe, USB and RAID devices can be queried with the wrong protocol and return incomplete data or a false read error
+	:: Each disk is queried once and its output checked from a temp file. Results are collected per check and applied after the loop
+	:: so the precedence stays the same as before (read error beats VM, VM beats SSD), regardless of the order disks are listed in
 	echo.
 	echo    Detecting disks...
 	echo.
-	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "Solid SSD RAID SandForce" >NUL && set SKIP_DEFRAG=yes_ssd
-	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FINDSTR% /i "VMware VBOX XENSRC PVDISK" >NUL && set SKIP_DEFRAG=yes_vm
-	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_disk_smart_read_error&&set WARNINGS_DETECTED=yes_disk_smart_read_error
+	set SMART_FOUND_SSD=no
+	set SMART_FOUND_VM=no
+	set SMART_FOUND_READ_ERROR=no
+	for /f "eol=# tokens=1-3" %%i in ('smartctl.exe --scan') do (
+		if "%%j"=="-d" (
+			smartctl.exe %%i -d %%k -a > "%TEMP%\tron_smart_results.txt" 2>&1
+		) else (
+			smartctl.exe %%i -a > "%TEMP%\tron_smart_results.txt" 2>&1
+		)
+		%FINDSTR% /i "Solid SSD RAID SandForce" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_SSD=yes
+		%FINDSTR% /i "VMware VBOX XENSRC PVDISK" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_VM=yes
+		%FIND% /i "Read Device Identity Failed" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_READ_ERROR=yes
+	)
+	del /f /q "%TEMP%\tron_smart_results.txt" >NUL 2>&1
+	if %SMART_FOUND_SSD%==yes set SKIP_DEFRAG=yes_ssd
+	if %SMART_FOUND_VM%==yes set SKIP_DEFRAG=yes_vm
+	if %SMART_FOUND_READ_ERROR%==yes (
+		set SKIP_DEFRAG=yes_disk_smart_read_error
+		set WARNINGS_DETECTED=yes_disk_smart_read_error
+	)
 
 	:: Look for known problem codes and set skip_defrag if so
 	:: Some Win32_DiskDrive Status values contain a space ("Pred Fail", "No Contact", "Lost Comm"). for /f only keeps the first word, so
