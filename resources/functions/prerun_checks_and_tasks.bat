@@ -1,8 +1,8 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm"). Thanks to u/jchristyr
-::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran
+:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm").
+::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran. Thanks to u/jchristyr
 ::                1.1.3 ! Fix free disk space calculation
 ::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
