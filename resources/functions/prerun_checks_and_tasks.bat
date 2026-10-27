@@ -1,7 +1,10 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
+:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm"). Thanks to u/jchristyr
+::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran
+::                1.1.3 ! Fix free disk space calculation
+::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
 ::                1.1.0 ! Fix regression re: disk space calculation fix
 ::                1.0.9 ! Fix disk space calculation on Win10 build 17763 (1809) and up due to fsutil output changing. Thanks to u/Paul_NZ
@@ -20,8 +23,8 @@
 
 
 :: Script version
-set PRERUN_CHECKS_SCRIPT_VERSION=1.1.2
-set PRERUN_CHECKS_SCRIPT_DATE=2020-03-04
+set PRERUN_CHECKS_SCRIPT_VERSION=1.1.4
+set PRERUN_CHECKS_SCRIPT_DATE=2026-10-27
 
 
 
@@ -149,8 +152,10 @@ pushd stage_6_optimize\defrag\
 	for /f %%i in ('smartctl.exe --scan') do smartctl.exe %%i -a | %FIND% /i "Read Device Identity Failed" >NUL && set SKIP_DEFRAG=yes_disk_smart_read_error&&set WARNINGS_DETECTED=yes_disk_smart_read_error
 
 	:: Look for known problem codes and set skip_defrag if so
-	set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover)
-	for /f %%i in ('^<NUL %WMIC% diskdrive get status') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
+	:: Some Win32_DiskDrive Status values contain a space ("Pred Fail", "No Contact", "Lost Comm"). for /f only keeps the first word, so
+	:: PowerShell strips the spaces first ("Pred Fail" becomes "PredFail") and WARNING_LIST uses the space-free forms
+	set WARNING_LIST=(Error Degraded Unknown PredFail Service Stressed NonRecover NoContact LostComm)
+	if /i not "%PS_WMI_MODE%"=="none" for /f %%i in ('^<NUL %PS_CMD% "%PS_GET% Win32_DiskDrive | ForEach-Object { $_.Status -replace ' ','' }"') do echo %%i|%FINDSTR% /i "%WARNING_LIST:~1,-1%" && (
 		set SMART_PROBLEM_CODE=%%i
 		set SKIP_DEFRAG=yes_disk_smart_problem_code
 		set WARNINGS_DETECTED=yes_disk_smart_problem_code
@@ -161,20 +166,13 @@ pushd stage_6_optimize\defrag\
 popd
 
 
-:: TASK: Get free space on the system drive and stash it for comparison later
-for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-set bytes=%bytes: =%
-:: MB version
-set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
-
-:: These two lines were the old code for checking disk space. fsutil output changed in Win10 build 17763 (1809) which broke these two methods.
-:: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
-:: for /f "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-
-:: GB version (old method; broken in Win10 build 17763)
-::set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024/1024
-:: MB version (old method; broken in Win10 build 17763)
-:: set /A FREE_SPACE_BEFORE=%bytes:~0,-3%/1024*1000/1024
+:: TASK: Get free space on the system drive (in MB) and stash it for comparison later
+:: Uses .NET's DriveInfo via PowerShell instead of parsing fsutil output, which has changed between Windows builds and differs by language.
+:: PowerShell does the math in 64-bit, so drives over 2 TB don't overflow cmd's 32-bit set /A. MB values fit in set /A up to ~2 PB
+set FREE_SPACE_BEFORE=0
+if /i not "%PS_WMI_MODE%"=="none" (
+	for /f %%a in ('^<NUL %PS_CMD% "[int64][math]::Floor((New-Object System.IO.DriveInfo($env:SystemDrive)).AvailableFreeSpace / 1MB)" 2^>NUL') do set FREE_SPACE_BEFORE=%%a
+)
 
 
 
