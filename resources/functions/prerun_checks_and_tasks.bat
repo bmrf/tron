@@ -1,11 +1,20 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm")
+:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm").
+::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran. Thanks to u/jchristyr
 ::                      ! Pass each device's type (-d) from 'smartctl --scan' through to smartctl. It was being dropped, so NVMe, USB and RAID
 ::                        devices could be queried with the wrong protocol and return incomplete data or a false 'Read Device Identity Failed'
 ::                      * Query each disk once and check the saved output, instead of querying every disk three times
-::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran
+::                      ! Detect NVMe drives as solid state from their smartctl device type, instead of relying on "SSD" appearing in the
+::                        model name (many NVMe models don't include it, so they were treated as spinning disks and defragmented)
+::                      ! Base the SSD and VM defrag decisions on the system drive only, since that's the only drive Stage 6 defragments.
+::                        Previously the last disk smartctl listed decided it, so an SSD data drive could skip defrag of an HDD system drive
+::                        and vice versa. Falls back to checking all disks if the system disk can't be matched to a smartctl device.
+::                        On Windows 8 and up, Windows' own media type for the system disk (MSFT_PhysicalDisk) is also used to detect an SSD.
+::                        Read error and SMART problem code warnings still cover every disk
+::                      + Detect Hyper-V (and Azure) virtual machines from the machine model and skip defrag, since smartctl doesn't
+::                        reliably identify Hyper-V's virtual disks
 ::                1.1.3 ! Fix free disk space calculation
 ::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
@@ -146,6 +155,34 @@ pushd stage_6_optimize\defrag\
 		echo    Done.
 	) ) ) )
 
+	:: Find the system drive's disk number, the matching smartctl device name, and on Windows 8 and up the media type Windows reports for it
+	:: Output is "index|/dev/sdX|mediatype". smartctl on Windows names \\.\PhysicalDriveN as /dev/sdX, where a = 0, b = 1, etc.
+	:: MediaType values: 3 = HDD, 4 = SSD, 5 = SCM, 0 or empty = unknown. Empty on Windows 7, which doesn't have MSFT_PhysicalDisk
+	:: If anything fails, nothing is set and the checks below fall back to looking at all disks
+	set SYSTEM_DISK_INDEX=
+	set SYSTEM_SMART_DEVICE=
+	set SYSTEM_DISK_MEDIATYPE=
+	if /i "%PS_WMI_MODE%"=="wmi" (
+		for /f "tokens=1-3 delims=|" %%a in ('^<NUL %PS_CMD% "$ld = Get-WmiObject Win32_LogicalDisk -Filter ('DeviceID=''' + $env:SystemDrive + ''''); $dd = @($ld.GetRelated('Win32_DiskPartition') | ForEach-Object { $_.GetRelated('Win32_DiskDrive') }) | Select-Object -First 1; if ($dd) { $n = [int]$dd.Index; $m = ''; try { $m = [string](Get-WmiObject -Namespace 'root\Microsoft\Windows\Storage' -Class MSFT_PhysicalDisk -Filter ('DeviceId=''' + $n + '''') -ErrorAction Stop).MediaType } catch { }; if ($n -le 25) { [string]$n + '|/dev/sd' + [char](97 + $n) + '|' + $m } }" 2^>NUL') do (
+			set SYSTEM_DISK_INDEX=%%a
+			set SYSTEM_SMART_DEVICE=%%b
+			set SYSTEM_DISK_MEDIATYPE=%%c
+		)
+	)
+	if /i "%PS_WMI_MODE%"=="cim" (
+		for /f "tokens=1-3 delims=|" %%a in ('^<NUL %PS_CMD% "$ld = Get-CimInstance Win32_LogicalDisk -Filter ('DeviceID=''' + $env:SystemDrive + ''''); $dd = @($ld | Get-CimAssociatedInstance -ResultClassName Win32_DiskPartition | Get-CimAssociatedInstance -ResultClassName Win32_DiskDrive) | Select-Object -First 1; if ($dd) { $n = [int]$dd.Index; $m = ''; try { $m = [string](Get-CimInstance -Namespace 'root/Microsoft/Windows/Storage' -ClassName MSFT_PhysicalDisk -Filter ('DeviceId=''' + $n + '''') -ErrorAction Stop).MediaType } catch { }; if ($n -le 25) { [string]$n + '|/dev/sd' + [char](97 + $n) + '|' + $m } }" 2^>NUL') do (
+			set SYSTEM_DISK_INDEX=%%a
+			set SYSTEM_SMART_DEVICE=%%b
+			set SYSTEM_DISK_MEDIATYPE=%%c
+		)
+	)
+	if not defined SYSTEM_SMART_DEVICE set SYSTEM_SMART_DEVICE=undetected
+
+	:: Hyper-V guests: smartctl doesn't reliably identify Hyper-V's virtual disks, so check the machine model instead
+	:: Hyper-V and Azure VMs report Manufacturer "Microsoft Corporation" and Model "Virtual Machine". Surface devices share the manufacturer but not the model
+	set SYSTEM_IS_HYPERV=no
+	if /i not "%PS_WMI_MODE%"=="none" for /f %%a in ('^<NUL %PS_CMD% "$cs = %PS_GET% Win32_ComputerSystem; if (($cs.Manufacturer -eq 'Microsoft Corporation') -and ($cs.Model -eq 'Virtual Machine')) { 'yes' }" 2^>NUL') do set SYSTEM_IS_HYPERV=%%a
+
 	:: Do the scan
 	:: Each line of "smartctl --scan" looks like "/dev/sda -d ata # /dev/sda, ATA device". Pass the device AND its -d type to smartctl,
 	:: otherwise NVMe, USB and RAID devices can be queried with the wrong protocol and return incomplete data or a false read error
@@ -154,22 +191,51 @@ pushd stage_6_optimize\defrag\
 	echo.
 	echo    Detecting disks...
 	echo.
+	:: SMART_FOUND_* = any disk, SYSTEM_DISK_* = the system disk only
 	set SMART_FOUND_SSD=no
 	set SMART_FOUND_VM=no
 	set SMART_FOUND_READ_ERROR=no
+	set SYSTEM_DISK_FOUND=no
+	set SYSTEM_DISK_SSD=no
+	set SYSTEM_DISK_VM=no
 	for /f "eol=# tokens=1-3" %%i in ('smartctl.exe --scan') do (
 		if "%%j"=="-d" (
 			smartctl.exe %%i -d %%k -a > "%TEMP%\tron_smart_results.txt" 2>&1
 		) else (
 			smartctl.exe %%i -a > "%TEMP%\tron_smart_results.txt" 2>&1
 		)
+		REM NVMe drives are always solid state, whether or not "SSD" is in the model name. Covers native NVMe, type nvme, and
+		REM NVMe in USB enclosures, which smartctl reports with an "snt" bridge type: sntjmicron, sntasmedia, sntrealtek
+		REM No parentheses in these comments, since they sit inside a parenthesized block
+		echo %%j %%k| %FINDSTR% /i /b /c:"-d nvme" /c:"-d snt" >NUL && set SMART_FOUND_SSD=yes
 		%FINDSTR% /i "Solid SSD RAID SandForce" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_SSD=yes
 		%FINDSTR% /i "VMware VBOX XENSRC PVDISK" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_VM=yes
 		%FIND% /i "Read Device Identity Failed" "%TEMP%\tron_smart_results.txt" >NUL && set SMART_FOUND_READ_ERROR=yes
+		REM Same SSD and VM checks, recorded separately for the system disk
+		if /i "%%i"=="%SYSTEM_SMART_DEVICE%" (
+			set SYSTEM_DISK_FOUND=yes
+			echo %%j %%k| %FINDSTR% /i /b /c:"-d nvme" /c:"-d snt" >NUL && set SYSTEM_DISK_SSD=yes
+			%FINDSTR% /i "Solid SSD RAID SandForce" "%TEMP%\tron_smart_results.txt" >NUL && set SYSTEM_DISK_SSD=yes
+			%FINDSTR% /i "VMware VBOX XENSRC PVDISK" "%TEMP%\tron_smart_results.txt" >NUL && set SYSTEM_DISK_VM=yes
+		)
 	)
 	del /f /q "%TEMP%\tron_smart_results.txt" >NUL 2>&1
-	if %SMART_FOUND_SSD%==yes set SKIP_DEFRAG=yes_ssd
-	if %SMART_FOUND_VM%==yes set SKIP_DEFRAG=yes_vm
+
+	:: Windows itself reports the system disk as SSD or SCM (Windows 8 and up only)
+	if "%SYSTEM_DISK_MEDIATYPE%"=="4" set SYSTEM_DISK_SSD=yes
+	if "%SYSTEM_DISK_MEDIATYPE%"=="5" set SYSTEM_DISK_SSD=yes
+
+	:: Decide. Use the system disk's results if smartctl listed it. Otherwise fall back to any disk (the previous behavior), which can
+	:: only cause an unneeded defrag skip, never a defrag of an SSD. Precedence is unchanged: read error beats VM, VM beats SSD
+	if /i "%SYSTEM_DISK_FOUND%"=="yes" (
+		if %SYSTEM_DISK_SSD%==yes set SKIP_DEFRAG=yes_ssd
+		if %SYSTEM_DISK_VM%==yes set SKIP_DEFRAG=yes_vm
+	) else (
+		if %SMART_FOUND_SSD%==yes set SKIP_DEFRAG=yes_ssd
+		if %SYSTEM_DISK_SSD%==yes set SKIP_DEFRAG=yes_ssd
+		if %SMART_FOUND_VM%==yes set SKIP_DEFRAG=yes_vm
+	)
+	if %SYSTEM_IS_HYPERV%==yes set SKIP_DEFRAG=yes_vm
 	if %SMART_FOUND_READ_ERROR%==yes (
 		set SKIP_DEFRAG=yes_disk_smart_read_error
 		set WARNINGS_DETECTED=yes_disk_smart_read_error
