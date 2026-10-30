@@ -3,11 +3,9 @@
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.1 ! Fix edge case where a new programs_to_target_by_name.txt was released on Github, and would mistakenly delete the local by_GUID list
 ::                      ! Fix a hung or very slow download stalling Tron indefinitely. Downloads now run one at a time, each giving up after 2 tries with a
-::                        10 second timeout, and the remaining downloads are skipped if a network failure occurs. Replaces the wait loop, which had no timeout
-::                      ! Delete any download that wget reports as failed (including HTTP errors such as 404), so a partial or error-page download is never
-::                        treated as an updated list
-::                      ! Compare list versions numerically instead of as text. A text comparison gets it wrong once a version field reaches two digits
-::                        (e.g. "1.10.0" counted as older than "1.9.0"), which would replace a newer local list with an older one
+::                        10 second timeout, and remaining downloads are skipped if a network failure occurs
+::                      ! Delete any download that wget reports as failed, so partial or error-page download never replaces current list
+::                      ! Compare list versions numerically instead of as text
 ::                      ! Fix CHECK_UPDATE_DEBLOAT_LISTS_VERSION being overwritten with the script date
 ::                1.1.0 + Add new job to check for and download the programs_to_target_by_name list 
 ::                      * Update jobs to reflect new list names on Github
