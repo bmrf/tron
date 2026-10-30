@@ -1,21 +1,13 @@
 :: Purpose:       Tron's pre-run checks. Various things to check before continuing on.
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm").
-::                        for /f only kept the first word ("Pred"), so a drive predicting failure wasn't flagged and defrag still ran. Thanks to u/jchristyr
-::                      ! Pass each device's type (-d) from 'smartctl --scan' through to smartctl. It was being dropped, so NVMe, USB and RAID
-::                        devices could be queried with the wrong protocol and return incomplete data or a false 'Read Device Identity Failed'
+:: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm"). Thanks to u/jchristyr
+::                      ! Pass each device's type (-d) from 'smartctl --scan' through to smartctl
 ::                      * Query each disk once and check the saved output, instead of querying every disk three times
-::                      ! Detect NVMe drives as solid state from their smartctl device type, instead of relying on "SSD" appearing in the
-::                        model name (many NVMe models don't include it, so they were treated as spinning disks and defragmented)
-::                      ! Base the SSD and VM defrag decisions on the system drive only, since that's the only drive Stage 6 defragments.
-::                        Previously the last disk smartctl listed decided it, so an SSD data drive could skip defrag of an HDD system drive
-::                        and vice versa. Falls back to checking all disks if the system disk can't be matched to a smartctl device.
-::                        On Windows 8 and up, Windows' own media type for the system disk (MSFT_PhysicalDisk) is also used to detect an SSD.
-::                        Read error and SMART problem code warnings still cover every disk
-::                      + Detect Hyper-V (and Azure) virtual machines from the machine model and skip defrag, since smartctl doesn't
-::                        reliably identify Hyper-V's virtual disks
-::                1.1.3 ! Fix free disk space calculation
+::                      ! Detect NVMe drives as solid state from their smartctl device type, instead of relying on "SSD" in the model name
+::                      ! Base the SSD and VM defrag decisions on the system drive only; Previously the last disk smartctl read was used
+::                      + Detect Hyper-V (and Azure) VMs from machine model and skip defrag, since smartctl doesn't reliably identify Hyper-V virtual disks
+::                1.1.3 ! Fix free disk space calculation, use new PowerShell-based method
 ::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
 ::                1.1.0 ! Fix regression re: disk space calculation fix
