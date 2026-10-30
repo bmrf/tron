@@ -1,7 +1,8 @@
 :: Purpose:       Tron's update checker, broken out from tron.bat as a function
 :: Requirements:  Must be called from Tron
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 ! Use 'usebackq' on for loops that parse the version number, to allow quote-wrapping the file path to properly handle usernames with special characters. Thanks to u/xulafu
+:: Version:       1.1.1 * Add --no-hsts to wget command, to prevent leaving behind blank .wget-hsts file
+::                1.1.0 ! Use 'usebackq' on for loops that parse the version number, to allow quote-wrapping the file path to properly handle usernames with special characters. Thanks to u/xulafu
 ::                1.0.9 * Update wget User-Agent declaration to remove spaces
 ::                      / Simplify custom User-Agent
 ::                1.0.8 * Update wget commands to use a custom User-Agent so we can identify Tron update checks/downloads vs. other use of wget against the main repo
@@ -23,8 +24,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set CHECK_UPDATE_VERSION=1.1.0
-set CHECK_UPDATE_VERSION=2018-07-03
+set CHECK_UPDATE_VERSION=1.1.1
+set CHECK_UPDATE_VERSION=2026-10-30
 
 :: Variables used during the update check
 set REPO_URL=https://bmrf.org/repos/tron
@@ -55,7 +56,7 @@ if /i "%LOGFILE%"=="" (
 :::::::::::::::::::::::
 
 :: wget sha256sums.txt from the repo
-stage_0_prep\check_update\wget.exe --user-agent="Tron-Update-Checker/%TRON_VERSION% (%WIN_VER%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
+stage_0_prep\check_update\wget.exe --no-hsts --user-agent="Tron-Update-Checker/%TRON_VERSION% (%WIN_VER%)" %REPO_URL%/sha256sums.txt -O "%TEMP%\sha256sums.txt" 2>NUL
 :: Assuming there was no error, go ahead and extract version number into REPO_TRON_VERSION, and release date into REPO_TRON_DATE
 :: We use usebackq here to allow us to quote-wrap the path to sha256sums.txt to properly handle usernames with special characters ( c:\users\rose&emma\appdata\.. etc )
 if /i %ERRORLEVEL%==0 (
@@ -112,7 +113,7 @@ if /i %TRON_VERSION:.=% LSS %REPO_TRON_VERSION:.=% (
 		echo.
 		echo %TIME%   Downloading new version to the desktop, please wait...
 		echo.
-		stage_0_prep\check_update\wget.exe --user-agent="Tron-Update-Downloader/%TRON_VERSION% (%WIN_VER%)" "%REPO_URL%/Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe" -O "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe"
+		stage_0_prep\check_update\wget.exe --no-hsts --user-agent="Tron-Update-Downloader/%TRON_VERSION% (%WIN_VER%)" "%REPO_URL%/Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe" -O "%USERPROFILES%\%USERNAME%\Desktop\Tron v%REPO_TRON_VERSION% (%REPO_TRON_DATE%).exe"
 		echo.
 		echo %TIME%   Download finished.
 		echo.
@@ -158,8 +159,5 @@ if /i %NUKE_OLD_VERSION%==yes (
 	rmdir /s /q "%CWD%"
 	exit
 )
-
-
-
 
 :eof
