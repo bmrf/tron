@@ -25,8 +25,9 @@ Version:       1.4.2 ! Fix entries beginning with "*" never matching. Matching n
                        its provisioned package was removed) is logged and counted as removed, so the exit code reflects what's actually left on the system
                      ! Fix counter variable mismatch ($AppxCount3rd initialized, $AppxCountMS incremented)
                      - Remove Windows components (BioEnrollment, CBSPreview, WindowsAppRuntime.CBS) from the target list. Moved to the inactive list
-                     - Remove apps from the list that are only present if the user explicitly installed them. Move to the inactive list
-                     / Fix incorrect comment on Microsoft.MicrosoftMahjong
+                     - Remove Language Experience Packs. Removing current display language pack could change the Windows display language
+                     - Remove Microsoft.MicrosoftPowerBIForWindows. Only present if the user explicitly installed it
+                     + Re-enable Microsoft.BingWeather, Microsoft.CommsPhone, Microsoft.Microsoft3DViewer and Microsoft.Office.OneNote
                1.4.1 + Add additional user-submitted entries
 #>
 $ErrorActionPreference = "SilentlyContinue"
