@@ -220,8 +220,7 @@ Function Remove-App([String]$AppName){
 ###########
 # Active identifiers
 Remove-App "BrowserChoice"                             # "Browser Choice" screen required by the EU antitrust regulation
-Remove-App "Microsoft.Advertising.JavaScript"          # Advertising framework
-Remove-App "Microsoft.Advertising.Xaml"                # Advertising framework
+Remove-App "Microsoft.Advertisin*"                     # Advertising framework, catches the base package + named variants
 Remove-App "Microsoft.BingFinance"                     # Money app - Financial news
 Remove-App "Microsoft.BingFoodAndDrink"                # Food and Drink app
 Remove-App "Microsoft.BingHealthAndFitness"            # Health and Fitness app
