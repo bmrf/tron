@@ -1,7 +1,8 @@
 :: Purpose:       Installs a package
 :: Requirements:  Run this script with a network admin account
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: History:       1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Old versions now removed prior to installation. Thanks to u/strifethe9tailedfox
+:: History:       1.2.4-TRON ! Fix minor output bug (uninstall command would print to the console when not requested)
+::                1.2.3-TRON ! Fix bug where we'd install the new 7-Zip alongside an old existing version. Old versions now removed prior to installation. Thanks to u/strifethe9tailedfox
 ::                1.2.2-TRON * Make installer script architecture-agnostic, now will detect correct system architecture and install relevant package
 ::                           * Replace all hard-coded system file paths with relevant variable for better portability
 ::                1.2.1-TRON - Remove logging of ftype and assoc output since it's not of any consequence
@@ -31,8 +32,8 @@ set FLAGS=ALLUSERS=1 /q /norestart INSTALLDIR="%SystemDrive%\Program Files\7-Zip
 :: Prep :: -- Don't change anything in this section
 ::::::::::
 @echo off
-set VERSION=1.2.3-TRON
-set UPDATED=2020-06-30
+set VERSION=1.2.4-TRON
+set UPDATED=2026-10-30
 :: PowerShell engine variables are normally inherited from Tron's initialize_environment.bat. If run standalone, default to Windows PowerShell
 if not defined PS_WMI_MODE (
 	set PS_CMD="%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
@@ -54,8 +55,9 @@ pushd "%~dp0"
 IF EXIST "%ProgramFiles%\7-Zip\Uninstall.exe" "%ProgramFiles%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
 IF EXIST "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" "%ProgramFiles(x86)%\7-Zip\Uninstall.exe" /S /V"/qn /norestart"
 :: Equivalent of: wmic product where "name like '7-Zip%%'" uninstall /nointeractive
-if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $p = @(Get-WmiObject Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (' + $o.__RELPATH + ')->Uninstall()'; 'ReturnValue = ' + $o.Uninstall().ReturnValue + ';' }; exit 0"
-if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $p = @(Get-CimInstance Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (Win32_Product.IdentifyingNumber=''' + $o.IdentifyingNumber + ''')->Uninstall()'; 'ReturnValue = ' + (Invoke-CimMethod -InputObject $o -MethodName Uninstall).ReturnValue + ';' }; exit 0"
+if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $p = @(Get-WmiObject Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (' + $o.__RELPATH + ')->Uninstall()'; 'ReturnValue = ' + $o.Uninstall().ReturnValue + ';' }; exit 0" >> "%LOGPATH%\%LOGFILE%" 2>&1
+
+if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $p = @(Get-CimInstance Win32_Product -Filter 'Name LIKE ''7-Zip%%''' -ErrorAction Stop) } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }; if ($p.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.') }; foreach ($o in $p) { 'Executing (Win32_Product.IdentifyingNumber=''' + $o.IdentifyingNumber + ''')->Uninstall()'; 'ReturnValue = ' + (Invoke-CimMethod -InputObject $o -MethodName Uninstall).ReturnValue + ';' }; exit 0" >> "%LOGPATH%\%LOGFILE%" 2>&1
 
 
 :: Detect system architecture and install appropriate version
