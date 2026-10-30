@@ -21,7 +21,7 @@
 set STAGE_6_SCRIPT_VERSION=1.1.0
 set STAGE_6_SCRIPT_DATE=2021-07-23
 
-:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
+:: Check for standalone vs. inline execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
@@ -47,7 +47,10 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 	call functions\log_with_date.bat "!  SKIP_PAGEFILE_RESET (-spr) set. Skipping page file reset."
 ) else (
 	call functions\log_with_date.bat "   Resetting page file settings to Windows defaults..."
-	if /i %DRY_RUN%==no <NUL %WMIC% computersystem where name="%computername%" set AutomaticManagedPagefile=True >> "%LOGPATH%\%LOGFILE%" 2>&1
+	REM Equivalent of: wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True. -EnableAllPrivileges is required: the write needs SeCreatePagefilePrivilege, which wmic.exe enabled by default and Get-WmiObject does not
+	if /i %DRY_RUN%==no if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $cs = @(Get-WmiObject Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -EnableAllPrivileges -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { $o.AutomaticManagedPagefile = $true; $null = $o.Put() }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if /i %DRY_RUN%==no if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $cs = @(Get-CimInstance Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { Set-CimInstance -InputObject $o -Property @{ AutomaticManagedPagefile = $true } -ErrorAction Stop }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
+	if /i "%PS_WMI_MODE%"=="none" call functions\log_with_date.bat "   No usable PowerShell found, page file settings were not reset."
 	call functions\log_with_date.bat "   Done."
 )
 
