@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 6: Optimize stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.1.0 / change:      Change defrag threshold from 5% fragmentation level to 7% fragmentation level
+:: Version:       1.1.1 * improvement: Convert page file reset from WMIC to PowerShell method
+::                1.1.0 / change:      Change defrag threshold from 5% fragmentation level to 7% fragmentation level
 ::                1.0.9 + feature:     Add job 'ngen .NET compilation', thanks to u/NickNameInCollege
 ::                1.0.8 * smart:       Improve SMART detection routine to also switch problem codes and set the appropriate variables
 ::                1.0.7 * improvement: Improve standalone execution support. Can now execute by double-clicking icon vs. manually executing via CLI
@@ -18,8 +19,8 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_6_SCRIPT_VERSION=1.1.0
-set STAGE_6_SCRIPT_DATE=2021-07-23
+set STAGE_6_SCRIPT_VERSION=1.1.1
+set STAGE_6_SCRIPT_DATE=2026-10-30
 
 :: Check for standalone vs. inline execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
@@ -48,9 +49,13 @@ if /i %SKIP_PAGEFILE_RESET%==yes (
 ) else (
 	call functions\log_with_date.bat "   Resetting page file settings to Windows defaults..."
 	REM Equivalent of: wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True. -EnableAllPrivileges is required: the write needs SeCreatePagefilePrivilege, which wmic.exe enabled by default and Get-WmiObject does not
-	if /i %DRY_RUN%==no if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $cs = @(Get-WmiObject Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -EnableAllPrivileges -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { $o.AutomaticManagedPagefile = $true; $null = $o.Put() }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	if /i %DRY_RUN%==no if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $cs = @(Get-CimInstance Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { Set-CimInstance -InputObject $o -Property @{ AutomaticManagedPagefile = $true } -ErrorAction Stop }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
-	if /i "%PS_WMI_MODE%"=="none" call functions\log_with_date.bat "   No usable PowerShell found, page file settings were not reset."
+	if /i %DRY_RUN%==no (
+		if /i "%PS_WMI_MODE%"=="wmi" <NUL %PS_CMD% "try { $cs = @(Get-WmiObject Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -EnableAllPrivileges -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { $o.AutomaticManagedPagefile = $true; $null = $o.Put() }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		if /i "%PS_WMI_MODE%"=="cim" <NUL %PS_CMD% "try { $cs = @(Get-CimInstance Win32_ComputerSystem -Filter ('Name=''' + $env:COMPUTERNAME + '''') -ErrorAction Stop); if ($cs.Count -eq 0) { [Console]::Error.WriteLine('No Instance(s) Available.'); exit 0 }; foreach ($o in $cs) { Set-CimInstance -InputObject $o -Property @{ AutomaticManagedPagefile = $true } -ErrorAction Stop }; 'Property(s) update successful.'; exit 0 } catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }" >> "%LOGPATH%\%LOGFILE%" 2>&1
+		
+		if /i "%PS_WMI_MODE%"=="none" call functions\log_with_date.bat "   No usable PowerShell found, page file settings were not reset."
+	)
 	call functions\log_with_date.bat "   Done."
 )
 
