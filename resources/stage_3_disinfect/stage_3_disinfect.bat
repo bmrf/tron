@@ -42,7 +42,7 @@
 set STAGE_3_SCRIPT_VERSION=1.3.2
 set STAGE_3_SCRIPT_DATE=2023-03-09
 
-:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
+:: Check for standalone vs. inline execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
