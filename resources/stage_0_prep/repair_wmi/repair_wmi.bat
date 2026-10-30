@@ -4,7 +4,7 @@
 ::                Modified by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.0.2 ! Remove pause command on line 95 that could stall script
 ::                      + Skip WMI check and repair entirely if the WMI service (winmgmt) isn't present on the system
-::                      - Don't run "REPAIR3" operation automatically (delete and rebuild the WMI repository, re-register every DLL and recompile
+::                      - Don't run "REPAIR3" operation (delete and rebuild the WMI repository, re-register every DLL and recompile
 ::                        every MOF under wbem). Too destructive to run automatically; permanently loses third-party WMI providers
 ::                1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
 ::                1.0.0 + Initial write
