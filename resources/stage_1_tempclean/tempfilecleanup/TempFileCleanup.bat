@@ -1,7 +1,8 @@
 :: Purpose:       Temp file cleanup
 :: Requirements:  Admin access helps but is not required
 :: Author:        reddit.com/user/vocatus ( vocatus.gate@gmail.com ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.2.2-TRON ! Fix unintended removal of pinned folders in the Quick Access pane of Windows Explorer. Thanks to u/HeadCrusherBR
+:: Version:       1.2.3-TRON ! Remove MUI cache cleanup command that never executed due to syntax bug
+::                1.2.2-TRON ! Fix unintended removal of pinned folders in the Quick Access pane of Windows Explorer. Thanks to u/HeadCrusherBR
 ::                1.2.1-TRON ! Fix syntax bug in REG command. Thanks to github:bobbie25
 ::                1.2.0-TRON + Add Microsoft Teams cache cleanup. Thanks to github:bknickelbine
 ::                1.1.9-TRON - Remove all Windows XP specific code blocks since support for it is now deprecated
@@ -43,8 +44,8 @@ SETLOCAL
 :::::::::::::::::::::
 @echo off
 pushd %SystemDrive%
-set SCRIPT_VERSION=1.2.2-TRON
-set SCRIPT_UPDATED=2022-10-23
+set SCRIPT_VERSION=1.2.3-TRON
+set SCRIPT_UPDATED=2026-10-30
 
 ::::::::::::::::::::::::::
 :: USER CLEANUP SECTION :: -- Most stuff in here doesn't require Admin rights
@@ -169,9 +170,6 @@ if exist %SystemDrive%\i386 rmdir /S /Q %SystemDrive%\i386
 :: JOB: Empty all recycle bins on Windows 5.1 (XP/2k3) and 6.x (Vista and up) systems
 if exist %SystemDrive%\RECYCLER rmdir /s /q %SystemDrive%\RECYCLER
 if exist %SystemDrive%\$Recycle.Bin rmdir /s /q %SystemDrive%\$Recycle.Bin
-
-:: JOB: Clear MUI cache
-%REG% del "HKCU\SOFTWARE\Classes\Local Settings\Muicache" /f
 
 :: JOB: Clear queued and archived Windows Error Reporting (WER) reports
 echo. >> %LOGPATH%\%LOGFILE%
