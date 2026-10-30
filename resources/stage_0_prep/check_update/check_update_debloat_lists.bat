@@ -7,6 +7,7 @@
 ::                      ! Delete any download that wget reports as failed, so partial or error-page download never replaces current list
 ::                      ! Compare list versions numerically instead of as text
 ::                      ! Fix CHECK_UPDATE_DEBLOAT_LISTS_VERSION being overwritten with the script date
+::                      * Add --no-hsts to wget command, to prevent leaving behind blank .wget-hsts file
 ::                1.1.0 + Add new job to check for and download the programs_to_target_by_name list 
 ::                      * Update jobs to reflect new list names on Github
 ::                1.0.3 * Wrap all references to %TEMP% in quotes to account for possibility of a user account with special characters in it (e.g. "&")
@@ -74,7 +75,7 @@ set DEBLOAT_DOWNLOAD_NETWORK_FAILURE=
 :: Fetch the repo PowerShell scripts
 for %%i in (metro_3rd_party_modern_apps_to_target_by_name,metro_Microsoft_modern_apps_to_target_by_name) do (
 	if not defined DEBLOAT_DOWNLOAD_NETWORK_FAILURE (
-		stage_0_prep\check_update\wget -q --tries=2 --timeout=10 %GITHUB_URL_BASE%/metro/%%i.ps1 -O "%TEMP%\%%i.ps1"
+		stage_0_prep\check_update\wget -q --no-hsts --tries=2 --timeout=10 %GITHUB_URL_BASE%/metro/%%i.ps1 -O "%TEMP%\%%i.ps1"
 		if errorlevel 4 if not errorlevel 5 set DEBLOAT_DOWNLOAD_NETWORK_FAILURE=yes
 		if errorlevel 1 del /f /q "%TEMP%\%%i.ps1" >NUL 2>&1
 	)
@@ -82,7 +83,7 @@ for %%i in (metro_3rd_party_modern_apps_to_target_by_name,metro_Microsoft_modern
 :: Fetch the repo text scripts
 for %%i in (programs_to_target_by_GUID,programs_to_target_by_name,toolbars_BHOs_to_target_by_GUID) do (
 	if not defined DEBLOAT_DOWNLOAD_NETWORK_FAILURE (
-		stage_0_prep\check_update\wget -q --tries=2 --timeout=10 %GITHUB_URL_BASE%/oem/%%i.txt -O "%TEMP%\%%i.txt"
+		stage_0_prep\check_update\wget -q --no-hsts --tries=2 --timeout=10 %GITHUB_URL_BASE%/oem/%%i.txt -O "%TEMP%\%%i.txt"
 		if errorlevel 4 if not errorlevel 5 set DEBLOAT_DOWNLOAD_NETWORK_FAILURE=yes
 		if errorlevel 1 del /f /q "%TEMP%\%%i.txt" >NUL 2>&1
 	)
