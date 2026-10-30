@@ -2,8 +2,10 @@
 :: Requirements:  Broken WMI configuration
 :: Author:        Originally taken from http://craighassan.com/fix-wmi-batch-file/
 ::                Modified by reddit.com/user/vocatus ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.2 ! Remove errant pause command on line 95 that could stall script
+:: Version:       1.0.2 ! Remove pause command on line 95 that could stall script
 ::                      + Skip WMI check and repair entirely if the WMI service (winmgmt) isn't present on the system
+::                      - Don't run "REPAIR3" operation automatically (delete and rebuild the WMI repository, re-register every DLL and recompile
+::                        every MOF under wbem). Too destructive to run automatically; permanently loses third-party WMI providers
 ::                1.0.1 ! Fix "smart quotes" incorrectly being used on some commands
 ::                1.0.0 + Initial write
 SETLOCAL
@@ -22,14 +24,14 @@ SETLOCAL
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set SCRIPT_VERSION=1.0.2
-set SCRIPT_UPDATED=2026-10-26
+set SCRIPT_UPDATED=2026-10-29
 
 @echo OFF
 REM Test and attempt repair of WMI
 REM
 REM 1. Restart WinMgmts and all dependendency services
 REM 2. Verify / Salvage / Reset Repository and restart services
-REM 3. Rebuild WMI Repository and restart services
+REM 3. Rebuild WMI Repository and restart services (DISABLED, no longer run automatically)
 
 
 set LERR=0
@@ -58,7 +60,7 @@ echo CHECKING WMI... ATTEMPT:%ATTEMPT%...
 IF %ERRORLEVEL%==0 goto SUCCESS
 IF %ATTEMPT%==0 GOTO REPAIR1
 IF %ATTEMPT%==1 GOTO REPAIR2
-IF %ATTEMPT%==2 GOTO REPAIR3
+:: Repair 3 (delete and rebuild the WMI repository) is no longer run automatically. See the note above :REPAIR3
 GOTO ERR
 
 :REPAIR1
@@ -98,6 +100,9 @@ for /f "tokens=2 delims= " %%a in ('sc enumdepend winmgmt^| findstr -i "SERVICE_
 GOTO BEGINCHK
 
 
+:: REPAIR3 is DISABLED: nothing jumps here as of v1.0.2. It deletes the WMI repository, re-registers every DLL under wbem and recompiles
+:: every MOF, which permanently loses third-party WMI providers (AV, backup, management agents). Kept for review in the next release.
+:: If it's ever re-enabled, re-enable the popd under :END too, since it pairs with the pushd in this section
 :REPAIR3
 set ATTEMPT=3
 set LERR=3001
@@ -156,6 +161,7 @@ GOTO BEGINCHK
 :ERR
 set LERR=4001
 echo ERROR:%LERR% UNABLE TO REPAIR WMI, ATTEMPTS:%ATTEMPT% (%ATTEMPT%:%LERR%).
+echo WMI REPOSITORY REBUILD IS NOT RUN AUTOMATICALLY. MANUAL WMI REPAIR MAY BE REQUIRED.
 GOTO END
 
 :SUCCESS
@@ -164,5 +170,6 @@ IF %LERR% NEQ 0 echo WMI REPAIR SUCCESS! WMI REPAIRED (%ATTEMPT%:%LERR%).
 GOTO END
 
 :END
-popd
+:: popd disabled along with REPAIR3, which had the only matching pushd. Unmatched, it popped the calling script's directory stack
+:: popd
 REM EXIT %LERR%
