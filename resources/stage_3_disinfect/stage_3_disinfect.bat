@@ -2,7 +2,7 @@
 :: Requirements:  1. Administrator access
 ::                2. Safe mode is recommended but not required
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.3.3 ! mbam:        Fix edge case bug where MBAM detection wasn't set correctly after installing on a system without it pre-existing
+:: Version:       1.3.3 ! mbam:        Fix MBAM not launching after a fresh install
 ::                1.3.2 - sopohs:      Remove all code related to Sophos due to it being deprecated
 ::                1.3.1 + adwcleaner:  Add AdwCleaner job. Thanks to u/fr0stedfl4ke
 ::                1.3.0 + mbam:        Add "/NOICON" switch to MBAM install to prevent desktop icon. Thanks to github:numdouglas and github:DRCHRIS2
