@@ -6,8 +6,8 @@
 @echo off
 
 :: Tron Project version and date. These two variables determine the overall project version and date
-set TRON_VERSION=12.0.7
-set TRON_DATE=2024-03-xx
+set TRON_VERSION=13.0.0
+set TRON_DATE=2026-10-xx
 
 :: Set window title
 title Tron v%TRON_VERSION% (%TRON_DATE%)
@@ -34,19 +34,61 @@ set WIN_VER_NUM=undetected
 
 
 :: Force path to some system utilities in case the system PATH is messed up
-set WMIC=%SystemRoot%\System32\wbem\wmic.exe
 set FIND=%SystemRoot%\System32\find.exe
 set FINDSTR=%SystemRoot%\System32\findstr.exe
 set REG=%SystemRoot%\System32\reg.exe
 
 
+:: Detect which PowerShell engine to use for WMI work. Replaces wmic.exe, which Microsoft has deprecated
+:: This is the ONLY place the engine is detected. Everything else references the variables set here:
+::   PS_WMI_MODE   wmi  = Windows PowerShell 2.0+ (powershell.exe) using Get-WmiObject. Windows 7 through current Windows 10/11
+::                 cim  = PowerShell 6+/7+ (pwsh.exe) using Get-CimInstance/Invoke-CimMethod/Set-CimInstance. Only used if Windows PowerShell is absent or lacks Get-WmiObject
+::                 none = no usable PowerShell found. WMI-dependent jobs are skipped
+::   PS_EXE        full path to the selected executable
+::   PS_VER_MAJOR  major version of the selected engine
+::   PS_CMD        invocation prefix. Usage from cmd: <NUL %PS_CMD% "<PowerShell code>"
+::   PS_GET        engine-appropriate cmdlet for read-only WMI queries (Get-WmiObject or Get-CimInstance). Method calls and property writes need per-mode blocks
+:: Rules for PowerShell code passed via PS_CMD: the code must be one double-quoted argument containing NO double quotes (use single-quoted
+:: PowerShell strings; double a single quote to escape it), NO exclamation marks (use -not), and no percent signs except doubled WQL
+:: wildcards (use ForEach-Object, never its one-character alias), so that cmd quoting, percent expansion and delayed expansion can never alter it
+set PS_WMI_MODE=none
+set PS_EXE=none
+set PS_VER_MAJOR=0
+set PS_GET=none
+set PS_CMD=
+set PS_PWSH=none
+:: Prefer Windows PowerShell. %SystemRoot%\System32 is redirected to SysWOW64 under 32-bit cmd, which matches how wmic.exe was called
+if exist "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" for /f %%a in ('^<NUL "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command "if (Get-Command Get-WmiObject -ErrorAction SilentlyContinue) { $PSVersionTable.PSVersion.Major }"') do echo %%a| %FINDSTR% /r "^[0-9][0-9]*$" >NUL && set PS_VER_MAJOR=%%a
+if %PS_VER_MAJOR% GEQ 2 (
+	set "PS_EXE=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"
+	set PS_WMI_MODE=wmi
+	set PS_GET=Get-WmiObject
+	goto ps_detect_done
+)
+:: Fall back to PowerShell 6+/7+ (pwsh.exe). Check the default install path (64-bit and native), then PATH
+if defined ProgramW6432 if exist "%ProgramW6432%\PowerShell\7\pwsh.exe" set "PS_PWSH=%ProgramW6432%\PowerShell\7\pwsh.exe"
+if "%PS_PWSH%"=="none" if exist "%ProgramFiles%\PowerShell\7\pwsh.exe" set "PS_PWSH=%ProgramFiles%\PowerShell\7\pwsh.exe"
+if "%PS_PWSH%"=="none" for /f "delims=" %%a in ('where pwsh.exe 2^>NUL') do set "PS_PWSH=%%a"
+set PS_VER_MAJOR=0
+if not "%PS_PWSH%"=="none" for /f %%a in ('^<NUL "%PS_PWSH%" -NoProfile -NonInteractive -Command "if (Get-Command Get-CimInstance -ErrorAction SilentlyContinue) { $PSVersionTable.PSVersion.Major }"') do echo %%a| %FINDSTR% /r "^[0-9][0-9]*$" >NUL && set PS_VER_MAJOR=%%a
+if %PS_VER_MAJOR% GEQ 6 (
+	set "PS_EXE=%PS_PWSH%"
+	set PS_WMI_MODE=cim
+	set PS_GET=Get-CimInstance
+)
+:ps_detect_done
+if /i not "%PS_WMI_MODE%"=="none" set PS_CMD="%PS_EXE%" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command
+
+
 :: Get the date into ISO 8601 standard format (yyyy-mm-dd)
-for /f %%a in ('^<NUL %WMIC% OS GET LocalDateTime ^| %FIND% "."') DO set DTS=%%a
+:: Emits wmic's CIM_DATETIME layout (yyyymmddHHMMSS.ffffff). In cim mode LocalDateTime is a .NET DateTime, so it is reformatted with
+:: the invariant culture (UTC offset suffix omitted; only the first 8 characters are consumed)
+if /i not "%PS_WMI_MODE%"=="none" for /f %%a in ('^<NUL %PS_CMD% "$d = (%PS_GET% Win32_OperatingSystem).LocalDateTime; if ($d -is [DateTime]) { $d.ToString('yyyyMMddHHmmss', [Globalization.CultureInfo]::InvariantCulture) + '.000000' } else { $d }" ^| %FIND% "."') DO set DTS=%%a
 set CUR_DATE=%DTS:~0,4%-%DTS:~4,2%-%DTS:~6,2%
 
 
 :: Get Time Zone name and value
-for /f "USEBACKQ skip=1 delims=" %%i IN (`^<NUL %WMIC% timezone get StandardName ^|findstr /b /r [a-z]`) DO set TIME_ZONE_NAME=%%i
+if /i not "%PS_WMI_MODE%"=="none" for /f "delims=" %%i IN ('^<NUL %PS_CMD% "(%PS_GET% Win32_TimeZone).StandardName"') DO set TIME_ZONE_NAME=%%i
 
 
 :: Resume-related stuff (resuming from an interrupted run)

@@ -2,11 +2,13 @@
 :: Requirements:  Called by tron.bat during script initialization
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.1.4 ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm"). Thanks to u/jchristyr
-::                      ! Pass each device's type (-d) from 'smartctl --scan' through to smartctl
+::                      ! Fix SMART problem code check missing statuses that contain a space ("Pred Fail", "No Contact", "Lost Comm"). Thanks to u/jchristyr
+::                      ! Pass each device type (-d) from 'smartctl --scan' through to smartctl
 ::                      * Query each disk once and check the saved output, instead of querying every disk three times
 ::                      ! Detect NVMe drives as solid state from their smartctl device type, instead of relying on "SSD" in the model name
 ::                      ! Base the SSD and VM defrag decisions on the system drive only; Previously the last disk smartctl read was used
-::                      + Detect Hyper-V (and Azure) VMs from machine model and skip defrag, since smartctl doesn't reliably identify Hyper-V virtual disks
+::                      + Detect and skip defrag on Hyper-V (and Azure) VMs
+::                      ! Fix free disk space calculation, use new PowerShell-based method
 ::                1.1.3 ! Fix free disk space calculation, use new PowerShell-based method
 ::                1.1.2 * Update unsupported OS check to trigger on Windows XP, since we're deprecating support for it soon
 ::                1.1.1 * Switch to alternate Administrator rights check
