@@ -3,6 +3,7 @@
 ::                2. Safe mode is strongly recommended (though not required)
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
 :: Version:       1.4.7 ! bugfix:      Fix incorrectly outputting "%i" to the log file instead of the relevant GUID or program name
+::                      * improvement: Improve Metro/"modern app" calling code
 ::                1.4.6 ! bugfix:      Move OneDrive and SkyDrive (old OneDrive name) disabling code via registry from Stage 4 telemetry disable script into appropriate location in this script. Thanks to u/Tenelia
 ::                1.4.5 + feature:     Add support for new SKIP_ONEDRIVE_REMOVAL (-sor) switch. Thanks to github:ptrkhh
 ::                1.4.4 ! bugfix:      Add "delims=" to "for /f %%i" command on Programs to target by name section of debloat, to properly handle program names with spaces in them. Thanks to github:AndrewSav
@@ -69,7 +70,7 @@
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
 set STAGE_2_SCRIPT_VERSION=1.4.7
-set STAGE_2_SCRIPT_DATE=2026-10-26
+set STAGE_2_SCRIPT_DATE=2026-10-30
 :: Check for standalone vs. Tron execution and build the environment if running in standalone mode
 set STANDALONE=no
 if /i "%LOGFILE%"=="" (
@@ -97,7 +98,7 @@ if %STANDALONE%==yes (
 call functions\log_with_date.bat "  stage_2_de-bloat begin..."
 
 
-:: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of "classic" (non-"Modern") Windows programs
+:: JOB: Enable MSIServer service if we're in Safe Mode. This allows us to perform uninstallation of regular (non-"Modern") Windows programs
 if /i %SAFE_MODE%==yes (
 	title Tron v%TRON_VERSION% [stage_2_de-bloat] [Enable MSIServer]
 	call functions\log_with_date.bat "   Enabling MSIServer to allow program removal in Safe Mode..."
@@ -107,7 +108,6 @@ if /i %SAFE_MODE%==yes (
 	)
 	call functions\log_with_date.bat "   Done."
 )
-
 
 
 
@@ -157,7 +157,7 @@ call functions\log_with_date.bat "   Done."
 
 
 
-:: JOB: Remove crapware programs, phase 2: unwanted toolbars and BHOs by GUID
+:: JOB: Remove bloatware programs, phase 2: unwanted toolbars and BHOs by GUID
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove toolbars by GUID]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 2 (toolbars by specific GUID)..."
 :: Calculate how many GUIDs we're searching for
@@ -185,7 +185,7 @@ if /i %DRY_RUN%==no (
 				REM Check if the uninstaller added entries to PendingFileRenameOperations. If it did, export the contents, nuke the key value, then continue on
 				%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations >nul 2>&1
 				if !errorlevel!==0 (
-					echo Offending GUID: %%i >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
+					echo Offending entry: %%a >> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 					%REG% query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations>> "%RAW_LOGS%\PendingFileRenameOperations_%COMPUTERNAME%_%CUR_DATE%.txt"
 					%REG% delete "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations /f >nul 2>&1
 
@@ -202,7 +202,7 @@ call functions\log_with_date.bat "   Done."
 
 
 
-:: JOB: Remove crapware programs, phase 3: wildcard by name
+:: JOB: Remove bloatware programs, phase 3: wildcard by name
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [Remove bloatware by name]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 3 (wildcard by name)..."
 call functions\log_with_date.bat "   Tron is NOT stalled here, this portion just takes a long time"
@@ -258,7 +258,7 @@ call functions\log_with_date.bat "   Done."
 
 
 
-:: JOB: Remove crapware programs, phase 4: auxiliary WildTangent and HP Games scans
+:: JOB: Remove bloatware programs, phase 4: auxiliary WildTangent and HP Games scans
 title Tron v%TRON_VERSION% [stage_2_de-bloat] [auxiliary scans]
 call functions\log_with_date.bat "   Attempt junkware removal: Phase 4 (auxiliary HP and Wild Tangent Games scans)..."
 if /i %DRY_RUN%==no (
@@ -311,8 +311,14 @@ if /i %TARGET_METRO%==yes (
 		REM Windows 10 version
 		if /i "%WIN_VER:~0,9%"=="Windows 1" (
 			REM Call the external PowerShell scripts to do removal of Microsoft and 3rd party OEM Modern Apps
-			start /wait powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_3rd_party_modern_apps_to_target_by_name.ps1"
-			start /wait powershell -executionpolicy bypass -file ".\stage_2_de-bloat\metro\metro_Microsoft_modern_apps_to_target_by_name.ps1"
+			REM PowerShell is called explicitly since the Appx module isn't native to PowerShell 7. Output always goes to the log, and to the console if VERBOSE=yes
+			for %%s in (metro_3rd_party_modern_apps_to_target_by_name metro_Microsoft_modern_apps_to_target_by_name) do (
+				<NUL "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ".\stage_2_de-bloat\metro\%%s.ps1" > "%TEMP%\tron_%%s.txt" 2>&1
+				if errorlevel 1 echo    %%s: one or more packages failed to remove or timed out. See FAILED entries above.>> "%TEMP%\tron_%%s.txt"
+				type "%TEMP%\tron_%%s.txt">> "%LOGPATH%\%LOGFILE%"
+				if /i %VERBOSE%==yes type "%TEMP%\tron_%%s.txt"
+				del /f /q "%TEMP%\tron_%%s.txt" >nul 2>&1
+			)
 		)
 	)
 	call functions\log_with_date.bat "   Done."
