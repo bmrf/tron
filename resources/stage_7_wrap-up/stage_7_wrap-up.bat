@@ -1,7 +1,8 @@
 :: Purpose:       Sub-script containing all commands for Tron's Stage 7: Wrap-up stage. Called by tron.bat and returns control when finished
 :: Requirements:  Administrator access
 :: Author:        vocatus on reddit.com/r/TronScript ( vocatus.gate at gmail ) // PGP key: 0x07d1490f82a211a2
-:: Version:       1.0.5 + Add collection of AdwCleaner raw logs
+:: Version:       1.0.6 ! Fix free disk space calculation
+::                1.0.5 + Add collection of AdwCleaner raw logs
 ::                1.0.4 - Remove post-run restore point creation, since there's really no point in creating it
 ::                1.0.3 / Change REMOVE_MALWAREBYTES switch to PRESERVE_MALWAREBYTES (-pmb) as the new default behavior is to remove it at the end of the run
 ::                1.0.2 + Add REMOVE_MALWAREBYTES (-rmb) switch to have Tron automatically remove Malwarebytes at the end of the run
@@ -14,10 +15,10 @@
 :::::::::::::::::::::
 :: PREP AND CHECKS ::
 :::::::::::::::::::::
-set STAGE_7_SCRIPT_VERSION=1.0.5
-set STAGE_7_SCRIPT_DATE=2024-03-09
+set STAGE_7_SCRIPT_VERSION=1.0.6
+set STAGE_7_SCRIPT_DATE=2026-10-26
 
-:: Check for standalone vs. Tron execution and build the environment if running in standalone mode
+:: Check for standalone vs. inline execution and build the environment if running in standalone mode
 if /i "%LOGFILE%"=="" (
 	pushd "%~dp0"
 	pushd ..
@@ -131,20 +132,15 @@ call functions\log_with_date.bat "   Done."
 
 :: JOB: Calculate saved disk space
 title Tron v%TRON_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
-for /f "tokens=2 delims=:(" %%a in ('fsutil volume diskfree %SystemDrive%') do set bytes=%%a
-set bytes=%bytes: =%
-
-:: Old method (broken in Win10 build 17763 (1809) and up)
-:: for /F "tokens=2 delims=:" %%a in ('fsutil volume diskfree %SystemDrive% ^| %FIND% /i "avail free"') do set bytes=%%a
-
-:: GB version of the calculation
-set /A FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024/1024
-
-:: MB version of the calculation
-::set /a FREE_SPACE_AFTER=%bytes:~0,-3%/1024*1000/1024
-
-:: Set the space for display
-set /a FREE_SPACE_SAVED=%FREE_SPACE_AFTER% - %FREE_SPACE_BEFORE%
+:: JOB: Calculate saved disk space. Same method and units (MB) as FREE_SPACE_BEFORE in prerun_checks_and_tasks.bat
+title Tron v%TRON_VERSION% [stage_7_wrap-up] [Calculate saved disk space]
+set FREE_SPACE_AFTER=0
+if /i not "%PS_WMI_MODE%"=="none" (
+	for /f %%a in ('^<NUL %PS_CMD% "[int64][math]::Floor((New-Object System.IO.DriveInfo($env:SystemDrive)).AvailableFreeSpace / 1MB)" 2^>NUL') do set FREE_SPACE_AFTER=%%a
+)
+:: Only calculate if both measurements succeeded
+set FREE_SPACE_SAVED=0
+if not "%FREE_SPACE_BEFORE%"=="0" if not "%FREE_SPACE_AFTER%"=="0" set /a FREE_SPACE_SAVED=FREE_SPACE_AFTER-FREE_SPACE_BEFORE
 
 
 
