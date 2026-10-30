@@ -163,8 +163,8 @@ if /i %SKIP_COOKIE_CLEANUP%==yes (
 if /i %DRY_RUN%==no (
 
 	if %VERBOSE%==yes (
-		:: If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
-		:: Thanks Windows for not having a TEE equivalent
+		REM If verbose is requested we first dump all files to the screen, THEN dump them to the log, THEN do the actual clean
+		REM Thanks Windows for not having a TEE equivalent
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview
 		stage_1_tempclean\bleachbit\bleachbit_console.exe --preset --preview>> "%LOGPATH%\%LOGFILE%" 2>NUL
 	)
